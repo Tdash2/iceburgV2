@@ -1,0 +1,16 @@
+﻿<Project>
+  <ItemGroup>
+    <StaticWebAssetEndpoint Include="_content/IceburgV2/index.bzxborc0yg.html">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"bzxborc0yg"},{"Name":"integrity","Value":"sha256-OVt6YloBn7iUvrxBpb/eDp1MbjC6dfhcb6XALG/zUtU="},{"Name":"label","Value":"_content/IceburgV2/index.html"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"37268"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022OVt6YloBn7iUvrxBpb/eDp1MbjC6dfhcb6XALG/zUtU=\u0022"},{"Name":"Last-Modified","Value":"Tue, 08 Sep 2026 20:14:06 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/IceburgV2/index.html">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-OVt6YloBn7iUvrxBpb/eDp1MbjC6dfhcb6XALG/zUtU="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"37268"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022OVt6YloBn7iUvrxBpb/eDp1MbjC6dfhcb6XALG/zUtU=\u0022"},{"Name":"Last-Modified","Value":"Tue, 08 Sep 2026 20:14:06 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+  </ItemGroup>
+</Project>

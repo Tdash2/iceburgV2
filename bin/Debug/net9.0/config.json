@@ -1,0 +1,18 @@
+{
+  "ApplicationName": "Iceburg",
+  "Version": "2.0.1",
+  "Settings": {
+    "AutoStart": true,
+    "RefreshIntervalSeconds": 30,
+    "DebugMode": false
+  },
+  "Devices": [
+    {
+      "Id": "b44df876-27fd-470b-b767-62dee09b9460",
+      "Name": "Test Router",
+      "Type": "1",
+      "IpAddress": "192.168.127.18",
+      "AudioSorce": ""
+    }
+  ]
+}
