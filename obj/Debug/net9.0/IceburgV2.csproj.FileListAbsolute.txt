@@ -26,4 +26,5 @@ C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Debug\net9.0\refint\IceburgV2.dll
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Debug\net9.0\IceburgV2.pdb
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Debug\net9.0\IceburgV2.genruntimeconfig.cache
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Debug\net9.0\ref\IceburgV2.dll
-C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Debug\net9.0\compressed\dmxrfynz0q-bzxborc0yg.gz
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Debug\net9.0\IceburgV2.sourcelink.json
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Debug\net9.0\compressed\dmxrfynz0q-yu36p2bxxh.gz

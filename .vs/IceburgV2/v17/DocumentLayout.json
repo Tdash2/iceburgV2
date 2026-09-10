@@ -7,6 +7,10 @@
       "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:wwwroot\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\bin\\Debug\\net9.0\\config.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:bin\\Debug\\net9.0\\config.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\1-bmd-router.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:1-bmd-router.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -26,11 +30,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -39,7 +43,19 @@
               "ViewState": "AgIAAAEAAAAAAAAAAAAwwBcAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-09-08T16:58:08.908Z",
-              "IsPinned": true,
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "config.json",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\bin\\Debug\\net9.0\\config.json",
+              "RelativeDocumentMoniker": "bin\\Debug\\net9.0\\config.json",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\bin\\Debug\\net9.0\\config.json",
+              "RelativeToolTip": "bin\\Debug\\net9.0\\config.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-09-10T18:45:33.832Z",
               "EditorCaption": ""
             },
             {
@@ -50,14 +66,14 @@
               "RelativeDocumentMoniker": "wwwroot\\index.html",
               "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\index.html",
               "RelativeToolTip": "wwwroot\\index.html",
-              "ViewState": "AgIAAPwBAAAAAAAAAAAYwBkCAAA+AAAAAAAAAA==",
+              "ViewState": "AgIAAKcEAAAAAAAAAAAqwO8EAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
               "WhenOpened": "2026-09-08T19:40:34.074Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "config.cs",
               "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\config.cs",
               "RelativeDocumentMoniker": "config.cs",
@@ -65,12 +81,11 @@
               "RelativeToolTip": "config.cs",
               "ViewState": "AgIAAF4AAAAAAAAAAAAiwLsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-08T18:38:57.453Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-08T18:38:57.453Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "1-BMD-Router.cs",
               "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\1-BMD-Router.cs",
               "RelativeDocumentMoniker": "1-BMD-Router.cs",
@@ -78,8 +93,7 @@
               "RelativeToolTip": "1-BMD-Router.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-08T18:06:57.513Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-09-08T18:06:57.513Z"
             }
           ]
         }

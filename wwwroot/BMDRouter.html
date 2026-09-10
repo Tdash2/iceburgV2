@@ -534,8 +534,8 @@
             </div>
 
             <div class="actions">
-                <button onclick="loadStatus()">↻ Refresh</button>
-                <button class="primary" onclick="openNames()">Names</button>
+                <button onclick="loadStatus()">Reload Routes</button>
+                <button class="primary" onclick="openNames()">Edit Names</button>
             </div>
         </header>
 
@@ -557,18 +557,15 @@
             </section>
 
             <section class="card">
-                <div class="card-header">
-                    <h2>Video Routing</h2>
-                    <span class="hint">Type to search • ↑ ↓ navigate • Enter select</span>
-                </div>
+
 
                 <div class="table-wrap">
                     <table>
                         <thead>
                             <tr>
-                                <th class="output-number">Output</th>
-                                <th class="output-name">Destination</th>
-                                <th>Source Input</th>
+                               
+                                <th class="output-name">Router Output</th>
+                                <th>Video</th>
                             </tr>
                         </thead>
                         <tbody id="routerBody"></tbody>
@@ -697,7 +694,7 @@
                 return;
             }
 
-            try {
+            //try {
                 const names = await apiGet(
                     `${apiBase()}/getnames`
                 );
@@ -715,14 +712,7 @@
                 buildNameLists();
 
                 showNotice("Router status updated.");
-            }
-            catch (error) {
-                console.error(error);
-                showNotice(
-                    `Unable to load router: ${error.message}`,
-                    true
-                );
-            }
+            
         }
 
         function sortedKeys(object) {
@@ -746,14 +736,12 @@
             for (const output of outputs) {
                 const row = document.createElement("tr");
 
-                const number = document.createElement("td");
-                number.className = "output-number";
-                number.textContent = output + 1;
+              
 
                 const destination = document.createElement("td");
                 destination.className = "output-name";
                 destination.textContent =
-                    outputLabels[output] || `Output ${output + 1}`;
+                    output + 1 + ": "+ outputLabels[output] || `Output ${output + 1}`;
 
                 const source = document.createElement("td");
                 source.className = "source-cell";
@@ -796,7 +784,7 @@
                 combo.appendChild(suggestions);
                 source.appendChild(combo);
 
-                row.appendChild(number);
+              
                 row.appendChild(destination);
                 row.appendChild(source);
                 body.appendChild(row);
@@ -1166,66 +1154,104 @@
             }
         }
 
-        function createNameRow(type, number, currentName) {
-            const row = document.createElement("div");
-            row.className = "name-row";
 
-            row.dataset.search =
-                `${number + 1} ${currentName}`.toLowerCase();
+    function createNameRow(type, number, currentName) {
+    const row = document.createElement("div");
+    row.className = "name-row";
 
-            const numberElement =
-                document.createElement("div");
+    row.dataset.search =
+        `${ number + 1 } ${ currentName } `.toLowerCase();
 
-            numberElement.className = "name-number";
-            numberElement.textContent = number + 1;
+    const numberElement = document.createElement("div");
+    numberElement.className = "name-number";
+    numberElement.textContent = number + 1;
 
-            const input =
-                document.createElement("input");
+    const input = document.createElement("input");
+    input.className = "name-input";
 
-            input.className = "name-input";
-            const pendingValue =
-                pendingNames[type][number];
+    const pendingValue = pendingNames[type][number];
 
-            input.value =
-                pendingValue !== undefined
-                    ? pendingValue
-                    : (currentName || "");
+    input.value =
+        pendingValue !== undefined
+            ? pendingValue
+            : (currentName || "");
 
-            if (pendingValue !== undefined) {
-                input.classList.add("dirty");
-            }
+    if (pendingValue !== undefined) {
+        input.classList.add("dirty");
+        row.classList.add("dirty");
+    }
 
-            const button =
-                document.createElement("button");
+    const button = document.createElement("button");
+    button.className = "save-name";
 
-            button.className = "save-name";
-            button.textContent =
-                pendingNames[type][number] !== undefined
-                    ? "Pending"
-                    : "Save";
+    button.textContent =
+        pendingValue !== undefined
+            ? "Pending"
+            : "Save";
 
-            if (pendingNames[type][number] !== undefined) {
-                button.classList.add("dirty");
-            }
+    if (pendingValue !== undefined) {
+        button.classList.add("dirty");
+    }
 
-            button.onclick = () =>
-                saveName(
-                    type,
-                    number,
-                    input,
-                    button
-                );
+    // Name changes immediately go into the pending queue.
+    input.addEventListener("input", () => {
+        const name = input.value.trim();
+        const original = type === "input"
+            ? (inputLabels[number] || "")
+            : (outputLabels[number] || "");
 
-            if (pendingNames[type][number] !== undefined) {
-                row.classList.add("dirty");
-            }
+        if (!name) {
+            delete pendingNames[type][number];
 
-            row.appendChild(numberElement);
-            row.appendChild(input);
-            row.appendChild(button);
+            input.classList.remove("dirty");
+            row.classList.remove("dirty");
+            button.classList.remove("dirty");
+            button.textContent = "Save";
 
-            return row;
+            updatePendingUI();
+            return;
         }
+
+        if (name === original) {
+            delete pendingNames[type][number];
+
+            input.classList.remove("dirty");
+            row.classList.remove("dirty");
+            button.classList.remove("dirty");
+            button.textContent = "Save";
+
+            updatePendingUI();
+            return;
+        }
+
+        pendingNames[type][number] = name;
+
+        input.classList.add("dirty");
+        row.classList.add("dirty");
+        button.classList.add("dirty");
+        button.textContent = "Pending";
+
+        updatePendingUI();
+    });
+
+    // Keep the button as a visual indication that the change is pending.
+    // Clicking it no longer sends anything to the router.
+    button.onclick = () => {
+        input.focus();
+    };
+
+    row.appendChild(numberElement);
+    row.appendChild(input);
+   // row.appendChild(button);
+
+    return row;
+}
+
+
+// Kept for compatibility if anything else calls saveName().
+
+
+
 
         function filterNames() {
             const search =
