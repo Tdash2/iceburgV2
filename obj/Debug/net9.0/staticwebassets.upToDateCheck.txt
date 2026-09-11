@@ -1,2 +1,8 @@
+C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\BMDRouter.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\index.html
+C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\dashboard.html
+C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\login.html
+wwwroot\BMDRouter.html
+wwwroot\dashboard.html
 wwwroot\index.html
+wwwroot\login.html

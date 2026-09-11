@@ -1,0 +1,661 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Iceburg Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        header {
+            background: #1f2937;
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+            header h1 {
+                margin: 0;
+                font-size: 22px;
+            }
+
+        #userInfo {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        main {
+            padding: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+            .toolbar h2 {
+                margin: 0;
+            }
+
+        button {
+            border: 0;
+            border-radius: 6px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        #refreshButton {
+            background: #2563eb;
+            color: white;
+        }
+
+        #logoutButton {
+            background: #dc2626;
+            color: white;
+        }
+
+        #refreshButton:hover {
+            background: #1d4ed8;
+        }
+
+        #logoutButton:hover {
+            background: #b91c1c;
+        }
+
+        #status {
+            margin-bottom: 20px;
+            color: #666;
+        }
+
+        #devices {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 18px;
+        }
+
+        .device-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+            .device-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.14);
+            }
+
+            .device-card.disabled {
+                cursor: default;
+                opacity: 0.65;
+            }
+
+                .device-card.disabled:hover {
+                    transform: none;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+                }
+
+        .device-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .device-info {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.7;
+        }
+
+        .device-type {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: #e5e7eb;
+            color: #374151;
+            font-size: 12px;
+        }
+
+        .empty {
+            background: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 10px;
+            color: #666;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Iceburg</h1>
+
+        <div>
+            <span id="userInfo"></span>
+            <button id="logoutButton">Logout</button>
+        </div>
+    </header>
+
+
+    <main>
+
+        <div class="toolbar">
+            <h2>Devices</h2>
+
+            <button id="refreshButton">
+                Refresh
+            </button>
+        </div>
+
+        <div id="status">
+            Loading devices...
+        </div>
+
+        <div id="devices"></div>
+
+    </main>
+
+
+    <script>
+
+// ============================================================
+// DEVICE TYPE LOOKUP
+// ============================================================
+//
+// Add additional device types here.
+//
+// Example:
+//
+// "1": {
+//     name: "BMD Router",
+//     page: "BMDRouter.html"
+// }
+//
+// The device ID is automatically appended as:
+//
+//     BMDRouter.html?id=<device ID>
+//
+// ============================================================
+
+const deviceTypeLookup = {
+
+    "1": {
+        name: "BMD Router",
+        page: "BMDRouter.html"
+    },
+
+    // Example future devices:
+    //
+    // "2": {
+    //     name: "Audio Device",
+    //     page: "AudioDevice.html"
+    // },
+    //
+    // "3": {
+    //     name: "Network Device",
+    //     page: "NetworkDevice.html"
+    // }
+};
+
+
+// ============================================================
+// DOM ELEMENTS
+// ============================================================
+
+const devicesElement =
+    document.getElementById("devices");
+
+const statusElement =
+    document.getElementById("status");
+
+const refreshButton =
+    document.getElementById("refreshButton");
+
+const logoutButton =
+    document.getElementById("logoutButton");
+
+const userInfo =
+    document.getElementById("userInfo");
+
+
+// ============================================================
+// LOAD CURRENT USER
+// ============================================================
+
+async function loadCurrentUser() {
+
+    try {
+
+        const response =
+            await fetch("/api/me", {
+                method: "GET",
+                credentials: "same-origin"
+            });
+
+        if (!response.ok) {
+
+            if (response.status === 401) {
+                window.location.replace(
+                    "/login.html?returnUrl=" +
+                    encodeURIComponent(
+                        window.location.pathname +
+                        window.location.search
+                    )
+                );
+
+                return;
+            }
+
+            return;
+        }
+
+        const user =
+            await response.json();
+
+        if (user.username) {
+
+            userInfo.textContent =
+                user.username ;
+        }
+
+    }
+    catch (error) {
+
+        console.error(
+            "Unable to load current user:",
+            error
+        );
+    }
+}
+
+
+// ============================================================
+// LOAD DEVICES
+// ============================================================
+
+async function loadDevices() {
+
+    statusElement.textContent =
+        "Loading devices...";
+
+    devicesElement.innerHTML = "";
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/device/getdevices/",
+                {
+                    method: "GET",
+                    credentials: "same-origin"
+                }
+            );
+
+
+        // --------------------------------------------------------
+        // Authentication failure
+        // --------------------------------------------------------
+
+        if (response.status === 401) {
+
+            window.location.replace(
+                "/login.html?returnUrl=" +
+                encodeURIComponent(
+                    window.location.pathname +
+                    window.location.search
+                )
+            );
+
+            return;
+        }
+
+
+        // --------------------------------------------------------
+        // Permission failure
+        // --------------------------------------------------------
+
+        if (response.status === 403) {
+
+            statusElement.textContent =
+                "You do not have permission to view devices.";
+
+            return;
+        }
+
+
+        // --------------------------------------------------------
+        // Other HTTP errors
+        // --------------------------------------------------------
+
+        if (!response.ok) {
+
+            throw new Error(
+                "HTTP " +
+                response.status
+            );
+        }
+
+
+        const devices =
+            await response.json();
+
+
+        // --------------------------------------------------------
+        // No devices
+        // --------------------------------------------------------
+
+        if (!Array.isArray(devices) ||
+            devices.length === 0) {
+
+            statusElement.textContent =
+                "";
+
+            devicesElement.innerHTML =
+                `
+                <div class="empty">
+                    No devices configured.
+                </div>
+                `;
+
+            return;
+        }
+
+
+        // --------------------------------------------------------
+        // Display devices
+        // --------------------------------------------------------
+
+        statusElement.textContent =
+            devices.length +
+            " device" +
+            (devices.length === 1
+                ? ""
+                : "s");
+
+
+        for (const device of devices) {
+
+            createDeviceCard(device);
+        }
+
+    }
+    catch (error) {
+
+        console.error(
+            "Failed to load devices:",
+            error
+        );
+
+        statusElement.textContent =
+            "";
+
+        devicesElement.innerHTML =
+            `
+            <div class="error">
+                Unable to load devices.
+                <br>
+                ${escapeHtml(error.message)}
+            </div>
+            `;
+    }
+}
+
+
+// ============================================================
+// CREATE DEVICE CARD
+// ============================================================
+
+function createDeviceCard(device) {
+
+    const type =
+        String(device.type ?? "");
+
+    const deviceType =
+        deviceTypeLookup[type];
+
+
+    // --------------------------------------------------------
+    // Unknown device type
+    // --------------------------------------------------------
+
+    if (!deviceType) {
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "device-card disabled";
+
+        card.innerHTML =
+            `
+            <div class="device-name">
+                ${escapeHtml(
+                    device.name || "Unnamed Device"
+                )}
+            </div>
+
+            <div class="device-info">
+                <div>
+                    IP:
+                    ${escapeHtml(
+                        device.ipAddress || "N/A"
+                    )}
+                </div>
+
+                <div>
+                    Device ID:
+                    ${escapeHtml(
+                        device.id || "N/A"
+                    )}
+                </div>
+
+                <span class="device-type">
+                    Unknown type: ${escapeHtml(type)}
+                </span>
+            </div>
+            `;
+
+        devicesElement.appendChild(card);
+
+        return;
+    }
+
+
+    // --------------------------------------------------------
+    // Known device type
+    // --------------------------------------------------------
+
+    const card =
+        document.createElement("div");
+
+    card.className =
+        "device-card";
+
+
+    card.innerHTML =
+        `
+        <div class="device-name">
+            ${escapeHtml(
+                device.name || "Unnamed Device"
+            )}
+        </div>
+
+        <div class="device-info">
+
+            <div>
+                Type:
+                ${escapeHtml(deviceType.name)}
+            </div>
+
+            <div>
+                IP:
+                ${escapeHtml(
+                    device.ipAddress || "N/A"
+                )}
+            </div>
+
+        </div>
+
+        <span class="device-type">
+            Open device
+        </span>
+        `;
+
+
+    // --------------------------------------------------------
+    // Redirect to device page
+    // --------------------------------------------------------
+
+    card.addEventListener(
+        "click",
+        function () {
+
+            if (!device.id) {
+                return;
+            }
+
+            const url =
+                deviceType.page +
+                "?id=" +
+                encodeURIComponent(device.id);
+
+            window.location.href = url;
+        }
+    );
+
+
+    devicesElement.appendChild(card);
+}
+
+
+// ============================================================
+// HTML ESCAPING
+// ============================================================
+//
+// Device names/IP addresses come from the API, so don't inject
+// them directly into HTML without escaping.
+//
+// ============================================================
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+
+// ============================================================
+// REFRESH
+// ============================================================
+
+refreshButton.addEventListener(
+    "click",
+    loadDevices
+);
+
+
+// ============================================================
+// LOGOUT
+// ============================================================
+
+logoutButton.addEventListener(
+    "click",
+    async function () {
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/logout",
+                    {
+                        method: "GET",
+                        credentials: "same-origin"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                console.error(
+                    "Logout failed:",
+                    response.status
+                );
+
+                return;
+            }
+
+
+            const result =
+                await response.json();
+
+
+            window.location.replace(
+                result.redirect ||
+                "/login.html"
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "Logout error:",
+                error
+            );
+
+            // The cookie may still have been removed,
+            // so send the browser to login anyway.
+
+            window.location.replace(
+                "/login.html"
+            );
+        }
+    }
+);
+
+
+// ============================================================
+// INITIAL LOAD
+// ============================================================
+
+loadCurrentUser();
+loadDevices();
+
+    </script>
+
+</body>
+</html>
+

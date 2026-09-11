@@ -1,7 +1,117 @@
 [
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_1",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_7",
+    "RelativePath": "access-denied",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_8",
+    "RelativePath": "api/device/getdevices/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[Iceburg.Database.Device, IceburgV2, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec__DisplayClass0_0",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__4",
+    "RelativePath": "api/login",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "LoginRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec__DisplayClass0_0",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__3",
+    "RelativePath": "api/login/challenge",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "LoginChallengeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_5",
+    "RelativePath": "api/logout",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_6",
+    "RelativePath": "api/me",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_9",
     "RelativePath": "api/router/bmd/{id}/getinfo",
     "HttpMethod": "GET",
     "IsController": false,
@@ -25,7 +135,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_2",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_10",
     "RelativePath": "api/router/bmd/{id}/getnames",
     "HttpMethod": "GET",
     "IsController": false,
@@ -49,7 +159,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_3",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_11",
     "RelativePath": "api/router/bmd/{id}/getroutes",
     "HttpMethod": "GET",
     "IsController": false,
@@ -73,9 +183,9 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_4",
-    "RelativePath": "api/router/bmd/{id}/setinputname/{input}/{name}",
-    "HttpMethod": "GET",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_12",
+    "RelativePath": "api/router/bmd/{id}/setinputname",
+    "HttpMethod": "POST",
     "IsController": false,
     "Order": 0,
     "Parameters": [
@@ -85,13 +195,8 @@
         "IsRequired": true
       },
       {
-        "Name": "input",
-        "Type": "System.String",
-        "IsRequired": true
-      },
-      {
-        "Name": "name",
-        "Type": "System.String",
+        "Name": "request",
+        "Type": "SetNameRequest",
         "IsRequired": true
       }
     ],
@@ -107,9 +212,9 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_5",
-    "RelativePath": "api/router/bmd/{id}/setoutputname/{input}/{name}",
-    "HttpMethod": "GET",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_13",
+    "RelativePath": "api/router/bmd/{id}/setoutputname",
+    "HttpMethod": "POST",
     "IsController": false,
     "Order": 0,
     "Parameters": [
@@ -119,13 +224,8 @@
         "IsRequired": true
       },
       {
-        "Name": "input",
-        "Type": "System.String",
-        "IsRequired": true
-      },
-      {
-        "Name": "name",
-        "Type": "System.String",
+        "Name": "request",
+        "Type": "SetNameRequest",
         "IsRequired": true
       }
     ],
@@ -141,9 +241,9 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_6",
-    "RelativePath": "api/router/bmd/{id}/setroute/{input}/{output}",
-    "HttpMethod": "GET",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_14",
+    "RelativePath": "api/router/bmd/{id}/setroute",
+    "HttpMethod": "POST",
     "IsController": false,
     "Order": 0,
     "Parameters": [
@@ -153,13 +253,8 @@
         "IsRequired": true
       },
       {
-        "Name": "input",
-        "Type": "System.String",
-        "IsRequired": true
-      },
-      {
-        "Name": "output",
-        "Type": "System.String",
+        "Name": "request",
+        "Type": "SetRouteRequest",
         "IsRequired": true
       }
     ],

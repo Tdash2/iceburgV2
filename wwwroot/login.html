@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Iceburg - Login</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f4f6f8;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #222;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            padding: 32px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        h1 {
+            margin: 0 0 8px 0;
+            text-align: center;
+        }
+
+        .subtitle {
+            margin: 0 0 28px 0;
+            text-align: center;
+            color: #666;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+            input:focus {
+                outline: none;
+                border-color: #555;
+            }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: 0;
+            border-radius: 6px;
+            background: #222;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background: #333;
+            }
+
+            button:disabled {
+                background: #999;
+                cursor: not-allowed;
+            }
+
+        .error {
+            display: none;
+            margin-bottom: 18px;
+            padding: 10px;
+            border-radius: 6px;
+            background: #ffe5e5;
+            color: #b00000;
+            font-size: 14px;
+        }
+
+        .status {
+            display: none;
+            margin-top: 15px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <div class="login-box">
+
+            <h1>Iceburg</h1>
+
+            <p class="subtitle">
+                Sign in to continue
+            </p>
+
+            <div id="error"
+                 class="error">
+            </div>
+
+            <form id="loginForm">
+
+                <div class="field">
+                    <label for="username">
+                        Username
+                    </label>
+
+                    <input id="username"
+                           name="username"
+                           type="text"
+                           autocomplete="username"
+                           required>
+                </div>
+
+                <div class="field">
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input id="password"
+                           name="password"
+                           type="password"
+                           autocomplete="current-password"
+                           required>
+                </div>
+
+                <button id="loginButton"
+                        type="submit">
+                    Login
+                </button>
+
+            </form>
+
+            <div id="status"
+                 class="status">
+                Signing in...
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+        "use strict";
+
+
+        // ============================================================
+        // ELEMENTS
+        // ============================================================
+
+        const loginForm =
+            document.getElementById("loginForm");
+
+        const usernameInput =
+            document.getElementById("username");
+
+        const passwordInput =
+            document.getElementById("password");
+
+        const loginButton =
+            document.getElementById("loginButton");
+
+        const errorElement =
+            document.getElementById("error");
+
+        const statusElement =
+            document.getElementById("status");
+
+
+        // ============================================================
+        // RETURN URL
+        // ============================================================
+        //
+        // Each browser window/tab gets its own URL.
+        //
+        // Example:
+        //
+        // /login.html?returnUrl=%2Frouter.html
+        //
+        // ============================================================
+
+        const urlParams =
+            new URLSearchParams(window.location.search);
+
+        const returnUrl =
+            getSafeReturnUrl(
+                urlParams.get("returnUrl")
+            );
+
+
+        // ============================================================
+        // SAFE RETURN URL
+        // ============================================================
+        //
+        // This is only a convenience check on the client.
+        //
+        // The server performs the real security validation.
+        // ============================================================
+
+        function getSafeReturnUrl(url) {
+
+            if (!url) {
+                return null;
+            }
+
+            if (!url.startsWith("/")) {
+                return null;
+            }
+
+            if (url.startsWith("//")) {
+                return null;
+            }
+
+            if (url.toLowerCase().startsWith("/api/")) {
+                return null;
+            }
+
+            if (
+                url.toLowerCase() ===
+                "/login.html"
+            ) {
+                return null;
+            }
+
+            return url;
+        }
+
+
+        // ============================================================
+        // SHOW ERROR
+        // ============================================================
+
+        function showError(message) {
+
+            errorElement.textContent =
+                message;
+
+            errorElement.style.display =
+                "block";
+        }
+
+
+        // ============================================================
+        // HIDE ERROR
+        // ============================================================
+
+        function hideError() {
+
+            errorElement.textContent = "";
+
+            errorElement.style.display =
+                "none";
+        }
+
+
+        // ============================================================
+        // SET BUSY STATE
+        // ============================================================
+
+        function setBusy(busy) {
+
+            loginButton.disabled =
+                busy;
+
+            usernameInput.disabled =
+                busy;
+
+            passwordInput.disabled =
+                busy;
+
+            statusElement.style.display =
+                busy
+                    ? "block"
+                    : "none";
+        }
+
+
+        // ============================================================
+        // BASE64 TO BYTE ARRAY
+        // ============================================================
+
+        function base64ToBytes(base64) {
+
+            const binary =
+                atob(base64);
+
+            const bytes =
+                new Uint8Array(
+                    binary.length
+                );
+
+            for (
+                let i = 0;
+                i < binary.length;
+                i++
+            ) {
+                bytes[i] =
+                    binary.charCodeAt(i);
+            }
+
+            return bytes;
+        }
+
+
+        // ============================================================
+        // BYTE ARRAY TO BASE64
+        // ============================================================
+
+        function bytesToBase64(bytes) {
+
+            let binary = "";
+
+            const chunkSize = 0x8000;
+
+            for (
+                let i = 0;
+                i < bytes.length;
+                i += chunkSize
+            ) {
+
+                const chunk =
+                    bytes.subarray(
+                        i,
+                        Math.min(
+                            i + chunkSize,
+                            bytes.length
+                        )
+                    );
+
+                binary +=
+                    String.fromCharCode(
+                        ...chunk
+                    );
+            }
+
+            return btoa(binary);
+        }
+
+
+        // ============================================================
+        // DERIVE PASSWORD VERIFIER
+        // ============================================================
+        //
+        // PBKDF2-HMAC-SHA256
+        //
+        // 600,000 iterations
+        // 32-byte salt
+        // 32-byte derived verifier
+        //
+        // This matches the server-side password material.
+        // ============================================================
+
+        async function derivePasswordVerifier(
+            password,
+            salt
+        ) {
+
+            const passwordBytes =
+                new TextEncoder().encode(
+                    password
+                );
+
+            const keyMaterial =
+                await crypto.subtle.importKey(
+                    "raw",
+                    passwordBytes,
+                    "PBKDF2",
+                    false,
+                    ["deriveBits"]
+                );
+
+            const derivedBits =
+                await crypto.subtle.deriveBits(
+                    {
+                        name: "PBKDF2",
+
+                        salt: salt,
+
+                        iterations: 600000,
+
+                        hash: "SHA-256"
+                    },
+
+                    keyMaterial,
+
+                    256
+                );
+
+            return new Uint8Array(
+                derivedBits
+            );
+        }
+
+
+        // ============================================================
+        // HMAC PROOF
+        // ============================================================
+        //
+        // HMAC-SHA256(
+        //     password verifier,
+        //     server challenge
+        // )
+        // ============================================================
+
+        async function createProof(
+            verifier,
+            challenge
+        ) {
+
+            const hmacKey =
+                await crypto.subtle.importKey(
+                    "raw",
+                    verifier,
+                    {
+                        name: "HMAC",
+                        hash: "SHA-256"
+                    },
+                    false,
+                    ["sign"]
+                );
+
+            const signature =
+                await crypto.subtle.sign(
+                    "HMAC",
+                    hmacKey,
+                    challenge
+                );
+
+            return new Uint8Array(
+                signature
+            );
+        }
+
+
+        // ============================================================
+        // REQUEST LOGIN CHALLENGE
+        // ============================================================
+
+        async function requestChallenge(
+            username
+        ) {
+
+            const response =
+                await fetch(
+                    "/api/login/challenge",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        credentials: "same-origin",
+
+                        body: JSON.stringify({
+                            username: username
+                        })
+                    }
+                );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Invalid username or password."
+                );
+            }
+
+            return await response.json();
+        }
+
+
+        // ============================================================
+        // LOGIN
+        // ============================================================
+
+        async function login(
+            username,
+            password
+        ) {
+
+            // --------------------------------------------------------
+            // GET CHALLENGE
+            // --------------------------------------------------------
+
+            const challengeData =
+                await requestChallenge(
+                    username
+                );
+
+            const challengeId =
+                challengeData.challengeId;
+
+            const salt =
+                base64ToBytes(
+                    challengeData.salt
+                );
+
+            // --------------------------------------------------------
+            // DERIVE PASSWORD VERIFIER
+            // --------------------------------------------------------
+
+            const verifier =
+                await derivePasswordVerifier(
+                    password,
+                    salt
+                );
+
+            // --------------------------------------------------------
+            // SERVER CHALLENGE
+            // --------------------------------------------------------
+            //
+            // The challenge is returned by the server as part of the
+            // login challenge response.
+            //
+            // Because the current challenge endpoint returns only the
+            // challengeId and salt, request the challenge itself from
+            // the response if supplied.
+            //
+            // --------------------------------------------------------
+
+            let challenge;
+
+            if (challengeData.challenge) {
+
+                challenge =
+                    base64ToBytes(
+                        challengeData.challenge
+                    );
+
+            } else {
+
+                /*
+                 * The challenge endpoint must return the challenge
+                 * itself to the browser.
+                 *
+                 * This fallback deliberately throws rather than
+                 * attempting to invent a challenge.
+                 */
+                throw new Error(
+                    "Login challenge was not returned by the server."
+                );
+            }
+
+            // --------------------------------------------------------
+            // CREATE HMAC PROOF
+            // --------------------------------------------------------
+
+            const proofBytes =
+                await createProof(
+                    verifier,
+                    challenge
+                );
+
+            const proof =
+                bytesToBase64(
+                    proofBytes
+                );
+
+            // --------------------------------------------------------
+            // SEND PROOF
+            // --------------------------------------------------------
+            //
+            // Notice that "password" is NOT included here.
+            //
+            // --------------------------------------------------------
+
+            const response =
+                await fetch(
+                    "/api/login",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        credentials: "same-origin",
+
+                        body: JSON.stringify({
+                            username: username,
+
+                            challengeId:
+                                challengeId,
+
+                            proof: proof,
+
+                            returnUrl:
+                                returnUrl
+                        })
+                    }
+                );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Invalid username or password."
+                );
+            }
+
+            const result =
+                await response.json();
+
+            if (
+                !result ||
+                result.success !== true ||
+                !result.redirect
+            ) {
+                throw new Error(
+                    "Login succeeded but no redirect was returned."
+                );
+            }
+
+            // --------------------------------------------------------
+            // CLEAR PASSWORD
+            // --------------------------------------------------------
+
+            passwordInput.value = "";
+
+            // --------------------------------------------------------
+            // GO BACK TO ORIGINAL PAGE
+            // --------------------------------------------------------
+            //
+            // replace() prevents the login page from being left as
+            // the previous authenticated-page history entry.
+            //
+            // --------------------------------------------------------
+
+            window.location.replace(
+                result.redirect
+            );
+        }
+
+
+        // ============================================================
+        // FORM SUBMISSION
+        // ============================================================
+
+        loginForm.addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+                hideError();
+
+                const username =
+                    usernameInput.value.trim();
+
+                const password =
+                    passwordInput.value;
+
+                if (!username ||
+                    !password) {
+
+                    showError(
+                        "Username and password are required."
+                    );
+
+                    return;
+                }
+
+                setBusy(true);
+
+                try {
+
+                    await login(
+                        username,
+                        password
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "Login error:",
+                        error
+                    );
+
+                    showError(
+                        error instanceof Error
+                            ? error.message
+                            : "Login failed."
+                    );
+
+                    setBusy(false);
+
+                    passwordInput.value = "";
+
+                    passwordInput.focus();
+                }
+            }
+        );
+
+
+        // ============================================================
+        // CLEAR PASSWORD WHEN LEAVING THE PAGE
+        // ============================================================
+
+        window.addEventListener(
+            "pagehide",
+            () => {
+
+                passwordInput.value = "";
+            }
+        );
+
+
+        // ============================================================
+        // CLEAR PASSWORD WHEN RETURNING TO LOGIN PAGE
+        // ============================================================
+
+        window.addEventListener(
+            "pageshow",
+            () => {
+
+                passwordInput.value = "";
+            }
+        );
+
+
+        // ============================================================
+        // FOCUS USERNAME
+        // ============================================================
+
+        usernameInput.focus();
+
+    </script>
+
+</body>
+</html>
