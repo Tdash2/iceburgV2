@@ -46,6 +46,9 @@ C:\Users\tj\Desktop\Github Repos\IceburgV2\bin\Debug\net9.0\System.Diagnostics.D
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Debug\net9.0\IceburgV2.csproj.AssemblyReference.cache
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Debug\net9.0\compressed\0hzw8gxc77-cjydxbvomz.gz
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Debug\net9.0\IceburgV2.csproj.Up2Date
-C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Debug\net9.0\compressed\pg787zh4me-qxh0hv6cjk.gz
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Debug\net9.0\compressed\dmxrfynz0q-aftefe1v4o.gz
-C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Debug\net9.0\compressed\kpfn3dks1g-na12jzyixn.gz
+C:\Users\tj\Desktop\Github Repos\IceburgV2\bin\Debug\net9.0\Publish\Windows\config.json
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Debug\net9.0\compressed\okobdvbsjo-ru0oetttc5.gz
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Debug\net9.0\compressed\blczlm4liu-ru0oetttc5.gz
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Debug\net9.0\compressed\pg787zh4me-oiujy28xem.gz
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Debug\net9.0\compressed\kpfn3dks1g-47ooigwjlg.gz

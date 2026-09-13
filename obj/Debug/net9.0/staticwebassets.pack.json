@@ -5,8 +5,20 @@
       "PackagePath": "staticwebassets\\BMDRouter.html"
     },
     {
+      "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\Iceburg Log.png",
+      "PackagePath": "staticwebassets\\Iceburg Log.png"
+    },
+    {
       "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\dashboard.html",
       "PackagePath": "staticwebassets\\dashboard.html"
+    },
+    {
+      "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\favacon.ico",
+      "PackagePath": "staticwebassets\\favacon.ico"
+    },
+    {
+      "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\favicon.ico",
+      "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
       "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\index.html",

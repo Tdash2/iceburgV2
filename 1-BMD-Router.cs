@@ -9,7 +9,7 @@ public class BMD_Router
 {
     public async Task<string> getinfo(string id)
     {
-        Device? device = Config.GetDevice(id);
+        Device? device = Database.Database.GetDevice(id);
         if (device == null)
         {
             return JsonSerializer.Serialize(new
@@ -25,7 +25,7 @@ public class BMD_Router
     }
     public async Task<string> getnames(string id)
     {
-        Device? device = Config.GetDevice(id);
+        Device? device = Database.Database.GetDevice(id);
 
         if (device == null)
         {
@@ -157,7 +157,7 @@ public class BMD_Router
     }
     public async Task<string> GetRoutes(string id)
     {
-        Device? device = Config.GetDevice(id);
+        Device? device = Database.Database.GetDevice(id);
 
         if (device == null)
         {
@@ -268,7 +268,7 @@ public class BMD_Router
     }
     public async Task<string> setinputname(string id,string input, string name)
     {
-        Device? device = Config.GetDevice(id);
+        Device? device = Database.Database.GetDevice(id);
 
         if (device == null)
         {
@@ -334,7 +334,7 @@ public class BMD_Router
     }
     public async Task<string> setoutputname(string id, string input, string name)
     {
-        Device? device = Config.GetDevice(id);
+        Device? device = Database.Database.GetDevice(id);
 
         if (device == null)
         {
@@ -400,7 +400,7 @@ public class BMD_Router
     }
     public async Task<string> setroute(string id,string sorce,string destnatnion)
     {
-        Device? device = Config.GetDevice(id);
+        Device? device = Database.Database.GetDevice(id);
 
         if (device == null)
         {
