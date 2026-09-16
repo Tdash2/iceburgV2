@@ -13,7 +13,7 @@
         body {
             margin: 0;
             font-family: Arial, Helvetica, sans-serif;
-            background: #111827;
+            background: #232323;
             color: #f3f4f6;
         }
 
@@ -34,11 +34,11 @@
         }
 
         .device-card {
-            background: #1f2937;
-            border: 1px solid #374151;
-            border-radius: 10px;
+            background: #373737;
+          
             padding: 20px;
             margin-bottom: 24px;
+            color: white;
         }
 
         .device-info {
@@ -47,6 +47,7 @@
             align-items: center;
             gap: 20px;
             flex-wrap: wrap;
+            color:white;
         }
 
         .device-name {
@@ -58,13 +59,15 @@
             color: #9ca3af;
             font-size: 14px;
             margin-top: 5px;
+            color: white;
         }
 
         .summary {
             display: flex;
             gap: 24px;
-            color: #9ca3af;
+            
             font-size: 14px;
+            color: white;
         }
 
             .summary strong {
@@ -78,15 +81,13 @@
         }
 
         .gpio-card {
-            background: #1f2937;
-            border: 1px solid #374151;
-            border-radius: 10px;
+            background: #373737;
+          
             overflow: hidden;
         }
 
         .gpio-header {
             padding: 18px 20px;
-            border-bottom: 1px solid #374151;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -105,13 +106,13 @@
                 font-size: 18px;
                 border: 0;
                 border-radius: 6px;
-                background: #374151;
+                background: #4f4f4f;
                 color: white;
                 cursor: pointer;
             }
 
                 .count-control button:hover {
-                    background: #4b5563;
+                    background: #4f4f4f;
                 }
 
             .count-control span {
@@ -137,8 +138,7 @@
         }
 
         th {
-            background: #111827;
-            color: #9ca3af;
+            background: #4f4f4f;
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 0.04em;
@@ -171,12 +171,10 @@
             width: 100%;
             min-width: 140px;
             padding: 9px 10px;
-            border-radius: 6px;
-            border: 1px solid #4b5563;
-            background: #111827;
+            background: #171616;
             color: #f9fafb;
             font-size: 14px;
-            outline: none;
+            border: 1px, #171616;
         }
 
             .channel-input:focus {
@@ -681,7 +679,7 @@
                             -->
                             <td>
                                 <span class="port-static">
-                                    GPIO ${escapeHtml(item.port)}
+                                    GPI ${escapeHtml(item.port)}
                                    
                                 </span>
                             </td>
@@ -959,8 +957,8 @@
                             -->
                             <td>
                                 <span class="port-static">
-                                    GPIO ${escapeHtml(item.port)}
-                                    <span class="lock">🔒</span>
+                                    GPO ${escapeHtml(item.port)}
+                                    <span class="lock"></span>
                                 </span>
                             </td>
 

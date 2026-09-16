@@ -45,6 +45,16 @@
       "LastSeen": "",
       "Username": "",
       "Password": ""
+    },
+    {
+      "Id": "24c94403-d7ef-4eee-8ab2-6740f50661d0",
+      "Name": "localrouter",
+      "Type": "1",
+      "IpAddress": "127.0.0.1",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
     }
   ]
 }
