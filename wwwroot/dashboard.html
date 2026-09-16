@@ -229,6 +229,9 @@
 
         <div id="userInfo"></div>
         <button id="logoutButton">Logout</button>
+        <button onclick="window.location.href='tallygrid.html';">
+            Tally Grid
+        </button>
     </header>
 
 
@@ -260,6 +263,14 @@ const deviceTypeLookup = {
     "1": {
         name: "BMD Router",
         page: "BMDRouter.html"
+    },
+    "2": {
+        name: "Tally Device",
+        page: "tally.html"
+    },
+    "3": {
+        name: "X32 Mixer",
+        page: "x32.html"
     },
 
     // Example future devices:
@@ -351,132 +362,152 @@ async function loadCurrentUser() {
 // LOAD DEVICES
 // ============================================================
 
-async function loadDevices() {
+        async function loadDevices() {
 
-    statusElement.textContent =
-        "Loading devices...";
+            // Remember the current scroll position
+            const scrollX = window.scrollX;
+            const scrollY = window.scrollY;
 
-    devicesElement.innerHTML = "";
+            try {
 
-    try {
+                const response =
+                    await fetch(
+                        "/api/device/getdevices/",
+                        {
+                            method: "GET",
+                            credentials: "same-origin",
+                            cache: "no-store"
+                        }
+                    );
 
-        const response =
-            await fetch(
-                "/api/device/getdevices/",
-                {
-                    method: "GET",
-                    credentials: "same-origin"
+
+                // --------------------------------------------------------
+                // Authentication failure
+                // --------------------------------------------------------
+
+                if (response.status === 401) {
+
+                    window.location.replace(
+                        "/login.html?returnUrl=" +
+                        encodeURIComponent(
+                            window.location.pathname +
+                            window.location.search
+                        )
+                    );
+
+                    return;
                 }
-            );
 
 
-        // --------------------------------------------------------
-        // Authentication failure
-        // --------------------------------------------------------
+                // --------------------------------------------------------
+                // Permission failure
+                // --------------------------------------------------------
 
-        if (response.status === 401) {
+                if (response.status === 403) {
 
-            window.location.replace(
-                "/login.html?returnUrl=" +
-                encodeURIComponent(
-                    window.location.pathname +
-                    window.location.search
-                )
-            );
+                    statusElement.textContent =
+                        "You do not have permission to view devices.";
 
-            return;
-        }
+                    return;
+                }
 
 
-        // --------------------------------------------------------
-        // Permission failure
-        // --------------------------------------------------------
+                // --------------------------------------------------------
+                // Other HTTP errors
+                // --------------------------------------------------------
 
-        if (response.status === 403) {
+                if (!response.ok) {
 
-            statusElement.textContent =
-                "You do not have permission to view devices.";
-
-            return;
-        }
-
-
-        // --------------------------------------------------------
-        // Other HTTP errors
-        // --------------------------------------------------------
-
-        if (!response.ok) {
-
-            throw new Error(
-                "HTTP " +
-                response.status
-            );
-        }
+                    throw new Error(
+                        "HTTP " +
+                        response.status
+                    );
+                }
 
 
-        const devices =
-            await response.json();
+                const devices =
+                    await response.json();
 
 
-        // --------------------------------------------------------
-        // No devices
-        // --------------------------------------------------------
+                // --------------------------------------------------------
+                // No devices
+                // --------------------------------------------------------
 
-        if (!Array.isArray(devices) ||
-            devices.length === 0) {
+                if (!Array.isArray(devices) ||
+                    devices.length === 0) {
 
-            statusElement.textContent =
-                "";
+                    statusElement.textContent = "";
 
-            devicesElement.innerHTML =
-                `
+                    devicesElement.innerHTML =
+                        `
                 <div class="empty">
                     No devices configured.
                 </div>
                 `;
 
-            return;
-        }
+                    // Restore scroll position
+                    window.scrollTo(scrollX, scrollY);
+
+                    return;
+                }
 
 
-        // --------------------------------------------------------
-        // Display devices
-        // --------------------------------------------------------
+                // --------------------------------------------------------
+                // Display device count
+                // --------------------------------------------------------
 
-        statusElement.textContent =
-            devices.length +
-            " device" +
-            (devices.length === 1
-                ? ""
-                : "s");
+                statusElement.textContent =
+                    devices.length +
+                    " device" +
+                    (devices.length === 1
+                        ? ""
+                        : "s");
 
 
-        for (const device of devices) {
+                // --------------------------------------------------------
+                // Refresh device cards
+                // --------------------------------------------------------
 
-            createDeviceCard(device);
-        }
+                devicesElement.innerHTML = "";
 
-    }
-    catch (error) {
+                for (const device of devices) {
 
-        console.error(
-            "Failed to load devices:",
-            error
-        );
+                    createDeviceCard(device);
+                }
 
-        statusElement.textContent =
-            "";
 
-        devicesElement.innerHTML =
-            `
+                // --------------------------------------------------------
+                // Restore scroll position
+                // --------------------------------------------------------
+
+                window.scrollTo(
+                    scrollX,
+                    scrollY
+                );
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Failed to load devices:",
+                    error
+                );
+
+                statusElement.textContent = "";
+
+                devicesElement.innerHTML =
+                    `
             <div class="error">
                 Unable to load devices.
                 <br>
                 ${escapeHtml(error.message)}
             </div>
             `;
-    }
-}
+
+                // Restore scroll position even after an error
+                window.scrollTo(scrollX, scrollY);
+            }
+        }
 
 
 // ============================================================
@@ -793,8 +824,11 @@ logoutButton.addEventListener(
 // INITIAL LOAD
 // ============================================================
 
-loadCurrentUser();
-loadDevices();
+        loadCurrentUser();
+        loadDevices();
+
+        // Automatically refresh devices every 5 seconds
+        setInterval(loadDevices, 10000);
 
     </script>
 

@@ -1,0 +1,2854 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Tally Routing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/depends/fontawesome/css/all.min.css">
+
+
+    <style>
+        body {
+            margin: 0;
+            background: #232323;
+            color: #eee;
+            font-family: Arial;
+        }
+
+
+        h2 {
+            padding: 8px;
+            margin: 0;
+        }
+
+        .grid2-container {
+            width: 95%;
+            background: #232323;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Make the scrollable container the sticky reference */
+        .grid-container {
+            width: 95%;
+            height: 83vh;
+            overflow-x: auto;
+            overflow-y: auto;
+            background: #232323;
+            max-width: fit-content;
+        }
+
+        .rowheader.low.corner {
+            position: sticky;
+            top: 0;
+            left: 0;
+            z-index: 11; /* above all other headers */
+        }
+
+        .grid-wrapper {
+            position: relative; /* keep for absolute positioning of corner */
+            display: inline-block; /* prevents grid shrinkage */
+            position: relative;
+        }
+            /* Top-left corner wrapper */
+            .grid-wrapper::before {
+                content: "";
+                position: sticky;
+                top: 0;
+                left: 0;
+                width: 150px; /* match rowheader width */
+                height: 26px; /* match header height */
+                z-index: 6;
+                background: #1d1d1d;
+                pointer-events: none; /* so clicks go through */
+            }
+
+        /* Top-left corner cell */
+        .header:first-child {
+            position: sticky;
+            top: 0; /* stick to top when scrolling vertically */
+            left: auto; /* allow horizontal scrolling */
+            z-index: 6; /* above other headers */
+            background: #1d1d1d;
+            min-width: 150px; /* match row header width */
+        }
+
+
+        #grid {
+            display: grid;
+            grid-auto-rows: minmax(26px, auto);
+            min-width: calc(150px + 26px * 10); /* 120px for row header + estimated output columns */
+        }
+
+
+
+        .header {
+            position: sticky;
+            top: 0;
+            background: #1d1d1d;
+            border: 1px solid #444;
+            text-align: center;
+            font-size: 12px;
+            z-index: 5;
+        }
+
+        .rowheader {
+            position: sticky;
+            left: 0;
+            background: #171616;
+            border: 1px solid #444;
+            padding: 6px;
+            font-size: 12px;
+            display: flex; /* keep flex for icon + label */
+            align-items: center;
+            line-height: normal; /* let content dictate height */
+            min-height: 26px; /* minimum row height */
+            box-sizing: border-box;
+            z-index: 4;
+        }
+
+
+
+        .group {
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .cell {
+            border: 1px solid #333;
+            cursor: pointer;
+        }
+
+        .mapped {
+            background: #ff9900;
+        }
+
+        .high {
+            background: #770000;
+        }
+
+        .low {
+            background: #232323;
+        }
+
+        .header, .rowheader, .cell {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+            .header.group {
+                font-weight: bold;
+                cursor: pointer;
+                background: #1d1d1d;
+                border-bottom: 1px solid #555;
+                height: 26px;
+                line-height: 26px;
+            }
+
+            .rowheader.group {
+                font-weight: bold;
+                cursor: pointer;
+                /* override fixed flex issues */
+                height: auto;
+            }
+
+
+            .header.rotate {
+                writing-mode: sideways-lr;
+                white-space: nowrap;
+                font-size: 12px;
+                padding: 4px 2px;
+                min-height: 150px;
+                line-height: normal;
+                display: flex;
+                justify-content: center;
+                box-sizing: border-box;
+            }
+
+            .header.high {
+                background: #770000 !important;
+                color: #fff !important;
+            }
+
+            .header.low {
+                color: #eee !important;
+            }
+
+            .header.device-header {
+                background: #171616;
+                color: #fff;
+            }
+
+        .fa-toggle-icon {
+            display: inline-block;
+            transition: transform 0.2s ease;
+            margin-top: 4px;
+        }
+
+        .fa-toggle-icon3 {
+            display: inline-block;
+            transition: transform 0.2s ease;
+            margin-right: 4px;
+        }
+
+            .fa-toggle-icon3.collapsed {
+                transform: rotate(-90deg);
+            }
+
+        .group-fill {
+            background: #171616;
+            border-bottom: 1px solid #555;
+        }
+
+        .group-fill-vert {
+            background: #171616;
+            border-right: 1px solid #555;
+        }
+
+        .device-online {
+            background: #0a7d12 !important;
+            color: #fff !important;
+        }
+
+        .grid-corner {
+            position: sticky; /* lock position relative to grid-wrapper */
+            top: 0;
+            left: 0;
+            width: auto; /* match your row header width */
+            height: auto; /* match header height */
+            background: #1d1d1d; /* same as headers */
+            border: 1px solid #444;
+            z-index: 10; /* above everything */
+            pointer-events: none; /* let clicks pass through */
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div class="grid2-container">
+        <h2>Tally Routing</h2>
+        <div class="grid-container">
+            <div class="grid-wrapper">
+                <div id="grid"></div>
+
+            </div>
+        </div>
+
+
+        
+        <script>
+            /*
+             * ============================================================
+             * TALLY MATRIX
+             * ============================================================
+             *
+             * Keeps the old PHP grid appearance/behavior:
+             *
+             *  - Inputs across the top
+             *  - Outputs down the left
+             *  - Device groups can collapse independently
+             *  - Rotated input headers
+             *  - Sticky top and left headers
+             *  - Orange = mapped
+             *  - Dark red = mapped + input active
+             *  - Green = device online
+             *  - Clicking an input forces it ON/OFF
+             *  - Clicking a crosspoint creates/removes a route
+             *
+             * API:
+             *
+             *  GET  /api/gpio/devices
+             *  GET  /api/gpio/routes/all
+             *  GET  /api/gpio/{deviceId}/routes
+             *  PUT  /api/gpio/{deviceId}/routes/{outputId}
+             *  DELETE /api/gpio/{deviceId}/routes/{outputId}/source/{sourceDeviceId}
+             *  PUT  /api/gpio/{deviceId}/inputs/{inputId}/status
+             *
+             * Status:
+             *  Inputs/outputs every 100ms
+             *  Routes every 500ms
+             * ============================================================
+             */
+
+
+            /*
+             * ------------------------------------------------------------
+             * GLOBAL STATE
+             * ------------------------------------------------------------
+             */
+
+            let devices = [];
+            let routes = [];
+
+            let statusRefreshTimer = null;
+            let routeRefreshTimer = null;
+
+            let refreshInProgress = false;
+            let routeRefreshInProgress = false;
+            let routeChangeInProgress = false;
+
+            /*
+             * These are deliberately kept outside renderMatrix().
+             *
+             * That means collapsing a device survives the 500ms
+             * route refresh.
+             */
+            const collapsedInputs = {};
+            const collapsedOutputs = {};
+
+
+            /*
+             * ------------------------------------------------------------
+             * API
+             * ------------------------------------------------------------
+             */
+
+            async function api(url, options = {}) {
+
+                const response = await fetch(url, {
+                    credentials: "same-origin",
+                    ...options,
+
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...(options.headers || {})
+                    }
+                });
+
+
+                if (!response.ok) {
+
+                    let message =
+                        `HTTP ${response.status}`;
+
+                    try {
+
+                        const data =
+                            await response.json();
+
+                        if (data?.error) {
+                            message = data.error;
+                        }
+
+                    }
+                    catch {
+                        // Response wasn't JSON.
+                    }
+
+                    throw new Error(message);
+                }
+
+
+                if (response.status === 204) {
+                    return null;
+                }
+
+
+                return await response.json();
+            }
+
+
+            /*
+             * ------------------------------------------------------------
+             * HTML ESCAPE
+             * ------------------------------------------------------------
+             */
+
+            function escapeHtml(value) {
+
+                return String(value ?? "")
+                    .replaceAll("&", "&amp;")
+                    .replaceAll("<", "&lt;")
+                    .replaceAll(">", "&gt;")
+                    .replaceAll('"', "&quot;")
+                    .replaceAll("'", "&#039;");
+            }
+
+
+            /*
+             * ------------------------------------------------------------
+             * DEVICE HELPERS
+             * ------------------------------------------------------------
+             */
+
+            function getDevice(deviceId) {
+
+                return devices.find(
+                    device =>
+                        String(device.deviceId) ===
+                        String(deviceId)
+                );
+            }
+
+
+            function getInput(device, inputId) {
+
+                if (!device ||
+                    !Array.isArray(device.inputs)) {
+
+                    return null;
+                }
+
+
+                return device.inputs.find(
+                    input =>
+                        String(
+                            input.inputId ??
+                            input.id ??
+                            ""
+                        ) ===
+                        String(inputId)
+                );
+            }
+
+
+            function getOutput(device, outputId) {
+
+                if (!device ||
+                    !Array.isArray(device.outputs)) {
+
+                    return null;
+                }
+
+
+                return device.outputs.find(
+                    output =>
+                        String(
+                            output.outputId ??
+                            output.id ??
+                            ""
+                        ) ===
+                        String(outputId)
+                );
+            }
+
+
+            function getInputId(input) {
+
+                return String(
+                    input?.inputId ??
+                    input?.id ??
+                    ""
+                );
+            }
+
+
+            function getOutputId(output) {
+
+                return String(
+                    output?.outputId ??
+                    output?.id ??
+                    ""
+                );
+            }
+
+
+            function getDeviceName(device) {
+
+                return (
+                    device?.name ??
+                    device?.deviceName ??
+                    device?.deviceId ??
+                    "Device"
+                );
+            }
+
+
+            /*
+             * ------------------------------------------------------------
+             * ROUTE MATCHING
+             * ------------------------------------------------------------
+             *
+             * A matrix cell is identified by FOUR IDs.
+             *
+             * RouteId cannot be used because one route can contain
+             * multiple inputs.
+             * ------------------------------------------------------------
+             */
+
+            function hasRoute(
+                sourceDeviceId,
+                sourceInputId,
+                destinationDeviceId,
+                destinationOutputId
+            ) {
+
+                return routes.some(route =>
+
+                    String(route.sourceDeviceId) ===
+                    String(sourceDeviceId)
+
+                    &&
+
+                    String(route.sourceInputId) ===
+                    String(sourceInputId)
+
+                    &&
+
+                    String(route.destinationDeviceId) ===
+                    String(destinationDeviceId)
+
+                    &&
+
+                    String(route.destinationOutputId) ===
+                    String(destinationOutputId)
+                );
+            }
+
+
+            /*
+             * ------------------------------------------------------------
+             * LOAD
+             * ------------------------------------------------------------
+             */
+
+            async function load() {
+
+                try {
+
+                    const loadedDevices =
+                        await api("/api/gpio/devices");
+
+
+                    devices =
+                        Array.isArray(loadedDevices)
+                            ? loadedDevices
+                            : [];
+
+
+                    const loadedRoutes =
+                        await api("/api/gpio/routes/all");
+
+
+                    routes =
+                        Array.isArray(loadedRoutes)
+                            ? loadedRoutes
+                            : [];
+
+
+                    renderMatrix();
+                    updateStatusDisplay();
+
+
+                    const status =
+                        document.getElementById("status");
+
+                    if (status) {
+
+                        status.textContent =
+                            `${devices.length} device${devices.length === 1 ? "" : "s"}`;
+                    }
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Initial load failed:",
+                        error
+                    );
+
+
+                    const status =
+                        document.getElementById("status");
+
+                    if (status) {
+                        status.textContent =
+                            "Error loading GPIO devices";
+                    }
+
+
+                    alert(
+                        error.message ||
+                        "Could not load GPIO devices."
+                    );
+                }
+            }
+
+
+            /*
+             * ------------------------------------------------------------
+             * GET DESTINATION ROUTES
+             * ------------------------------------------------------------
+             */
+
+            async function getDestinationRoutes(
+                destinationDeviceId
+            ) {
+
+                const result =
+                    await api(
+                        `/api/gpio/${encodeURIComponent(destinationDeviceId)}/routes`
+                    );
+
+
+                return Array.isArray(result)
+                    ? result
+                    : [];
+            }
+
+
+            /*
+             * ------------------------------------------------------------
+             * ADD ROUTE
+             * ------------------------------------------------------------
+             */
+
+            async function addRoute(
+                sourceDeviceId,
+                sourceInputId,
+                destinationDeviceId,
+                destinationOutputId
+            ) {
+
+                const existing =
+                    await getDestinationRoutes(
+                        destinationDeviceId
+                    );
+
+
+                const sourceRoute =
+                    existing.find(route =>
+
+                        String(route.sourceDeviceId) ===
+                        String(sourceDeviceId)
+
+                        &&
+
+                        String(route.outputId) ===
+                        String(destinationOutputId)
+                    );
+
+
+                let inputIds = [];
+
+
+                if (
+                    sourceRoute &&
+                    Array.isArray(sourceRoute.inputIds)
+                ) {
+
+                    inputIds =
+                        [...sourceRoute.inputIds];
+                }
+
+
+                if (
+                    !inputIds.some(
+                        id =>
+                            String(id) ===
+                            String(sourceInputId)
+                    )
+                ) {
+
+                    inputIds.push(
+                        sourceInputId
+                    );
+                }
+
+
+                await api(
+                    `/api/gpio/${encodeURIComponent(destinationDeviceId)}` +
+                    `/routes/${encodeURIComponent(destinationOutputId)}`,
+                    {
+                        method: "PUT",
+
+                        body:
+                            JSON.stringify({
+                                sourceDeviceId:
+                                    sourceDeviceId,
+
+                                inputIds:
+                                    inputIds
+                            })
+                    }
+                );
+            }
+
+
+            /*
+             * ------------------------------------------------------------
+             * REMOVE ROUTE
+             * ------------------------------------------------------------
+             *
+             * IMPORTANT:
+             *
+             * If two source devices are routed to the same output,
+             * only the clicked source device is removed.
+             *
+             * If the source device has multiple inputs mapped to that
+             * output, only the clicked input is removed.
+             * ------------------------------------------------------------
+             */
+
+            async function removeRoute(
+                sourceDeviceId,
+                sourceInputId,
+                destinationDeviceId,
+                destinationOutputId
+            ) {
+
+                const existing =
+                    await getDestinationRoutes(
+                        destinationDeviceId
+                    );
+
+
+                const sourceRoute =
+                    existing.find(route =>
+
+                        String(route.sourceDeviceId) ===
+                        String(sourceDeviceId)
+
+                        &&
+
+                        String(route.outputId) ===
+                        String(destinationOutputId)
+                    );
+
+
+                if (!sourceRoute) {
+                    return;
+                }
+
+
+                const remainingInputIds =
+
+                    Array.isArray(sourceRoute.inputIds)
+
+                        ?
+
+                        sourceRoute.inputIds.filter(
+                            id =>
+                                String(id) !==
+                                String(sourceInputId)
+                        )
+
+                        :
+
+                        [];
+
+
+                /*
+                 * Other inputs from this source device remain.
+                 */
+                if (remainingInputIds.length > 0) {
+
+                    await api(
+                        `/api/gpio/${encodeURIComponent(destinationDeviceId)}` +
+                        `/routes/${encodeURIComponent(destinationOutputId)}`,
+                        {
+                            method: "PUT",
+
+                            body:
+                                JSON.stringify({
+                                    sourceDeviceId:
+                                        sourceDeviceId,
+
+                                    inputIds:
+                                        remainingInputIds
+                                })
+                        }
+                    );
+
+                    return;
+                }
+
+
+                /*
+                 * No inputs remain.
+                 *
+                 * Delete only this source device's route.
+                 */
+                await api(
+                    `/api/gpio/${encodeURIComponent(destinationDeviceId)}` +
+                    `/routes/${encodeURIComponent(destinationOutputId)}` +
+                    `/source/${encodeURIComponent(sourceDeviceId)}`,
+                    {
+                        method: "DELETE"
+                    }
+                );
+            }
+
+
+            /*
+             * ============================================================
+             * BUILD OLD GRID LOOK
+             * ============================================================
+             */
+
+            function setupOldGridLayout() {
+
+                const wrapper =
+                    document.getElementById(
+                        "matrix-wrapper"
+                    );
+
+
+                if (!wrapper) {
+                    return null;
+                }
+
+
+                /*
+                 * Replace the newer table with the old-style
+                 * CSS grid container.
+                 */
+                wrapper.innerHTML = `
+                    <div class="grid-container">
+                        <div class="grid-wrapper">
+                            <div id="grid"></div>
+                        </div>
+                    </div>
+                `;
+
+
+                injectOldGridStyles();
+
+
+                return document.getElementById(
+                    "grid"
+                );
+            }
+
+
+            /*
+             * ------------------------------------------------------------
+             * OLD GRID CSS
+             * ------------------------------------------------------------
+             *
+             * This is based on the CSS from the old PHP page.
+             * ------------------------------------------------------------
+             */
+
+            function injectOldGridStyles() {
+
+                if (
+                    document.getElementById(
+                        "tally-old-grid-styles"
+                    )
+                ) {
+                    return;
+                }
+
+
+                const style =
+                    document.createElement("style");
+
+                style.id =
+                    "tally-old-grid-styles";
+
+
+                style.textContent = `
+
+                .collapse-icon {
+    display: inline-block;
+    width: 14px;
+    margin-right: 5px;
+    font-size: 11px;
+    transition: transform 0.2s ease;
+}
+
+.collapse-icon.collapsed {
+    transform: rotate(-90deg);
+}
+
+                    .grid-wrapper {
+                        position: relative;
+                        display: inline-block;
+                    }
+
+                    #grid {
+                        display: grid;
+                        grid-auto-rows: minmax(26px, auto);
+                        min-width: max-content;
+                        position: relative;
+                    }
+
+                    .grid-corner {
+                        position: sticky;
+                        top: 0;
+                        left: 0;
+                        width: 150px;
+                        height: 26px;
+                        background: #1d1d1d;
+                        border: 1px solid #444;
+                        z-index: 20;
+                        box-sizing: border-box;
+                    }
+
+                    .header {
+                        position: sticky;
+                        top: 0;
+                        background: #1d1d1d;
+                        border: 1px solid #444;
+                        text-align: center;
+                        font-size: 12px;
+                        z-index: 5;
+                        box-sizing: border-box;
+                    }
+
+                    .header.group {
+                        font-weight: bold;
+                        cursor: pointer;
+                        background: #1d1d1d;
+                        border-bottom: 1px solid #555;
+                        height: 26px;
+                        line-height: 26px;
+                    }
+
+                    .header.rotate {
+                        writing-mode: sideways-lr;
+                        white-space: nowrap;
+                        font-size: 12px;
+                        padding: 4px 2px;
+                        min-height: 150px;
+                        line-height: normal;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        box-sizing: border-box;
+                    }
+
+                    .header.device-header {
+                        background: #171616;
+                        color: #fff;
+                    }
+
+                    .header.high {
+                        background: #770000 !important;
+                        color: #fff !important;
+                    }
+
+                    .header.low {
+                        color: #eee !important;
+                    }
+
+                    .rowheader {
+                        position: sticky;
+                        left: 0;
+                        background: #171616;
+                        border: 1px solid #444;
+                        padding: 6px;
+                        font-size: 12px;
+                        display: flex;
+                        align-items: center;
+                        line-height: normal;
+                        min-height: 26px;
+                        box-sizing: border-box;
+                        z-index: 4;
+                    }
+
+                    .rowheader.group {
+                        font-weight: bold;
+                        cursor: pointer;
+                        height: auto;
+                    }
+
+                    .cell {
+                        border: 1px solid #333;
+                        cursor: pointer;
+                        box-sizing: border-box;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        min-width: 26px;
+                        min-height: 26px;
+                    }
+
+                    .cell:hover {
+                        border-color: #777;
+                        box-shadow: inset 0 0 0 1px #777;
+                    }
+
+                    .mapped {
+                        background: #ff9900;
+                    }
+
+                    .high {
+                        background: #770000;
+                    }
+
+                    .low {
+                        background: #232323;
+                    }
+
+                    .header.group,
+                    .rowheader.group {
+                        background: #1d1d1d;
+                    }
+
+                    .group-fill {
+                        background: #171616;
+                        border-bottom: 1px solid #555;
+                    }
+
+                    .group-fill-vert {
+                        background: #171616;
+                        border-right: 1px solid #555;
+                    }
+
+                    .device-online {
+                        background: #0a7d12 !important;
+                        color: #fff !important;
+                    }
+
+                    .fa-toggle-icon {
+                        display: inline-block;
+                        transition: transform 0.2s ease;
+                        margin-top: 4px;
+                        margin-right: 5px;
+                    }
+
+                    .fa-toggle-icon.collapsed {
+                        transform: rotate(-90deg);
+                    }
+
+                    .fa-toggle-icon3 {
+                        display: inline-block;
+                        transition: transform 0.2s ease;
+                        margin-right: 5px;
+                    }
+
+                    .fa-toggle-icon3.collapsed {
+                        transform: rotate(-90deg);
+                    }
+
+                    .input-device-name {
+                        font-weight: bold;
+                        margin-bottom: 2px;
+                    }
+
+                    .input-device-nickname {
+                        font-size: 10px;
+                        opacity: 0.75;
+                        margin-bottom: 4px;
+                    }
+
+                    .input-port,
+                    .output-port {
+                        font-size: 10px;
+                        opacity: 0.75;
+                    }
+
+                    .input-name,
+                    .output-name {
+                        font-weight: bold;
+                    }
+
+                    .input-nickname,
+                    .output-nickname {
+                        font-size: 10px;
+                        opacity: 0.75;
+                    }
+
+                    .output-device-name {
+                        font-weight: bold;
+                    }
+
+                    .output-device-nickname {
+                        font-size: 10px;
+                        opacity: 0.75;
+                    }
+
+                    .route-dot {
+                        width: 7px;
+                        height: 7px;
+                        border-radius: 50%;
+                        background: transparent;
+                        pointer-events: none;
+                    }
+
+                    .mapped .route-dot {
+                        background: rgba(0,0,0,0.20);
+                    }
+
+                    .same-device {
+                        background-color: rgba(255,255,255,0.025);
+                    }
+
+                    .same-device.mapped {
+                        background: #ff9900;
+                    }
+
+                    .same-device.high {
+                        background: #770000;
+                    }
+
+                `;
+
+
+                document.head.appendChild(style);
+            }
+
+
+            /*
+             * ============================================================
+             * RENDER MATRIX
+             * ============================================================
+             */
+
+            function renderMatrix() {
+
+                let grid =
+                    document.getElementById("grid");
+
+
+                /*
+                 * First render creates the old grid structure.
+                 */
+                if (!grid) {
+
+                    grid =
+                        setupOldGridLayout();
+                }
+
+
+                if (!grid) {
+                    return;
+                }
+
+
+                grid.innerHTML = "";
+
+
+                /*
+                 * --------------------------------------------------------
+                 * INPUT COLUMNS
+                 * --------------------------------------------------------
+                 */
+
+                const inputColumns = [];
+
+
+                for (const device of devices) {
+
+                    let inputs =
+                        Array.isArray(device.inputs)
+                            ? [...device.inputs]
+                            : [];
+
+
+                    inputs.sort(
+                        (a, b) =>
+                            Number(a.port ?? 0) -
+                            Number(b.port ?? 0)
+                    );
+
+
+                    for (const input of inputs) {
+
+                        const inputId =
+                            getInputId(input);
+
+
+                        /*
+                         * Broken old database records with no ID
+                         * cannot be addressed by the API.
+                         */
+                        if (!inputId) {
+                            continue;
+                        }
+
+
+                        inputColumns.push({
+                            device: device,
+                            input: input
+                        });
+                    }
+                }
+
+
+                /*
+                 * --------------------------------------------------------
+                 * TOTAL GRID COLUMNS
+                 * --------------------------------------------------------
+                 */
+
+                let totalCols = 0;
+
+
+                for (const device of devices) {
+
+                    const inputs =
+                        inputColumns.filter(
+                            column =>
+                                String(
+                                    column.device.deviceId
+                                ) ===
+                                String(
+                                    device.deviceId
+                                )
+                        );
+
+
+                    totalCols += 1;
+
+
+                    if (
+                        !collapsedInputs[
+                        device.deviceId
+                        ]
+                    ) {
+
+                        totalCols +=
+                            inputs.length;
+                    }
+                }
+
+
+                /*
+                 * --------------------------------------------------------
+                 * TOTAL GRID ROWS
+                 * --------------------------------------------------------
+                 */
+
+                let totalRows = 1;
+
+
+                for (const device of devices) {
+
+                    const outputs =
+                        Array.isArray(device.outputs)
+                            ? device.outputs
+                            : [];
+
+
+                    totalRows += 1;
+
+
+                    if (
+                        !collapsedOutputs[
+                        device.deviceId
+                        ]
+                    ) {
+
+                        totalRows +=
+                            outputs.length;
+                    }
+                }
+
+
+                /*
+                 * --------------------------------------------------------
+                 * CORNER
+                 * --------------------------------------------------------
+                 */
+
+                const corner =
+                    document.createElement("div");
+
+                corner.className =
+                    "grid-corner";
+
+
+                corner.style.gridColumnStart =
+                    "1";
+
+                corner.style.gridRowStart =
+                    "1";
+
+
+                grid.appendChild(corner);
+
+
+                /*
+                 * --------------------------------------------------------
+                 * INPUT DEVICE HEADERS
+                 * --------------------------------------------------------
+                 */
+
+                let colIndex = 2;
+
+
+                for (const device of devices) {
+
+                    const deviceId =
+                        String(
+                            device.deviceId
+                        );
+
+
+                    const deviceInputs =
+                        inputColumns.filter(
+                            column =>
+                                String(
+                                    column.device.deviceId
+                                ) === deviceId
+                        );
+
+
+                    /*
+                     * Device group header
+                     */
+                    const deviceHeader =
+                        document.createElement("div");
+
+
+                    deviceHeader.className =
+                        "header group rotate device-header";
+
+
+                    deviceHeader.id =
+                        "in_device_" + deviceId;
+
+
+                    const collapsed =
+                        collapsedInputs[deviceId] === true;
+
+
+                    deviceHeader.innerHTML = `
+                        <i class="
+                            fa-solid
+                            fa-chevron-down
+                            fa-toggle-icon
+                            ${collapsed ? "collapsed" : ""}
+                        "></i>
+                        ${escapeHtml(
+                        getDeviceName(device)
+                    )}
+                    `;
+
+
+                    deviceHeader.style.gridColumnStart =
+                        colIndex;
+
+                    deviceHeader.style.gridRowStart =
+                        "1";
+
+
+                    /*
+                     * Device header click collapses the entire
+                     * input group.
+                     */
+                    deviceHeader.onclick =
+                        function (event) {
+
+                            event.stopPropagation();
+
+
+                            collapsedInputs[deviceId] =
+                                !collapsedInputs[deviceId];
+
+
+                            renderMatrix();
+                            updateStatusDisplay();
+                        };
+
+
+                    grid.appendChild(
+                        deviceHeader
+                    );
+
+
+                    /*
+                     * Vertical fill under the device header.
+                     */
+                    const vfill =
+                        document.createElement("div");
+
+
+                    vfill.className =
+                        "group-fill-vert";
+
+
+                    vfill.style.gridColumnStart =
+                        colIndex;
+
+
+                    vfill.style.gridRow =
+                        "2 / " +
+                        (1 + totalRows);
+
+
+                    grid.appendChild(vfill);
+
+
+                    /*
+                     * Individual input headers.
+                     */
+                    if (!collapsed) {
+
+                        let inputCol =
+                            colIndex + 1;
+
+
+                        for (
+                            const column
+                            of deviceInputs
+                        ) {
+
+                            const input =
+                                column.input;
+
+
+                            const inputId =
+                                getInputId(input);
+
+
+                            const header =
+                                document.createElement(
+                                    "div"
+                                );
+
+
+                            header.className =
+                                "header rotate low";
+
+
+                            header.id =
+                                `in_${deviceId}_${inputId}`;
+
+
+                            header.dataset.sourceDevice =
+                                deviceId;
+
+
+                            header.dataset.sourceInput =
+                                inputId;
+
+
+                            if (
+                                input.status === true
+                            ) {
+
+                                header.classList.add(
+                                    "high"
+                                );
+                            }
+
+
+                            /*
+                             * Input name.
+                             */
+                            header.innerHTML = `
+                              <div class="input-name">
+    ${escapeHtml(input.name ?? "")}
+</div>
+
+
+
+
+                                </div>
+                            `;
+
+
+                            header.style.gridColumnStart =
+                                inputCol;
+
+
+                            header.style.gridRowStart =
+                                "1";
+
+
+                            /*
+                             * Clicking an input forces it ON/OFF.
+                             */
+                            header.onclick =
+                                async function (event) {
+
+                                    event.stopPropagation();
+
+
+                                    if (!inputId) {
+                                        return;
+                                    }
+
+
+                                    if (
+                                        refreshInProgress
+                                    ) {
+                                        /*
+                                         * Do not block the click.
+                                         *
+                                         * This only prevents the
+                                         * current input object from
+                                         * being stale in an extremely
+                                         * narrow refresh race.
+                                         */
+                                    }
+
+
+                                    const currentDevice =
+                                        getDevice(
+                                            deviceId
+                                        );
+
+
+                                    const currentInput =
+                                        getInput(
+                                            currentDevice,
+                                            inputId
+                                        );
+
+
+                                    if (!currentInput) {
+                                        return;
+                                    }
+
+
+                                    const newStatus =
+                                        currentInput.status !== true;
+
+
+                                    /*
+                                     * Optimistic status.
+                                     */
+                                    currentInput.status =
+                                        newStatus;
+
+
+                                    header.classList.toggle(
+                                        "high",
+                                        newStatus
+                                    );
+
+
+                                    header.classList.toggle(
+                                        "low",
+                                        !newStatus
+                                    );
+
+
+                                    updateStatusDisplay();
+
+
+                                    try {
+
+                                        await api(
+                                            `/api/gpio/${encodeURIComponent(deviceId)}` +
+                                            `/inputs/${encodeURIComponent(inputId)}` +
+                                            `/status`,
+                                            {
+                                                method: "PUT",
+
+                                                body:
+                                                    JSON.stringify({
+                                                        status:
+                                                            newStatus
+                                                    })
+                                            }
+                                        );
+
+                                    }
+                                    catch (error) {
+
+                                        console.error(
+                                            "Input status change failed:",
+                                            error
+                                        );
+
+
+                                        await refreshStatuses();
+
+
+                                        alert(
+                                            error.message ||
+                                            "Could not change input status."
+                                        );
+                                    }
+                                };
+
+
+                            grid.appendChild(
+                                header
+                            );
+
+
+                            inputCol++;
+                        }
+                    }
+
+
+                    /*
+                     * Store the start column for this device.
+                     */
+                    device._startCol =
+                        colIndex;
+
+
+                    /*
+                     * Move to next input device.
+                     */
+                    colIndex +=
+                        1 +
+                        (
+                            collapsed
+                                ? 0
+                                : deviceInputs.length
+                        );
+                }
+
+
+                /*
+                 * --------------------------------------------------------
+                 * OUTPUT DEVICE GROUPS
+                 * --------------------------------------------------------
+                 */
+
+                let rowIndex = 2;
+
+
+                for (const device of devices) {
+
+                    const deviceId =
+                        String(
+                            device.deviceId
+                        );
+
+
+                    let outputs =
+                        Array.isArray(device.outputs)
+                            ? [...device.outputs]
+                            : [];
+
+
+                    outputs.sort(
+                        (a, b) =>
+                            Number(a.port ?? 0) -
+                            Number(b.port ?? 0)
+                    );
+
+
+                    const collapsed =
+                        collapsedOutputs[deviceId] === true;
+
+
+                    /*
+                     * ----------------------------------------------------
+                     * OUTPUT DEVICE HEADER
+                     * ----------------------------------------------------
+                     */
+
+                    const deviceRow =
+                        document.createElement("div");
+
+
+                    deviceRow.className =
+                        "rowheader group";
+
+
+                    deviceRow.id =
+                        "out_device_" + deviceId;
+
+
+                    /*
+                     * Online state is handled by
+                     * updateDeviceOnlineState().
+                     */
+                    deviceRow.innerHTML = `
+                        <i class="
+                            fa-solid
+                            fa-chevron-down
+                            fa-toggle-icon3
+                            ${collapsed ? "collapsed" : ""}
+                        "></i>
+
+                        <div>
+                            <div class="output-device-name">
+                                ${escapeHtml(
+                        getDeviceName(device)
+                    )}
+                            </div>
+
+                            
+                        </div>
+                    `;
+
+
+                    deviceRow.style.gridColumnStart =
+                        "1";
+
+
+                    deviceRow.style.gridRowStart =
+                        rowIndex;
+
+
+                    /*
+                     * Clicking the device row collapses outputs.
+                     */
+                    deviceRow.onclick =
+                        function (event) {
+
+                            event.stopPropagation();
+
+
+                            collapsedOutputs[deviceId] =
+                                !collapsedOutputs[deviceId];
+
+
+                            renderMatrix();
+                            updateStatusDisplay();
+                        };
+
+
+                    grid.appendChild(
+                        deviceRow
+                    );
+
+
+                    /*
+                     * Horizontal fill.
+                     */
+                    const hfill =
+                        document.createElement("div");
+
+
+                    hfill.className =
+                        "group-fill";
+
+
+                    hfill.style.gridColumn =
+                        "2 / " +
+                        (2 + totalCols);
+
+
+                    hfill.style.gridRowStart =
+                        rowIndex;
+
+
+                    grid.appendChild(
+                        hfill
+                    );
+
+
+                    rowIndex++;
+
+
+                    /*
+                     * ----------------------------------------------------
+                     * OUTPUT CHANNELS
+                     * ----------------------------------------------------
+                     */
+
+                    if (!collapsed) {
+
+                        for (const output of outputs) {
+
+                            const outputId =
+                                getOutputId(output);
+
+
+                            if (!outputId) {
+                                continue;
+                            }
+
+
+                            /*
+                             * Output label.
+                             */
+                            const rowHeader =
+                                document.createElement("div");
+
+
+                            rowHeader.className =
+                                "rowheader low";
+
+
+                            rowHeader.id =
+                                `out_${deviceId}_${outputId}`;
+
+
+                            rowHeader.dataset.destinationDevice =
+                                deviceId;
+
+
+                            rowHeader.dataset.destinationOutput =
+                                outputId;
+
+
+                            if (
+                                output.status === true
+                            ) {
+
+                                rowHeader.classList.add(
+                                    "high"
+                                );
+                            }
+
+
+                            rowHeader.innerHTML = `
+                                <div>
+                                    <div class="output-name">
+                                        
+                            
+                                    </div>
+
+                                    
+
+                                    <div class="output-name">
+    ${escapeHtml(output.name ?? "")}
+</div>
+
+
+                                    </div>
+                                </div>
+                            `;
+
+
+                            rowHeader.style.gridColumnStart =
+                                "1";
+
+
+                            rowHeader.style.gridRowStart =
+                                rowIndex;
+
+
+                            grid.appendChild(
+                                rowHeader
+                            );
+
+
+                            /*
+                             * ------------------------------------------------
+                             * ROUTE CELLS
+                             * ------------------------------------------------
+                             */
+
+                            for (const sourceDevice of devices) {
+
+                                const sourceDeviceId =
+                                    String(
+                                        sourceDevice.deviceId
+                                    );
+
+
+                                /*
+                                 * If the source device is collapsed,
+                                 * there are no individual cells.
+                                 */
+                                if (
+                                    collapsedInputs[
+                                    sourceDeviceId
+                                    ]
+                                ) {
+                                    continue;
+                                }
+
+
+                                const sourceInputs =
+                                    inputColumns.filter(
+                                        column =>
+                                            String(
+                                                column.device.deviceId
+                                            ) ===
+                                            sourceDeviceId
+                                    );
+
+
+                                for (
+                                    let idx = 0;
+                                    idx < sourceInputs.length;
+                                    idx++
+                                ) {
+
+                                    const sourceInput =
+                                        sourceInputs[idx].input;
+
+
+                                    const sourceInputId =
+                                        getInputId(
+                                            sourceInput
+                                        );
+
+
+                                    const cell =
+                                        document.createElement(
+                                            "div"
+                                        );
+
+
+                                    cell.className =
+                                        "cell";
+
+
+                                    cell.dataset.indev =
+                                        sourceDeviceId;
+
+
+                                    cell.dataset.inch =
+                                        sourceInputId;
+
+
+                                    cell.dataset.outdev =
+                                        deviceId;
+
+
+                                    cell.dataset.outch =
+                                        outputId;
+
+
+                                    cell.dataset.sourceDevice =
+                                        sourceDeviceId;
+
+
+                                    cell.dataset.sourceInput =
+                                        sourceInputId;
+
+
+                                    cell.dataset.destinationDevice =
+                                        deviceId;
+
+
+                                    cell.dataset.destinationOutput =
+                                        outputId;
+
+
+                                    /*
+                                     * Same-device visual hint.
+                                     */
+                                    if (
+                                        sourceDeviceId ===
+                                        deviceId
+                                    ) {
+
+                                        cell.classList.add(
+                                            "same-device"
+                                        );
+                                    }
+
+
+                                    /*
+                                     * Route state.
+                                     */
+                                    const mapped =
+                                        hasRoute(
+                                            sourceDeviceId,
+                                            sourceInputId,
+                                            deviceId,
+                                            outputId
+                                        );
+
+
+                                    if (mapped) {
+
+                                        cell.classList.add(
+                                            "mapped"
+                                        );
+
+
+                                        if (
+                                            sourceInput.status ===
+                                            true
+                                        ) {
+
+                                            cell.classList.add(
+                                                "high"
+                                            );
+                                        }
+                                    }
+
+
+                                    /*
+                                     * Position.
+                                     */
+                                    const sourceDeviceObject =
+                                        sourceDevice;
+
+
+                                    cell.style.gridColumnStart =
+                                        sourceDeviceObject._startCol +
+                                        1 +
+                                        idx;
+
+
+                                    cell.style.gridRowStart =
+                                        rowIndex;
+
+
+                                    /*
+                                     * ------------------------------------------------
+                                     * ROUTE CLICK
+                                     * ------------------------------------------------
+                                     */
+
+                                    cell.addEventListener(
+                                        "click",
+                                        async function () {
+
+                                            if (
+                                                routeChangeInProgress
+                                            ) {
+                                                return;
+                                            }
+
+
+                                            routeChangeInProgress =
+                                                true;
+
+
+                                            /*
+                                             * Determine state BEFORE
+                                             * modifying it.
+                                             */
+                                            const wasMapped =
+                                                hasRoute(
+                                                    sourceDeviceId,
+                                                    sourceInputId,
+                                                    deviceId,
+                                                    outputId
+                                                );
+
+
+                                            /*
+                                             * Optimistic UI.
+                                             *
+                                             * The user sees the route
+                                             * change immediately.
+                                             */
+                                            cell.classList.toggle(
+                                                "mapped",
+                                                !wasMapped
+                                            );
+
+
+                                            if (!wasMapped) {
+
+                                                /*
+                                                 * If the input is already
+                                                 * active, immediately show
+                                                 * the active route color.
+                                                 */
+                                                const source =
+                                                    getInput(
+                                                        sourceDevice,
+                                                        sourceInputId
+                                                    );
+
+
+                                                if (
+                                                    source?.status ===
+                                                    true
+                                                ) {
+
+                                                    cell.classList.add(
+                                                        "high"
+                                                    );
+                                                }
+                                            }
+                                            else {
+
+                                                cell.classList.remove(
+                                                    "high"
+                                                );
+                                            }
+
+
+                                            try {
+
+                                                if (wasMapped) {
+
+                                                    await removeRoute(
+                                                        sourceDeviceId,
+                                                        sourceInputId,
+                                                        deviceId,
+                                                        outputId
+                                                    );
+
+                                                }
+                                                else {
+
+                                                    await addRoute(
+                                                        sourceDeviceId,
+                                                        sourceInputId,
+                                                        deviceId,
+                                                        outputId
+                                                    );
+                                                }
+
+
+                                                /*
+                                                 * Get authoritative route state.
+                                                 */
+                                                const latestRoutes =
+                                                    await api(
+                                                        "/api/gpio/routes/all"
+                                                    );
+
+
+                                                routes =
+                                                    Array.isArray(
+                                                        latestRoutes
+                                                    )
+                                                        ? latestRoutes
+                                                        : [];
+
+
+                                                /*
+                                                 * Rebuild the matrix.
+                                                 *
+                                                 * Collapse states remain because
+                                                 * collapsedInputs/collapsedOutputs
+                                                 * are global.
+                                                 */
+                                                renderMatrix();
+
+
+                                                updateStatusDisplay();
+
+                                            }
+                                            catch (error) {
+
+                                                console.error(
+                                                    "Route change failed:",
+                                                    error
+                                                );
+
+
+                                                /*
+                                                 * Restore authoritative state.
+                                                 */
+                                                try {
+
+                                                    const latestRoutes =
+                                                        await api(
+                                                            "/api/gpio/routes/all"
+                                                        );
+
+
+                                                    routes =
+                                                        Array.isArray(
+                                                            latestRoutes
+                                                        )
+                                                            ? latestRoutes
+                                                            : [];
+
+
+                                                    renderMatrix();
+                                                    updateStatusDisplay();
+
+                                                }
+                                                catch (
+                                                reloadError
+                                                ) {
+
+                                                    console.error(
+                                                        "Could not reload routes:",
+                                                        reloadError
+                                                    );
+                                                }
+
+
+                                                alert(
+                                                    error.message ||
+                                                    "Could not change route."
+                                                );
+                                            }
+                                            finally {
+
+                                                routeChangeInProgress =
+                                                    false;
+                                            }
+                                        }
+                                    );
+
+
+                                    grid.appendChild(
+                                        cell
+                                    );
+                                }
+                            }
+
+
+                            rowIndex++;
+                        }
+                    }
+                }
+
+
+                /*
+                 * --------------------------------------------------------
+                 * GRID SIZE
+                 * --------------------------------------------------------
+                 */
+
+                const rowHeaderWidth =
+                    150;
+
+
+                const cellSize =
+                    26;
+
+
+                grid.style.gridTemplateColumns =
+                    rowHeaderWidth +
+                    "px repeat(" +
+                    totalCols +
+                    ", " +
+                    cellSize +
+                    "px)";
+
+
+                /*
+                 * Make sure the grid is wide enough to scroll.
+                 */
+                grid.style.minWidth =
+                    (
+                        rowHeaderWidth +
+                        totalCols * cellSize
+                    ) +
+                    "px";
+
+
+                updateDeviceOnlineState();
+            }
+
+
+            /*
+             * ============================================================
+             * LIVE STATUS UPDATE
+             * ============================================================
+             *
+             * Runs every 100ms.
+             *
+             * Does NOT rebuild the matrix.
+             * ============================================================
+             */
+
+            async function refreshStatuses() {
+
+                if (refreshInProgress) {
+                    return;
+                }
+
+
+                refreshInProgress =
+                    true;
+
+
+                try {
+
+                    const latestDevices =
+                        await api(
+                            "/api/gpio/devices"
+                        );
+
+
+                    if (!Array.isArray(latestDevices)) {
+                        return;
+                    }
+
+
+                    for (
+                        const latest
+                        of latestDevices
+                    ) {
+
+                        const latestId =
+                            String(
+                                latest.deviceId ??
+                                ""
+                            );
+
+
+                        const current =
+                            devices.find(
+                                device =>
+                                    String(
+                                        device.deviceId
+                                    ) ===
+                                    latestId
+                            );
+
+
+                        if (!current) {
+                            continue;
+                        }
+
+
+                        if (
+                            Array.isArray(
+                                latest.inputs
+                            )
+                        ) {
+
+                            current.inputs =
+                                latest.inputs;
+                        }
+
+
+                        if (
+                            Array.isArray(
+                                latest.outputs
+                            )
+                        ) {
+
+                            current.outputs =
+                                latest.outputs;
+                        }
+                    }
+
+
+                    updateStatusDisplay();
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Status refresh failed:",
+                        error
+                    );
+
+                }
+                finally {
+
+                    refreshInProgress =
+                        false;
+                }
+            }
+
+
+            /*
+             * ============================================================
+             * UPDATE STATUS DISPLAY
+             * ============================================================
+             */
+
+            function updateStatusDisplay() {
+
+                /*
+                 * --------------------------------------------------------
+                 * INPUT HEADERS
+                 * --------------------------------------------------------
+                 */
+
+                document
+                    .querySelectorAll(
+                        ".header[data-source-device][data-source-input]"
+                    )
+                    .forEach(header => {
+
+                        const deviceId =
+                            header.dataset.sourceDevice;
+
+
+                        const inputId =
+                            header.dataset.sourceInput;
+
+
+                        const device =
+                            getDevice(
+                                deviceId
+                            );
+
+
+                        const input =
+                            getInput(
+                                device,
+                                inputId
+                            );
+
+
+                        const active =
+                            input?.status === true;
+
+
+                        header.classList.toggle(
+                            "high",
+                            active
+                        );
+
+
+                        header.classList.toggle(
+                            "low",
+                            !active
+                        );
+                    });
+
+
+                /*
+                 * --------------------------------------------------------
+                 * OUTPUT LABELS
+                 * --------------------------------------------------------
+                 */
+
+                document
+                    .querySelectorAll(
+                        ".rowheader[data-destination-device][data-destination-output]"
+                    )
+                    .forEach(header => {
+
+                        const deviceId =
+                            header.dataset.destinationDevice;
+
+
+                        const outputId =
+                            header.dataset.destinationOutput;
+
+
+                        const device =
+                            getDevice(
+                                deviceId
+                            );
+
+
+                        const output =
+                            getOutput(
+                                device,
+                                outputId
+                            );
+
+
+                        const active =
+                            output?.status === true;
+
+
+                        header.classList.toggle(
+                            "high",
+                            active
+                        );
+
+
+                        header.classList.toggle(
+                            "low",
+                            !active
+                        );
+                    });
+
+
+                /*
+                 * --------------------------------------------------------
+                 * ROUTE CELLS
+                 * --------------------------------------------------------
+                 *
+                 * IMPORTANT:
+                 *
+                 * We DO NOT touch .mapped here.
+                 *
+                 * .mapped belongs to the route refresh.
+                 *
+                 * This 100ms update only changes .high.
+                 * --------------------------------------------------------
+                 */
+
+                document
+                    .querySelectorAll(
+                        ".cell[data-source-device][data-source-input]"
+                    )
+                    .forEach(cell => {
+
+                        const sourceDeviceId =
+                            cell.dataset.sourceDevice;
+
+
+                        const sourceInputId =
+                            cell.dataset.sourceInput;
+
+
+                        const destinationDeviceId =
+                            cell.dataset.destinationDevice;
+
+
+                        const destinationOutputId =
+                            cell.dataset.destinationOutput;
+
+
+                        const mapped =
+                            hasRoute(
+                                sourceDeviceId,
+                                sourceInputId,
+                                destinationDeviceId,
+                                destinationOutputId
+                            );
+
+
+                        const sourceDevice =
+                            getDevice(
+                                sourceDeviceId
+                            );
+
+
+                        const input =
+                            getInput(
+                                sourceDevice,
+                                sourceInputId
+                            );
+
+
+                        const active =
+                            mapped &&
+                            input?.status === true;
+
+
+                        cell.classList.toggle(
+                            "high",
+                            active
+                        );
+                    });
+            }
+
+
+            /*
+             * ============================================================
+             * ROUTE REFRESH
+             * ============================================================
+             *
+             * Runs every 500ms.
+             * ============================================================
+             */
+
+            async function refreshRoutes() {
+
+                /*
+                 * Never overwrite a route while the user is changing it.
+                 */
+                if (
+                    routeChangeInProgress
+                ) {
+                    return;
+                }
+
+
+                if (
+                    routeRefreshInProgress
+                ) {
+                    return;
+                }
+
+
+                routeRefreshInProgress =
+                    true;
+
+
+                try {
+
+                    const latestRoutes =
+                        await api(
+                            "/api/gpio/routes/all"
+                        );
+
+
+                    /*
+                     * A route click may have started while this request
+                     * was in flight.
+                     *
+                     * If so, discard this result.
+                     */
+                    if (
+                        routeChangeInProgress
+                    ) {
+                        return;
+                    }
+
+
+                    routes =
+                        Array.isArray(
+                            latestRoutes
+                        )
+                            ? latestRoutes
+                            : [];
+
+
+                    renderMatrix();
+
+
+                    updateStatusDisplay();
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Route refresh failed:",
+                        error
+                    );
+
+                }
+                finally {
+
+                    routeRefreshInProgress =
+                        false;
+                }
+            }
+
+
+            /*
+             * ============================================================
+             * DEVICE ONLINE STATUS
+             * ============================================================
+             *
+             * Your new GPIO API doesn't currently expose the old
+             * devicestatus.php endpoint in the supplied backend.
+             *
+             * If the device object contains an online/status property,
+             * use it.
+             *
+             * Otherwise this simply leaves the device header alone.
+             * ============================================================
+             */
+
+            function updateDeviceOnlineState() {
+
+                for (const device of devices) {
+
+                    const deviceId =
+                        String(
+                            device.deviceId
+                        );
+
+
+                    const online =
+                        device.online === true ||
+                        device.isOnline === true ||
+                        device.connected === true;
+
+
+                    const inputHeader =
+                        document.getElementById(
+                            "in_device_" +
+                            deviceId
+                        );
+
+
+                    const outputHeader =
+                        document.getElementById(
+                            "out_device_" +
+                            deviceId
+                        );
+
+
+                    if (inputHeader) {
+
+                        inputHeader.classList.toggle(
+                            "device-online",
+                            online
+                        );
+                    }
+
+
+                    if (outputHeader) {
+
+                        outputHeader.classList.toggle(
+                            "device-online",
+                            online
+                        );
+                    }
+                }
+            }
+
+
+            /*
+             * ============================================================
+             * SETTINGS
+             * ============================================================
+             */
+
+            function openSettings(deviceId) {
+
+                const device =
+                    getDevice(deviceId);
+
+
+                if (!device) {
+                    return;
+                }
+
+
+                const overlay =
+                    document.getElementById(
+                        "settings-overlay"
+                    );
+
+
+                const title =
+                    document.getElementById(
+                        "settings-title"
+                    );
+
+
+                const body =
+                    document.getElementById(
+                        "settings-body"
+                    );
+
+
+                if (
+                    !overlay ||
+                    !title ||
+                    !body
+                ) {
+                    return;
+                }
+
+
+                title.textContent =
+                    getDeviceName(device);
+
+
+                body.innerHTML = `
+
+                    <div class="io-table">
+
+                        <h3>Inputs</h3>
+
+                        ${Array.isArray(device.inputs) &&
+                        device.inputs.length
+
+                        ?
+
+                        device.inputs
+                            .map(input => `
+
+                                        <div class="form-grid">
+
+                                            <div>
+                                                CH ${escapeHtml(
+                                input.port
+                            )}
+                                            </div>
+
+                                            <div>
+                                                ${escapeHtml(
+                                input.name ??
+                                ""
+                            )}
+                                            </div>
+
+                                            <div>
+                                                ${escapeHtml(
+                                input.nickname ??
+                                ""
+                            )}
+                                            </div>
+
+                                        </div>
+
+                                    `)
+                            .join("")
+
+                        :
+
+                        "<div>No inputs</div>"
+                    }
+
+                    </div>
+
+
+                    <div class="io-table">
+
+                        <h3>Outputs</h3>
+
+                        ${Array.isArray(device.outputs) &&
+                        device.outputs.length
+
+                        ?
+
+                        device.outputs
+                            .map(output => `
+
+                                        <div class="form-grid">
+
+                                            <div>
+                                                CH ${escapeHtml(
+                                output.port
+                            )}
+                                            </div>
+
+                                            <div>
+                                                ${escapeHtml(
+                                output.name ??
+                                ""
+                            )}
+                                            </div>
+
+                                            <div>
+                                                ${escapeHtml(
+                                output.nickname ??
+                                ""
+                            )}
+                                            </div>
+
+                                        </div>
+
+                                    `)
+                            .join("")
+
+                        :
+
+                        "<div>No outputs</div>"
+                    }
+
+                    </div>
+                `;
+
+
+                overlay.classList.add(
+                    "open"
+                );
+            }
+
+
+            function closeSettings() {
+
+                const overlay =
+                    document.getElementById(
+                        "settings-overlay"
+                    );
+
+
+                if (overlay) {
+
+                    overlay.classList.remove(
+                        "open"
+                    );
+                }
+            }
+
+
+            /*
+             * ------------------------------------------------------------
+             * CLOSE SETTINGS WHEN CLICKING OUTSIDE
+             * ------------------------------------------------------------
+             */
+
+            document.addEventListener(
+                "click",
+                function (event) {
+
+                    const overlay =
+                        document.getElementById(
+                            "settings-overlay"
+                        );
+
+
+                    if (
+                        overlay &&
+                        event.target === overlay
+                    ) {
+
+                        closeSettings();
+                    }
+                }
+            );
+
+
+            /*
+             * ============================================================
+             * INITIALIZE
+             * ============================================================
+             */
+
+            load().then(() => {
+
+                /*
+                 * Fast status updates:
+                 * 100ms
+                 */
+                statusRefreshTimer =setInterval(refreshStatuses,100);
+
+
+                /*
+                 * Route updates:
+                 * 500ms
+                 */
+                routeRefreshTimer =setInterval(refreshRoutes,500);
+            });
+
+        </script>
+      
+
+
+</body>
+</html>

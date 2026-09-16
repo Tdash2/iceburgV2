@@ -1,9 +1,12 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Videohub Router</title>
+
     <style>
         :root {
             --bg: #181a1d;
@@ -23,7 +26,8 @@
             box-sizing: border-box;
         }
 
-        html, body {
+        html,
+        body {
             margin: 0;
             min-height: 100%;
             background: var(--bg);
@@ -45,7 +49,7 @@
             top: 0;
             z-index: 50;
             height: 68px;
-            background: rgba(24,26,29,.96);
+            background: rgba(24, 26, 29, .96);
             border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
@@ -58,6 +62,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
+            padding: 5px;
         }
 
             .title h1 {
@@ -78,11 +83,12 @@
         button {
             border: 0;
             border-radius: 7px;
-            padding: 9px 14px;
+            padding: 6px 9px;
             color: white;
             background: var(--panel2);
             cursor: pointer;
             font-weight: 600;
+            font-size: 11px;
         }
 
             button:hover {
@@ -109,15 +115,37 @@
         .content {
             width: min(1250px, calc(100% - 32px));
             margin: 22px auto;
+            position: relative;
         }
-
         .notice {
+            position: fixed;
+            top: 82px;
+            right: 20px;
+            z-index: 200;
             display: none;
-            padding: 11px 14px;
-            border-radius: 7px;
-            margin-bottom: 16px;
+            padding: 12px 18px;
             background: #293d2d;
             border: 1px solid #426d4a;
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, .4);
+            pointer-events: none;
+            animation: noticeSlideIn .2s ease-out;
+        }
+
+        @keyframes noticeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
             .notice.error {
@@ -125,29 +153,12 @@
                 border-color: #774247;
             }
 
+
+
+
         .card {
             background: var(--panel);
-           
-            
             overflow: hidden;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 17px;
-            border-bottom: 1px solid var(--border);
-        }
-
-            .card-header h2 {
-                margin: 0;
-                font-size: 16px;
-            }
-
-        .hint {
-            color: var(--muted);
-            font-size: 12px;
         }
 
         .table-wrap {
@@ -159,7 +170,8 @@
             border-collapse: collapse;
         }
 
-        th, td {
+        th,
+        td {
             padding: 11px 13px;
             border-bottom: 1px solid var(--border);
             text-align: left;
@@ -180,11 +192,6 @@
             border-bottom: 0;
         }
 
-        .output-number {
-            width: 80px;
-            color: var(--muted);
-        }
-
         .output-name {
             min-width: 190px;
             font-weight: 600;
@@ -203,7 +210,6 @@
             height: 40px;
             padding: 0 38px 0 12px;
             border: 1px solid var(--border);
-           
             outline: none;
             background: #15171a;
             color: var(--text);
@@ -212,7 +218,7 @@
 
             .combo-input:focus {
                 border-color: var(--accent);
-                box-shadow: 0 0 0 2px rgba(61,165,255,.14);
+                box-shadow: 0 0 0 2px rgba(61, 165, 255, .14);
             }
 
             .combo-input.pending {
@@ -225,6 +231,7 @@
             position: absolute;
             right: 12px;
             top: 11px;
+
             color: var(--muted);
             pointer-events: none;
         }
@@ -242,7 +249,7 @@
             color: #111;
             border: 1px solid #aaa;
             border-radius: 7px;
-            box-shadow: 0 12px 30px rgba(0,0,0,.45);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, .45);
         }
 
         .suggestion {
@@ -267,38 +274,55 @@
             color: #777;
         }
 
-        .takebar {
-            position: fixed;
-            z-index: 60;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(31,34,38,.98);
-            border-top: 1px solid var(--border);
-            box-shadow: 0 -8px 25px rgba(0,0,0,.25);
-        }
-
-        .takebar-inner {
-            width: min(1250px, calc(100% - 32px));
-            margin: auto;
-            min-height: 76px;
+        .pending-card {
+            width: 100%;
+            box-sizing: border-box;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            gap: 20px;
+            gap: 12px;
+            min-height: 52px;
+            margin-bottom: 10px;
+            padding: 8px 10px;
+            background: rgba(41, 45, 50, .97);
+            border: 1px solid #555b63;
+            
+            font-size: 12px;
+           
         }
 
-        .pending-info {
-            font-size: 14px;
-        }
-
-            .pending-info strong {
-                color: var(--pending);
-            }
-
-        .take-actions {
+        .pending-summary {
             display: flex;
+            align-items: center;
             gap: 8px;
+            white-space: nowrap;
+        }
+
+        .pending-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #d6a84f;
+            flex-shrink: 0;
+        }
+
+        .pending-changes {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            overflow-x: auto;
+        }
+
+        .pending-actions {
+            display: flex;
+            gap: 9px;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .small-button {
+            padding: 6px 9px;
+            font-size: 11px;
         }
 
         .names-drawer {
@@ -310,7 +334,7 @@
             height: 100vh;
             background: var(--panel);
             border-left: 1px solid var(--border);
-            box-shadow: -15px 0 45px rgba(0,0,0,.45);
+            box-shadow: -15px 0 45px rgba(0, 0, 0, .45);
             transform: translateX(100%);
             transition: transform .22s ease;
             display: flex;
@@ -328,6 +352,7 @@
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
         }
 
             .drawer-header h2 {
@@ -369,7 +394,7 @@
 
         .name-row {
             display: grid;
-            grid-template-columns: 42px 1fr auto;
+            grid-template-columns: 42px 1fr;
             gap: 8px;
             align-items: center;
             padding: 7px 0;
@@ -385,7 +410,6 @@
             height: 36px;
             padding: 0 10px;
             border: 1px solid var(--border);
-            
             background: #15171a;
             color: var(--text);
             outline: none;
@@ -395,16 +419,21 @@
                 border-color: var(--accent);
             }
 
-        .save-name {
-            padding: 8px 10px;
-            font-size: 12px;
+            .name-input.dirty {
+                border-color: #e0c84d;
+                background: #403b1e;
+            }
+
+        .name-row.dirty {
+            background: rgba(255, 243, 163, .06);
+            border-radius: 6px;
         }
 
         .overlay {
             position: fixed;
             z-index: 70;
             inset: 0;
-            background: rgba(0,0,0,.45);
+            background: rgba(0, 0, 0, .45);
             display: none;
         }
 
@@ -421,12 +450,8 @@
                 display: none;
             }
 
-            .content, .takebar-inner {
+            .content {
                 width: calc(100% - 20px);
-            }
-
-            .hint {
-                display: none;
             }
 
             .output-name {
@@ -436,81 +461,7 @@
             .source-cell {
                 min-width: 280px;
             }
-        }
 
-        .pending-card {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            min-height: 44px;
-            margin-bottom: 14px;
-            padding: 7px 10px;
-            background: #292d32;
-            border: 1px solid #555b63;
-            border-radius: 8px;
-            font-size: 12px;
-        }
-
-        .pending-summary {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-            white-space: nowrap;
-        }
-
-        .pending-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--pending);
-            display: inline-block;
-        }
-
-        .pending-changes {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            flex: 1;
-            min-width: 0;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-
-        .pending-chip {
-            padding: 4px 7px;
-            border-radius: 5px;
-            background: var(--pending);
-            color: var(--pendingText);
-            font-size: 11px;
-        }
-
-        .pending-actions {
-            display: flex;
-            gap: 5px;
-            white-space: nowrap;
-        }
-
-        .small-button {
-            padding: 6px 9px;
-            font-size: 11px;
-        }
-
-        .name-input.dirty {
-            border-color: #e0c84d;
-            background: #403b1e;
-        }
-
-        .name-row.dirty {
-            background: rgba(255,243,163,.06);
-            border-radius: 6px;
-        }
-
-        .save-name.dirty {
-            background: #d8b900;
-            color: #111;
-        }
-
-        @media (max-width: 700px) {
             .pending-card {
                 flex-wrap: wrap;
             }
@@ -527,165 +478,950 @@
 
     <div class="app">
 
-        <header class="header">
+      
+
+            
+
+
+   
+
+
+        <main class="content">
             <div class="title">
-                <h1 class="routername>Router</h1>
+                <h1 id="routername">Router</h1>
                 <span class="device" id="deviceIdLabel"></span>
             </div>
 
-            <div class="actions">
-                <button onclick="loadStatus()">Reload Routes</button>
-                <button class="primary" onclick="openNames()">Edit Names</button>
-            </div>
-        </header>
+            <section id="pendingCard"
+                     class="pending-card">
 
-        <main class="content">
-
-            <div id="notice" class="notice"></div>
-
-            <!-- Compact pending changes -->
-            <section id="pendingCard" class="pending-card" style="display:none;">
                 <div class="pending-summary">
-                    <span class="pending-dot"></span>
-                    <strong id="pendingCount">0 changes</strong>
-                </div>
-                <div id="pendingChanges" class="pending-changes"></div>
-                <div class="pending-actions">
-                    <button class="danger small-button" onclick="cancelAllChanges()">Cancel</button>
-                    <button class="success small-button" onclick="takeAllChanges()">Save &amp; TAKE</button>
-                </div>
-            </section>
 
+                    <span class="pending-dot" id="pending-dot"></span>
+
+                    <strong id="pendingCount">
+                        0 Pending Routes
+                    </strong>
+
+                </div>
+
+
+                <div id="pendingChanges"
+                     class="pending-changes">
+                </div>
+
+
+                <div class="pending-actions" id="pending-actions" style="display:none;">
+
+                    <button class="danger small-button"
+                            type="button"
+                            onclick="cancelAllChanges()">
+                        Cancel
+                    </button>
+
+                    <button class="success small-button"
+                            type="button"
+                            onclick="takeAllChanges()">
+                        Save &amp; TAKE
+                    </button>
+
+                </div>
+                <button class="primary"
+                        type="button"
+                        onclick="openNames()">
+                    Edit Names
+                </button>
+
+            </section>
+            <div id="notice"
+                 class="notice">
+            </div>
+
+
+            <!-- Pending changes -->
+            <!-- Router table -->
             <section class="card">
 
-
                 <div class="table-wrap">
+
                     <table>
+
                         <thead>
+
                             <tr>
-                               
-                                <th class="output-name">Router Output</th>
-                                <th>Video</th>
+                                <th class="output-name">
+                                    Router Output
+                                </th>
+
+                                <th>
+                                    Video
+                                </th>
                             </tr>
+
                         </thead>
-                        <tbody id="routerBody"></tbody>
+
+
+                        <tbody id="routerBody">
+                        </tbody>
+
                     </table>
+
                 </div>
+
             </section>
 
         </main>
 
     </div>
 
-    <div id="overlay" class="overlay" onclick="closeNames()"></div>
 
-    <aside id="namesDrawer" class="names-drawer">
+    <!-- Drawer overlay -->
+    <div id="overlay"
+         class="overlay"
+         onclick="closeNames()">
+    </div>
+
+
+    <!-- Names drawer -->
+    <aside id="namesDrawer"
+           class="names-drawer">
+
         <div class="drawer-header">
-            <h2>Edit Names</h2>
-            <button onclick="closeNames()">✕</button>
+
+            <h2>
+                Edit Names
+            </h2>
+
+            <button type="button"
+                    onclick="closeNames()">
+                ✕
+            </button>
+
         </div>
 
-        <div class="drawer-content">
+
+        <div class="drawer-content"
+             id="drawerContent">
 
             <input id="nameSearch"
                    class="search"
                    type="search"
                    placeholder="Search inputs and outputs..."
+                   autocomplete="off"
                    oninput="filterNames()">
 
-            <div class="name-section">
-                <h3>Inputs</h3>
-                <div id="inputNames"></div>
-            </div>
 
             <div class="name-section">
-                <h3>Outputs</h3>
-                <div id="outputNames"></div>
+
+                <h3>
+                    Inputs
+                </h3>
+
+                <div id="inputNames">
+                </div>
+
+            </div>
+
+
+            <div class="name-section">
+
+                <h3>
+                    Outputs
+                </h3>
+
+                <div id="outputNames">
+                </div>
+
             </div>
 
         </div>
+
     </aside>
 
 
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const deviceId = params.get("id");
+
+        /*
+         * ============================================================
+         * CONFIGURATION
+         * ============================================================
+         */
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+        const deviceId =
+            params.get("id");
+
+
+        /*
+         * Refresh every 5 seconds.
+         */
+        const AUTO_REFRESH_MS = 5000;
+
+
+        /*
+         * ============================================================
+         * STATE
+         * ============================================================
+         */
 
         let deviceInfo = {
             IP: "",
             Name: ""
         };
 
-        async function loadDeviceInfo() {
+
+        let inputLabels = {};
+        let outputLabels = {};
+        let routes = {};
+
+
+        /*
+         * These are NEVER replaced by a server refresh.
+         *
+         * output -> input
+         */
+        let pendingRoutes = {};
+
+
+        /*
+         * Pending name changes.
+         */
+        let pendingNames = {
+            input: {},
+            output: {}
+        };
+
+
+        /*
+         * Prevent simultaneous refreshes.
+         */
+        let refreshInProgress = false;
+
+
+        /*
+         * Prevent automatic refresh while a TAKE operation
+         * is actively applying changes.
+         */
+        let saveInProgress = false;
+
+
+        /*
+         * ============================================================
+         * API
+         * ============================================================
+         */
+
+        function apiBase() {
+
+            return (
+                `/api/router/bmd/` +
+                encodeURIComponent(deviceId)
+            );
+        }
+
+
+        /*
+         * Determine whether a URL is login.html.
+         */
+        function isLoginUrl(url) {
+
             try {
-                const info = await apiGet(`${apiBase()}/getinfo`);
+
+                const parsed =
+                    new URL(
+                        url,
+                        window.location.href
+                    );
+
+                return (
+                    parsed.pathname === "/login.html" ||
+                    parsed.pathname.endsWith("/login.html")
+                );
+
+            }
+            catch {
+                return false;
+            }
+        }
+
+
+        /*
+         * Redirect to login while remembering exactly where
+         * the user was.
+         */
+        function redirectToLogin() {
+
+            const returnUrl =
+                window.location.href;
+
+
+            window.location.href =
+                `login.html?returnUrl=${encodeURIComponent(returnUrl)
+                }`;
+        }
+
+
+        /*
+         * ALL HTTP requests use this function.
+         */
+        async function apiGet(url) {
+
+            let response;
+
+
+            try {
+
+                response =
+                    await fetch(
+                        url,
+                        {
+                            method: "GET",
+                            credentials: "same-origin",
+                            cache: "no-store",
+                            redirect: "follow"
+                        }
+                    );
+
+            }
+            catch (error) {
+
+                throw error;
+            }
+
+
+            /*
+             * fetch() follows redirects automatically.
+             *
+             * If the API sent us to login.html, catch it here.
+             */
+            if (
+                response.redirected &&
+                isLoginUrl(response.url)
+            ) {
+
+                redirectToLogin();
+
+                throw new Error(
+                    "Authentication required."
+                );
+            }
+
+
+            /*
+             * Also handle a response whose final URL is login.html.
+             */
+            if (isLoginUrl(response.url)) {
+
+                redirectToLogin();
+
+                throw new Error(
+                    "Authentication required."
+                );
+            }
+
+
+            /*
+             * Some authentication systems return HTML with
+             * HTTP 200 instead of a redirect.
+             *
+             * Inspect Content-Type before trying response.json().
+             */
+            const contentType =
+                response.headers.get(
+                    "content-type"
+                ) || "";
+
+
+            if (
+                contentType.includes("text/html")
+            ) {
+
+                const text =
+                    await response.text();
+
+
+                /*
+                 * If the returned HTML looks like the login page,
+                 * redirect the browser.
+                 */
+                if (
+                    /login\.html/i.test(text) ||
+                    /<title[^>]*login/i.test(text) ||
+                    /type=["']password["']/i.test(text)
+                ) {
+
+                    redirectToLogin();
+
+                    throw new Error(
+                        "Authentication required."
+                    );
+                }
+
+
+                throw new Error(
+                    "Server returned HTML instead of JSON."
+                );
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    `HTTP ${response.status}`
+                );
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (
+                data &&
+                data.error &&
+                data.success !== false
+            ) {
+
+                throw new Error(
+                    data.error
+                );
+            }
+
+
+            return data;
+        }
+
+
+        /*
+         * ============================================================
+         * NOTICES
+         * ============================================================
+         */
+
+        function showNotice(
+            message,
+            error = false
+        ) {
+
+            const notice =
+                document.getElementById(
+                    "notice"
+                );
+
+
+            notice.textContent =
+                message;
+
+
+            notice.className =
+                error
+                    ? "notice error"
+                    : "notice";
+
+
+            notice.style.display =
+                "block";
+
+
+            clearTimeout(
+                showNotice.timer
+            );
+
+
+            showNotice.timer =
+                setTimeout(
+                    () => {
+
+                        notice.style.display =
+                            "none";
+
+                    },
+                    3500
+                );
+        }
+
+
+        /*
+         * ============================================================
+         * DEVICE INFO
+         * ============================================================
+         */
+
+        async function loadDeviceInfo() {
+
+            try {
+
+                const info =
+                    await apiGet(
+                        `${apiBase()}/getinfo`
+                    );
+
 
                 deviceInfo = {
                     IP: info.IP || "",
                     Name: info.Name || ""
                 };
 
-                const routername = document.getElementById("routername");
-                const label = document.getElementById("deviceIdLabel");
 
-                if (deviceInfo.Name && deviceInfo.IP) {
-                    label.textContent = `${deviceInfo.Name}`;
-                } else if (deviceInfo.Name) {
-                    label.textContent = deviceInfo.Name;
-                } else if (deviceInfo.IP) {
-                    label.textContent = deviceInfo.IP;
-                } else {
-                    label.textContent = "Router";
+                const routerName =
+                    document.getElementById(
+                        "routername"
+                    );
+
+
+                const deviceLabel =
+                    document.getElementById(
+                        "deviceIdLabel"
+                    );
+
+
+                if (deviceInfo.Name) {
+
+                    routerName.textContent =
+                        deviceInfo.Name;
+
+                    deviceLabel.textContent =
+                        deviceInfo.IP || "";
+
                 }
-            } catch (error) {
-                console.error("Unable to load router info:", error);
-                document.getElementById("deviceIdLabel").textContent = "Router";
+                else if (deviceInfo.IP) {
+
+                    routerName.textContent =
+                        "Router";
+
+                    deviceLabel.textContent =
+                        deviceInfo.IP;
+
+                }
+                else {
+
+                    routerName.textContent =
+                        "Router";
+
+                    deviceLabel.textContent =
+                        "";
+                }
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Unable to load router info:",
+                    error
+                );
+
             }
         }
 
-        let inputLabels = {};
-        let outputLabels = {};
-        let routes = {};
-        let pendingRoutes = {};
 
-        function apiBase() {
-            return `/api/router/bmd/${encodeURIComponent(deviceId)}`;
-        }
+        /*
+         * ============================================================
+         * UI STATE PRESERVATION
+         * ============================================================
+         */
 
-        async function apiGet(url) {
-            const response = await fetch(url);
+        function captureUIState() {
 
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
+            const drawer =
+                document.getElementById(
+                    "namesDrawer"
+                );
+
+
+            const drawerContent =
+                document.getElementById(
+                    "drawerContent"
+                );
+
+
+            const search =
+                document.getElementById(
+                    "nameSearch"
+                );
+
+
+            const state = {
+
+                windowScrollY:
+                    window.scrollY,
+
+
+                drawerOpen:
+                    drawer.classList.contains(
+                        "open"
+                    ),
+
+
+                drawerScrollTop:
+                    drawerContent.scrollTop,
+
+
+                nameSearch:
+                    search.value,
+
+
+                routeInputs: {},
+
+
+                focusedRouteOutput:
+                    null,
+
+
+                focusedNameType:
+                    null,
+
+
+                focusedNameNumber:
+                    null,
+
+
+                focusedNameValue:
+                    null,
+
+
+                focusedNameSelectionStart:
+                    null,
+
+
+                focusedNameSelectionEnd:
+                    null
+            };
+
+
+            /*
+             * Capture every route text box.
+             */
+            document
+                .querySelectorAll(
+                    ".combo-input"
+                )
+                .forEach(input => {
+
+                    const output =
+                        input.dataset.output;
+
+
+                    state.routeInputs[output] = {
+
+                        value:
+                            input.value,
+
+                        focused:
+                            document.activeElement ===
+                            input,
+
+                        selectionStart:
+                            input.selectionStart,
+
+                        selectionEnd:
+                            input.selectionEnd
+                    };
+
+
+                    if (
+                        document.activeElement ===
+                        input
+                    ) {
+
+                        state.focusedRouteOutput =
+                            Number(output);
+                    }
+                });
+
+
+            /*
+             * Capture focused name editor.
+             */
+            const active =
+                document.activeElement;
+
+
+            if (
+                active &&
+                active.classList.contains(
+                    "name-input"
+                )
+            ) {
+
+                const row =
+                    active.closest(
+                        ".name-row"
+                    );
+
+
+                if (row) {
+
+                    const number =
+                        Number(
+                            row.dataset.number
+                        );
+
+
+                    const type =
+                        row.dataset.type;
+
+
+                    state.focusedNameType =
+                        type;
+
+
+                    state.focusedNameNumber =
+                        number;
+
+
+                    state.focusedNameValue =
+                        active.value;
+
+
+                    state.focusedNameSelectionStart =
+                        active.selectionStart;
+
+
+                    state.focusedNameSelectionEnd =
+                        active.selectionEnd;
+                }
             }
 
-            const data = await response.json();
 
-            if (data.error && data.success !== false) {
-                throw new Error(data.error);
+            return state;
+        }
+
+
+        function restoreUIState(state) {
+
+            /*
+             * Restore name search.
+             */
+            const search =
+                document.getElementById(
+                    "nameSearch"
+                );
+
+
+            search.value =
+                state.nameSearch || "";
+
+
+            filterNames();
+
+
+            /*
+             * Restore route input text.
+             *
+             * NEVER overwrite a pending route.
+             */
+            document
+                .querySelectorAll(
+                    ".combo-input"
+                )
+                .forEach(input => {
+
+                    const output =
+                        Number(
+                            input.dataset.output
+                        );
+
+
+                    if (
+                        Object.prototype.hasOwnProperty.call(
+                            pendingRoutes,
+                            output
+                        )
+                    ) {
+
+                        return;
+                    }
+
+
+                    const saved =
+                        state.routeInputs[
+                        String(output)
+                        ];
+
+
+                    if (!saved) {
+                        return;
+                    }
+
+
+                    if (
+                        saved.value !== ""
+                    ) {
+
+                        input.value =
+                            saved.value;
+                    }
+                });
+
+
+            /*
+             * Restore drawer.
+             */
+            const drawer =
+                document.getElementById(
+                    "namesDrawer"
+                );
+
+
+            const overlay =
+                document.getElementById(
+                    "overlay"
+                );
+
+
+            if (state.drawerOpen) {
+
+                drawer.classList.add(
+                    "open"
+                );
+
+                overlay.classList.add(
+                    "open"
+                );
+
+            }
+            else {
+
+                drawer.classList.remove(
+                    "open"
+                );
+
+                overlay.classList.remove(
+                    "open"
+                );
             }
 
-            return data;
+
+            /*
+             * Wait until the DOM has painted before restoring
+             * scroll and focus.
+             */
+            requestAnimationFrame(
+                () => {
+
+                    window.scrollTo(
+                        0,
+                        state.windowScrollY
+                    );
+
+
+                    const drawerContent =
+                        document.getElementById(
+                            "drawerContent"
+                        );
+
+
+                    drawerContent.scrollTop =
+                        state.drawerScrollTop;
+
+
+                    /*
+                     * Restore route focus.
+                     */
+                    if (
+                        state.focusedRouteOutput !==
+                        null
+                    ) {
+
+                        const input =
+                            document.querySelector(
+                                `.combo-input[data-output="${state.focusedRouteOutput}"]`
+                            );
+
+
+                        if (input) {
+
+                            input.focus();
+
+
+                            const saved =
+                                state.routeInputs[
+                                String(
+                                    state.focusedRouteOutput
+                                )
+                                ];
+
+
+                            if (saved) {
+
+                                try {
+
+                                    input.setSelectionRange(
+                                        saved.selectionStart,
+                                        saved.selectionEnd
+                                    );
+
+                                }
+                                catch { }
+                            }
+
+
+                            return;
+                        }
+                    }
+
+
+                    /*
+                     * Restore name focus.
+                     */
+                    if (
+                        state.focusedNameType &&
+                        state.focusedNameNumber !== null
+                    ) {
+
+                        const container =
+                            state.focusedNameType ===
+                                "input"
+                                ? document.getElementById(
+                                    "inputNames"
+                                )
+                                : document.getElementById(
+                                    "outputNames"
+                                );
+
+
+                        const input =
+                            container.querySelector(
+                                `.name-row[data-number="${state.focusedNameNumber}"] .name-input`
+                            );
+
+
+                        if (input) {
+
+                            input.focus();
+
+
+                            try {
+
+                                input.setSelectionRange(
+                                    state.focusedNameSelectionStart,
+                                    state.focusedNameSelectionEnd
+                                );
+
+                            }
+                            catch { }
+                        }
+                    }
+
+                }
+            );
         }
 
-        function showNotice(message, error = false) {
-            const notice = document.getElementById("notice");
 
-            notice.textContent = message;
-            notice.className = error
-                ? "notice error"
-                : "notice";
+        /*
+         * ============================================================
+         * ROUTER STATUS
+         * ============================================================
+         */
 
-            notice.style.display = "block";
+        async function loadStatus(options = {}) {
 
-            clearTimeout(showNotice.timer);
+            const silent = options.silent === true;
 
-            showNotice.timer = setTimeout(() => {
-                notice.style.display = "none";
-            }, 3500);
-        }
-
-        async function loadStatus() {
             if (!deviceId) {
                 showNotice(
                     "No router ID. Open the page with ?id=YOUR_DEVICE_ID.",
@@ -694,439 +1430,1395 @@
                 return;
             }
 
-            //try {
+            if (refreshInProgress || saveInProgress) {
+                return;
+            }
+
+            refreshInProgress = true;
+
+            const uiState = captureUIState();
+
+            /*
+             * IMPORTANT:
+             * Only preserve changes that the user has actually made
+             * on this page.
+             */
+            const localPendingRoutes = {
+                ...pendingRoutes
+            };
+
+            const localPendingNames = {
+                input: {
+                    ...pendingNames.input
+                },
+                output: {
+                    ...pendingNames.output
+                }
+            };
+
+            try {
+
+                /*
+                 * Get the CURRENT names from the router.
+                 */
                 const names = await apiGet(
                     `${apiBase()}/getnames`
                 );
 
-                inputLabels = names.input_labels || {};
-                outputLabels = names.output_labels || {};
+                inputLabels =
+                    names.input_labels || {};
 
+                outputLabels =
+                    names.output_labels || {};
+
+
+                /*
+                 * Get the CURRENT routes from the router.
+                 *
+                 * This is the important part:
+                 * every refresh gets a fresh routing table.
+                 */
                 const routeResult = await apiGet(
                     `${apiBase()}/getroutes`
                 );
 
-                routes = routeResult.routes || {};
 
+                /*
+                 * Completely replace the live route state.
+                 *
+                 * This means a routing change made by another
+                 * controller/source will appear on the next refresh.
+                 */
+                routes =
+                    routeResult.routes || {};
+
+
+                console.log(
+                    "LIVE ROUTES FROM ROUTER:",
+                    routes
+                );
+
+
+                /*
+                 * Restore ONLY local changes.
+                 *
+                 * Anything that isn't pending locally comes directly
+                 * from the router.
+                 */
+                pendingRoutes =
+                    localPendingRoutes;
+
+                pendingNames =
+                    localPendingNames;
+
+
+                /*
+                 * Rebuild the router display using:
+                 *
+                 * pending route, if one exists
+                 *
+                 * otherwise
+                 *
+                 * live router route
+                 */
                 buildRouterTable();
+
+
                 buildNameLists();
 
-                showNotice("Router status updated.");
-            
+                updatePendingUI();
+
+
+                /*
+                 * Restore scroll/focus/drawer/search.
+                 */
+                restoreUIState(uiState);
+
+
+                if (!silent) {
+                    showNotice("Router status updated.");
+                }
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Router refresh failed:",
+                    error
+                );
+
+                if (
+                    error.message !==
+                    "Authentication required."
+                ) {
+
+                    if (!silent) {
+                        showNotice(
+                            `Unable to load router: ${error.message}`,
+                            true
+                        );
+                    }
+                }
+
+            }
+            finally {
+
+                refreshInProgress = false;
+            }
         }
+
+
+        /*
+         * ============================================================
+         * ROUTER TABLE
+         * ============================================================
+         */
 
         function sortedKeys(object) {
+
             return Object.keys(object)
                 .map(Number)
-                .sort((a, b) => a - b);
+                .sort(
+                    (a, b) => a - b
+                );
         }
 
+
         function buildRouterTable() {
-            const body = document.getElementById("routerBody");
+
+            const body =
+                document.getElementById(
+                    "routerBody"
+                );
+
             body.innerHTML = "";
 
-            const outputs = sortedKeys(outputLabels);
+
+            const outputs =
+                sortedKeys(outputLabels);
+
 
             if (!outputs.length) {
-                body.innerHTML =
-                    `<tr><td colspan="3">No outputs found.</td></tr>`;
+
+                body.innerHTML = `
+                <tr>
+                    <td colspan="2">
+                        No outputs found.
+                    </td>
+                </tr>
+            `;
+
                 return;
             }
 
+
             for (const output of outputs) {
-                const row = document.createElement("tr");
 
-              
+                const row =
+                    document.createElement("tr");
 
-                const destination = document.createElement("td");
-                destination.className = "output-name";
+
+                /*
+                 * OUTPUT NAME
+                 */
+                const destination =
+                    document.createElement("td");
+
+                destination.className =
+                    "output-name";
+
                 destination.textContent =
-                    output + 1 + ": "+ outputLabels[output] || `Output ${output + 1}`;
+                    `${output + 1}: ${outputLabels[output] ||
+                    `Output ${output + 1}`
+                    }`;
 
-                const source = document.createElement("td");
-                source.className = "source-cell";
 
-                const combo = document.createElement("div");
-                combo.className = "combo";
+                /*
+                 * VIDEO SOURCE
+                 */
+                const source =
+                    document.createElement("td");
 
-                const input = document.createElement("input");
-                input.className = "combo-input";
-                input.type = "text";
-                input.autocomplete = "off";
-                input.dataset.output = output;
+                source.className =
+                    "source-cell";
 
+
+                const combo =
+                    document.createElement("div");
+
+                combo.className =
+                    "combo";
+
+
+                const input =
+                    document.createElement("input");
+
+                input.className =
+                    "combo-input";
+
+                input.type =
+                    "text";
+
+                input.autocomplete =
+                    "off";
+
+                input.spellcheck =
+                    false;
+
+                input.dataset.output =
+                    String(output);
+
+
+                /*
+                 * ========================================================
+                 * THIS IS THE IMPORTANT LOGIC
+                 * ========================================================
+                 *
+                 * If the user has a local pending route:
+                 *
+                 *     pendingRoutes[output]
+                 *
+                 * use that.
+                 *
+                 * Otherwise use:
+                 *
+                 *     routes[output]
+                 *
+                 * which came directly from the router.
+                 */
                 let selectedInput;
 
-                if (Object.prototype.hasOwnProperty.call(
-                    pendingRoutes, output
-                )) {
-                    selectedInput = pendingRoutes[output];
-                } else {
-                    selectedInput = routes[output];
+                const hasPending =
+                    Object.prototype.hasOwnProperty.call(
+                        pendingRoutes,
+                        output
+                    );
+
+
+                if (hasPending) {
+
+                    selectedInput =
+                        Number(
+                            pendingRoutes[output]
+                        );
+
+                    input.classList.add(
+                        "pending"
+                    );
+
+                }
+                else {
+
+                    selectedInput =
+                        Number(
+                            routes[output]
+                        );
                 }
 
+
+                /*
+                 * Display the current source.
+                 */
                 if (
-                    selectedInput !== undefined &&
+                    Number.isInteger(selectedInput) &&
                     inputLabels[selectedInput] !== undefined
                 ) {
-                    input.value = inputLabels[selectedInput];
+
+                    input.value =
+                        inputLabels[selectedInput];
+
+                }
+                else {
+
+                    input.value = "";
                 }
 
-                const arrow = document.createElement("span");
-                arrow.className = "combo-arrow";
-                arrow.textContent = "▾";
 
-                const suggestions = document.createElement("div");
-                suggestions.className = "suggestions";
+                /*
+                 * Arrow.
+                 */
+                const arrow =
+                    document.createElement("span");
+
+                arrow.className =
+                    "combo-arrow";
+
+                arrow.textContent =
+                    "▾";
+
+
+                /*
+                 * Suggestions.
+                 */
+                const suggestions =
+                    document.createElement("div");
+
+                suggestions.className =
+                    "suggestions";
+
 
                 combo.appendChild(input);
+
                 combo.appendChild(arrow);
+
                 combo.appendChild(suggestions);
+
+
                 source.appendChild(combo);
 
-              
                 row.appendChild(destination);
+
                 row.appendChild(source);
+
                 body.appendChild(row);
 
-                setupCombobox(input, suggestions, output);
+
+                setupCombobox(
+                    input,
+                    suggestions,
+                    output
+                );
             }
         }
 
-        function setupCombobox(input, suggestions, output) {
+
+        /*
+         * ============================================================
+         * COMBOBOX
+         * ============================================================
+         */
+
+        function setupCombobox(
+            input,
+            suggestions,
+            output
+        ) {
+
             let matches = [];
+
             let activeIndex = -1;
 
+
             function render() {
-                const search = input.value.trim().toLowerCase();
 
-                matches = sortedKeys(inputLabels).filter(index => {
-                    const name = String(inputLabels[index] || "");
-                    return name.toLowerCase().includes(search);
-                });
+                const search =
+                    input.value
+                        .trim()
+                        .toLowerCase();
 
-                suggestions.innerHTML = "";
+
+                matches =
+                    sortedKeys(
+                        inputLabels
+                    )
+                        .filter(
+                            index => {
+
+                                const name =
+                                    String(
+                                        inputLabels[
+                                        index
+                                        ] || ""
+                                    );
+
+
+                                return name
+                                    .toLowerCase()
+                                    .includes(
+                                        search
+                                    );
+                            }
+                        );
+
+
+                suggestions.innerHTML =
+                    "";
+
 
                 if (!matches.length) {
-                    const empty = document.createElement("div");
-                    empty.className = "suggestion-empty";
-                    empty.textContent = "No matching inputs";
-                    suggestions.appendChild(empty);
-                    suggestions.style.display = "block";
-                    activeIndex = -1;
+
+                    const empty =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    empty.className =
+                        "suggestion-empty";
+
+
+                    empty.textContent =
+                        "No matching inputs";
+
+
+                    suggestions.appendChild(
+                        empty
+                    );
+
+
+                    suggestions.style.display =
+                        "block";
+
+
+                    activeIndex =
+                        -1;
+
+
                     return;
                 }
 
-                if (activeIndex >= matches.length) {
-                    activeIndex = matches.length - 1;
+
+                if (
+                    activeIndex >=
+                    matches.length
+                ) {
+
+                    activeIndex =
+                        matches.length - 1;
                 }
 
-                matches.forEach((index, position) => {
-                    const item = document.createElement("div");
-                    item.className = "suggestion";
 
-                    if (position === activeIndex) {
-                        item.classList.add("active");
+                matches.forEach(
+                    (
+                        index,
+                        position
+                    ) => {
+
+                        const item =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        item.className =
+                            "suggestion";
+
+
+                        if (
+                            position ===
+                            activeIndex
+                        ) {
+
+                            item.classList.add(
+                                "active"
+                            );
+                        }
+
+
+                        const number =
+                            document.createElement(
+                                "span"
+                            );
+
+
+                        number.className =
+                            "suggestion-number";
+
+
+                        number.textContent =
+                            index + 1;
+
+
+                        const name =
+                            document.createElement(
+                                "span"
+                            );
+
+
+                        name.textContent =
+                            inputLabels[index];
+
+
+                        item.appendChild(
+                            number
+                        );
+
+
+                        item.appendChild(
+                            name
+                        );
+
+
+                        item.addEventListener(
+                            "mousedown",
+                            event => {
+
+                                event.preventDefault();
+
+                                select(
+                                    index
+                                );
+                            }
+                        );
+
+
+                        suggestions.appendChild(
+                            item
+                        );
                     }
+                );
 
-                    const number = document.createElement("span");
-                    number.className = "suggestion-number";
-                    number.textContent = index + 1;
 
-                    const name = document.createElement("span");
-                    name.textContent = inputLabels[index];
+                suggestions.style.display =
+                    "block";
 
-                    item.appendChild(number);
-                    item.appendChild(name);
-
-                    item.addEventListener("mousedown", event => {
-                        event.preventDefault();
-                        select(index);
-                    });
-
-                    suggestions.appendChild(item);
-                });
-
-                suggestions.style.display = "block";
 
                 scrollActiveIntoView();
             }
 
+
             function scrollActiveIntoView() {
-                if (activeIndex < 0) return;
+
+                if (
+                    activeIndex < 0
+                ) {
+                    return;
+                }
+
 
                 const item =
-                    suggestions.children[activeIndex];
+                    suggestions.children[
+                    activeIndex
+                    ];
+
 
                 if (item) {
+
                     item.scrollIntoView({
                         block: "nearest"
                     });
                 }
             }
 
+
             function select(index) {
-                input.value = inputLabels[index];
-                pendingRoutes[output] = index;
 
-                input.classList.add("pending");
+                /*
+                 * CRITICAL:
+                 *
+                 * Use numeric output/input indexes.
+                 */
+                const outputNumber =
+                    Number(output);
 
-                suggestions.style.display = "none";
-                activeIndex = -1;
+
+                const inputNumber =
+                    Number(index);
+
+
+                /*
+                 * Display the selected input.
+                 */
+                input.value =
+                    inputLabels[
+                    inputNumber
+                    ];
+
+
+                /*
+                 * Store the actual pending route.
+                 *
+                 * output -> input
+                 */
+                pendingRoutes[
+                    outputNumber
+                ] =
+                    inputNumber;
+
+
+                console.log(
+                    "Pending route:",
+                    `Output ${outputNumber + 1}`,
+                    "→",
+                    `Input ${inputNumber + 1}`
+                );
+
+
+                input.classList.add(
+                    "pending"
+                );
+
+
+                suggestions.style.display =
+                    "none";
+
+
+                activeIndex =
+                    -1;
+
 
                 updatePendingUI();
             }
 
-            input.addEventListener("focus", () => {
-                activeIndex = -1;
-                render();
-            });
 
-            input.addEventListener("input", () => {
-                activeIndex = -1;
-                render();
-            });
-
-            input.addEventListener("keydown", event => {
-                if (event.key === "ArrowDown") {
-                    event.preventDefault();
-
-                    if (!matches.length) {
-                        render();
-                        return;
-                    }
+            input.addEventListener(
+                "focus",
+                () => {
 
                     activeIndex =
-                        activeIndex < matches.length - 1
-                            ? activeIndex + 1
-                            : 0;
+                        -1;
 
                     render();
                 }
+            );
 
-                else if (event.key === "ArrowUp") {
-                    event.preventDefault();
 
-                    if (!matches.length) {
-                        render();
-                        return;
-                    }
+            input.addEventListener(
+                "input",
+                () => {
 
+                    /*
+                     * Typing manually does not apply anything.
+                     *
+                     * The user must select an actual input.
+                     */
                     activeIndex =
-                        activeIndex > 0
-                            ? activeIndex - 1
-                            : matches.length - 1;
+                        -1;
 
                     render();
                 }
+            );
 
-                else if (event.key === "Enter") {
-                    event.preventDefault();
+
+            input.addEventListener(
+                "keydown",
+                event => {
 
                     if (
-                        activeIndex >= 0 &&
-                        matches[activeIndex] !== undefined
+                        event.key ===
+                        "ArrowDown"
                     ) {
-                        select(matches[activeIndex]);
+
+                        event.preventDefault();
+
+
+                        if (!matches.length) {
+
+                            render();
+
+                            return;
+                        }
+
+
+                        activeIndex =
+                            activeIndex <
+                                matches.length - 1
+                                ? activeIndex + 1
+                                : 0;
+
+
+                        render();
+
                     }
-                    else if (matches.length === 1) {
-                        select(matches[0]);
+
+                    else if (
+                        event.key ===
+                        "ArrowUp"
+                    ) {
+
+                        event.preventDefault();
+
+
+                        if (!matches.length) {
+
+                            render();
+
+                            return;
+                        }
+
+
+                        activeIndex =
+                            activeIndex > 0
+                                ? activeIndex - 1
+                                : matches.length - 1;
+
+
+                        render();
+
+                    }
+
+                    else if (
+                        event.key ===
+                        "Enter"
+                    ) {
+
+                        event.preventDefault();
+
+
+                        if (
+                            activeIndex >= 0 &&
+                            matches[
+                            activeIndex
+                            ] !== undefined
+                        ) {
+
+                            select(
+                                matches[
+                                activeIndex
+                                ]
+                            );
+
+                        }
+                        else if (
+                            matches.length === 1
+                        ) {
+
+                            select(
+                                matches[0]
+                            );
+                        }
+
+                    }
+
+                    else if (
+                        event.key ===
+                        "Escape"
+                    ) {
+
+                        event.preventDefault();
+
+
+                        suggestions.style.display =
+                            "none";
+
+
+                        activeIndex =
+                            -1;
                     }
                 }
+            );
 
-                else if (event.key === "Escape") {
-                    event.preventDefault();
-                    suggestions.style.display = "none";
-                    activeIndex = -1;
+
+            input.addEventListener(
+                "blur",
+                () => {
+
+                    setTimeout(
+                        () => {
+
+                            suggestions.style.display =
+                                "none";
+
+                        },
+                        150
+                    );
                 }
-            });
-
-            input.addEventListener("blur", () => {
-                setTimeout(() => {
-                    suggestions.style.display = "none";
-                }, 150);
-            });
+            );
         }
 
-        let pendingNames = {
-            input: {},
-            output: {}
-        };
+
+        /*
+         * ============================================================
+         * PENDING CHANGES
+         * ============================================================
+         */
 
         function pendingNameCount() {
-            return Object.keys(pendingNames.input).length +
-                Object.keys(pendingNames.output).length;
+
+            return (
+                Object.keys(
+                    pendingNames.input
+                ).length +
+
+                Object.keys(
+                    pendingNames.output
+                ).length
+            );
         }
+
 
         function totalPendingCount() {
-            return Object.keys(pendingRoutes).length +
-                pendingNameCount();
+
+            return (
+                Object.keys(
+                    pendingRoutes
+                ).length +
+
+                pendingNameCount()
+            );
         }
+
 
         function updatePendingUI() {
-            const card = document.getElementById("pendingCard");
-            const count = document.getElementById("pendingCount");
-            const changes = document.getElementById("pendingChanges");
 
-            const routeCount = Object.keys(pendingRoutes).length;
-            const nameCount = pendingNameCount();
-            const total = routeCount + nameCount;
+            const card = document.getElementById("pending-actions")
+            const dot = document.getElementById("pending-dot");
+
+
+            const count =
+                document.getElementById(
+                    "pendingCount"
+                );
+
+
+            const changes =
+                document.getElementById(
+                    "pendingChanges"
+                );
+
+
+            const total =
+                totalPendingCount();
+
 
             if (total === 0) {
+
                 card.style.display = "none";
+                dot.style.background = "#00ff45"    ;
+
                 return;
             }
-
             card.style.display = "flex";
 
+            dot.style.background = "#d6a84f";
+
+
             count.textContent =
-                `${total} change${total === 1 ? "" : "s"}`;
+                `${total} Pending Routes${total === 1
+                    ? ""
+                    : "s"
+                }`;
 
-            changes.innerHTML = "";
 
-            for (const [output, input] of Object.entries(pendingRoutes)) {
-                const chip = document.createElement("span");
-                chip.className = "pending-chip";
+            changes.innerHTML =
+                "";
+
+
+            /*
+             * Routes.
+             */
+            for (
+                const [
+                    output,
+                    input
+                ]
+                of Object.entries(
+                    pendingRoutes
+                )
+            ) {
+
+                const chip =
+                    document.createElement(
+                        "span"
+                    );
+
+
+                chip.className =
+                    "pending-chip";
+
+
                 chip.textContent =
-                    `Route ${Number(output) + 1} → ${inputLabels[input] || `Input ${Number(input) + 1}`}`;
-                changes.appendChild(chip);
+                    `Route ${Number(output) + 1
+                    } → ${inputLabels[
+                    Number(input)
+                    ] ||
+                    `Input ${Number(input) + 1
+                    }`
+                    }`;
+
+
+                changes.appendChild(
+                    chip
+                );
             }
 
-            for (const [input, name] of Object.entries(pendingNames.input)) {
-                const chip = document.createElement("span");
-                chip.className = "pending-chip";
-                chip.textContent = `Input ${Number(input) + 1}: ${name}`;
-                changes.appendChild(chip);
-            }
 
-            for (const [output, name] of Object.entries(pendingNames.output)) {
-                const chip = document.createElement("span");
-                chip.className = "pending-chip";
-                chip.textContent = `Output ${Number(output) + 1}: ${name}`;
-                changes.appendChild(chip);
-            }
-        }
+            /*
+             * Input names.
+             */
+            for (
+                const [
+                    input,
+                    name
+                ]
+                of Object.entries(
+                    pendingNames.input
+                )
+            ) {
 
-        function cancelAllChanges() {
-            pendingRoutes = {};
-            pendingNames = { input: {}, output: {} };
-
-            buildRouterTable();
-            buildNameLists();
-            updatePendingUI();
-        }
-
-        async function takeAllChanges() {
-            const routeChanges = Object.entries(pendingRoutes);
-            const inputChanges = Object.entries(pendingNames.input);
-            const outputChanges = Object.entries(pendingNames.output);
-
-            if (!routeChanges.length &&
-                !inputChanges.length &&
-                !outputChanges.length) {
-                return;
-            }
-
-            try {
-                for (const [input, name] of inputChanges) {
-                    const result = await apiGet(
-                        `${apiBase()}/setinputname/` +
-                        `${encodeURIComponent(input)}/` +
-                        `${encodeURIComponent(name)}`
+                const chip =
+                    document.createElement(
+                        "span"
                     );
 
-                    if (result.success === false) {
-                        throw new Error(
-                            result.error || `Input ${Number(input) + 1} name rejected.`
-                        );
-                    }
-                }
 
-                for (const [output, name] of outputChanges) {
-                    const result = await apiGet(
-                        `${apiBase()}/setoutputname/` +
-                        `${encodeURIComponent(output)}/` +
-                        `${encodeURIComponent(name)}`
-                    );
+                chip.className =
+                    "pending-chip";
 
-                    if (result.success === false) {
-                        throw new Error(
-                            result.error || `Output ${Number(output) + 1} name rejected.`
-                        );
-                    }
-                }
 
-                for (const [output, input] of routeChanges) {
-                    const result = await apiGet(
-                        `${apiBase()}/setroute/` +
-                        `${encodeURIComponent(input)}/` +
-                        `${encodeURIComponent(output)}`
-                    );
+                chip.textContent =
+                    `Input ${Number(input) + 1
+                    }: ${name}`;
 
-                    if (result.success === false) {
-                        throw new Error(
-                            result.error || `Route ${Number(output) + 1} rejected.`
-                        );
-                    }
-                }
 
-                pendingRoutes = {};
-                pendingNames = { input: {}, output: {} };
-
-                updatePendingUI();
-                await loadStatus();
-
-                showNotice("All changes successfully saved.");
+                changes.appendChild(
+                    chip
+                );
             }
-            catch (error) {
-                console.error(error);
-                showNotice(
-                    `Error saving changes: ${error.message}`,
-                    true
+
+
+            /*
+             * Output names.
+             */
+            for (
+                const [
+                    output,
+                    name
+                ]
+                of Object.entries(
+                    pendingNames.output
+                )
+            ) {
+
+                const chip =
+                    document.createElement(
+                        "span"
+                    );
+
+
+                chip.className =
+                    "pending-chip";
+
+
+                chip.textContent =
+                    `Output ${Number(output) + 1
+                    }: ${name}`;
+
+
+                changes.appendChild(
+                    chip
                 );
             }
         }
 
-        // Keep the old function name working for Ctrl+Y.
+
+        function cancelAllChanges() {
+
+            pendingRoutes = {};
+
+
+            pendingNames = {
+                input: {},
+                output: {}
+            };
+
+
+            buildRouterTable();
+
+            buildNameLists();
+
+            updatePendingUI();
+        }
+
+
+        /*
+         * ============================================================
+         * SAVE / TAKE
+         * ============================================================
+         */
+
+        async function takeAllChanges() {
+
+            /*
+             * Take a complete snapshot.
+             *
+             * Automatic refreshes cannot modify this snapshot.
+             */
+            const routeChanges =
+                Object.entries({
+                    ...pendingRoutes
+                });
+
+
+            const inputChanges =
+                Object.entries({
+                    ...pendingNames.input
+                });
+
+
+            const outputChanges =
+                Object.entries({
+                    ...pendingNames.output
+                });
+
+
+            if (
+                !routeChanges.length &&
+                !inputChanges.length &&
+                !outputChanges.length
+            ) {
+
+                return;
+            }
+
+
+            /*
+             * Block auto-refresh while saving.
+             */
+            saveInProgress =
+                true;
+
+
+            try {
+
+                /*
+                 * ----------------------------------------------------
+                 * INPUT NAMES
+                 * ----------------------------------------------------
+                 */
+                for (
+                    const [
+                        input,
+                        name
+                    ]
+                    of inputChanges
+                ) {
+
+                    console.log(
+                        "Saving input name:",
+                        input,
+                        name
+                    );
+
+
+                    const result =
+                        await apiGet(
+                            `${apiBase()}/setinputname/` +
+                            `${encodeURIComponent(input)}/` +
+                            `${encodeURIComponent(name)}`
+                        );
+
+
+                    if (
+                        result.success === false
+                    ) {
+
+                        throw new Error(
+                            result.error ||
+                            `Input ${Number(input) + 1
+                            } name rejected.`
+                        );
+                    }
+                }
+
+
+                /*
+                 * ----------------------------------------------------
+                 * OUTPUT NAMES
+                 * ----------------------------------------------------
+                 */
+                for (
+                    const [
+                        output,
+                        name
+                    ]
+                    of outputChanges
+                ) {
+
+                    console.log(
+                        "Saving output name:",
+                        output,
+                        name
+                    );
+
+
+                    const result =
+                        await apiGet(
+                            `${apiBase()}/setoutputname/` +
+                            `${encodeURIComponent(output)}/` +
+                            `${encodeURIComponent(name)}`
+                        );
+
+
+                    if (
+                        result.success === false
+                    ) {
+
+                        throw new Error(
+                            result.error ||
+                            `Output ${Number(output) + 1
+                            } name rejected.`
+                        );
+                    }
+                }
+
+
+                /*
+                 * ----------------------------------------------------
+                 * ROUTES
+                 * ----------------------------------------------------
+                 *
+                 * The expected API format is:
+                 *
+                 * /setroute/{input}/{output}
+                 *
+                 * Example:
+                 *
+                 * Output 1 -> Input 5
+                 *
+                 * /setroute/4/0
+                 *
+                 * because the UI indexes from zero.
+                 */
+                for (
+                    const [
+                        output,
+                        input
+                    ]
+                    of routeChanges
+                ) {
+
+                    const outputNumber =
+                        Number(output);
+
+
+                    const inputNumber =
+                        Number(input);
+
+
+                    console.log(
+                        "APPLYING ROUTE:",
+                        {
+                            output:
+                                outputNumber,
+                            input:
+                                inputNumber,
+
+                            humanReadable:
+                                `Output ${outputNumber + 1
+                                } → Input ${inputNumber + 1
+                                }`
+                        }
+                    );
+
+
+                    const url =
+                        `${apiBase()}/setroute/` +
+                        `${encodeURIComponent(
+                            inputNumber
+                        )}/` +
+                        `${encodeURIComponent(
+                            outputNumber
+                        )}`;
+
+
+                    console.log(
+                        "Route request:",
+                        url
+                    );
+
+
+                    const result =
+                        await apiGet(
+                            url
+                        );
+
+
+                    console.log(
+                        "Route response:",
+                        result
+                    );
+
+
+                    if (
+                        result.success === false
+                    ) {
+
+                        throw new Error(
+                            result.error ||
+                            `Route ${outputNumber + 1
+                            } rejected.`
+                        );
+                    }
+                }
+
+
+                /*
+                 * ONLY clear changes after EVERY request succeeded.
+                 */
+                for (
+                    const [
+                        output
+                    ]
+                    of routeChanges
+                ) {
+
+                    delete pendingRoutes[
+                        Number(output)
+                    ];
+                }
+
+
+                for (
+                    const [
+                        input
+                    ]
+                    of inputChanges
+                ) {
+
+                    delete pendingNames.input[
+                        Number(input)
+                    ];
+                }
+
+
+                for (
+                    const [
+                        output
+                    ]
+                    of outputChanges
+                ) {
+
+                    delete pendingNames.output[
+                        Number(output)
+                    ];
+                }
+
+
+                updatePendingUI();
+
+
+                /*
+                 * Now retrieve the actual state from the router.
+                 */
+                saveInProgress =
+                    false;
+
+
+                await loadStatus({
+                    silent: true
+                });
+
+
+                showNotice(
+                    "All changes successfully saved."
+                );
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Error applying changes:",
+                    error
+                );
+
+
+                /*
+                 * DO NOT clear pending changes on failure.
+                 */
+                if (
+                    error.message !==
+                    "Authentication required."
+                ) {
+
+                    showNotice(
+                        `Error saving changes: ${error.message}`,
+                        true
+                    );
+                }
+
+            }
+            finally {
+
+                saveInProgress =
+                    false;
+            }
+        }
+
+
+        /*
+         * Compatibility with old Ctrl+Y behavior.
+         */
         async function takeRoutes() {
+
             await takeAllChanges();
         }
 
+
+        /*
+         * ============================================================
+         * NAMES DRAWER
+         * ============================================================
+         */
+
         function openNames() {
-            document
-                .getElementById("namesDrawer")
-                .classList.add("open");
 
             document
-                .getElementById("overlay")
-                .classList.add("open");
+                .getElementById(
+                    "namesDrawer"
+                )
+                .classList.add(
+                    "open"
+                );
 
-            document.getElementById("nameSearch").focus();
+
+            document
+                .getElementById(
+                    "overlay"
+                )
+                .classList.add(
+                    "open"
+                );
+
+
+            document
+                .getElementById(
+                    "nameSearch"
+                )
+                .focus();
         }
+
 
         function closeNames() {
-            document
-                .getElementById("namesDrawer")
-                .classList.remove("open");
 
             document
-                .getElementById("overlay")
-                .classList.remove("open");
+                .getElementById(
+                    "namesDrawer"
+                )
+                .classList.remove(
+                    "open"
+                );
+
+
+            document
+                .getElementById(
+                    "overlay"
+                )
+                .classList.remove(
+                    "open"
+                );
         }
 
+
         function buildNameLists() {
+
             buildInputNames();
+
             buildOutputNames();
+
             filterNames();
         }
 
+
         function buildInputNames() {
+
             const container =
-                document.getElementById("inputNames");
+                document.getElementById(
+                    "inputNames"
+                );
 
-            container.innerHTML = "";
 
-            for (const input of sortedKeys(inputLabels)) {
+            container.innerHTML =
+                "";
+
+
+            for (
+                const input
+                of sortedKeys(
+                    inputLabels
+                )
+            ) {
+
                 container.appendChild(
                     createNameRow(
                         "input",
@@ -1137,13 +2829,26 @@
             }
         }
 
+
         function buildOutputNames() {
+
             const container =
-                document.getElementById("outputNames");
+                document.getElementById(
+                    "outputNames"
+                );
 
-            container.innerHTML = "";
 
-            for (const output of sortedKeys(outputLabels)) {
+            container.innerHTML =
+                "";
+
+
+            for (
+                const output
+                of sortedKeys(
+                    outputLabels
+                )
+            ) {
+
                 container.appendChild(
                     createNameRow(
                         "output",
@@ -1155,171 +2860,339 @@
         }
 
 
-    function createNameRow(type, number, currentName) {
-    const row = document.createElement("div");
-    row.className = "name-row";
+        function createNameRow(
+            type,
+            number,
+            currentName
+        ) {
 
-    row.dataset.search =
-        `${ number + 1 } ${ currentName } `.toLowerCase();
+            const row =
+                document.createElement(
+                    "div"
+                );
 
-    const numberElement = document.createElement("div");
-    numberElement.className = "name-number";
-    numberElement.textContent = number + 1;
 
-    const input = document.createElement("input");
-    input.className = "name-input";
+            row.className =
+                "name-row";
 
-    const pendingValue = pendingNames[type][number];
 
-    input.value =
-        pendingValue !== undefined
-            ? pendingValue
-            : (currentName || "");
+            row.dataset.type =
+                type;
 
-    if (pendingValue !== undefined) {
-        input.classList.add("dirty");
-        row.classList.add("dirty");
-    }
 
-    const button = document.createElement("button");
-    button.className = "save-name";
+            row.dataset.number =
+                String(number);
 
-    button.textContent =
-        pendingValue !== undefined
-            ? "Pending"
-            : "Save";
 
-    if (pendingValue !== undefined) {
-        button.classList.add("dirty");
-    }
+            row.dataset.search =
+                `${number + 1} ${currentName || ""
+                    }`.toLowerCase();
 
-    // Name changes immediately go into the pending queue.
-    input.addEventListener("input", () => {
-        const name = input.value.trim();
-        const original = type === "input"
-            ? (inputLabels[number] || "")
-            : (outputLabels[number] || "");
 
-        if (!name) {
-            delete pendingNames[type][number];
+            const numberElement =
+                document.createElement(
+                    "div"
+                );
 
-            input.classList.remove("dirty");
-            row.classList.remove("dirty");
-            button.classList.remove("dirty");
-            button.textContent = "Save";
 
-            updatePendingUI();
-            return;
+            numberElement.className =
+                "name-number";
+
+
+            numberElement.textContent =
+                number + 1;
+
+
+            const input =
+                document.createElement(
+                    "input"
+                );
+
+
+            input.className =
+                "name-input";
+
+
+            input.type =
+                "text";
+
+
+            input.autocomplete =
+                "off";
+
+
+            const pendingValue =
+                pendingNames[
+                type
+                ][number];
+
+
+            input.value =
+                pendingValue !== undefined
+                    ? pendingValue
+                    : (
+                        currentName ||
+                        ""
+                    );
+
+
+            if (
+                pendingValue !== undefined
+            ) {
+
+                input.classList.add(
+                    "dirty"
+                );
+
+                row.classList.add(
+                    "dirty"
+                );
+            }
+
+
+            input.addEventListener(
+                "input",
+                () => {
+
+                    const name =
+                        input.value.trim();
+
+
+                    const original =
+                        type === "input"
+                            ? (
+                                inputLabels[
+                                number
+                                ] || ""
+                            )
+                            : (
+                                outputLabels[
+                                number
+                                ] || ""
+                            );
+
+
+                    /*
+                     * Empty means no pending change.
+                     */
+                    if (!name) {
+
+                        delete pendingNames[
+                            type
+                        ][number];
+
+
+                        input.classList.remove(
+                            "dirty"
+                        );
+
+
+                        row.classList.remove(
+                            "dirty"
+                        );
+
+
+                        updatePendingUI();
+
+                        return;
+                    }
+
+
+                    /*
+                     * Same as router state means no pending change.
+                     */
+                    if (
+                        name === original
+                    ) {
+
+                        delete pendingNames[
+                            type
+                        ][number];
+
+
+                        input.classList.remove(
+                            "dirty"
+                        );
+
+
+                        row.classList.remove(
+                            "dirty"
+                        );
+
+
+                        updatePendingUI();
+
+                        return;
+                    }
+
+
+                    /*
+                     * Store pending name.
+                     */
+                    pendingNames[
+                        type
+                    ][number] =
+                        name;
+
+
+                    input.classList.add(
+                        "dirty"
+                    );
+
+
+                    row.classList.add(
+                        "dirty"
+                    );
+
+
+                    updatePendingUI();
+                }
+            );
+
+
+            row.appendChild(
+                numberElement
+            );
+
+
+            row.appendChild(
+                input
+            );
+
+
+            return row;
         }
-
-        if (name === original) {
-            delete pendingNames[type][number];
-
-            input.classList.remove("dirty");
-            row.classList.remove("dirty");
-            button.classList.remove("dirty");
-            button.textContent = "Save";
-
-            updatePendingUI();
-            return;
-        }
-
-        pendingNames[type][number] = name;
-
-        input.classList.add("dirty");
-        row.classList.add("dirty");
-        button.classList.add("dirty");
-        button.textContent = "Pending";
-
-        updatePendingUI();
-    });
-
-    // Keep the button as a visual indication that the change is pending.
-    // Clicking it no longer sends anything to the router.
-    button.onclick = () => {
-        input.focus();
-    };
-
-    row.appendChild(numberElement);
-    row.appendChild(input);
-   // row.appendChild(button);
-
-    return row;
-}
-
-
-// Kept for compatibility if anything else calls saveName().
-
-
 
 
         function filterNames() {
+
             const search =
-                document.getElementById("nameSearch")
+                document
+                    .getElementById(
+                        "nameSearch"
+                    )
                     .value
                     .trim()
                     .toLowerCase();
 
-            document.querySelectorAll(".name-row")
-                .forEach(row => {
-                    row.style.display =
-                        row.dataset.search.includes(search)
-                            ? "grid"
-                            : "none";
-                });
+
+            document
+                .querySelectorAll(
+                    ".name-row"
+                )
+                .forEach(
+                    row => {
+
+                        row.style.display =
+                            row.dataset.search
+                                .includes(
+                                    search
+                                )
+                                ? "grid"
+                                : "none";
+                    }
+                );
         }
 
-        function saveName(type, number, input, button) {
-            const name = input.value.trim();
 
-            const original =
-                type === "input"
-                    ? (inputLabels[number] || "")
-                    : (outputLabels[number] || "");
+        /*
+         * ============================================================
+         * KEYBOARD SHORTCUTS
+         * ============================================================
+         */
 
-            if (name === original) {
-                delete pendingNames[type][number];
-                input.classList.remove("dirty");
-                button.classList.remove("dirty");
-                button.textContent = "Save";
-                updatePendingUI();
-                return;
-            }
+        document.addEventListener(
+            "keydown",
+            event => {
 
-            if (!name) {
-                showNotice("Name cannot be empty.", true);
-                return;
-            }
+                /*
+                 * Ctrl+Y = Save & TAKE.
+                 */
+                if (
+                    event.ctrlKey &&
+                    event.key.toLowerCase() === "y"
+                ) {
 
-            pendingNames[type][number] = name;
+                    event.preventDefault();
 
-            input.classList.add("dirty");
-            button.classList.add("dirty");
-            button.textContent = "Pending";
+                    if (
+                        totalPendingCount() > 0
+                    ) {
 
-            updatePendingUI();
-        }
+                        takeAllChanges();
+                    }
+                }
 
-        document.addEventListener("keydown", event => {
-            if (
-                event.ctrlKey &&
-                event.key.toLowerCase() === "y"
-            ) {
-                event.preventDefault();
 
-                if (Object.keys(pendingRoutes).length) {
-                    takeRoutes();
+                /*
+                 * Escape closes drawer.
+                 */
+                if (
+                    event.key === "Escape"
+                ) {
+
+                    closeNames();
                 }
             }
+        );
 
-            if (event.key === "Escape") {
-                closeNames();
+
+        /*
+         * ============================================================
+         * AUTOMATIC REFRESH
+         * ============================================================
+         */
+
+        async function autoRefresh() {
+
+            /*
+             * Don't refresh while saving.
+             */
+            if (
+                !saveInProgress &&
+                !refreshInProgress
+            ) {
+
+                await loadStatus({
+                    silent: true
+                });
             }
-        });
 
-        loadDeviceInfo();
-        loadStatus();
+
+            /*
+             * Schedule the NEXT refresh only after this one
+             * has completed.
+             *
+             * This prevents overlapping requests.
+             */
+            setTimeout(
+                autoRefresh,
+                AUTO_REFRESH_MS
+            );
+        }
+
+
+        /*
+         * ============================================================
+         * START
+         * ============================================================
+         */
+
+        (async function start() {
+
+            await loadDeviceInfo();
+
+            await loadStatus();
+
+            /*
+             * Start automatic refresh after initial load.
+             */
+
+
+        })();
+
     </script>
 
 </body>
 </html>
+

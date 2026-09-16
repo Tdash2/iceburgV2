@@ -1,0 +1,50 @@
+{
+  "ApplicationName": "Iceburg",
+  "Version": "2.0.1",
+  "Settings": {
+    "AutoStart": true,
+    "RefreshIntervalSeconds": 30,
+    "DebugMode": false
+  },
+  "Users": [
+    {
+      "Id": "638cad00-21cc-4dc0-b8fa-d3a28ed0676e",
+      "Username": "admin",
+      "PasswordSalt": "gLQ05wqfs32CDMtxKGDyrAXk5witOPMjEAnRlyXISlg=",
+      "PasswordHash": "mMenU/729bHchMpmNmCyfTpcN\u002BPWEEnvYa/hLwfJ44k=",
+      "Role": "Admin"
+    }
+  ],
+  "Devices": [
+    {
+      "Id": "9f0eabdd-eb38-49a5-b3a1-16dd354ca03b",
+      "Name": "Tally1",
+      "Type": "2",
+      "IpAddress": "10.0.01",
+      "AudioSorce": "",
+      "LastSeen": "9/15/2026 6:48:27 PM",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "5e48f87e-bcba-4202-b3eb-9aa232037217",
+      "Name": "HEX-3 Router",
+      "Type": "1",
+      "IpAddress": "10.176.73.40",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "15e2c83e-be4f-4734-b68e-496049ca83ca",
+      "Name": "HEX 3 X32",
+      "Type": "3",
+      "IpAddress": "10.176.73.32",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    }
+  ]
+}

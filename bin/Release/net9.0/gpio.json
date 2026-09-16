@@ -1,0 +1,142 @@
+{
+  "Devices": [
+    {
+      "DeviceId": "9f0eabdd-eb38-49a5-b3a1-16dd354ca03b",
+      "Name": "Tally1",
+      "Nickname": "Tally1",
+      "IpAddress": "10.0.01",
+      "Inputs": [
+        {
+          "InputId": "4bfff1e9ab8b42e3aab8694325f9ac2d",
+          "Port": 1,
+          "Name": "Input 1",
+          "Nickname": "Input 1",
+          "Status": false
+        },
+        {
+          "InputId": "29fd35fa5cb14b66b882424e337736e6",
+          "Port": 2,
+          "Name": "Input 2",
+          "Nickname": "Input 2",
+          "Status": false
+        },
+        {
+          "InputId": "54bdf5181b8d4d7ebcfbd7ca506d3571",
+          "Port": 3,
+          "Name": "Input 3",
+          "Nickname": "Input 3",
+          "Status": false
+        },
+        {
+          "InputId": "04d6122987f64cd991e4805346970ee1",
+          "Port": 4,
+          "Name": "Input 4",
+          "Nickname": "Input 4",
+          "Status": false
+        },
+        {
+          "InputId": "78cfc22b55d447e6a78eb7131b61bb13",
+          "Port": 5,
+          "Name": "Input 5",
+          "Nickname": "Input 5",
+          "Status": false
+        },
+        {
+          "InputId": "fccce265d3964d96a361b7bae79c5269",
+          "Port": 6,
+          "Name": "Input 6",
+          "Nickname": "Input 6",
+          "Status": false
+        },
+        {
+          "InputId": "ebf50322328b4709aa254147dbf2043d",
+          "Port": 7,
+          "Name": "Input 7",
+          "Nickname": "Input 7",
+          "Status": false
+        }
+      ],
+      "Outputs": [
+        {
+          "OutputId": "21136021ea7941dc88b9d0f3e18a25ca",
+          "Port": 1,
+          "Name": "Output 1",
+          "Nickname": "Output 1",
+          "Status": false
+        },
+        {
+          "OutputId": "b614206fcabf49288ddd7bbd198a5423",
+          "Port": 2,
+          "Name": "Output 2",
+          "Nickname": "Output 2",
+          "Status": false
+        },
+        {
+          "OutputId": "bc9a3bd8e2844e14b104d331bbe6b011",
+          "Port": 3,
+          "Name": "Output 3",
+          "Nickname": "Output 3",
+          "Status": false
+        },
+        {
+          "OutputId": "e95521bdc1e0460ab33f95b39141f846",
+          "Port": 4,
+          "Name": "Output 4",
+          "Nickname": "Output 4",
+          "Status": false
+        },
+        {
+          "OutputId": "4491b1dda4db414da278152187b1c1f1",
+          "Port": 5,
+          "Name": "Output 5",
+          "Nickname": "Output 5",
+          "Status": false
+        },
+        {
+          "OutputId": "6a62da1bd2bb4c92859c54a877876cee",
+          "Port": 6,
+          "Name": "Output 6",
+          "Nickname": "Output 6",
+          "Status": false
+        },
+        {
+          "OutputId": "5c6d3c2867e14ac691a7a3b4bc13f2ed",
+          "Port": 7,
+          "Name": "Output 7",
+          "Nickname": "Output 7",
+          "Status": false
+        }
+      ],
+      "Routes": [
+        {
+          "SourceDeviceId": "9f0eabdd-eb38-49a5-b3a1-16dd354ca03b",
+          "OutputId": "b614206fcabf49288ddd7bbd198a5423",
+          "InputIds": [
+            "29fd35fa5cb14b66b882424e337736e6"
+          ]
+        },
+        {
+          "SourceDeviceId": "9f0eabdd-eb38-49a5-b3a1-16dd354ca03b",
+          "OutputId": "21136021ea7941dc88b9d0f3e18a25ca",
+          "InputIds": [
+            "4bfff1e9ab8b42e3aab8694325f9ac2d"
+          ]
+        },
+        {
+          "SourceDeviceId": "9f0eabdd-eb38-49a5-b3a1-16dd354ca03b",
+          "OutputId": "bc9a3bd8e2844e14b104d331bbe6b011",
+          "InputIds": [
+            "54bdf5181b8d4d7ebcfbd7ca506d3571"
+          ]
+        },
+        {
+          "SourceDeviceId": "9f0eabdd-eb38-49a5-b3a1-16dd354ca03b",
+          "OutputId": "e95521bdc1e0460ab33f95b39141f846",
+          "InputIds": [
+            "04d6122987f64cd991e4805346970ee1"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -59,6 +59,7 @@ namespace Iceburg.Database
         private static AppConfig _data = new();
 
         // ============================================================
+
         // DATA
         // ============================================================
 
@@ -172,6 +173,8 @@ namespace Iceburg.Database
                     }
                 }
             }
+
+            TallyDatabase.Initialize();
         }
 
         // ============================================================
@@ -1068,14 +1071,16 @@ namespace Iceburg.Database
         // ============================================================
 
         public static Device AddDevice(
-            string name,
-            string type,
-            string ipAddress,
-            Guid? audioSource = null)
+     string name,
+     string type,
+     string ipAddress,
+     Guid? audioSource = null,
+     string lastSeen = "",
+     string username = "",
+     string password = "")
         {
             lock (_lock)
             {
-                // Always reload before modifying.
                 ReloadInternal();
 
                 Device device = new()
@@ -1085,12 +1090,17 @@ namespace Iceburg.Database
                     Type = type,
                     IpAddress = ipAddress,
                     AudioSorce =
-                        audioSource?.ToString() ?? ""
+                        audioSource?.ToString() ?? "",
+                    LastSeen = lastSeen,
+                    Username = username,
+                    Password = password
                 };
 
                 _data.Devices.Add(device);
 
                 SaveInternal();
+
+                TallyDatabase.SyncDevices();
 
                 return CloneDevice(device);
             }
@@ -1120,6 +1130,8 @@ namespace Iceburg.Database
 
                 SaveInternal();
 
+                TallyDatabase.SyncDevices();
+
                 return CloneDevice(newDevice);
             }
         }
@@ -1148,6 +1160,8 @@ namespace Iceburg.Database
                 _data.Devices.Remove(device);
 
                 SaveInternal();
+
+                TallyDatabase.SyncDevices();
 
                 return true;
             }
@@ -1188,7 +1202,21 @@ namespace Iceburg.Database
                 device.AudioSorce =
                     updatedDevice.AudioSorce;
 
+                device.AudioSorce =
+     updatedDevice.AudioSorce;
+
+                device.LastSeen =
+                    updatedDevice.LastSeen;
+
+                device.Username =
+                    updatedDevice.Username;
+
+                device.Password =
+                    updatedDevice.Password;
+
                 SaveInternal();
+
+                TallyDatabase.SyncDevices();
 
                 return true;
             }
@@ -1270,6 +1298,7 @@ namespace Iceburg.Database
         }
 
         // ============================================================
+
         // CONFIG FILE INFORMATION
         // ============================================================
 
@@ -1329,7 +1358,10 @@ namespace Iceburg.Database
                 Name = device.Name,
                 Type = device.Type,
                 IpAddress = device.IpAddress,
-                AudioSorce = device.AudioSorce
+                AudioSorce = device.AudioSorce,
+                LastSeen = device.LastSeen,
+                Username = device.Username,
+                Password = device.Password
             };
         }
 
@@ -1371,6 +1403,7 @@ namespace Iceburg.Database
     }
 
     // ================================================================
+
     // APP CONFIGURATION
     // ================================================================
 
@@ -1452,6 +1485,28 @@ namespace Iceburg.Database
             = "";
 
         public string AudioSorce { get; set; }
+            = "";
+
+        /// <summary>
+        /// Last time the device was seen/reachable.
+        /// Stored as a string.
+        /// </summary>
+        public string LastSeen { get; set; }
+            = "";
+
+        /// <summary>
+        /// Username used to connect to the device.
+        /// </summary>
+        public string Username { get; set; }
+            = "";
+
+        /// <summary>
+        /// Plaintext password used to connect to the device.
+        ///
+        /// This is intentionally NOT hashed because the plaintext
+        /// value is required when connecting to the device.
+        /// </summary>
+        public string Password { get; set; }
             = "";
     }
 }

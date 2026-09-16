@@ -1,0 +1,3185 @@
+{
+  "Version": 1,
+  "Hash": "Dt++jMxgCoig18f3z3jqQn4g9NRhx421mXOeXstn47k=",
+  "Source": "IceburgV2",
+  "BasePath": "_content/IceburgV2",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "IceburgV2\\wwwroot",
+      "Source": "IceburgV2",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\",
+      "BasePath": "_content/IceburgV2",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\0hzw8gxc77-8qmfkp6y8a.gz",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "BMDRouter#[.{fingerprint=8qmfkp6y8a}]?.html.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\BMDRouter.html",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "ox8yg29dvz",
+      "Integrity": "vImTEA7efX4kXJBQ+9vcFFatL++avGTpF5vhTX3ZhPA=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\BMDRouter.html"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\blczlm4liu-ru0oetttc5.gz",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "favicon#[.{fingerprint=ru0oetttc5}]?.ico.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\favicon.ico",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "nipkv7s4nl",
+      "Integrity": "0YbyhRwrnO+cq/DouL8lFFWMXXWZchLLKCtNfeh0tuU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\d4lh3gph92-2d2ybhyatv.gz",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "tally#[.{fingerprint=2d2ybhyatv}]?.html.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\tally.html",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "xi2w4dwyys",
+      "Integrity": "ySwwSEi0NXcY4g07GG7dsT6okzvOdyZBqJW4ufC3o2M=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\tally.html"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\dmxrfynz0q-aftefe1v4o.gz",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "index#[.{fingerprint=aftefe1v4o}]?.html.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\index.html",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "6yysyiwrkv",
+      "Integrity": "7kn+WkSsD55CNnjfAR52rxCdpI4uwpSJoHgB7PfEl94=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\index.html"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\jbr6thvk5v-22rpebcvhe.gz",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "tallygrid#[.{fingerprint=22rpebcvhe}]?.html.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\tallygrid.html",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "j6pvcf294p",
+      "Integrity": "xeYPp54k0z2wKnqiGW4NtUbwkunNZLZp4I0ghKu/9WI=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\tallygrid.html"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\kpfn3dks1g-3g2k0t2rwy.gz",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "dashboard#[.{fingerprint=3g2k0t2rwy}]?.html.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\dashboard.html",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "o8bc0orh3b",
+      "Integrity": "6BOA0Hx8YpV5MDVTTHFhBanj2cxcbd4hev6YA5tev5Y=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\dashboard.html"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\okobdvbsjo-ru0oetttc5.gz",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "favacon#[.{fingerprint=ru0oetttc5}]?.ico.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\favacon.ico",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "nipkv7s4nl",
+      "Integrity": "0YbyhRwrnO+cq/DouL8lFFWMXXWZchLLKCtNfeh0tuU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\favacon.ico"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\pg787zh4me-oiujy28xem.gz",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "login#[.{fingerprint=oiujy28xem}]?.html.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\login.html",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "thihlhwh71",
+      "Integrity": "Hy+VhvqFrhnrlEbUBp8n28AMN7xQPtUvTrH9VSq+QMY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\login.html"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\wo6imnfwaf-h63951f5hr.gz",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "x32#[.{fingerprint=h63951f5hr}]?.html.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\x32.html",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "4djriihliu",
+      "Integrity": "yMQFUTrHH8gefRMEq9Hdpoo4AbtwrPvhRYgXYxI9SRE=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\x32.html"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\BMDRouter.html",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "BMDRouter#[.{fingerprint}]?.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "8qmfkp6y8a",
+      "Integrity": "MGerkrz7JuGD4JgsRD7oSCIuli8VHkgXuf6vYlh2ej0=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\BMDRouter.html"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\dashboard.html",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "dashboard#[.{fingerprint}]?.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "3g2k0t2rwy",
+      "Integrity": "Y725ikRgsCVQOdGhUvqQM+WEL8GBDhtQFUEUWTnJS3k=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\dashboard.html"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\favacon.ico",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "favacon#[.{fingerprint}]?.ico",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ru0oetttc5",
+      "Integrity": "rXPBiAwteRbz4u33HXF6hrt1mJp1ujtF4Y56gk1ehHU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\favacon.ico"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\favicon.ico",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "favicon#[.{fingerprint}]?.ico",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ru0oetttc5",
+      "Integrity": "rXPBiAwteRbz4u33HXF6hrt1mJp1ujtF4Y56gk1ehHU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\Iceburg Log.png",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "Iceburg Log#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "aroj0ftufp",
+      "Integrity": "FvBAgLih9HMBmG9FRuS7l77p65U7tVxPLDQepgfYSqw=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Iceburg Log.png"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\index.html",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "index#[.{fingerprint}]?.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "aftefe1v4o",
+      "Integrity": "ijwzroK8bybZY1FPcLQ+PRhps3nrqT297UOUIZEm4XQ=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\index.html"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\login.html",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "login#[.{fingerprint}]?.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "oiujy28xem",
+      "Integrity": "wHRgq7vaeF3I96S7+sAldqNSd1+DCf52ShJhVjK4vWM=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\login.html"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\tally.html",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "tally#[.{fingerprint}]?.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "2d2ybhyatv",
+      "Integrity": "dq/Oz/iOQtNvzYOY/LERFbwqpXPWhH/q3Mi5Oawe6SQ=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\tally.html"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\tallygrid.html",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "tallygrid#[.{fingerprint}]?.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "22rpebcvhe",
+      "Integrity": "xlBqyMJB4QSd9Wj6Lb9xnieY1v/KARaY24lbWhcnaa0=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\tallygrid.html"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\x32.html",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "x32#[.{fingerprint}]?.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "h63951f5hr",
+      "Integrity": "p45o4710I3CknU0DKU14ozeG/MoQs5hFq3+Rx5kAJMg=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\x32.html"
+    }
+  ],
+  "Endpoints": [
+    {
+      "Route": "BMDRouter.8qmfkp6y8a.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\0hzw8gxc77-8qmfkp6y8a.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000087017055"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "11491"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vImTEA7efX4kXJBQ+9vcFFatL++avGTpF5vhTX3ZhPA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 16 Sep 2026 01:11:14 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"MGerkrz7JuGD4JgsRD7oSCIuli8VHkgXuf6vYlh2ej0=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "8qmfkp6y8a"
+        },
+        {
+          "Name": "label",
+          "Value": "BMDRouter.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-MGerkrz7JuGD4JgsRD7oSCIuli8VHkgXuf6vYlh2ej0="
+        }
+      ]
+    },
+    {
+      "Route": "BMDRouter.8qmfkp6y8a.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\BMDRouter.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "75350"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MGerkrz7JuGD4JgsRD7oSCIuli8VHkgXuf6vYlh2ej0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 16 Sep 2026 01:11:14 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "8qmfkp6y8a"
+        },
+        {
+          "Name": "label",
+          "Value": "BMDRouter.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-MGerkrz7JuGD4JgsRD7oSCIuli8VHkgXuf6vYlh2ej0="
+        }
+      ]
+    },
+    {
+      "Route": "BMDRouter.8qmfkp6y8a.html.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\0hzw8gxc77-8qmfkp6y8a.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "11491"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vImTEA7efX4kXJBQ+9vcFFatL++avGTpF5vhTX3ZhPA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 16 Sep 2026 01:11:14 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "8qmfkp6y8a"
+        },
+        {
+          "Name": "label",
+          "Value": "BMDRouter.html.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-vImTEA7efX4kXJBQ+9vcFFatL++avGTpF5vhTX3ZhPA="
+        }
+      ]
+    },
+    {
+      "Route": "BMDRouter.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\0hzw8gxc77-8qmfkp6y8a.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000087017055"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "11491"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vImTEA7efX4kXJBQ+9vcFFatL++avGTpF5vhTX3ZhPA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 16 Sep 2026 01:11:14 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"MGerkrz7JuGD4JgsRD7oSCIuli8VHkgXuf6vYlh2ej0=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-MGerkrz7JuGD4JgsRD7oSCIuli8VHkgXuf6vYlh2ej0="
+        }
+      ]
+    },
+    {
+      "Route": "BMDRouter.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\BMDRouter.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "75350"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"MGerkrz7JuGD4JgsRD7oSCIuli8VHkgXuf6vYlh2ej0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 16 Sep 2026 01:11:14 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-MGerkrz7JuGD4JgsRD7oSCIuli8VHkgXuf6vYlh2ej0="
+        }
+      ]
+    },
+    {
+      "Route": "BMDRouter.html.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\0hzw8gxc77-8qmfkp6y8a.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "11491"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vImTEA7efX4kXJBQ+9vcFFatL++avGTpF5vhTX3ZhPA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 16 Sep 2026 01:11:14 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-vImTEA7efX4kXJBQ+9vcFFatL++avGTpF5vhTX3ZhPA="
+        }
+      ]
+    },
+    {
+      "Route": "dashboard.3g2k0t2rwy.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\kpfn3dks1g-3g2k0t2rwy.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000249687890"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4004"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"6BOA0Hx8YpV5MDVTTHFhBanj2cxcbd4hev6YA5tev5Y=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Sep 2026 23:49:54 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"Y725ikRgsCVQOdGhUvqQM+WEL8GBDhtQFUEUWTnJS3k=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "3g2k0t2rwy"
+        },
+        {
+          "Name": "label",
+          "Value": "dashboard.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Y725ikRgsCVQOdGhUvqQM+WEL8GBDhtQFUEUWTnJS3k="
+        }
+      ]
+    },
+    {
+      "Route": "dashboard.3g2k0t2rwy.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\dashboard.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "20797"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Y725ikRgsCVQOdGhUvqQM+WEL8GBDhtQFUEUWTnJS3k=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Sep 2026 23:49:54 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "3g2k0t2rwy"
+        },
+        {
+          "Name": "label",
+          "Value": "dashboard.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Y725ikRgsCVQOdGhUvqQM+WEL8GBDhtQFUEUWTnJS3k="
+        }
+      ]
+    },
+    {
+      "Route": "dashboard.3g2k0t2rwy.html.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\kpfn3dks1g-3g2k0t2rwy.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4004"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"6BOA0Hx8YpV5MDVTTHFhBanj2cxcbd4hev6YA5tev5Y=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Sep 2026 23:49:54 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "3g2k0t2rwy"
+        },
+        {
+          "Name": "label",
+          "Value": "dashboard.html.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-6BOA0Hx8YpV5MDVTTHFhBanj2cxcbd4hev6YA5tev5Y="
+        }
+      ]
+    },
+    {
+      "Route": "dashboard.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\kpfn3dks1g-3g2k0t2rwy.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000249687890"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4004"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"6BOA0Hx8YpV5MDVTTHFhBanj2cxcbd4hev6YA5tev5Y=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Sep 2026 23:49:54 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"Y725ikRgsCVQOdGhUvqQM+WEL8GBDhtQFUEUWTnJS3k=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Y725ikRgsCVQOdGhUvqQM+WEL8GBDhtQFUEUWTnJS3k="
+        }
+      ]
+    },
+    {
+      "Route": "dashboard.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\dashboard.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "20797"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Y725ikRgsCVQOdGhUvqQM+WEL8GBDhtQFUEUWTnJS3k=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Sep 2026 23:49:54 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Y725ikRgsCVQOdGhUvqQM+WEL8GBDhtQFUEUWTnJS3k="
+        }
+      ]
+    },
+    {
+      "Route": "dashboard.html.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\kpfn3dks1g-3g2k0t2rwy.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4004"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"6BOA0Hx8YpV5MDVTTHFhBanj2cxcbd4hev6YA5tev5Y=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Sep 2026 23:49:54 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-6BOA0Hx8YpV5MDVTTHFhBanj2cxcbd4hev6YA5tev5Y="
+        }
+      ]
+    },
+    {
+      "Route": "favacon.ico",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\okobdvbsjo-ru0oetttc5.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000047216582"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "21178"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"0YbyhRwrnO+cq/DouL8lFFWMXXWZchLLKCtNfeh0tuU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 27 Jul 2026 22:44:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/x-icon"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"rXPBiAwteRbz4u33HXF6hrt1mJp1ujtF4Y56gk1ehHU=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-rXPBiAwteRbz4u33HXF6hrt1mJp1ujtF4Y56gk1ehHU="
+        }
+      ]
+    },
+    {
+      "Route": "favacon.ico",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\favacon.ico",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "21964"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/x-icon"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"rXPBiAwteRbz4u33HXF6hrt1mJp1ujtF4Y56gk1ehHU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 27 Jul 2026 22:44:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-rXPBiAwteRbz4u33HXF6hrt1mJp1ujtF4Y56gk1ehHU="
+        }
+      ]
+    },
+    {
+      "Route": "favacon.ico.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\okobdvbsjo-ru0oetttc5.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "21178"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/x-icon"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"0YbyhRwrnO+cq/DouL8lFFWMXXWZchLLKCtNfeh0tuU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 27 Jul 2026 22:44:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-0YbyhRwrnO+cq/DouL8lFFWMXXWZchLLKCtNfeh0tuU="
+        }
+      ]
+    },
+    {
+      "Route": "favacon.ru0oetttc5.ico",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\okobdvbsjo-ru0oetttc5.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000047216582"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "21178"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"0YbyhRwrnO+cq/DouL8lFFWMXXWZchLLKCtNfeh0tuU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 27 Jul 2026 22:44:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/x-icon"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"rXPBiAwteRbz4u33HXF6hrt1mJp1ujtF4Y56gk1ehHU=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ru0oetttc5"
+        },
+        {
+          "Name": "label",
+          "Value": "favacon.ico"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-rXPBiAwteRbz4u33HXF6hrt1mJp1ujtF4Y56gk1ehHU="
+        }
+      ]
+    },
+    {
+      "Route": "favacon.ru0oetttc5.ico",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\favacon.ico",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "21964"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/x-icon"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"rXPBiAwteRbz4u33HXF6hrt1mJp1ujtF4Y56gk1ehHU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 27 Jul 2026 22:44:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ru0oetttc5"
+        },
+        {
+          "Name": "label",
+          "Value": "favacon.ico"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-rXPBiAwteRbz4u33HXF6hrt1mJp1ujtF4Y56gk1ehHU="
+        }
+      ]
+    },
+    {
+      "Route": "favacon.ru0oetttc5.ico.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\okobdvbsjo-ru0oetttc5.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "21178"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/x-icon"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"0YbyhRwrnO+cq/DouL8lFFWMXXWZchLLKCtNfeh0tuU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 27 Jul 2026 22:44:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ru0oetttc5"
+        },
+        {
+          "Name": "label",
+          "Value": "favacon.ico.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-0YbyhRwrnO+cq/DouL8lFFWMXXWZchLLKCtNfeh0tuU="
+        }
+      ]
+    },
+    {
+      "Route": "favicon.ico",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\blczlm4liu-ru0oetttc5.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000047216582"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "21178"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"0YbyhRwrnO+cq/DouL8lFFWMXXWZchLLKCtNfeh0tuU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 27 Jul 2026 22:44:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/x-icon"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"rXPBiAwteRbz4u33HXF6hrt1mJp1ujtF4Y56gk1ehHU=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-rXPBiAwteRbz4u33HXF6hrt1mJp1ujtF4Y56gk1ehHU="
+        }
+      ]
+    },
+    {
+      "Route": "favicon.ico",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\favicon.ico",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "21964"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/x-icon"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"rXPBiAwteRbz4u33HXF6hrt1mJp1ujtF4Y56gk1ehHU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 27 Jul 2026 22:44:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-rXPBiAwteRbz4u33HXF6hrt1mJp1ujtF4Y56gk1ehHU="
+        }
+      ]
+    },
+    {
+      "Route": "favicon.ico.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\blczlm4liu-ru0oetttc5.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "21178"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/x-icon"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"0YbyhRwrnO+cq/DouL8lFFWMXXWZchLLKCtNfeh0tuU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 27 Jul 2026 22:44:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-0YbyhRwrnO+cq/DouL8lFFWMXXWZchLLKCtNfeh0tuU="
+        }
+      ]
+    },
+    {
+      "Route": "favicon.ru0oetttc5.ico",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\blczlm4liu-ru0oetttc5.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000047216582"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "21178"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"0YbyhRwrnO+cq/DouL8lFFWMXXWZchLLKCtNfeh0tuU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 27 Jul 2026 22:44:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/x-icon"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"rXPBiAwteRbz4u33HXF6hrt1mJp1ujtF4Y56gk1ehHU=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ru0oetttc5"
+        },
+        {
+          "Name": "label",
+          "Value": "favicon.ico"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-rXPBiAwteRbz4u33HXF6hrt1mJp1ujtF4Y56gk1ehHU="
+        }
+      ]
+    },
+    {
+      "Route": "favicon.ru0oetttc5.ico",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\favicon.ico",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "21964"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/x-icon"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"rXPBiAwteRbz4u33HXF6hrt1mJp1ujtF4Y56gk1ehHU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 27 Jul 2026 22:44:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ru0oetttc5"
+        },
+        {
+          "Name": "label",
+          "Value": "favicon.ico"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-rXPBiAwteRbz4u33HXF6hrt1mJp1ujtF4Y56gk1ehHU="
+        }
+      ]
+    },
+    {
+      "Route": "favicon.ru0oetttc5.ico.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\blczlm4liu-ru0oetttc5.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "21178"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/x-icon"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"0YbyhRwrnO+cq/DouL8lFFWMXXWZchLLKCtNfeh0tuU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 27 Jul 2026 22:44:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ru0oetttc5"
+        },
+        {
+          "Name": "label",
+          "Value": "favicon.ico.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-0YbyhRwrnO+cq/DouL8lFFWMXXWZchLLKCtNfeh0tuU="
+        }
+      ]
+    },
+    {
+      "Route": "Iceburg Log.aroj0ftufp.png",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\Iceburg Log.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "209513"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"FvBAgLih9HMBmG9FRuS7l77p65U7tVxPLDQepgfYSqw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 27 Jul 2026 22:44:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "aroj0ftufp"
+        },
+        {
+          "Name": "label",
+          "Value": "Iceburg Log.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-FvBAgLih9HMBmG9FRuS7l77p65U7tVxPLDQepgfYSqw="
+        }
+      ]
+    },
+    {
+      "Route": "Iceburg Log.png",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\Iceburg Log.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "209513"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"FvBAgLih9HMBmG9FRuS7l77p65U7tVxPLDQepgfYSqw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 27 Jul 2026 22:44:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-FvBAgLih9HMBmG9FRuS7l77p65U7tVxPLDQepgfYSqw="
+        }
+      ]
+    },
+    {
+      "Route": "index.aftefe1v4o.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\dmxrfynz0q-aftefe1v4o.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.010869565217"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "91"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"7kn+WkSsD55CNnjfAR52rxCdpI4uwpSJoHgB7PfEl94=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Sep 2026 01:28:38 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"ijwzroK8bybZY1FPcLQ+PRhps3nrqT297UOUIZEm4XQ=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "aftefe1v4o"
+        },
+        {
+          "Name": "label",
+          "Value": "index.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-ijwzroK8bybZY1FPcLQ+PRhps3nrqT297UOUIZEm4XQ="
+        }
+      ]
+    },
+    {
+      "Route": "index.aftefe1v4o.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\index.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "77"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ijwzroK8bybZY1FPcLQ+PRhps3nrqT297UOUIZEm4XQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Sep 2026 01:28:38 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "aftefe1v4o"
+        },
+        {
+          "Name": "label",
+          "Value": "index.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-ijwzroK8bybZY1FPcLQ+PRhps3nrqT297UOUIZEm4XQ="
+        }
+      ]
+    },
+    {
+      "Route": "index.aftefe1v4o.html.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\dmxrfynz0q-aftefe1v4o.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "91"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"7kn+WkSsD55CNnjfAR52rxCdpI4uwpSJoHgB7PfEl94=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Sep 2026 01:28:38 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "aftefe1v4o"
+        },
+        {
+          "Name": "label",
+          "Value": "index.html.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-7kn+WkSsD55CNnjfAR52rxCdpI4uwpSJoHgB7PfEl94="
+        }
+      ]
+    },
+    {
+      "Route": "index.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\dmxrfynz0q-aftefe1v4o.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.010869565217"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "91"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"7kn+WkSsD55CNnjfAR52rxCdpI4uwpSJoHgB7PfEl94=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Sep 2026 01:28:38 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"ijwzroK8bybZY1FPcLQ+PRhps3nrqT297UOUIZEm4XQ=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-ijwzroK8bybZY1FPcLQ+PRhps3nrqT297UOUIZEm4XQ="
+        }
+      ]
+    },
+    {
+      "Route": "index.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\index.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "77"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ijwzroK8bybZY1FPcLQ+PRhps3nrqT297UOUIZEm4XQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Sep 2026 01:28:38 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-ijwzroK8bybZY1FPcLQ+PRhps3nrqT297UOUIZEm4XQ="
+        }
+      ]
+    },
+    {
+      "Route": "index.html.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\dmxrfynz0q-aftefe1v4o.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "91"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"7kn+WkSsD55CNnjfAR52rxCdpI4uwpSJoHgB7PfEl94=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Sep 2026 01:28:38 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-7kn+WkSsD55CNnjfAR52rxCdpI4uwpSJoHgB7PfEl94="
+        }
+      ]
+    },
+    {
+      "Route": "login.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\pg787zh4me-oiujy28xem.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000262536099"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3808"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Hy+VhvqFrhnrlEbUBp8n28AMN7xQPtUvTrH9VSq+QMY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Sep 2026 04:49:48 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"wHRgq7vaeF3I96S7+sAldqNSd1+DCf52ShJhVjK4vWM=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-wHRgq7vaeF3I96S7+sAldqNSd1+DCf52ShJhVjK4vWM="
+        }
+      ]
+    },
+    {
+      "Route": "login.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\login.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "21478"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"wHRgq7vaeF3I96S7+sAldqNSd1+DCf52ShJhVjK4vWM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Sep 2026 04:49:48 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-wHRgq7vaeF3I96S7+sAldqNSd1+DCf52ShJhVjK4vWM="
+        }
+      ]
+    },
+    {
+      "Route": "login.html.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\pg787zh4me-oiujy28xem.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3808"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Hy+VhvqFrhnrlEbUBp8n28AMN7xQPtUvTrH9VSq+QMY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Sep 2026 04:49:48 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Hy+VhvqFrhnrlEbUBp8n28AMN7xQPtUvTrH9VSq+QMY="
+        }
+      ]
+    },
+    {
+      "Route": "login.oiujy28xem.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\pg787zh4me-oiujy28xem.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000262536099"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3808"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Hy+VhvqFrhnrlEbUBp8n28AMN7xQPtUvTrH9VSq+QMY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Sep 2026 04:49:48 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"wHRgq7vaeF3I96S7+sAldqNSd1+DCf52ShJhVjK4vWM=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "oiujy28xem"
+        },
+        {
+          "Name": "label",
+          "Value": "login.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-wHRgq7vaeF3I96S7+sAldqNSd1+DCf52ShJhVjK4vWM="
+        }
+      ]
+    },
+    {
+      "Route": "login.oiujy28xem.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\login.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "21478"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"wHRgq7vaeF3I96S7+sAldqNSd1+DCf52ShJhVjK4vWM=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Sep 2026 04:49:48 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "oiujy28xem"
+        },
+        {
+          "Name": "label",
+          "Value": "login.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-wHRgq7vaeF3I96S7+sAldqNSd1+DCf52ShJhVjK4vWM="
+        }
+      ]
+    },
+    {
+      "Route": "login.oiujy28xem.html.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\pg787zh4me-oiujy28xem.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3808"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Hy+VhvqFrhnrlEbUBp8n28AMN7xQPtUvTrH9VSq+QMY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 11 Sep 2026 04:49:48 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "oiujy28xem"
+        },
+        {
+          "Name": "label",
+          "Value": "login.html.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Hy+VhvqFrhnrlEbUBp8n28AMN7xQPtUvTrH9VSq+QMY="
+        }
+      ]
+    },
+    {
+      "Route": "tally.2d2ybhyatv.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\d4lh3gph92-2d2ybhyatv.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000197511357"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5062"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ySwwSEi0NXcY4g07GG7dsT6okzvOdyZBqJW4ufC3o2M=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Sep 2026 02:01:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"dq/Oz/iOQtNvzYOY/LERFbwqpXPWhH/q3Mi5Oawe6SQ=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "2d2ybhyatv"
+        },
+        {
+          "Name": "label",
+          "Value": "tally.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-dq/Oz/iOQtNvzYOY/LERFbwqpXPWhH/q3Mi5Oawe6SQ="
+        }
+      ]
+    },
+    {
+      "Route": "tally.2d2ybhyatv.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\tally.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "38058"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"dq/Oz/iOQtNvzYOY/LERFbwqpXPWhH/q3Mi5Oawe6SQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Sep 2026 02:01:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "2d2ybhyatv"
+        },
+        {
+          "Name": "label",
+          "Value": "tally.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-dq/Oz/iOQtNvzYOY/LERFbwqpXPWhH/q3Mi5Oawe6SQ="
+        }
+      ]
+    },
+    {
+      "Route": "tally.2d2ybhyatv.html.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\d4lh3gph92-2d2ybhyatv.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5062"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ySwwSEi0NXcY4g07GG7dsT6okzvOdyZBqJW4ufC3o2M=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Sep 2026 02:01:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "2d2ybhyatv"
+        },
+        {
+          "Name": "label",
+          "Value": "tally.html.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-ySwwSEi0NXcY4g07GG7dsT6okzvOdyZBqJW4ufC3o2M="
+        }
+      ]
+    },
+    {
+      "Route": "tally.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\d4lh3gph92-2d2ybhyatv.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000197511357"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5062"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ySwwSEi0NXcY4g07GG7dsT6okzvOdyZBqJW4ufC3o2M=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Sep 2026 02:01:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"dq/Oz/iOQtNvzYOY/LERFbwqpXPWhH/q3Mi5Oawe6SQ=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-dq/Oz/iOQtNvzYOY/LERFbwqpXPWhH/q3Mi5Oawe6SQ="
+        }
+      ]
+    },
+    {
+      "Route": "tally.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\tally.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "38058"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"dq/Oz/iOQtNvzYOY/LERFbwqpXPWhH/q3Mi5Oawe6SQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Sep 2026 02:01:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-dq/Oz/iOQtNvzYOY/LERFbwqpXPWhH/q3Mi5Oawe6SQ="
+        }
+      ]
+    },
+    {
+      "Route": "tally.html.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\d4lh3gph92-2d2ybhyatv.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5062"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"ySwwSEi0NXcY4g07GG7dsT6okzvOdyZBqJW4ufC3o2M=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Sep 2026 02:01:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-ySwwSEi0NXcY4g07GG7dsT6okzvOdyZBqJW4ufC3o2M="
+        }
+      ]
+    },
+    {
+      "Route": "tallygrid.22rpebcvhe.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\jbr6thvk5v-22rpebcvhe.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000092242413"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10840"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"xeYPp54k0z2wKnqiGW4NtUbwkunNZLZp4I0ghKu/9WI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Sep 2026 01:57:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"xlBqyMJB4QSd9Wj6Lb9xnieY1v/KARaY24lbWhcnaa0=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "22rpebcvhe"
+        },
+        {
+          "Name": "label",
+          "Value": "tallygrid.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-xlBqyMJB4QSd9Wj6Lb9xnieY1v/KARaY24lbWhcnaa0="
+        }
+      ]
+    },
+    {
+      "Route": "tallygrid.22rpebcvhe.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\tallygrid.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "86647"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"xlBqyMJB4QSd9Wj6Lb9xnieY1v/KARaY24lbWhcnaa0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Sep 2026 01:57:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "22rpebcvhe"
+        },
+        {
+          "Name": "label",
+          "Value": "tallygrid.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-xlBqyMJB4QSd9Wj6Lb9xnieY1v/KARaY24lbWhcnaa0="
+        }
+      ]
+    },
+    {
+      "Route": "tallygrid.22rpebcvhe.html.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\jbr6thvk5v-22rpebcvhe.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10840"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"xeYPp54k0z2wKnqiGW4NtUbwkunNZLZp4I0ghKu/9WI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Sep 2026 01:57:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "22rpebcvhe"
+        },
+        {
+          "Name": "label",
+          "Value": "tallygrid.html.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-xeYPp54k0z2wKnqiGW4NtUbwkunNZLZp4I0ghKu/9WI="
+        }
+      ]
+    },
+    {
+      "Route": "tallygrid.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\jbr6thvk5v-22rpebcvhe.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000092242413"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10840"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"xeYPp54k0z2wKnqiGW4NtUbwkunNZLZp4I0ghKu/9WI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Sep 2026 01:57:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"xlBqyMJB4QSd9Wj6Lb9xnieY1v/KARaY24lbWhcnaa0=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-xlBqyMJB4QSd9Wj6Lb9xnieY1v/KARaY24lbWhcnaa0="
+        }
+      ]
+    },
+    {
+      "Route": "tallygrid.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\tallygrid.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "86647"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"xlBqyMJB4QSd9Wj6Lb9xnieY1v/KARaY24lbWhcnaa0=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Sep 2026 01:57:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-xlBqyMJB4QSd9Wj6Lb9xnieY1v/KARaY24lbWhcnaa0="
+        }
+      ]
+    },
+    {
+      "Route": "tallygrid.html.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\jbr6thvk5v-22rpebcvhe.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "10840"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"xeYPp54k0z2wKnqiGW4NtUbwkunNZLZp4I0ghKu/9WI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 14 Sep 2026 01:57:17 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-xeYPp54k0z2wKnqiGW4NtUbwkunNZLZp4I0ghKu/9WI="
+        }
+      ]
+    },
+    {
+      "Route": "x32.h63951f5hr.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\wo6imnfwaf-h63951f5hr.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000164122764"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6092"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yMQFUTrHH8gefRMEq9Hdpoo4AbtwrPvhRYgXYxI9SRE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Sep 2026 23:16:41 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"p45o4710I3CknU0DKU14ozeG/MoQs5hFq3+Rx5kAJMg=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "h63951f5hr"
+        },
+        {
+          "Name": "label",
+          "Value": "x32.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-p45o4710I3CknU0DKU14ozeG/MoQs5hFq3+Rx5kAJMg="
+        }
+      ]
+    },
+    {
+      "Route": "x32.h63951f5hr.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\x32.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "31579"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"p45o4710I3CknU0DKU14ozeG/MoQs5hFq3+Rx5kAJMg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Sep 2026 23:16:41 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "h63951f5hr"
+        },
+        {
+          "Name": "label",
+          "Value": "x32.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-p45o4710I3CknU0DKU14ozeG/MoQs5hFq3+Rx5kAJMg="
+        }
+      ]
+    },
+    {
+      "Route": "x32.h63951f5hr.html.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\wo6imnfwaf-h63951f5hr.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6092"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yMQFUTrHH8gefRMEq9Hdpoo4AbtwrPvhRYgXYxI9SRE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Sep 2026 23:16:41 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "h63951f5hr"
+        },
+        {
+          "Name": "label",
+          "Value": "x32.html.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-yMQFUTrHH8gefRMEq9Hdpoo4AbtwrPvhRYgXYxI9SRE="
+        }
+      ]
+    },
+    {
+      "Route": "x32.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\wo6imnfwaf-h63951f5hr.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000164122764"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6092"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yMQFUTrHH8gefRMEq9Hdpoo4AbtwrPvhRYgXYxI9SRE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Sep 2026 23:16:41 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"p45o4710I3CknU0DKU14ozeG/MoQs5hFq3+Rx5kAJMg=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-p45o4710I3CknU0DKU14ozeG/MoQs5hFq3+Rx5kAJMg="
+        }
+      ]
+    },
+    {
+      "Route": "x32.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\x32.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "31579"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"p45o4710I3CknU0DKU14ozeG/MoQs5hFq3+Rx5kAJMg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Sep 2026 23:16:41 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-p45o4710I3CknU0DKU14ozeG/MoQs5hFq3+Rx5kAJMg="
+        }
+      ]
+    },
+    {
+      "Route": "x32.html.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\wo6imnfwaf-h63951f5hr.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "6092"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"yMQFUTrHH8gefRMEq9Hdpoo4AbtwrPvhRYgXYxI9SRE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 15 Sep 2026 23:16:41 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-yMQFUTrHH8gefRMEq9Hdpoo4AbtwrPvhRYgXYxI9SRE="
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1381 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>X32 Main Mix & Busses</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #111;
+            color: #eee;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: #1d1d1d;
+            border-bottom: 1px solid #444;
+            padding: 12px 16px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            font-size: 18px;
+            margin: 0;
+            padding-top: 20px;
+            padding-left: 14px;
+        }
+
+        input, select, button {
+            background: #222;
+            color: #eee;
+            border: 1px solid #555;
+            border-radius: 5px;
+            padding: 7px 9px;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+            button:hover {
+                background: #333;
+            }
+
+        .status {
+            margin-left: auto;
+            font-size: 13px;
+            color: #aaa;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 4px;
+            padding: 5px 12px 0;
+        }
+
+        .tab.active {
+            background: #444;
+        }
+
+        .panel {
+            display: none;
+            padding: 12px;
+        }
+
+            .panel.active {
+                display: block;
+            }
+
+        .console {
+            display: grid;
+            grid-template-columns: repeat(16, minmax(82px, 1fr));
+            gap: 5px;
+            min-width: 1320px;
+        }
+
+        .scroll {
+            overflow-x: auto;
+        }
+
+        .channel {
+            background: #202020;
+            border: 1px solid #3d3d3d;
+            border-radius: 5px;
+            min-height: 410px;
+            padding: 7px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+            .channel input.name {
+                width: 100%;
+                text-align: center;
+                margin-bottom: 8px;
+            }
+
+        .number {
+            color: #999;
+            font-size: 11px;
+            margin-bottom: 3px;
+        }
+
+        .fader-wrap {
+            height: 235px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        input[type=range].fader {
+            width: 220px;
+            height: 28px;
+            transform: rotate(-90deg);
+        }
+
+        .gain {
+            width: 65px;
+            text-align: center;
+            margin: 7px 0;
+        }
+
+        .mute {
+            width: 100%;
+            font-weight: bold;
+            margin-top: auto;
+        }
+
+            .mute.on {
+                background: #b21f1f;
+                border-color: #e33;
+            }
+
+        .save {
+            width: 100%;
+            margin-top: 6px;
+        }
+
+        .bus-select {
+            width: 100%;
+            margin-bottom: 7px;
+        }
+
+        .hint {
+            color: #888;
+            font-size: 12px;
+            margin: 0 0 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    
+        <h1 id="deviceName">X32</h1>
+       
+ 
+
+    <div class="tabs">
+        <button class="tab active"
+                onclick="showTab('main', this)">
+            Main Mix
+        </button>
+
+        <button class="tab"
+                onclick="showTab('bus', this)">
+            Busses
+        </button>
+    </div>
+
+    <section id="main" class="panel active">
+        <p class="hint">
+            Main mix channels 1–32. Gain is in dB.
+        </p>
+
+        <div class="scroll">
+            <div id="mainConsole" class="console"></div>
+        </div>
+    </section>
+
+    <section id="bus" class="panel">
+        <p class="hint">
+            Select a bus to control the channel sends for that bus.
+        </p>
+
+        <div class="scroll">
+            <div id="busConsole" class="console"></div>
+        </div>
+    </section>
+
+    <script>
+        const API = '/api/mixer/x32';
+
+        const CHANNELS = 32;
+        const BUSSES = 16;
+
+        // Auto-refresh interval.
+        // 2000 = every 2 seconds.
+        const REFRESH_INTERVAL = 2000;
+
+        // Small delay before sending a text/fader change.
+        // This prevents hundreds of requests while dragging a fader.
+        const SAVE_DELAY = 100;
+
+        let mainData = [];
+        let busNames = [];
+        let currentBus = 1;
+
+        let refreshTimer = null;
+        let refreshRunning = false;
+
+
+        /*
+         * ------------------------------------------------------------
+         * DEVICE
+         * ------------------------------------------------------------
+         */
+
+        function device() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+
+            if (!id) {
+                throw new Error('Missing device id in URL');
+            }
+
+            return encodeURIComponent(id);
+        }
+
+
+        function showDeviceId() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+
+            document.getElementById('deviceIdDisplay').textContent =
+                id ? `Device ${id}` : 'No device id';
+        }
+
+
+        /*
+         * ------------------------------------------------------------
+         * STATUS
+         * ------------------------------------------------------------
+         */
+
+
+
+
+        /*
+         * ------------------------------------------------------------
+         * API
+         * ------------------------------------------------------------
+         *
+         * IMPORTANT:
+         * Every API request goes through this function.
+         *
+         * If ANY API returns HTTP 401, immediately go to "/".
+         * ------------------------------------------------------------
+         */
+        async function loadMixerInfo() {
+            const result = await getJson(
+                `${API}/${device()}/getinfo`
+            );
+
+            const mixerName = result?.Name || 'X32';
+
+            document.getElementById('deviceName').textContent = mixerName;
+        }
+
+        async function getJson(url, options = {}) {
+            let response;
+
+            try {
+                response = await fetch(url, {
+                    ...options,
+                    credentials: 'same-origin'
+                });
+            } catch (err) {
+                throw err;
+            }
+
+            // Any API 401 -> return to login/root while preserving this page.
+            if (response.status === 401) {
+                const returnUrl =
+                    window.location.pathname +
+                    window.location.search +
+                    window.location.hash;
+
+                window.location.assign(
+                    'login.html?returnUrl=' + encodeURIComponent(returnUrl)
+                );
+
+                return new Promise(() => { });
+            }
+
+            if (!response.ok) {
+                throw new Error(
+                    `${response.status} ${response.statusText}`
+                );
+            }
+
+            return await response.json();
+        }
+
+
+        /*
+         * ------------------------------------------------------------
+         * TABS
+         * ------------------------------------------------------------
+         */
+
+        function showTab(id, button) {
+
+            document
+                .querySelectorAll('.panel')
+                .forEach(x => x.classList.remove('active'));
+
+            document
+                .querySelectorAll('.tab')
+                .forEach(x => x.classList.remove('active'));
+
+            document
+                .getElementById(id)
+                .classList.add('active');
+
+            button.classList.add('active');
+
+            if (id === 'bus') {
+                loadBus(currentBus);
+            }
+        }
+
+
+        /*
+         * ------------------------------------------------------------
+         * DB / SLIDER
+         * ------------------------------------------------------------
+         */
+
+        function dbToSlider(db) {
+
+            db = Number(db);
+
+            if (db <= -90)
+                return 0;
+
+            if (db <= -60)
+                return ((db + 90) / 30) * 0.0625;
+
+            if (db <= -30)
+                return 0.0625 +
+                    ((db + 60) / 30) * 0.1875;
+
+            if (db <= -10)
+                return 0.25 +
+                    ((db + 30) / 20) * 0.25;
+
+            return 0.5 +
+                ((db + 10) / 20) * 0.5;
+        }
+
+
+        function sliderToDb(value) {
+
+            const x = Number(value);
+
+            if (x <= 0)
+                return -90;
+
+            if (x <= 0.0625)
+                return -90 +
+                    (x / 0.0625) * 30;
+
+            if (x <= 0.25)
+                return -60 +
+                    ((x - 0.0625) / 0.1875) * 30;
+
+            if (x <= 0.5)
+                return -30 +
+                    ((x - 0.25) / 0.25) * 20;
+
+            return -10 +
+                ((x - 0.5) / 0.5) * 20;
+        }
+
+
+        function fmtDb(db) {
+
+            const n = Number(db);
+
+            return `${n <= -89.5 ? '-∞' : n.toFixed(1)} dB`;
+        }
+
+
+        /*
+         * ------------------------------------------------------------
+         * CHANNEL CREATION
+         * ------------------------------------------------------------
+         *
+         * These elements are created ONCE.
+         *
+         * Auto-refresh does NOT destroy/recreate them.
+         * This is what keeps:
+         *
+         *   - page scroll
+         *   - horizontal scroll
+         *   - text cursor
+         *   - fader interaction
+         *   - focus
+         *
+         * from jumping around.
+         * ------------------------------------------------------------
+         */
+
+        function makeChannel(number, data, mode) {
+
+            const div = document.createElement('div');
+
+            div.className = 'channel';
+
+            div.dataset.channel = number;
+            div.dataset.mode = mode;
+
+
+            /*
+             * NAME
+             */
+
+            const name = document.createElement('input');
+
+            name.className = 'name';
+            name.maxLength = 12;
+
+            name.value =
+                data?.name ?? `CH ${number}`;
+
+
+            /*
+             * CHANNEL NUMBER
+             */
+
+            const num = document.createElement('div');
+
+            num.className = 'number';
+
+            num.textContent =
+                mode === 'bus'
+                    ? `CH ${number}`
+                    : `${number}`;
+
+
+            /*
+             * FADER
+             */
+
+            const wrap = document.createElement('div');
+
+            wrap.className = 'fader-wrap';
+
+
+            const fader = document.createElement('input');
+
+            fader.type = 'range';
+            fader.className = 'fader';
+
+            fader.min = 0;
+            fader.max = 1;
+            fader.step = 0.001;
+
+            fader.value =
+                dbToSlider(data?.gain ?? -90);
+
+
+            /*
+             * GAIN TEXT
+             */
+
+            const gain = document.createElement('div');
+
+            gain.className = 'gain';
+
+            gain.textContent =
+                fmtDb(data?.gain ?? -90);
+
+
+            /*
+             * MUTE
+             */
+
+            const mute = document.createElement('button');
+
+            mute.className = 'mute';
+
+            mute.textContent =
+                data?.mute ? 'MUTED' : 'MUTE';
+
+            if (data?.mute) {
+                mute.classList.add('on');
+            }
+
+
+            /*
+             * APPLY BUTTON
+             */
+
+           
+
+
+            /*
+             * Local state.
+             *
+             * Dirty values are NOT overwritten by auto-refresh.
+             */
+
+            div._ui = {
+
+                name,
+                fader,
+                gain,
+                mute,
+                
+
+                dirtyName: false,
+                dirtyFader: false,
+                dirtyMute: false,
+
+                saveTimer: null,
+
+                saveVersion: 0
+            };
+
+
+            /*
+             * FADER MOVED
+             *
+             * Update display immediately.
+             * Send change automatically.
+             */
+
+            fader.oninput = () => {
+
+                gain.textContent =
+                    fmtDb(sliderToDb(fader.value));
+
+                div._ui.dirtyFader = true;
+
+                queueAutoSave(
+                    div,
+                    mode,
+                    number,
+                    false
+                );
+            };
+
+
+            /*
+             * NAME EDITED
+             *
+             * Automatically save after a tiny delay.
+             */
+
+            name.oninput = () => {
+
+                div._ui.dirtyName = true;
+
+                queueAutoSave(
+                    div,
+                    mode,
+                    number,
+                    true
+                );
+            };
+
+
+            /*
+             * MUTE
+             *
+             * Send immediately.
+             */
+
+            mute.onclick = async () => {
+
+                const newMute =
+                    !mute.classList.contains('on');
+
+                mute.classList.toggle(
+                    'on',
+                    newMute
+                );
+
+                mute.textContent =
+                    newMute
+                        ? 'MUTED'
+                        : 'MUTE';
+
+                div._ui.dirtyMute = true;
+
+                try {
+
+                    await saveChannel(
+                        mode,
+                        number,
+                        div,
+                        false
+                    );
+
+                } catch (e) {
+
+                   
+                }
+            };
+
+
+
+
+
+
+
+            wrap.appendChild(fader);
+
+            div.append(
+                num,
+                name,
+                wrap,
+                gain,
+                mute
+            );
+
+            return div;
+        }
+
+
+        /*
+         * ------------------------------------------------------------
+         * AUTOMATIC SAVE
+         * ------------------------------------------------------------
+         */
+
+        function queueAutoSave(
+            div,
+            mode,
+            channel,
+            includeName
+        ) {
+
+            clearTimeout(
+                div._ui.saveTimer
+            );
+
+            div._ui.saveTimer =
+                setTimeout(async () => {
+
+                    try {
+
+                        await saveChannel(
+                            mode,
+                            channel,
+                            div,
+                            includeName
+                        );
+
+                    } catch (e) {
+
+                      
+                    }
+
+                }, SAVE_DELAY);
+        }
+
+
+        /*
+         * ------------------------------------------------------------
+         * SAVE CHANNEL
+         * ------------------------------------------------------------
+         */
+
+        async function saveChannel(
+            mode,
+            channel,
+            div,
+            includeName
+        ) {
+
+            const ui = div._ui;
+
+            const gain =
+                sliderToDb(ui.fader.value);
+
+            const mute =
+                ui.mute.classList.contains('on');
+
+
+            const body = {
+
+                channel,
+
+                gain,
+
+                mute,
+
+                name:
+                    includeName
+                        ? ui.name.value
+                        : null
+            };
+
+
+       
+
+
+            const url =
+                mode === 'main'
+
+                    ? `${API}/${device()}/setmainmix`
+
+                    : `${API}/${device()}/setbus`;
+
+
+            if (mode === 'bus') {
+
+                body.bus = currentBus;
+            }
+
+
+            /*
+             * Version number prevents an older request from
+             * clearing a newer edit.
+             */
+
+            const saveVersion =
+                ++ui.saveVersion;
+
+
+            await getJson(url, {
+
+                method: 'POST',
+
+                headers: {
+                    'Content-Type':
+                        'application/json'
+                },
+
+                body:
+                    JSON.stringify(body)
+            });
+
+
+            /*
+             * Only clear dirty flags if nothing newer
+             * was edited while this request was running.
+             */
+
+            if (saveVersion === ui.saveVersion) {
+
+                if (includeName) {
+                    ui.dirtyName = false;
+                }
+
+                ui.dirtyFader = false;
+                ui.dirtyMute = false;
+            }
+
+
+           
+        }
+
+
+        /*
+         * ------------------------------------------------------------
+         * CHECK IF USER IS CURRENTLY EDITING
+         * ------------------------------------------------------------
+         */
+
+        function isFocused(element) {
+
+            return document.activeElement === element;
+        }
+
+
+        /*
+         * ------------------------------------------------------------
+         * UPDATE EXISTING CHANNEL
+         * ------------------------------------------------------------
+         *
+         * IMPORTANT:
+         * We change the value of existing DOM elements instead of
+         * replacing the elements.
+         * ------------------------------------------------------------
+         */
+
+        function updateChannel(div, data) {
+
+            const ui = div._ui;
+
+            const name =
+                data?.name ??
+                `CH ${div.dataset.channel}`;
+
+            const gain =
+                Number(data?.gain ?? -90);
+
+            const mute =
+                !!data?.mute;
+
+
+            /*
+             * Don't overwrite name while user is typing.
+             */
+
+            if (
+                !ui.dirtyName &&
+                !isFocused(ui.name)
+            ) {
+
+                if (ui.name.value !== name) {
+                    ui.name.value = name;
+                }
+            }
+
+
+            /*
+             * Don't move fader while user is touching it.
+             */
+
+            if (
+                !ui.dirtyFader &&
+                !isFocused(ui.fader)
+            ) {
+
+                const slider =
+                    dbToSlider(gain);
+
+                if (
+                    Math.abs(
+                        Number(ui.fader.value) - slider
+                    ) > 0.001
+                ) {
+
+                    ui.fader.value = slider;
+                }
+
+                ui.gain.textContent =
+                    fmtDb(gain);
+            }
+
+
+            /*
+             * Don't overwrite mute while it has a pending
+             * local change.
+             */
+
+            if (
+                !ui.dirtyMute &&
+                !isFocused(ui.mute)
+            ) {
+
+                ui.mute.classList.toggle(
+                    'on',
+                    mute
+                );
+
+                ui.mute.textContent =
+                    mute
+                        ? 'MUTED'
+                        : 'MUTE';
+            }
+        }
+
+
+        /*
+         * ------------------------------------------------------------
+         * SYNC CHANNELS
+         * ------------------------------------------------------------
+         *
+         * Creates the controls only if they don't already exist.
+         * Otherwise just updates them.
+         * ------------------------------------------------------------
+         */
+
+        function syncChannels(
+            consoleEl,
+            channels,
+            mode
+        ) {
+
+            let cards =
+                Array.from(
+                    consoleEl.querySelectorAll(
+                        `.channel[data-mode="${mode}"]`
+                    )
+                );
+
+
+            /*
+             * First load:
+             * create the 32 channels.
+             */
+
+            if (cards.length !== CHANNELS) {
+
+                cards.forEach(card => card.remove());
+
+                cards = [];
+
+                for (
+                    let ch = 1;
+                    ch <= CHANNELS;
+                    ch++
+                ) {
+
+                    const card =
+                        makeChannel(
+                            ch,
+                            channels[ch - 1] ?? {},
+                            mode
+                        );
+
+                    consoleEl.appendChild(card);
+
+                    cards.push(card);
+                }
+            }
+
+
+            /*
+             * Normal refresh:
+             * update existing controls.
+             */
+
+            for (
+                let ch = 1;
+                ch <= CHANNELS;
+                ch++
+            ) {
+
+                const card =
+                    cards[ch - 1];
+
+                if (card) {
+
+                    updateChannel(
+                        card,
+                        channels[ch - 1] ?? {}
+                    );
+                }
+            }
+        }
+
+
+        /*
+         * ------------------------------------------------------------
+         * MAIN MIX
+         * ------------------------------------------------------------
+         */
+
+        async function loadMain() {
+
+            const result =
+                await getJson(
+                    `${API}/${device()}/getmainmix`
+                );
+
+
+            mainData =
+                Array.isArray(result)
+                    ? result
+                    : (
+                        result.channels ??
+                        result
+                    );
+
+
+            syncChannels(
+
+                document.getElementById(
+                    'mainConsole'
+                ),
+
+                mainData,
+
+                'main'
+            );
+        }
+
+
+        /*
+         * ------------------------------------------------------------
+         * BUS NAMES
+         * ------------------------------------------------------------
+         */
+
+        async function loadBusNames() {
+
+            const result =
+                await getJson(
+                    `${API}/${device()}/getbusnames`
+                );
+
+
+            if (Array.isArray(result)) {
+
+                busNames =
+                    result.map(item => {
+
+                        if (
+                            typeof item === 'string'
+                        ) {
+                            return item;
+                        }
+
+                        if (
+                            item &&
+                            typeof item === 'object'
+                        ) {
+
+                            return (
+                                item.name ??
+                                item.bus_name ??
+                                ''
+                            );
+                        }
+
+                        return '';
+                    });
+
+            } else if (
+                result &&
+                result.buses
+            ) {
+
+                busNames = [];
+
+                for (
+                    let i = 1;
+                    i <= BUSSES;
+                    i++
+                ) {
+
+                    const value =
+                        result.buses[i] ??
+                        result.buses[String(i)] ??
+                        '';
+
+
+                    if (
+                        typeof value === 'string'
+                    ) {
+
+                        busNames[i - 1] =
+                            value;
+
+                    } else if (
+                        value &&
+                        typeof value === 'object'
+                    ) {
+
+                        busNames[i - 1] =
+                            value.name ??
+                            value.bus_name ??
+                            '';
+
+                    } else {
+
+                        busNames[i - 1] = '';
+                    }
+                }
+
+            } else {
+
+                busNames = [];
+            }
+
+
+            updateBusSelector();
+        }
+
+
+        /*
+         * ------------------------------------------------------------
+         * UPDATE EXISTING BUS SELECTOR
+         * ------------------------------------------------------------
+         */
+
+        function updateBusSelector() {
+
+            const selector =
+                document.querySelector(
+                    '#busConsole .bus-select'
+                );
+
+
+            if (!selector) {
+                return;
+            }
+
+
+            for (
+                let i = 1;
+                i <= BUSSES;
+                i++
+            ) {
+
+                const option =
+                    selector.options[i - 1];
+
+                if (!option) {
+                    continue;
+                }
+
+
+                option.textContent =
+                    `Bus ${i}` +
+                    (
+                        busNames[i - 1]
+                            ? ` — ${busNames[i - 1]}`
+                            : ''
+                    );
+            }
+
+
+            selector.value =
+                String(currentBus);
+        }
+
+
+        /*
+         * ------------------------------------------------------------
+         * BUS
+         * ------------------------------------------------------------
+         */
+
+        async function loadBus(bus) {
+
+            currentBus =
+                Number(bus);
+
+
+            const result =
+                await getJson(
+                    `${API}/${device()}/getbus/${currentBus}`
+                );
+
+
+            const channels =
+                Array.isArray(result)
+                    ? result
+                    : (
+                        result.channels ??
+                        result
+                    );
+
+
+            const consoleEl =
+                document.getElementById(
+                    'busConsole'
+                );
+
+
+            /*
+             * Find existing selector.
+             */
+
+            let selector =
+                consoleEl.querySelector(
+                    '.bus-select'
+                );
+
+
+            /*
+             * Create selector ONLY once.
+             */
+
+            if (!selector) {
+
+                const holder =
+                    document.createElement(
+                        'div'
+                    );
+
+                holder.style.gridColumn =
+                    '1 / -1';
+
+
+                selector =
+                    document.createElement(
+                        'select'
+                    );
+
+                selector.className =
+                    'bus-select';
+
+
+                for (
+                    let i = 1;
+                    i <= BUSSES;
+                    i++
+                ) {
+
+                    const option =
+                        document.createElement(
+                            'option'
+                        );
+
+                    option.value = i;
+
+                    selector.appendChild(
+                        option
+                    );
+                }
+
+
+                selector.onchange = () => {
+
+                    loadBus(
+                        selector.value
+                    );
+                };
+
+
+                holder.appendChild(
+                    selector
+                );
+
+                consoleEl.appendChild(
+                    holder
+                );
+            }
+
+
+            selector.value =
+                String(currentBus);
+
+
+            updateBusSelector();
+
+
+            /*
+             * Update existing channel controls.
+             */
+
+            syncChannels(
+                consoleEl,
+                channels,
+                'bus'
+            );
+        }
+
+
+        /*
+         * ------------------------------------------------------------
+         * REFRESH
+         * ------------------------------------------------------------
+         */
+
+        async function refreshAll(
+            manual = true
+        ) {
+
+            /*
+             * Don't allow two refresh cycles at once.
+             */
+
+            if (refreshRunning) {
+                return;
+            }
+
+
+            refreshRunning = true;
+
+
+            try {
+
+
+
+
+                /*
+                 * These calls do NOT rebuild the page.
+                 */
+
+                await loadMain();
+
+                await loadBusNames();
+
+
+                if (
+                    document
+                        .getElementById('bus')
+                        .classList
+                        .contains('active')
+                ) {
+
+                    await loadBus(
+                        currentBus
+                    );
+                }
+
+
+
+            } catch (e) {
+
+                console.error(e);
+
+
+                /*
+                 * 401 has already redirected to "/"
+                 * inside getJson().
+                 */
+
+                if (
+                    e.message !==
+                    'Unauthorized'
+                ) {
+
+               
+                }
+
+            } finally {
+
+                refreshRunning = false;
+            }
+        }
+
+
+        /*
+         * ------------------------------------------------------------
+         * START AUTO REFRESH
+         * ------------------------------------------------------------
+         */
+
+        function startAutoRefresh() {
+
+            if (refreshTimer) {
+
+                clearInterval(
+                    refreshTimer
+                );
+            }
+
+
+            refreshTimer =
+                setInterval(
+                    () => {
+
+                        refreshAll(false);
+
+                    },
+                    REFRESH_INTERVAL
+                );
+        }
+
+
+        /*
+         * ------------------------------------------------------------
+         * START PAGE
+         * ------------------------------------------------------------
+         */
+        loadMixerInfo();
+
+       
+
+        refreshAll(true);
+         
+        startAutoRefresh();
+
+    </script>
+
+</body>
+</html>
+

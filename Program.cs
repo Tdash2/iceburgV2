@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿
+using System.Collections.Concurrent;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Security.Claims;
@@ -8,26 +9,65 @@ using System.Text.Json.Serialization;
 using Iceburg.Database;
 using Iceburg.Devices.Status;
 using Iceburg.Router.BMD;
+using Iceburg.Mixer.X32;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
+using System.Text.Json;
+
+bool debug = false;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.AddFilter("Microsoft.AspNetCore.Hosting.Diagnostics", LogLevel.Warning);
-builder.Logging.AddFilter( "Microsoft", LogLevel.Warning);
+builder.Logging.AddFilter("Microsoft", LogLevel.Warning);
+
+builder.Services
+    .AddDataProtection()
+    .PersistKeysToFileSystem(
+        new DirectoryInfo(
+            Path.Combine(AppContext.BaseDirectory, "DataProtection-Keys")))
+    .SetApplicationName("Iceburg");
+
+// your existing services below this...
+
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.Converters.Add(
         new JsonStringEnumConverter()
     );
 });
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(80);
+
+    options.ListenAnyIP(443, listenOptions =>
+    {
+        listenOptions.UseHttps(
+            "iceburg.pfx",
+            "admin");
+    });
+});
+
 builder.Services.AddHttpsRedirection(options =>
 {
     options.HttpsPort = 443;
 });
-builder.Services.AddAuthentication( CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+
+
+// ============================================================
+// AUTHENTICATION
+// ============================================================
+
+builder.Services
+    .AddAuthentication(
+        CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
     {
-        options.Cookie.Name = "IceburgAuth";
+        options.Cookie.Name = "IceburgAuthv2";
 
         // JavaScript cannot read the authentication cookie.
         options.Cookie.HttpOnly = true;
@@ -35,8 +75,7 @@ builder.Services.AddAuthentication( CookieAuthenticationDefaults.AuthenticationS
         // Helps protect against CSRF.
         options.Cookie.SameSite = SameSiteMode.Strict;
 
-        // Works over HTTP during local deployment and
-        // automatically becomes Secure when HTTPS is used.
+        // Automatically uses Secure when HTTPS is used.
         options.Cookie.SecurePolicy =
             CookieSecurePolicy.SameAsRequest;
 
@@ -65,7 +104,7 @@ builder.Services.AddAuthentication( CookieAuthenticationDefaults.AuthenticationS
                 return Task.CompletedTask;
             }
 
-            // Preserve the exact page that the user was trying
+            // Preserve the exact page the user was trying
             // to access.
             var returnUrl =
                 context.Request.PathBase +
@@ -100,10 +139,32 @@ builder.Services.AddAuthentication( CookieAuthenticationDefaults.AuthenticationS
 
             return Task.CompletedTask;
         };
+
+
+        // --------------------------------------------------------
+        // DEBUG COOKIE VALIDATION
+        // --------------------------------------------------------
+
+
     });
+
 builder.Services.AddAuthorization();
+
 var app = builder.Build();
+
+
+
+// ============================================================
+// DATABASE
+// ============================================================
+
 Database.Initialize();
+
+
+// ============================================================
+// HTTPS REDIRECT
+// ============================================================
+
 app.Use(async (context, next) =>
 {
     bool isTallyApi =
@@ -120,24 +181,68 @@ app.Use(async (context, next) =>
             context.Request.QueryString;
 
         context.Response.Redirect(httpsUrl);
+
         return;
     }
-    var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-    await next();
-    stopwatch.Stop();
 
-    Console.WriteLine(
-        $"{context.Request.Method} {context.Request.Path} - {stopwatch.Elapsed.TotalMilliseconds:F2}ms");
+    if (debug)
+    {
+        var stopwatch =
+            System.Diagnostics.Stopwatch.StartNew();
+
+        await next();
+
+        stopwatch.Stop();
+
+        Console.WriteLine(
+            $"{context.Request.Method} " +
+            $"{context.Request.Path}" +
+            $"{context.Request.QueryString} - " +
+            $"{stopwatch.Elapsed.TotalMilliseconds:F2}ms");
+    }
+    else
+    {
+        await next();
+    }
 });
 
 
-
-
-
+// ============================================================
+// AUTHENTICATION
+// ============================================================
+//
+// IMPORTANT:
+// This must run BEFORE UseAuthorization() and before any
+// middleware that checks context.User.
+//
+// This reads the IceburgAuth cookie and populates
+// HttpContext.User.
+//
 
 app.UseAuthentication();
+
+
+// ============================================================
+// AUTH DEBUG
+// ============================================================
+
+
+
+
+// ============================================================
+// AUTHORIZATION
+// ============================================================
+
 app.UseAuthorization();
-var protectedPages = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+
+
+// ============================================================
+// PROTECTED HTML PAGES
+// ============================================================
+
+var protectedPages =
+    new HashSet<string>(
+        StringComparer.OrdinalIgnoreCase)
     {
         "/admin.html",
         "/dashboard.html",
@@ -145,6 +250,7 @@ var protectedPages = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         "/devices.html",
         "/settings.html"
     };
+
 app.Use(async (context, next) =>
 {
     var path =
@@ -171,18 +277,31 @@ app.Use(async (context, next) =>
 
     await next();
 });
+
+
+// ============================================================
+// STATIC FILES
+// ============================================================
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
-var loginChallenges = new ConcurrentDictionary<string, LoginChallenge>();
 
 
+// ============================================================
+// LOGIN CHALLENGES
+// ============================================================
+
+var loginChallenges =
+    new ConcurrentDictionary<string, LoginChallenge>();
 
 
+// ============================================================
+// LOGIN CHALLENGE ENDPOINT
+// ============================================================
 
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapPost( "/api/login/challenge",(LoginChallengeRequest request) =>
+app.MapPost(
+    "/api/login/challenge",
+    (LoginChallengeRequest request) =>
     {
         if (string.IsNullOrWhiteSpace(request.Username))
         {
@@ -203,12 +322,13 @@ app.MapPost( "/api/login/challenge",(LoginChallengeRequest request) =>
             return Results.Unauthorized();
         }
 
+
         // --------------------------------------------------------
         // Get stored salt.
         // --------------------------------------------------------
 
         var passwordSalt =
-     user.PasswordSalt;
+            user.PasswordSalt;
 
         if (string.IsNullOrWhiteSpace(passwordSalt))
         {
@@ -227,6 +347,7 @@ app.MapPost( "/api/login/challenge",(LoginChallengeRequest request) =>
         {
             return Results.Unauthorized();
         }
+
 
         // --------------------------------------------------------
         // Generate random one-time challenge.
@@ -253,6 +374,7 @@ app.MapPost( "/api/login/challenge",(LoginChallengeRequest request) =>
         loginChallenges[challengeId] =
             storedChallenge;
 
+
         // --------------------------------------------------------
         // Return salt and challenge to browser.
         // --------------------------------------------------------
@@ -268,18 +390,20 @@ app.MapPost( "/api/login/challenge",(LoginChallengeRequest request) =>
                 Convert.ToBase64String(challenge)
         });
     });
-app.MapPost("/api/login", async (LoginRequest request,HttpContext httpContext) =>
+
+
+// ============================================================
+// LOGIN
+// ============================================================
+
+app.MapPost(
+    "/api/login",
+    async (
+        LoginRequest request,
+        HttpContext httpContext) =>
     {
         // --------------------------------------------------------
         // Validate request.
-        //
-        // This is important because ConcurrentDictionary does
-        // not accept a null key.
-        //
-        // It prevents:
-        //
-        // ArgumentNullException:
-        // Value cannot be null. (Parameter 'key')
         // --------------------------------------------------------
 
         if (string.IsNullOrWhiteSpace(request.Username))
@@ -315,8 +439,6 @@ app.MapPost("/api/login", async (LoginRequest request,HttpContext httpContext) =
 
         // --------------------------------------------------------
         // Retrieve and REMOVE challenge.
-        //
-        // TryRemove makes the challenge one-time use.
         // --------------------------------------------------------
 
         if (!loginChallenges.TryRemove(
@@ -375,7 +497,6 @@ app.MapPost("/api/login", async (LoginRequest request,HttpContext httpContext) =
         }
 
         byte[] storedVerifier;
-
         byte[] suppliedProof;
 
         try
@@ -397,10 +518,10 @@ app.MapPost("/api/login", async (LoginRequest request,HttpContext httpContext) =
         // --------------------------------------------------------
         // Calculate expected proof.
         //
-        //     HMAC-SHA256(
-        //         storedVerifier,
-        //         challenge
-        //     )
+        // HMAC-SHA256(
+        //     storedVerifier,
+        //     challenge
+        // )
         // --------------------------------------------------------
 
         byte[] expectedProof;
@@ -439,19 +560,18 @@ app.MapPost("/api/login", async (LoginRequest request,HttpContext httpContext) =
         var claims =
             new List<Claim>
             {
-                new Claim(
-                    ClaimTypes.NameIdentifier,
-                    user.Id),
+            new Claim(
+                ClaimTypes.NameIdentifier,
+                user.Id),
 
-                new Claim(
-                    ClaimTypes.Name,
-                    user.Username),
+            new Claim(
+                ClaimTypes.Name,
+                user.Username),
 
-                new Claim(
-                    ClaimTypes.Role,
-                    user.Role)
+            new Claim(
+                ClaimTypes.Role,
+                user.Role)
             };
-
 
         var identity =
             new ClaimsIdentity(
@@ -459,10 +579,13 @@ app.MapPost("/api/login", async (LoginRequest request,HttpContext httpContext) =
                 CookieAuthenticationDefaults
                     .AuthenticationScheme);
 
-
         var principal =
             new ClaimsPrincipal(identity);
 
+
+        // --------------------------------------------------------
+        // CREATE AUTH COOKIE
+        // --------------------------------------------------------
 
         await httpContext.SignInAsync(
             CookieAuthenticationDefaults
@@ -490,7 +613,8 @@ app.MapPost("/api/login", async (LoginRequest request,HttpContext httpContext) =
                 StringComparison.OrdinalIgnoreCase))
         {
             redirect =
-                returnUrl ?? "/dashboard.html";
+                returnUrl ??
+                "/dashboard.html";
         }
 
 
@@ -500,16 +624,16 @@ app.MapPost("/api/login", async (LoginRequest request,HttpContext httpContext) =
 
         else
         {
-            // Normal users may return to their original page,
-            // except administrator-only pages.
             if (!string.IsNullOrWhiteSpace(returnUrl) &&
                 !IsAdminPage(returnUrl))
             {
-                redirect = returnUrl;
+                redirect =
+                    returnUrl;
             }
             else
             {
-                redirect = "/dashboard.html";
+                redirect =
+                    "/dashboard.html";
             }
         }
 
@@ -520,17 +644,34 @@ app.MapPost("/api/login", async (LoginRequest request,HttpContext httpContext) =
             redirect
         });
     });
-app.MapGet("/api/logout",async ( HttpContext httpContext) =>
+
+
+// ============================================================
+// LOGOUT
+// ============================================================
+
+app.MapGet(
+    "/api/logout",
+    async (HttpContext httpContext) =>
     {
-        await httpContext.SignOutAsync(CookieAuthenticationDefaults .AuthenticationScheme);
+        await httpContext.SignOutAsync(
+            CookieAuthenticationDefaults
+                .AuthenticationScheme);
 
         return Results.Ok(new
         {
-            success = true,
-
+            success = true
         });
     });
-app.MapGet( "/api/me",(HttpContext httpContext) =>
+
+
+// ============================================================
+// CURRENT USER
+// ============================================================
+
+app.MapGet(
+    "/api/me",
+    (HttpContext httpContext) =>
     {
         if (httpContext.User.Identity?.IsAuthenticated != true)
         {
@@ -540,14 +681,27 @@ app.MapGet( "/api/me",(HttpContext httpContext) =>
         return Results.Ok(new
         {
             id =
-                httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                httpContext.User
+                    .FindFirst(
+                        ClaimTypes.NameIdentifier)
+                    ?.Value,
+
             username =
                 httpContext.User.Identity?.Name,
+
             role =
-                httpContext.User.FindFirst( ClaimTypes.Role)?.Value
+                httpContext.User
+                    .FindFirst(
+                        ClaimTypes.Role)
+                    ?.Value
         });
     })
-    .RequireAuthorization();
+.RequireAuthorization();
+
+
+// ============================================================
+// ACCESS DENIED
+// ============================================================
 
 app.MapGet(
     "/access-denied",
@@ -561,91 +715,216 @@ app.MapGet(
             statusCode: 403);
     });
 
-//device api
-var deviceApi = app.MapGroup("/api/device").RequireAuthorization();
-deviceApi.MapGet("/getdevices/", () =>
-{
-return Iceburg.Database.Database.Devices;
-});
-deviceApi.MapGet("/getdevicestatus/{id}", async (string id) =>
-{
-    var devicetest = new DeviceStatus();
 
-    return await devicetest.Getstatus(id);
-});
+// ============================================================
+// DEVICE API
+// ============================================================
 
-// Video Hub API
-var routerApi = app.MapGroup("/api/router").RequireAuthorization();
+var deviceApi =
+    app.MapGroup("/api/device")
+       .RequireAuthorization();
 
-routerApi.MapGet( "/bmd/{id}/getinfo", async(string id) =>
+deviceApi.MapGet(
+    "/getdevices/",
+    () =>
+    {
+        return Iceburg.Database.Database.Devices;
+    });
+
+deviceApi.MapGet(
+    "/getdevicestatus/{id}",
+    async (string id) =>
+    {
+        var devicetest =
+            new DeviceStatus();
+
+        return await devicetest.Getstatus(id);
+    });
+
+
+// ============================================================
+// VIDEO HUB / ROUTER API
+// ============================================================
+
+var routerApi =
+    app.MapGroup("/api/router")
+       .RequireAuthorization();
+
+routerApi.MapGet(
+    "/bmd/{id}/getinfo",
+    async (string id) =>
     {
         var bmdRouter =
             new BMD_Router();
 
         return await bmdRouter.getinfo(id);
     });
-routerApi.MapGet( "/bmd/{id}/getnames", (string id) =>
+
+routerApi.MapGet(
+    "/bmd/{id}/getnames",
+    (string id) =>
     {
         var bmdRouter =
             new BMD_Router();
 
         return bmdRouter.getnames(id);
     });
-routerApi.MapGet("/bmd/{id}/getroutes",(string id) =>
+
+routerApi.MapGet(
+    "/bmd/{id}/getroutes",
+    (string id) =>
     {
         var bmdRouter =
             new BMD_Router();
 
         return bmdRouter.GetRoutes(id);
     });
-routerApi.MapPost("/bmd/{id}/setinputname",(string id, SetNameRequest request) =>
+
+routerApi.MapGet(
+    "/bmd/{id}/setinputname/{input}/{name}",
+    (string id, string input, string name) =>
     {
         var bmdRouter =
             new BMD_Router();
 
         return bmdRouter.setinputname(
             id,
-            request.Input,
-            request.Name);
+            input,
+            name);
     });
-routerApi.MapPost("/bmd/{id}/setoutputname", (string id, SetNameRequest request) =>
+
+routerApi.MapGet(
+    "/bmd/{id}/setoutputname/{input}/{name}",
+    (string id, string input,string name) =>
     {
         var bmdRouter =
             new BMD_Router();
 
         return bmdRouter.setoutputname(
             id,
-            request.Input,
-            request.Name);
+            input,
+            name);
     });
-routerApi.MapPost("/bmd/{id}/setroute", (string id, SetRouteRequest request) =>
-    {
-        var bmdRouter =
-            new BMD_Router();
 
+routerApi.MapGet(
+    "/bmd/{id}/setroute/{Input}/{Output}",(string id, string Input, string Output) =>
+
+    {
+        Console.WriteLine(id + " " + Input + " " + Output);
+        var bmdRouter =new BMD_Router();
+   
         return bmdRouter.setroute(
             id,
-            request.Input,
-            request.Output);
+            Input,
+            Output);
     });
-//Tally Legacy API
-app.MapGet("/tally/gettallystatus.php", () =>
-{
-    return "{\"inputs\":{\"1\":false,\"2\":false,\"3\":false,\"4\":false,\"5\":false,\"6\":false,\"7\":false,\"8\":false},\"outputs\":{\"1\":false,\"2\":false,\"3\":false,\"4\":false,\"5\":false,\"6\":false,\"7\":false,\"8\":false}}";
-});
-app.MapGet("/tally/getumd.php", () =>
-{
-    return "{\"inputs\":{\"1\":\"\",\"2\":\"\",\"3\":\"\",\"4\":\"\",\"5\":\"\",\"6\":\"\",\"7\":\"\",\"8\":\"\"},\"outputs\":{\"1\":\"\",\"2\":\"\",\"3\":\"\",\"4\":\"\",\"5\":\"\",\"6\":\"\",\"7\":\"\",\"8\":\"\"}}";
-});
-app.MapGet("/tally/settallystatus.php", () =>
-{
-    return "test";
-});
 
 
+// ============================================================
+// TALLY / GPIO API
+// ============================================================
 
-//Command Line Setup and command handeling
-Console.OutputEncoding = System.Text.Encoding.UTF8;
+TallyEndpoints.Map(app);
+
+// X32 HTTP API endpoints
+// Add these alongside your other routerApi.MapGet/MapPost routes.
+
+var mixerapi =
+    app.MapGroup("/api/mixer")
+       .RequireAuthorization();
+
+mixerapi.MapGet(
+    "/x32/{id}/getinfo",
+    (string id) =>
+{
+var x32 = new X32();
+return x32.getinfo(id);
+});
+
+mixerapi.MapGet(
+    "/x32/{id}/getmainmix",
+    (string id) =>
+{
+var x32 = new X32();
+return x32.getmainmix(id);
+});
+
+mixerapi.MapPost(
+    "/x32/{id}/setmainmix",
+    async (HttpRequest request, string id) =>
+{
+var body = await request.ReadFromJsonAsync<X32MainMixRequest>();
+
+if (body is null || body.channel < 1 || body.channel > 32)
+return Results.BadRequest();
+
+var x32 = new X32();
+
+return Results.Ok(await x32.setmainmix(
+    id,
+    body.channel,
+    body.gain,
+    body.mute,
+    body.name));
+});
+
+mixerapi.MapGet(
+    "/x32/{id}/getbus/{bus}",
+    (string id, int bus) =>
+{
+var x32 = new X32();
+return x32.getbus(id, bus);
+});
+
+mixerapi.MapGet(
+    "/x32/{id}/getbusnames",
+    (string id) =>
+{
+var x32 = new X32();
+return x32.getbusnames(id);
+});
+
+mixerapi.MapPost(
+    "/x32/{id}/setbus",
+    async (HttpRequest request, string id) =>
+{
+var body = await request.ReadFromJsonAsync<X32BusRequest>();
+
+if (body is null ||
+    body.channel < 1 || body.channel > 32 ||
+    body.bus < 1 || body.bus > 16)
+return Results.BadRequest();
+
+var x32 = new X32();
+
+return Results.Ok(await x32.setbus(
+    id,
+    body.channel,
+    body.bus,
+    body.gain,
+    body.mute,
+    body.name));
+});
+
+mixerapi.MapGet(
+    "/x32/{id}/getallnames",
+    (string id) =>
+    {
+        var x32 = new X32();
+        return x32.getallnames(id);
+    });
+
+
+// Request DTOs
+
+
+// ============================================================
+// COMMAND LINE
+// ============================================================
+
+Console.OutputEncoding =
+    System.Text.Encoding.UTF8;
+
 Console.WriteLine(@"
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡾⠋⡏⢻⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -665,6 +944,7 @@ Console.WriteLine(@"
 
 
 Web Interfaces Hosted at:");
+
 foreach (var ni in NetworkInterface.GetAllNetworkInterfaces())
 {
     if (ni.OperationalStatus !=
@@ -686,6 +966,11 @@ foreach (var ni in NetworkInterface.GetAllNetworkInterfaces())
     }
 }
 
+
+// ============================================================
+// COMMAND LINE PARSER
+// ============================================================
+
 static List<string> SplitCommandLine(string input)
 {
     var result =
@@ -695,7 +980,6 @@ static List<string> SplitCommandLine(string input)
         new System.Text.StringBuilder();
 
     bool inQuotes = false;
-
     char quoteCharacter = '\0';
 
     for (int i = 0; i < input.Length; i++)
@@ -710,12 +994,14 @@ static List<string> SplitCommandLine(string input)
             {
                 inQuotes = true;
                 quoteCharacter = character;
+
                 continue;
             }
 
             if (character == quoteCharacter)
             {
                 inQuotes = false;
+
                 continue;
             }
         }
@@ -750,6 +1036,11 @@ static List<string> SplitCommandLine(string input)
 Console.WriteLine("");
 Console.WriteLine("");
 
+
+// ============================================================
+// INITIAL ADMIN
+// ============================================================
+
 if (Database.GetUsers().Count == 0)
 {
     Database.AddUser(
@@ -760,16 +1051,23 @@ if (Database.GetUsers().Count == 0)
     Console.WriteLine(
         "Created initial Iceburg admin account.");
 }
-Console.WriteLine($"For Help Type \"help\" ");
+
+Console.WriteLine(
+    "For Help Type \"help\" ");
+
+
+// ============================================================
+// COMMAND HANDLER
+// ============================================================
+
 _ = Task.Run(async () =>
 {
-
     while (true)
     {
+        Console.Write("iceburg2> ");
 
-        Console.Write("iceburg> ");
-
-        var input = await Console.In.ReadLineAsync();
+        var input =
+            await Console.In.ReadLineAsync();
 
         if (input == null)
             break;
@@ -786,27 +1084,43 @@ _ = Task.Run(async () =>
         switch (command)
         {
             case "help":
+
                 Console.WriteLine("Commands:");
-                Console.WriteLine($"    help                                                                                Show this help");
-                Console.WriteLine($"    device list                                                                         Shows all devices");
-                Console.WriteLine($"    device add (Name) (IP) (Type)                                                       Adds a device");
-                Console.WriteLine($"    device remove (ID)                                                                  Removes a device");
-                Console.WriteLine($"    user list                                                                           List all users");
-                Console.WriteLine($"    user add (Username) (password) (role)                                               Adds a user");
-                Console.WriteLine($"    user edit (User ID) (New Username) (New password) (role \"Admin\" \"User\")             Edits A user");
-                Console.WriteLine($"    user remove (ID)                                                                    Removes A user");              
-                Console.WriteLine($"    exit                                                                                Stops Iceburg");
+                Console.WriteLine(
+                    "    help");
+                Console.WriteLine(
+                    "    device list");
+                Console.WriteLine(
+                    "    device add (Name) (IP) (Type)");
+                Console.WriteLine(
+                    "    device remove (ID)");
+                Console.WriteLine(
+                    "    user list");
+                Console.WriteLine(
+                    "    user add (Username) (password) (role)");
+                Console.WriteLine(
+                    "    user edit (User ID) (New Username) (New password) (role \"Admin\" \"User\")");
+                Console.WriteLine(
+                    "    user remove (ID)");
+                Console.WriteLine(
+                    "    exit");
+
                 break;
 
+
             case "device":
+
                 if (parts.Count > 1)
                 {
-                    
+                    if (parts[1] == "add")
                     {
-                        Console.WriteLine($"Device: add");
+                        Console.WriteLine(
+                            "Device: add");
+
                         if (parts.Count != 5)
                         {
-                            Console.WriteLine($"device add (Name) (IP) (Type)");
+                            Console.WriteLine(
+                                "device add (Name) (IP) (Type)");
                         }
                         else
                         {
@@ -814,91 +1128,131 @@ _ = Task.Run(async () =>
                             string IP = parts[3];
                             string type = parts[4];
 
-                            Device device = Database.AddDevice(Name, type, IP);
-                            Console.WriteLine($"Added New Device. Device ID: {device.Id.ToString()}");
-                        }                         
-                    }
-                    if (parts[1] == "list")
-                    {
-                        Console.WriteLine($"{"Name",-25} {"IP",-15} {"ID",-20}");
-                        Console.WriteLine(new string('-', 65));
+                            Device device =
+                                Database.AddDevice(
+                                    Name,
+                                    type,
+                                    IP);
 
-                        foreach (var device in Database.Devices)
-                        {
-                            Console.WriteLine($"{device.Name,-25} {device.IpAddress,-15} {device.Id,-20}");
+                            Console.WriteLine(
+                                $"Added New Device. Device ID: {device.Id}");
                         }
                     }
+
+                    if (parts[1] == "list")
+                    {
+                        Console.WriteLine(
+                            $"{"Name",-25} {"IP",-15} {"ID",-20}");
+
+                        Console.WriteLine(
+                            new string('-', 65));
+
+                        foreach (
+                            var device
+                            in Database.Devices)
+                        {
+                            Console.WriteLine(
+                                $"{device.Name,-25} " +
+                                $"{device.IpAddress,-15} " +
+                                $"{device.Id,-20}");
+                        }
+                    }
+
                     if (parts[1] == "remove")
                     {
                         if (parts.Count != 3)
                         {
-                            Console.WriteLine($"device remove (ID)");
+                            Console.WriteLine(
+                                "device remove (ID)");
                         }
                         else
                         {
                             string ID = parts[2];
-                            Device deviceToRemove = Database.GetDevice(ID);
-                            if (!(deviceToRemove == null))
+
+                            Device deviceToRemove =
+                                Database.GetDevice(ID);
+
+                            if (deviceToRemove != null)
                             {
                                 Database.RemoveDevice(ID);
 
-                                Console.WriteLine($"Removed Device {ID}");
+                                Console.WriteLine(
+                                    $"Removed Device {ID}");
                             }
                             else
                             {
-                                Console.WriteLine($"Device Not found");
-                            }                                                      
+                                Console.WriteLine(
+                                    "Device Not found");
+                            }
                         }
                     }
-
                 }
                 else
                 {
-                    Console.WriteLine($"device list");
-                    Console.WriteLine($"device add (Name) (IP) (Type)");
-                    Console.WriteLine($"device remove (ID)");
+                    Console.WriteLine(
+                        "device list");
 
+                    Console.WriteLine(
+                        "device add (Name) (IP) (Type)");
+
+                    Console.WriteLine(
+                        "device remove (ID)");
                 }
+
                 break;
+
+
             case "user":
+
                 if (parts.Count > 1)
                 {
                     if (parts[1] == "add")
                     {
-                       
                         if (parts.Count != 5)
                         {
-                            Console.WriteLine($"user add (Username) (password) (role \"Admin\" \"User\")");
+                            Console.WriteLine(
+                                "user add (Username) (password) (role \"Admin\" \"User\")");
                         }
                         else
                         {
                             string username = parts[2];
                             string password = parts[3];
                             string role = parts[4];
-                            if (!(role=="Admin"|| role == "User"))
+
+                            if (!(role == "Admin" ||
+                                  role == "User"))
                             {
-                                Console.WriteLine($"Unknown Role");
+                                Console.WriteLine(
+                                    "Unknown Role");
+
                                 break;
                             }
 
-                            if (!(Database.GetUser(username) == null))
+                            if (Database.GetUser(username) != null)
                             {
-                                Console.WriteLine($"Username is already used");
+                                Console.WriteLine(
+                                    "Username is already used");
+
                                 break;
                             }
 
-                            User user = Database.AddUser(username, password, role);
-                            
+                            User user =
+                                Database.AddUser(
+                                    username,
+                                    password,
+                                    role);
 
-                            Console.WriteLine($"Added New User. User ID: {user.Id}");
-
+                            Console.WriteLine(
+                                $"Added New User. User ID: {user.Id}");
                         }
                     }
+
                     if (parts[1] == "edit")
                     {
                         if (parts.Count != 6)
                         {
-                            Console.WriteLine($"user edit (User ID) (New Username) (New password) (role \"Admin\" \"User\")");
+                            Console.WriteLine(
+                                "user edit (User ID) (New Username) (New password) (role \"Admin\" \"User\")");
                         }
                         else
                         {
@@ -907,94 +1261,156 @@ _ = Task.Run(async () =>
                             string password = parts[4];
                             string role = parts[5];
 
-
-                            if (!(role == "Admin" || role == "User"))
+                            if (!(role == "Admin" ||
+                                  role == "User"))
                             {
-                                Console.WriteLine($"Unknown Role");
+                                Console.WriteLine(
+                                    "Unknown Role");
+
                                 break;
                             }
 
-                            if ((Database.GetUserById(userid) == null))
+                            if (Database.GetUserById(userid) == null)
                             {
-                                Console.WriteLine($"Username not found");
+                                Console.WriteLine(
+                                    "Username not found");
+
                                 break;
                             }
 
-                            User user = Database.EditUser(userid, username, password, role);
+                            User user =
+                                Database.EditUser(
+                                    userid,
+                                    username,
+                                    password,
+                                    role);
 
-
-                            Console.WriteLine($"Edited User. Username: {user.Username} User Role: {user.Username}");
-
+                            Console.WriteLine(
+                                $"Edited User. Username: {user.Username} User Role: {user.Role}");
                         }
                     }
+
                     if (parts[1] == "list")
                     {
-                        Console.WriteLine($"{"Name",-25} {"Role",-15} {"ID",-20}");
-                        Console.WriteLine(new string('-', 65));
+                        Console.WriteLine(
+                            $"{"Name",-25} {"Role",-15} {"ID",-20}");
 
-                        foreach (var device in Database.Users)
+                        Console.WriteLine(
+                            new string('-', 65));
+
+                        foreach (
+                            var device
+                            in Database.Users)
                         {
-                            Console.WriteLine($"{device.Username,-25} {device.Role,-15} {device.Id,-20}");
+                            Console.WriteLine(
+                                $"{device.Username,-25} " +
+                                $"{device.Role,-15} " +
+                                $"{device.Id,-20}");
                         }
                     }
+
                     if (parts[1] == "remove")
                     {
                         if (parts.Count != 3)
                         {
-                            Console.WriteLine($"User remove (ID)");
+                            Console.WriteLine(
+                                "User remove (ID)");
                         }
                         else
                         {
                             string ID = parts[2];
-                            User deviceToRemove = Database.GetUserById(ID);
-                            if (!(deviceToRemove == null))
+
+                            User deviceToRemove =
+                                Database.GetUserById(ID);
+
+                            if (deviceToRemove != null)
                             {
                                 Database.RemoveUser(ID);
 
-                                Console.WriteLine($"Removed User {ID}");
+                                Console.WriteLine(
+                                    $"Removed User {ID}");
                             }
                             else
                             {
-                                Console.WriteLine($"User Not found");
+                                Console.WriteLine(
+                                    "User Not found");
                             }
                         }
                     }
-
                 }
                 else
                 {
-                    Console.WriteLine($"user list");
-                    Console.WriteLine($"user add (Username) (password) (role)");
-                    Console.WriteLine($"user remove (ID)");
-                    Console.WriteLine($"user edit (User ID) (New Username) (New password) (role \"Admin\" \"User\")");
+                    Console.WriteLine(
+                        "user list");
 
+                    Console.WriteLine(
+                        "user add (Username) (password) (role)");
+
+                    Console.WriteLine(
+                        "user remove (ID)");
+
+                    Console.WriteLine(
+                        "user edit (User ID) (New Username) (New password) (role \"Admin\" \"User\")");
                 }
+
                 break;
+
+
             case "exit":
+
                 Console.WriteLine(
                     "Stopping Iceburg...");
 
                 Environment.Exit(0);
+
                 break;
+
+
+            case "debug":
+
+                if (parts.Count > 1)
+                {
+                    if (parts[1] == "on")
+                    {
+                        debug = true;
+                    }
+
+                    if (parts[1] == "off")
+                    {
+                        debug = false;
+                    }
+                }
+
+                break;
+
+
             case "":
                 break;
+
+
             default:
+
                 Console.WriteLine(
                     $"Unknown command: {input}");
+
                 break;
         }
     }
 });
-app.Urls.Add("http://0.0.0.0:80");
-app.Urls.Add("https://0.0.0.0:443");
 
+
+// ============================================================
+// START SERVER
+// ============================================================
 
 app.Run();
 
 
+// ============================================================
 // HELPERS
 // ============================================================
-static string? GetSafeReturnUrl( string? returnUrl)
+
+static string? GetSafeReturnUrl(string? returnUrl)
 {
     if (string.IsNullOrWhiteSpace(returnUrl))
     {
@@ -1004,23 +1420,18 @@ static string? GetSafeReturnUrl( string? returnUrl)
     returnUrl =
         returnUrl.Trim();
 
-
     // Must be a local path.
     if (!returnUrl.StartsWith("/"))
     {
         return null;
     }
 
-
     // Prevent URLs such as:
-    //
-    //     //evil.example.com
-    //
+    // //evil.example.com
     if (returnUrl.StartsWith("//"))
     {
         return null;
     }
-
 
     // Never redirect into an API endpoint.
     if (returnUrl.StartsWith(
@@ -1030,7 +1441,6 @@ static string? GetSafeReturnUrl( string? returnUrl)
         return null;
     }
 
-
     // Never redirect back to login.
     if (returnUrl.Equals(
             "/login.html",
@@ -1039,9 +1449,10 @@ static string? GetSafeReturnUrl( string? returnUrl)
         return null;
     }
 
-
     return returnUrl;
 }
+
+
 static bool IsAdminPage(string returnUrl)
 {
     if (string.IsNullOrWhiteSpace(returnUrl))
@@ -1063,11 +1474,33 @@ static bool IsAdminPage(string returnUrl)
             "/admin/",
             StringComparison.OrdinalIgnoreCase);
 }
-public record LoginChallengeRequest(string? Username);
-public record LoginRequest( string? Username,string? ChallengeId,string? Proof,string? ReturnUrl);
-public record LogoutRequest(string? ReturnUrl);
-public record SetNameRequest(string Input,string Name);
-public record SetRouteRequest(string Input,string Output);
+
+
+public record LoginChallengeRequest(
+    string? Username);
+
+
+public record LoginRequest(
+    string? Username,
+    string? ChallengeId,
+    string? Proof,
+    string? ReturnUrl);
+
+
+public record LogoutRequest(
+    string? ReturnUrl);
+
+
+public record SetNameRequest(
+    string Input,
+    string Name);
+
+
+public record SetRouteRequest(
+    string Input,
+    string Output);
+
+
 public sealed class LoginChallenge
 {
     public string Username { get; set; } = "";
@@ -1076,4 +1509,21 @@ public sealed class LoginChallenge
         Array.Empty<byte>();
 
     public DateTime ExpiresAt { get; set; }
+}
+
+public sealed class X32MainMixRequest
+{
+    public int channel { get; set; }
+    public double? gain { get; set; }
+    public bool? mute { get; set; }
+    public string? name { get; set; }
+}
+
+public sealed class X32BusRequest
+{
+    public int channel { get; set; }
+    public int bus { get; set; }
+    public double? gain { get; set; }
+    public bool? mute { get; set; }
+    public string? name { get; set; }
 }

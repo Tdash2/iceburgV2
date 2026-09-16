@@ -2,6 +2,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using Iceburg.Database;
+using Iceburg.Mixer.X32;
 
 namespace Iceburg.Devices.Status;
 public class DeviceStatus
@@ -131,6 +132,46 @@ public class DeviceStatus
             {
                 return "error";
             }
+        }
+        if (device.Type == "2")
+        {
+            string timeString = device.LastSeen;
+
+            // Later...
+            if (DateTime.TryParse(timeString, out DateTime savedTime))
+            {
+                if (Math.Abs((DateTime.Now - savedTime).TotalSeconds) <= 5)
+                {
+                    return "connected";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+            else
+            {
+                return "error";
+            }
+        }
+        if (device.Type == "3")
+        {
+            int? ch = await X32.GetIntAsync(
+     device.IpAddress,
+     "/ch/01/config/source");
+
+           
+
+            if (ch.HasValue)
+            {
+                return "connected";
+            }
+            else
+            {
+                return "error";
+            }
+
+
         }
         else
         {
