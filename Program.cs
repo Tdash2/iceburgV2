@@ -42,9 +42,9 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(80);
+    options.ListenAnyIP(8600);
 
-    options.ListenAnyIP(443, listenOptions =>
+    options.ListenAnyIP(4430, listenOptions =>
     {
         listenOptions.UseHttps(
             "iceburg.pfx",
@@ -54,7 +54,7 @@ builder.WebHost.ConfigureKestrel(options =>
 
 builder.Services.AddHttpsRedirection(options =>
 {
-    options.HttpsPort = 443;
+    options.HttpsPort = 4430;
 });
 
 

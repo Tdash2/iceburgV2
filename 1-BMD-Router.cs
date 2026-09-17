@@ -266,7 +266,7 @@ public class BMD_Router
             });
         }
     }
-    public async Task<string> setinputname(string id,string input, string name)
+    public async Task<string> setinputname(string id, string input, string name)
     {
         Device? device = Database.Database.GetDevice(id);
 
@@ -286,6 +286,50 @@ public class BMD_Router
 
             using NetworkStream stream = client.GetStream();
 
+            // ---------------------------------------------------------
+            // Wait for PROTOCOL PREAMBLE before sending ANY command
+            // ---------------------------------------------------------
+
+            byte[] buffer = new byte[4096];
+            StringBuilder responseBuffer = new StringBuilder();
+
+            using CancellationTokenSource timeout =
+                new CancellationTokenSource(TimeSpan.FromSeconds(5));
+
+            while (true)
+            {
+                int bytesRead = await stream.ReadAsync(
+                    buffer,
+                    0,
+                    buffer.Length,
+                    timeout.Token);
+
+                if (bytesRead == 0)
+                {
+                    return JsonSerializer.Serialize(new
+                    {
+                        success = false,
+                        error = "Videohub disconnected before sending PROTOCOL PREAMBLE"
+                    });
+                }
+
+                string responseChunk =
+                    Encoding.ASCII.GetString(buffer, 0, bytesRead);
+
+                responseBuffer.Append(responseChunk);
+
+                if (responseBuffer
+                    .ToString()
+                    .Contains("PROTOCOL PREAMBLE:", StringComparison.Ordinal))
+                {
+                    break;
+                }
+            }
+
+            // ---------------------------------------------------------
+            // Only send the command AFTER PROTOCOL PREAMBLE
+            // ---------------------------------------------------------
+
             string command =
                 $"INPUT LABELS:\n" +
                 $"{input} {name}\n" +
@@ -296,31 +340,63 @@ public class BMD_Router
             await stream.WriteAsync(data, 0, data.Length);
             await stream.FlushAsync();
 
+            // ---------------------------------------------------------
             // Wait for ACK / NAK
-            byte[] buffer = new byte[1024];
+            // ---------------------------------------------------------
 
-            int bytesRead = await stream.ReadAsync(
-                buffer, 0, buffer.Length);
+            StringBuilder ackBuffer = new StringBuilder();
 
-            string response = Encoding.ASCII
-                .GetString(buffer, 0, bytesRead)
-                .Trim();
-
-            if (response.StartsWith("ACK"))
+            while (true)
             {
-                return JsonSerializer.Serialize(new
-                {
-                    success = true,
-                    input = input,
-                    name = name
-                });
-            }
+                int bytesRead = await stream.ReadAsync(
+                    buffer,
+                    0,
+                    buffer.Length,
+                    timeout.Token);
 
+                if (bytesRead == 0)
+                {
+                    return JsonSerializer.Serialize(new
+                    {
+                        success = false,
+                        error = "Videohub disconnected while waiting for ACK"
+                    });
+                }
+
+                string responseChunk =
+                    Encoding.ASCII.GetString(buffer, 0, bytesRead);
+
+                ackBuffer.Append(responseChunk);
+
+                string response = ackBuffer.ToString().Trim();
+
+                if (response.Contains("ACK", StringComparison.Ordinal))
+                {
+                    return JsonSerializer.Serialize(new
+                    {
+                        success = true,
+                        input = input,
+                        name = name
+                    });
+                }
+
+                if (response.Contains("NAK", StringComparison.Ordinal))
+                {
+                    return JsonSerializer.Serialize(new
+                    {
+                        success = false,
+                        error = "Videohub rejected the name change",
+                        response = response
+                    });
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
             return JsonSerializer.Serialize(new
             {
                 success = false,
-                error = "Videohub rejected the name change",
-                response = response
+                error = "Timed out waiting for Videohub PROTOCOL PREAMBLE"
             });
         }
         catch (Exception ex)
@@ -352,6 +428,50 @@ public class BMD_Router
 
             using NetworkStream stream = client.GetStream();
 
+            // ---------------------------------------------------------
+            // Wait for PROTOCOL PREAMBLE before sending ANY command
+            // ---------------------------------------------------------
+
+            byte[] buffer = new byte[4096];
+            StringBuilder responseBuffer = new StringBuilder();
+
+            using CancellationTokenSource timeout =
+                new CancellationTokenSource(TimeSpan.FromSeconds(5));
+
+            while (true)
+            {
+                int bytesRead = await stream.ReadAsync(
+                    buffer,
+                    0,
+                    buffer.Length,
+                    timeout.Token);
+
+                if (bytesRead == 0)
+                {
+                    return JsonSerializer.Serialize(new
+                    {
+                        success = false,
+                        error = "Videohub disconnected before sending PROTOCOL PREAMBLE"
+                    });
+                }
+
+                string responseChunk =
+                    Encoding.ASCII.GetString(buffer, 0, bytesRead);
+
+                responseBuffer.Append(responseChunk);
+
+                if (responseBuffer
+                    .ToString()
+                    .Contains("PROTOCOL PREAMBLE:", StringComparison.Ordinal))
+                {
+                    break;
+                }
+            }
+
+            // ---------------------------------------------------------
+            // Only send the command AFTER PROTOCOL PREAMBLE
+            // ---------------------------------------------------------
+
             string command =
                 $"OUTPUT LABELS:\n" +
                 $"{input} {name}\n" +
@@ -362,31 +482,63 @@ public class BMD_Router
             await stream.WriteAsync(data, 0, data.Length);
             await stream.FlushAsync();
 
+            // ---------------------------------------------------------
             // Wait for ACK / NAK
-            byte[] buffer = new byte[1024];
+            // ---------------------------------------------------------
 
-            int bytesRead = await stream.ReadAsync(
-                buffer, 0, buffer.Length);
+            StringBuilder ackBuffer = new StringBuilder();
 
-            string response = Encoding.ASCII
-                .GetString(buffer, 0, bytesRead)
-                .Trim();
-
-            if (response.StartsWith("ACK"))
+            while (true)
             {
-                return JsonSerializer.Serialize(new
-                {
-                    success = true,
-                    input = input,
-                    name = name
-                });
-            }
+                int bytesRead = await stream.ReadAsync(
+                    buffer,
+                    0,
+                    buffer.Length,
+                    timeout.Token);
 
+                if (bytesRead == 0)
+                {
+                    return JsonSerializer.Serialize(new
+                    {
+                        success = false,
+                        error = "Videohub disconnected while waiting for ACK"
+                    });
+                }
+
+                string responseChunk =
+                    Encoding.ASCII.GetString(buffer, 0, bytesRead);
+
+                ackBuffer.Append(responseChunk);
+
+                string response = ackBuffer.ToString().Trim();
+
+                if (response.Contains("ACK", StringComparison.Ordinal))
+                {
+                    return JsonSerializer.Serialize(new
+                    {
+                        success = true,
+                        input = input,
+                        name = name
+                    });
+                }
+
+                if (response.Contains("NAK", StringComparison.Ordinal))
+                {
+                    return JsonSerializer.Serialize(new
+                    {
+                        success = false,
+                        error = "Videohub rejected the name change",
+                        response = response
+                    });
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
             return JsonSerializer.Serialize(new
             {
                 success = false,
-                error = "Videohub rejected the name change",
-                response = response
+                error = "Timed out waiting for Videohub PROTOCOL PREAMBLE"
             });
         }
         catch (Exception ex)
@@ -398,7 +550,8 @@ public class BMD_Router
             });
         }
     }
-    public async Task<string> setroute(string id,string sorce,string destnatnion)
+
+    public async Task<string> setroute(string id, string sorce, string destnatnion)
     {
         Device? device = Database.Database.GetDevice(id);
 
@@ -418,16 +571,56 @@ public class BMD_Router
 
             using NetworkStream stream = client.GetStream();
 
-            // Videohub protocol:
+            // ---------------------------------------------------------
+            // Wait for the Videohub to send:
             //
-            // VIDEO OUTPUT ROUTING:
-            // destination source
+            // PROTOCOL PREAMBLE:
             //
-            // Example:
-            // VIDEO OUTPUT ROUTING:
-            // 7 2
-            //
-            // Means output 7 is routed to input 2.
+            // before sending ANY commands.
+            // ---------------------------------------------------------
+
+            byte[] buffer = new byte[4096];
+            StringBuilder responseBuffer = new StringBuilder();
+
+            using CancellationTokenSource timeout =
+                new CancellationTokenSource(TimeSpan.FromSeconds(5));
+
+            while (true)
+            {
+                int bytesRead = await stream.ReadAsync(
+                    buffer,
+                    0,
+                    buffer.Length,
+                    timeout.Token);
+
+                if (bytesRead == 0)
+                {
+                    return JsonSerializer.Serialize(new
+                    {
+                        success = false,
+                        error = "Videohub disconnected before sending PROTOCOL PREAMBLE"
+                    });
+                }
+
+                string responseChunk =
+                    Encoding.ASCII.GetString(buffer, 0, bytesRead);
+
+                responseBuffer.Append(responseChunk);
+
+                // Device is alive and has sent the protocol preamble.
+                if (responseBuffer
+                    .ToString()
+                    .Contains("PROTOCOL PREAMBLE:", StringComparison.Ordinal))
+                {
+                    break;
+                }
+            }
+
+            // ---------------------------------------------------------
+            // Only AFTER PROTOCOL PREAMBLE has been received do we
+            // send the routing command.
+            // ---------------------------------------------------------
+
             string command =
                 $"VIDEO OUTPUT ROUTING:\n" +
                 $"{destnatnion} {sorce}\n" +
@@ -438,31 +631,63 @@ public class BMD_Router
             await stream.WriteAsync(data, 0, data.Length);
             await stream.FlushAsync();
 
+            // ---------------------------------------------------------
             // Wait for ACK / NAK
-            byte[] buffer = new byte[1024];
+            // ---------------------------------------------------------
 
-            int bytesRead = await stream.ReadAsync(
-                buffer, 0, buffer.Length);
+            StringBuilder ackBuffer = new StringBuilder();
 
-            string response = Encoding.ASCII
-                .GetString(buffer, 0, bytesRead)
-                .Trim();
-
-            if (response.StartsWith("ACK"))
+            while (true)
             {
-                return JsonSerializer.Serialize(new
-                {
-                    success = true,
-                    source = sorce,
-                    destination = destnatnion
-                });
-            }
+                int bytesRead = await stream.ReadAsync(
+                    buffer,
+                    0,
+                    buffer.Length,
+                    timeout.Token);
 
+                if (bytesRead == 0)
+                {
+                    return JsonSerializer.Serialize(new
+                    {
+                        success = false,
+                        error = "Videohub disconnected while waiting for ACK"
+                    });
+                }
+
+                string responseChunk =
+                    Encoding.ASCII.GetString(buffer, 0, bytesRead);
+
+                ackBuffer.Append(responseChunk);
+
+                string response = ackBuffer.ToString().Trim();
+
+                if (response.Contains("ACK", StringComparison.Ordinal))
+                {
+                    return JsonSerializer.Serialize(new
+                    {
+                        success = true,
+                        source = sorce,
+                        destination = destnatnion
+                    });
+                }
+
+                if (response.Contains("NAK", StringComparison.Ordinal))
+                {
+                    return JsonSerializer.Serialize(new
+                    {
+                        success = false,
+                        error = "Videohub rejected the route",
+                        response = response
+                    });
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
             return JsonSerializer.Serialize(new
             {
                 success = false,
-                error = "Videohub rejected the route",
-                response = response
+                error = "Timed out waiting for Videohub PROTOCOL PREAMBLE"
             });
         }
         catch (Exception ex)

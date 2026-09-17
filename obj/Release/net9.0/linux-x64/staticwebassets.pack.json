@@ -37,6 +37,10 @@
       "PackagePath": "staticwebassets\\tallygrid.html"
     },
     {
+      "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\x32.html",
+      "PackagePath": "staticwebassets\\x32.html"
+    },
+    {
       "Id": "obj\\Release\\net9.0\\linux-x64\\staticwebassets\\msbuild.IceburgV2.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
     },

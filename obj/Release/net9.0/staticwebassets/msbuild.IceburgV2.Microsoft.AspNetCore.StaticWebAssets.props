@@ -138,8 +138,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>rgp0qbu2w3</Fingerprint>
-      <Integrity>60aM399Y3SVciIWjpdwanCuay3s8B2ObClCe6VTrmNk=</Integrity>
+      <Fingerprint>h5dgwulsci</Fingerprint>
+      <Integrity>lU4O6kZfme9lRTNrbh5Y0Eu8+ZCWkEw4S1b+MMVPIeo=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\tally.html'))</OriginalItemSpec>

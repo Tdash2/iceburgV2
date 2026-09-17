@@ -12,8 +12,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>cjydxbvomz</Fingerprint>
-      <Integrity>GK0HC2I0MnkBF/haN5y+S+mK7hMWzUUMZBuA6M9EBYQ=</Integrity>
+      <Fingerprint>cb55n99pfh</Fingerprint>
+      <Integrity>KLVPJjHYzZEKt4XMlkmjxAX0CuYLC+qVGioyWvEnJuo=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\BMDRouter.html'))</OriginalItemSpec>
@@ -30,8 +30,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>pc3pdiy63a</Fingerprint>
-      <Integrity>OTJ/Ufz5mNgOf5DmXlv6ixDSqmV033jlUfxP9moP7P0=</Integrity>
+      <Fingerprint>3g2k0t2rwy</Fingerprint>
+      <Integrity>Y725ikRgsCVQOdGhUvqQM+WEL8GBDhtQFUEUWTnJS3k=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\dashboard.html'))</OriginalItemSpec>
@@ -138,8 +138,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>2d2ybhyatv</Fingerprint>
-      <Integrity>dq/Oz/iOQtNvzYOY/LERFbwqpXPWhH/q3Mi5Oawe6SQ=</Integrity>
+      <Fingerprint>h5dgwulsci</Fingerprint>
+      <Integrity>lU4O6kZfme9lRTNrbh5Y0Eu8+ZCWkEw4S1b+MMVPIeo=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\tally.html'))</OriginalItemSpec>
@@ -161,6 +161,24 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\tallygrid.html'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\x32.html'))">
+      <SourceType>Package</SourceType>
+      <SourceId>IceburgV2</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/IceburgV2</BasePath>
+      <RelativePath>x32.html</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>h63951f5hr</Fingerprint>
+      <Integrity>p45o4710I3CknU0DKU14ozeG/MoQs5hFq3+Rx5kAJMg=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\x32.html'))</OriginalItemSpec>
     </StaticWebAsset>
   </ItemGroup>
 </Project>

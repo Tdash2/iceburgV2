@@ -27,30 +27,20 @@
       "Password": ""
     },
     {
-      "Id": "5e48f87e-bcba-4202-b3eb-9aa232037217",
-      "Name": "HEX-3 Router",
+      "Id": "5fee45a3-0649-41a1-bbb1-d38e687dcb85",
+      "Name": "1433 Router",
       "Type": "1",
-      "IpAddress": "10.176.73.40",
+      "IpAddress": "10.244.0.58",
       "AudioSorce": "",
       "LastSeen": "",
       "Username": "",
       "Password": ""
     },
     {
-      "Id": "15e2c83e-be4f-4734-b68e-496049ca83ca",
-      "Name": "HEX 3 X32",
-      "Type": "3",
-      "IpAddress": "10.176.73.32",
-      "AudioSorce": "",
-      "LastSeen": "",
-      "Username": "",
-      "Password": ""
-    },
-    {
-      "Id": "24c94403-d7ef-4eee-8ab2-6740f50661d0",
-      "Name": "localrouter",
-      "Type": "1",
-      "IpAddress": "127.0.0.1",
+      "Id": "cfb35e35-44ae-4aa9-8dbb-b53790a3b7b3",
+      "Name": "tally2",
+      "Type": "2",
+      "IpAddress": "1.1.1.1",
       "AudioSorce": "",
       "LastSeen": "",
       "Username": "",

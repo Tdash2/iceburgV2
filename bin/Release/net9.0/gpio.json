@@ -135,8 +135,47 @@
           "InputIds": [
             "04d6122987f64cd991e4805346970ee1"
           ]
+        },
+        {
+          "SourceDeviceId": "cfb35e35-44ae-4aa9-8dbb-b53790a3b7b3",
+          "OutputId": "5c6d3c2867e14ac691a7a3b4bc13f2ed",
+          "InputIds": [
+            "fb2c0d27c60c492aaaa0cfa4ab849b47"
+          ]
         }
       ]
+    },
+    {
+      "DeviceId": "cfb35e35-44ae-4aa9-8dbb-b53790a3b7b3",
+      "Name": "tally2",
+      "Nickname": "tally2",
+      "IpAddress": "1.1.1.1",
+      "Inputs": [
+        {
+          "InputId": "fb2c0d27c60c492aaaa0cfa4ab849b47",
+          "Port": 1,
+          "Name": "Input 1",
+          "Nickname": "Input 1",
+          "Status": false
+        }
+      ],
+      "Outputs": [
+        {
+          "OutputId": "8e2f698287ca4976a7fcdef5a56dfa0d",
+          "Port": 1,
+          "Name": "Output 1",
+          "Nickname": "Output 1",
+          "Status": false
+        },
+        {
+          "OutputId": "c713b09c13074524aae48d456e5c7021",
+          "Port": 2,
+          "Name": "Output 2",
+          "Nickname": "Output 2",
+          "Status": false
+        }
+      ],
+      "Routes": []
     }
   ]
 }
