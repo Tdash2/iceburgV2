@@ -1,0 +1,16 @@
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\win-x86\PubTmp\Out\depends\dist\kioskboard-keys-arabic.json
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\win-x86\PubTmp\Out\depends\dist\kioskboard-keys-french.json
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\win-x86\PubTmp\Out\depends\dist\kioskboard-keys-german.json
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\win-x86\PubTmp\Out\depends\dist\kioskboard-keys-hungarian.json
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\win-x86\PubTmp\Out\depends\dist\kioskboard-keys-persian.json
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\win-x86\PubTmp\Out\depends\dist\kioskboard-keys-russian.json
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\win-x86\PubTmp\Out\depends\dist\kioskboard-keys-spanish.json
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\win-x86\PubTmp\Out\depends\dist\kioskboard-keys-turkish.json
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\win-x86\PubTmp\Out\depends\dist\kioskboard-keys.json
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\win-x86\PubTmp\Out\depends\fontawesome\metadata\icon-families.json
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\win-x86\PubTmp\Out\depends\fontawesome\metadata\icons.json
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\win-x86\PubTmp\Out\depends\fontawesome\metadata\shims.json
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\win-x86\PubTmp\Out\IceburgV2.pdb
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\win-x86\PubTmp\Out\iceburg.pfx
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\win-x86\PubTmp\Out\aspnetcorev2_inprocess.dll
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\win-x86\PubTmp\Out\IceburgV2.exe

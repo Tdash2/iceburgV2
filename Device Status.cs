@@ -1,6 +1,9 @@
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
+using Iceburg.Conversion.AJA.fs2;
+using System.Threading;
+using Iceburg.Conversion.AJA.fs4;
 using Iceburg.Database;
 using Iceburg.Mixer.X32;
 
@@ -172,6 +175,54 @@ public class DeviceStatus
             }
 
 
+        }
+        if (device.Type == "4")
+        {
+            try
+            {
+                var fs2 = new AJAFS4(id);
+
+                var result = await fs2.GetParamAsync("eParamID_AudioOutputSelect_Vid1Embed");
+
+                string value = result?.ToString() ?? "";
+                if (value != "")
+                {
+
+                    return "connected";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+            catch
+            {
+                return "error";
+            }
+        }
+        if (device.Type == "5")
+        {
+            try
+            {
+                var fs2 = new AJAFS2(id);
+
+                var result = await fs2.GetParamAsync("eParamID_Audio1Input_Universal");
+
+                string value = result?.ToString() ?? "";
+                if (value != "")
+                {
+
+                    return "connected";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+            catch
+            {
+                return "error";
+            }
         }
         else
         {

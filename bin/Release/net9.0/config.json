@@ -27,20 +27,50 @@
       "Password": ""
     },
     {
-      "Id": "5fee45a3-0649-41a1-bbb1-d38e687dcb85",
-      "Name": "1433 Router",
-      "Type": "1",
-      "IpAddress": "10.244.0.58",
+      "Id": "cfb35e35-44ae-4aa9-8dbb-b53790a3b7b3",
+      "Name": "tally2",
+      "Type": "2",
+      "IpAddress": "1.1.1.1",
       "AudioSorce": "",
       "LastSeen": "",
       "Username": "",
       "Password": ""
     },
     {
-      "Id": "cfb35e35-44ae-4aa9-8dbb-b53790a3b7b3",
-      "Name": "tally2",
-      "Type": "2",
-      "IpAddress": "1.1.1.1",
+      "Id": "a3a22cba-f500-45bb-9234-a4bf5f0e0fc5",
+      "Name": "HEX-3 Router",
+      "Type": "1",
+      "IpAddress": "10.176.73.40",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "d4912362-fee2-44ef-a150-b1565b7412a1",
+      "Name": "HEX-3 FS21-24",
+      "Type": "4",
+      "IpAddress": "10.176.73.21",
+      "AudioSorce": "1448adf3-9cb2-4cfb-be2e-d3dbd5971fd6",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "1448adf3-9cb2-4cfb-be2e-d3dbd5971fd6",
+      "Name": "HEX-3 X32",
+      "Type": "3",
+      "IpAddress": "10.176.73.32",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "abc57429-0ed4-4e5b-9cd7-805bce1e04aa",
+      "Name": "hex 3 fs2",
+      "Type": "5",
+      "IpAddress": "10.176.73.11",
       "AudioSorce": "",
       "LastSeen": "",
       "Username": "",

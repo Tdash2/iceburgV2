@@ -10,11 +10,15 @@ using Iceburg.Database;
 using Iceburg.Devices.Status;
 using Iceburg.Router.BMD;
 using Iceburg.Mixer.X32;
+using Iceburg.Conversion.AJA.fs4;
+using Iceburg.Conversion.AJA.fs2;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using System.Text.Json;
+
+using System.Net;
 
 bool debug = false;
 
@@ -24,15 +28,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.AddFilter("Microsoft.AspNetCore.Hosting.Diagnostics", LogLevel.Warning);
 builder.Logging.AddFilter("Microsoft", LogLevel.Warning);
 
-builder.Services
-    .AddDataProtection()
-    .PersistKeysToFileSystem(
-        new DirectoryInfo(
-            Path.Combine(AppContext.BaseDirectory, "DataProtection-Keys")))
-    .SetApplicationName("Iceburg");
-
-// your existing services below this...
-
+builder.Services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(AppContext.BaseDirectory, "DataProtection-Keys"))).SetApplicationName("Iceburg");
 builder.Services.ConfigureHttpJsonOptions(options =>
 {
     options.SerializerOptions.Converters.Add(
@@ -42,9 +38,9 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(8600);
+    options.ListenAnyIP(80);
 
-    options.ListenAnyIP(4430, listenOptions =>
+    options.ListenAnyIP(443, listenOptions =>
     {
         listenOptions.UseHttps(
             "iceburg.pfx",
@@ -54,19 +50,13 @@ builder.WebHost.ConfigureKestrel(options =>
 
 builder.Services.AddHttpsRedirection(options =>
 {
-    options.HttpsPort = 4430;
+    options.HttpsPort = 443;
 });
 
 
-// ============================================================
-// AUTHENTICATION
-// ============================================================
 
-builder.Services
-    .AddAuthentication(
-        CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
-    {
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+{
         options.Cookie.Name = "IceburgAuthv2";
 
         // JavaScript cannot read the authentication cookie.
@@ -149,22 +139,17 @@ builder.Services
     });
 
 builder.Services.AddAuthorization();
-
 var app = builder.Build();
-
-
 
 // ============================================================
 // DATABASE
 // ============================================================
-
 Database.Initialize();
 
 
 // ============================================================
 // HTTPS REDIRECT
 // ============================================================
-
 app.Use(async (context, next) =>
 {
     bool isTallyApi =
@@ -206,7 +191,6 @@ app.Use(async (context, next) =>
     }
 });
 
-
 // ============================================================
 // AUTHENTICATION
 // ============================================================
@@ -218,31 +202,16 @@ app.Use(async (context, next) =>
 // This reads the IceburgAuth cookie and populates
 // HttpContext.User.
 //
-
 app.UseAuthentication();
-
-
-// ============================================================
-// AUTH DEBUG
-// ============================================================
-
-
-
-
 // ============================================================
 // AUTHORIZATION
 // ============================================================
-
 app.UseAuthorization();
-
 
 // ============================================================
 // PROTECTED HTML PAGES
 // ============================================================
-
-var protectedPages =
-    new HashSet<string>(
-        StringComparer.OrdinalIgnoreCase)
+var protectedPages =new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {
         "/admin.html",
         "/dashboard.html",
@@ -278,30 +247,21 @@ app.Use(async (context, next) =>
     await next();
 });
 
-
 // ============================================================
 // STATIC FILES
 // ============================================================
-
 app.UseDefaultFiles();
 app.UseStaticFiles();
-
-
 // ============================================================
 // LOGIN CHALLENGES
 // ============================================================
-
-var loginChallenges =
-    new ConcurrentDictionary<string, LoginChallenge>();
-
+var loginChallenges = new ConcurrentDictionary<string, LoginChallenge>();
 
 // ============================================================
 // LOGIN CHALLENGE ENDPOINT
 // ============================================================
 
-app.MapPost(
-    "/api/login/challenge",
-    (LoginChallengeRequest request) =>
+app.MapPost("/api/login/challenge",(LoginChallengeRequest request) =>
     {
         if (string.IsNullOrWhiteSpace(request.Username))
         {
@@ -391,16 +351,11 @@ app.MapPost(
         });
     });
 
-
 // ============================================================
 // LOGIN
 // ============================================================
 
-app.MapPost(
-    "/api/login",
-    async (
-        LoginRequest request,
-        HttpContext httpContext) =>
+app.MapPost("/api/login",async (LoginRequest request,HttpContext httpContext) =>
     {
         // --------------------------------------------------------
         // Validate request.
@@ -650,9 +605,7 @@ app.MapPost(
 // LOGOUT
 // ============================================================
 
-app.MapGet(
-    "/api/logout",
-    async (HttpContext httpContext) =>
+app.MapGet("/api/logout",async (HttpContext httpContext) =>
     {
         await httpContext.SignOutAsync(
             CookieAuthenticationDefaults
@@ -669,9 +622,7 @@ app.MapGet(
 // CURRENT USER
 // ============================================================
 
-app.MapGet(
-    "/api/me",
-    (HttpContext httpContext) =>
+app.MapGet("/api/me",(HttpContext httpContext) =>
     {
         if (httpContext.User.Identity?.IsAuthenticated != true)
         {
@@ -703,9 +654,7 @@ app.MapGet(
 // ACCESS DENIED
 // ============================================================
 
-app.MapGet(
-    "/access-denied",
-    () =>
+app.MapGet("/access-denied",() =>
     {
         return Results.Json(
             new
@@ -720,20 +669,14 @@ app.MapGet(
 // DEVICE API
 // ============================================================
 
-var deviceApi =
-    app.MapGroup("/api/device")
-       .RequireAuthorization();
+var deviceApi =app.MapGroup("/api/device").RequireAuthorization();
 
-deviceApi.MapGet(
-    "/getdevices/",
-    () =>
+deviceApi.MapGet("/getdevices/",() =>
     {
         return Iceburg.Database.Database.Devices;
     });
 
-deviceApi.MapGet(
-    "/getdevicestatus/{id}",
-    async (string id) =>
+deviceApi.MapGet("/getdevicestatus/{id}",async (string id) =>
     {
         var devicetest =
             new DeviceStatus();
@@ -746,13 +689,9 @@ deviceApi.MapGet(
 // VIDEO HUB / ROUTER API
 // ============================================================
 
-var routerApi =
-    app.MapGroup("/api/router")
-       .RequireAuthorization();
+var routerApi = app.MapGroup("/api/router").RequireAuthorization();
 
-routerApi.MapGet(
-    "/bmd/{id}/getinfo",
-    async (string id) =>
+routerApi.MapGet("/bmd/{id}/getinfo",async (string id) =>
     {
         var bmdRouter =
             new BMD_Router();
@@ -760,9 +699,7 @@ routerApi.MapGet(
         return await bmdRouter.getinfo(id);
     });
 
-routerApi.MapGet(
-    "/bmd/{id}/getnames",
-    (string id) =>
+routerApi.MapGet("/bmd/{id}/getnames",(string id) =>
     {
         var bmdRouter =
             new BMD_Router();
@@ -770,9 +707,7 @@ routerApi.MapGet(
         return bmdRouter.getnames(id);
     });
 
-routerApi.MapGet(
-    "/bmd/{id}/getroutes",
-    (string id) =>
+routerApi.MapGet("/bmd/{id}/getroutes",(string id) =>
     {
         var bmdRouter =
             new BMD_Router();
@@ -780,9 +715,7 @@ routerApi.MapGet(
         return bmdRouter.GetRoutes(id);
     });
 
-routerApi.MapGet(
-    "/bmd/{id}/setinputname/{input}/{name}",
-    (string id, string input, string name) =>
+routerApi.MapGet("/bmd/{id}/setinputname/{input}/{name}",(string id, string input, string name) =>
     {
         var bmdRouter =
             new BMD_Router();
@@ -793,9 +726,7 @@ routerApi.MapGet(
             name);
     });
 
-routerApi.MapGet(
-    "/bmd/{id}/setoutputname/{input}/{name}",
-    (string id, string input,string name) =>
+routerApi.MapGet("/bmd/{id}/setoutputname/{input}/{name}",(string id, string input,string name) =>
     {
         var bmdRouter =
             new BMD_Router();
@@ -806,8 +737,7 @@ routerApi.MapGet(
             name);
     });
 
-routerApi.MapGet(
-    "/bmd/{id}/setroute/{Input}/{Output}",(string id, string Input, string Output) =>
+routerApi.MapGet("/bmd/{id}/setroute/{Input}/{Output}",(string id, string Input, string Output) =>
 
     {
         Console.WriteLine(id + " " + Input + " " + Output);
@@ -829,102 +759,437 @@ TallyEndpoints.Map(app);
 // X32 HTTP API endpoints
 // Add these alongside your other routerApi.MapGet/MapPost routes.
 
-var mixerapi =
-    app.MapGroup("/api/mixer")
-       .RequireAuthorization();
+var mixerapi =app.MapGroup("/api/mixer").RequireAuthorization();
 
-mixerapi.MapGet(
-    "/x32/{id}/getinfo",
-    (string id) =>
+mixerapi.MapGet("/x32/{id}/getinfo",(string id) =>
 {
-var x32 = new X32();
-return x32.getinfo(id);
+    var x32 = new X32();
+    return x32.getinfo(id);
 });
 
-mixerapi.MapGet(
-    "/x32/{id}/getmainmix",
-    (string id) =>
+mixerapi.MapGet("/x32/{id}/getmainmix",(string id) =>
 {
-var x32 = new X32();
-return x32.getmainmix(id);
+    var x32 = new X32();
+    return x32.getmainmix(id);
 });
 
-mixerapi.MapPost(
-    "/x32/{id}/setmainmix",
-    async (HttpRequest request, string id) =>
+mixerapi.MapPost("/x32/{id}/setmainmix",async (HttpRequest request, string id) =>
 {
-var body = await request.ReadFromJsonAsync<X32MainMixRequest>();
-
-if (body is null || body.channel < 1 || body.channel > 32)
-return Results.BadRequest();
-
-var x32 = new X32();
-
-return Results.Ok(await x32.setmainmix(
-    id,
-    body.channel,
-    body.gain,
-    body.mute,
-    body.name));
+    var body = await request.ReadFromJsonAsync<X32MainMixRequest>();
+        if (body is null || body.channel < 1 || body.channel > 32)
+            return Results.BadRequest();
+            var x32 = new X32();
+            return Results.Ok(await x32.setmainmix(id,body.channel,body.gain,body.mute,body.name));
 });
 
-mixerapi.MapGet(
-    "/x32/{id}/getbus/{bus}",
-    (string id, int bus) =>
+mixerapi.MapGet("/x32/{id}/getbus/{bus}",(string id, int bus) =>
 {
-var x32 = new X32();
-return x32.getbus(id, bus);
+    var x32 = new X32();
+    return x32.getbus(id, bus);
 });
 
-mixerapi.MapGet(
-    "/x32/{id}/getbusnames",
-    (string id) =>
+mixerapi.MapGet("/x32/{id}/getbusnames",(string id) =>
 {
-var x32 = new X32();
-return x32.getbusnames(id);
+    var x32 = new X32();
+    return x32.getbusnames(id);
 });
 
-mixerapi.MapPost(
-    "/x32/{id}/setbus",
-    async (HttpRequest request, string id) =>
+mixerapi.MapPost("/x32/{id}/setbus",async (HttpRequest request, string id) =>
 {
-var body = await request.ReadFromJsonAsync<X32BusRequest>();
+    var body = await request.ReadFromJsonAsync<X32BusRequest>();
 
-if (body is null ||
-    body.channel < 1 || body.channel > 32 ||
-    body.bus < 1 || body.bus > 16)
-return Results.BadRequest();
-
-var x32 = new X32();
-
-return Results.Ok(await x32.setbus(
-    id,
-    body.channel,
-    body.bus,
-    body.gain,
-    body.mute,
-    body.name));
+    if (body is null ||
+        body.channel < 1 || body.channel > 32 ||
+        body.bus < 1 || body.bus > 16)
+    return Results.BadRequest();
+    var x32 = new X32();
+    return Results.Ok(await x32.setbus(id,body.channel,body.bus,body.gain,body.mute,body.name));
 });
 
-mixerapi.MapGet(
-    "/x32/{id}/getallnames",
-    (string id) =>
+mixerapi.MapGet("/x32/{id}/getallnames",(string id) =>
     {
         var x32 = new X32();
         return x32.getallnames(id);
     });
 
 
-// Request DTOs
+//FS4-fs2 api
 
+var FS4api = app.MapGroup("/api/Conversion").RequireAuthorization();
+FS4api.MapGet("/ajafs4/{id}/info", (string id) =>
+{
+    try
+    {
+        var fs4 = new AJAFS4(id);
+
+        return Results.Content(
+            fs4.GetInfo(),
+            "application/json");
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new { error = ex.Message },
+            statusCode: 404);
+    }
+});
+
+FS4api.MapGet("/ajafs4/{id}/audio", async (string id, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var fs4 = new AJAFS4(id);
+
+        return Results.Json(
+            await fs4.GetConfigurationAsync(
+                true,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new { error = ex.Message },
+            statusCode: 500);
+    }
+});
+
+FS4api.MapGet("/ajafs4/{id}/video", async (string id, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var fs4 = new AJAFS4(id);
+
+        return Results.Json(
+            await fs4.GetConfigurationAsync(
+                false,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new { error = ex.Message },
+            statusCode: 500);
+    }
+});
+
+FS4api.MapGet("/ajafs4/{id}/audio/values", async (string id, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var fs4 = new AJAFS4(id);
+
+        return Results.Json(
+            await fs4.GetValuesAsync(
+                true,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new { error = ex.Message },
+            statusCode: 500);
+    }
+});
+
+FS4api.MapGet("/ajafs4/{id}/video/values", async (string id, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var fs4 = new AJAFS4(id);
+
+        return Results.Json(
+            await fs4.GetValuesAsync(
+                false,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new { error = ex.Message },
+            statusCode: 500);
+    }
+});
+
+// GET one eParamID
+FS4api.MapGet("/ajafs4/{id}/param/{paramId}", async (string id, string paramId, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var fs4 = new AJAFS4(id);
+
+        return Results.Json(
+            await fs4.GetParamAsync(
+                paramId,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new
+            {
+                ok = false,
+                error = ex.Message
+            },
+            statusCode: 500);
+    }
+});
+
+// SET one eParamID
+FS4api.MapPost("/ajafs4/{id}/param/{paramId}", async (string id, string paramId, SetRequest request, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var fs4 = new AJAFS4(id);
+
+        object? value =
+           JsonElementToObject(
+                request.Value);
+
+        return Results.Json(
+            await fs4.SetParamAsync(
+                paramId,
+                value,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new
+            {
+                ok = false,
+                error = ex.Message
+            },
+            statusCode: 500);
+    }
+});
+
+// Convenience GET matching the style of the supplied BMD route.
+FS4api.MapGet("/ajafs4/{id}/setparam/{paramId}/{value}", async (string id, string paramId, string value, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var fs4 = new AJAFS4(id);
+
+        return Results.Json(
+            await fs4.SetParamAsync(
+                paramId,
+                value,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new
+            {
+                ok = false,
+                error = ex.Message
+            },
+            statusCode: 500);
+    }
+});
+
+FS4api.MapGet("/ajafs4/{id}/GetMadiSorce/", (string id) =>
+{
+    Device device = Database.GetDevice(id);
+
+    if (device.AudioSorce != null)
+    {
+        var x32 = new X32();
+        return x32.getallnames(device.AudioSorce);
+    }
+    else
+    {
+        return Task.FromResult(JsonSerializer.Serialize(new
+        {
+            AudioSorce = "NULL"
+
+
+
+    }));
+    }
+        
+
+});
+
+//FS4-fs2 api
+
+var FS2api = app.MapGroup("/api/Conversion").RequireAuthorization();
+FS2api.MapGet("/ajafs2/{id}/info", (string id) =>
+{
+    try
+    {
+        var fs2 = new AJAFS2(id);
+
+        return Results.Content(
+            fs2.GetInfo(),
+            "application/json");
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new { error = ex.Message },
+            statusCode: 404);
+    }
+});
+
+FS2api.MapGet("/ajafs2/{id}/audio", async (string id, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var fs2 = new AJAFS2(id);
+
+        return Results.Json(
+            await fs2.GetConfigurationAsync(
+                true,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new { error = ex.Message },
+            statusCode: 500);
+    }
+});
+
+FS2api.MapGet("/ajafs2/{id}/video", async (string id, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var fs2 = new AJAFS2(id);
+
+        return Results.Json(
+            await fs2.GetConfigurationAsync(
+                false,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new { error = ex.Message },
+            statusCode: 500);
+    }
+});
+
+FS2api.MapGet("/ajafs2/{id}/audio/values", async (string id, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var fs2 = new AJAFS2(id);
+
+        return Results.Json(
+            await fs2.GetValuesAsync(
+                true,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new { error = ex.Message },
+            statusCode: 500);
+    }
+});
+
+FS2api.MapGet("/ajafs2/{id}/video/values", async (string id, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var fs2 = new AJAFS2(id);
+
+        return Results.Json(
+            await fs2.GetValuesAsync(
+                false,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new { error = ex.Message },
+            statusCode: 500);
+    }
+});
+
+// GET one eParamID
+FS2api.MapGet("/ajafs2/{id}/param/{paramId}", async (string id, string paramId, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var fs2 = new AJAFS2(id);
+
+        return Results.Json(
+            await fs2.GetParamAsync(
+                paramId,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new
+            {
+                ok = false,
+                error = ex.Message
+            },
+            statusCode: 500);
+    }
+});
+
+// SET one eParamID
+FS2api.MapPost("/ajafs2/{id}/param/{paramId}", async (string id, string paramId, SetRequest request, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var fs2 = new AJAFS2(id);
+
+        object? value =
+           JsonElementToObject(
+                request.Value);
+
+        return Results.Json(
+            await fs2.SetParamAsync(
+                paramId,
+                value,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new
+            {
+                ok = false,
+                error = ex.Message
+            },
+            statusCode: 500);
+    }
+});
+
+// Convenience GET matching the style of the supplied BMD route.
+FS2api.MapGet("/ajafs2/{id}/setparam/{paramId}/{value}", async (string id, string paramId, string value, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var fs2= new AJAFS2(id);
+
+        return Results.Json(
+            await fs2.SetParamAsync(
+                paramId,
+                value,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new
+            {
+                ok = false,
+                error = ex.Message
+            },
+            statusCode: 500);
+    }
+});
 
 // ============================================================
 // COMMAND LINE
 // ============================================================
-
-Console.OutputEncoding =
-    System.Text.Encoding.UTF8;
-
+Console.OutputEncoding = System.Text.Encoding.UTF8;
 Console.WriteLine(@"
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡾⠋⡏⢻⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -944,7 +1209,6 @@ Console.WriteLine(@"
 
 
 Web Interfaces Hosted at:");
-
 foreach (var ni in NetworkInterface.GetAllNetworkInterfaces())
 {
     if (ni.OperationalStatus !=
@@ -965,12 +1229,9 @@ foreach (var ni in NetworkInterface.GetAllNetworkInterfaces())
         }
     }
 }
-
-
 // ============================================================
 // COMMAND LINE PARSER
 // ============================================================
-
 static List<string> SplitCommandLine(string input)
 {
     var result =
@@ -1031,16 +1292,11 @@ static List<string> SplitCommandLine(string input)
 
     return result;
 }
-
-
 Console.WriteLine("");
 Console.WriteLine("");
-
-
 // ============================================================
 // INITIAL ADMIN
 // ============================================================
-
 if (Database.GetUsers().Count == 0)
 {
     Database.AddUser(
@@ -1051,15 +1307,10 @@ if (Database.GetUsers().Count == 0)
     Console.WriteLine(
         "Created initial Iceburg admin account.");
 }
-
-Console.WriteLine(
-    "For Help Type \"help\" ");
-
-
+Console.WriteLine("For Help Type \"help\" ");
 // ============================================================
 // COMMAND HANDLER
 // ============================================================
-
 _ = Task.Run(async () =>
 {
     while (true)
@@ -1398,17 +1649,37 @@ _ = Task.Run(async () =>
     }
 });
 
-
 // ============================================================
 // START SERVER
 // ============================================================
-
 app.Run();
-
-
 // ============================================================
 // HELPERS
 // ============================================================
+
+ static object? JsonElementToObject(
+    JsonElement value)
+{
+    return value.ValueKind switch
+    {
+        JsonValueKind.String =>
+            value.GetString(),
+
+        JsonValueKind.Number when
+            value.TryGetInt64(out long l) =>
+            l,
+
+        JsonValueKind.Number when
+            value.TryGetDouble(out double d) =>
+            d,
+
+        JsonValueKind.True => true,
+        JsonValueKind.False => false,
+        JsonValueKind.Null => null,
+
+        _ => value.ToString()
+    };
+}
 
 static string? GetSafeReturnUrl(string? returnUrl)
 {
@@ -1451,8 +1722,6 @@ static string? GetSafeReturnUrl(string? returnUrl)
 
     return returnUrl;
 }
-
-
 static bool IsAdminPage(string returnUrl)
 {
     if (string.IsNullOrWhiteSpace(returnUrl))
@@ -1474,33 +1743,8 @@ static bool IsAdminPage(string returnUrl)
             "/admin/",
             StringComparison.OrdinalIgnoreCase);
 }
-
-
-public record LoginChallengeRequest(
-    string? Username);
-
-
-public record LoginRequest(
-    string? Username,
-    string? ChallengeId,
-    string? Proof,
-    string? ReturnUrl);
-
-
-public record LogoutRequest(
-    string? ReturnUrl);
-
-
-public record SetNameRequest(
-    string Input,
-    string Name);
-
-
-public record SetRouteRequest(
-    string Input,
-    string Output);
-
-
+public record LoginChallengeRequest(string? Username);
+public record LoginRequest(string? Username,string? ChallengeId,string? Proof,string? ReturnUrl);
 public sealed class LoginChallenge
 {
     public string Username { get; set; } = "";
@@ -1510,7 +1754,6 @@ public sealed class LoginChallenge
 
     public DateTime ExpiresAt { get; set; }
 }
-
 public sealed class X32MainMixRequest
 {
     public int channel { get; set; }
@@ -1518,7 +1761,6 @@ public sealed class X32MainMixRequest
     public bool? mute { get; set; }
     public string? name { get; set; }
 }
-
 public sealed class X32BusRequest
 {
     public int channel { get; set; }
@@ -1526,4 +1768,8 @@ public sealed class X32BusRequest
     public double? gain { get; set; }
     public bool? mute { get; set; }
     public string? name { get; set; }
+}
+public sealed class SetRequest
+{
+    public JsonElement Value { get; set; }
 }

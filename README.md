@@ -25,8 +25,8 @@ Below is a list of currently supported devices:
 + Symetrix DSP (logic Inputs Only)
 + Tally Iceberg IO Devices (GIP, GPO and TSL 3.0)
 + (Supported in V1 not in V2) ZowieTek 4k POV Camera
-+ (Supported in V1 not in V2) AJA FS-2 Frame Synchronizer and Converter
-+ (Supported in V1 not in V2) AJA FS-4 Frame Synchronizer and Converter
++ AJA FS-2 Frame Synchronizer and Converter
++ AJA FS-4 Frame Synchronizer and Converter
 + (Supported in V1 not in V2) Magewell Pro Convert for NDI® to SDI
 + (Supported in V1 not in V2) Aqua Streams Software Playback
 + (Supported in V1 not in V2) Open Matrix
