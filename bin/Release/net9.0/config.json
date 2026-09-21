@@ -13,6 +13,13 @@
       "PasswordSalt": "gLQ05wqfs32CDMtxKGDyrAXk5witOPMjEAnRlyXISlg=",
       "PasswordHash": "mMenU/729bHchMpmNmCyfTpcN\u002BPWEEnvYa/hLwfJ44k=",
       "Role": "Admin"
+    },
+    {
+      "Id": "209718ff-4580-4ca4-8dce-6ba10cc9828b",
+      "Username": "user",
+      "PasswordSalt": "4vmuTyua5TLdfYxy3rs3denNicZ2QEQlcrxifylZMJA=",
+      "PasswordHash": "eqrsmb5zl5oRHyyGVo4uC2doIvDss4eye1orZKKJwME=",
+      "Role": "User"
     }
   ],
   "Devices": [

@@ -1,7 +1,7 @@
 [
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_10",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_11",
     "RelativePath": "access-denied",
     "HttpMethod": "GET",
     "IsController": false,
@@ -17,7 +17,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_36",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_37",
     "RelativePath": "api/Conversion/ajafs2/{id}/audio",
     "HttpMethod": "GET",
     "IsController": false,
@@ -39,7 +39,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_38",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_39",
     "RelativePath": "api/Conversion/ajafs2/{id}/audio/values",
     "HttpMethod": "GET",
     "IsController": false,
@@ -61,7 +61,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_35",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_36",
     "RelativePath": "api/Conversion/ajafs2/{id}/info",
     "HttpMethod": "GET",
     "IsController": false,
@@ -83,7 +83,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_40",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_41",
     "RelativePath": "api/Conversion/ajafs2/{id}/param/{paramId}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -110,7 +110,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_41",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_42",
     "RelativePath": "api/Conversion/ajafs2/{id}/param/{paramId}",
     "HttpMethod": "POST",
     "IsController": false,
@@ -142,7 +142,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_42",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_43",
     "RelativePath": "api/Conversion/ajafs2/{id}/setparam/{paramId}/{value}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -174,7 +174,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_37",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_38",
     "RelativePath": "api/Conversion/ajafs2/{id}/video",
     "HttpMethod": "GET",
     "IsController": false,
@@ -196,7 +196,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_39",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_40",
     "RelativePath": "api/Conversion/ajafs2/{id}/video/values",
     "HttpMethod": "GET",
     "IsController": false,
@@ -218,7 +218,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_27",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_28",
     "RelativePath": "api/Conversion/ajafs4/{id}/audio",
     "HttpMethod": "GET",
     "IsController": false,
@@ -240,7 +240,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_29",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_30",
     "RelativePath": "api/Conversion/ajafs4/{id}/audio/values",
     "HttpMethod": "GET",
     "IsController": false,
@@ -262,7 +262,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_34",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_35",
     "RelativePath": "api/Conversion/ajafs4/{id}/GetMadiSorce/",
     "HttpMethod": "GET",
     "IsController": false,
@@ -286,7 +286,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_26",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_27",
     "RelativePath": "api/Conversion/ajafs4/{id}/info",
     "HttpMethod": "GET",
     "IsController": false,
@@ -308,7 +308,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_31",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_32",
     "RelativePath": "api/Conversion/ajafs4/{id}/param/{paramId}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -335,7 +335,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_32",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_33",
     "RelativePath": "api/Conversion/ajafs4/{id}/param/{paramId}",
     "HttpMethod": "POST",
     "IsController": false,
@@ -367,7 +367,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_33",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_34",
     "RelativePath": "api/Conversion/ajafs4/{id}/setparam/{paramId}/{value}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -399,7 +399,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_28",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_29",
     "RelativePath": "api/Conversion/ajafs4/{id}/video",
     "HttpMethod": "GET",
     "IsController": false,
@@ -421,7 +421,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_30",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_31",
     "RelativePath": "api/Conversion/ajafs4/{id}/video/values",
     "HttpMethod": "GET",
     "IsController": false,
@@ -443,7 +443,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_11",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_12",
     "RelativePath": "api/device/getdevices/",
     "HttpMethod": "GET",
     "IsController": false,
@@ -461,7 +461,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_12",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_13",
     "RelativePath": "api/device/getdevicestatus/{id}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -959,8 +959,8 @@
     ]
   },
   {
-    "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_9",
+    "ContainingType": "Program\u002B\u003C\u003Ec__DisplayClass0_0",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__9",
     "RelativePath": "api/me",
     "HttpMethod": "GET",
     "IsController": false,
@@ -976,7 +976,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_25",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_26",
     "RelativePath": "api/mixer/x32/{id}/getallnames",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1000,7 +1000,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_22",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_23",
     "RelativePath": "api/mixer/x32/{id}/getbus/{bus}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1029,7 +1029,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_23",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_24",
     "RelativePath": "api/mixer/x32/{id}/getbusnames",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1053,7 +1053,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_19",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_20",
     "RelativePath": "api/mixer/x32/{id}/getinfo",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1077,7 +1077,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_20",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_21",
     "RelativePath": "api/mixer/x32/{id}/getmainmix",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1101,7 +1101,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_24",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_25",
     "RelativePath": "api/mixer/x32/{id}/setbus",
     "HttpMethod": "POST",
     "IsController": false,
@@ -1123,7 +1123,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_21",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_22",
     "RelativePath": "api/mixer/x32/{id}/setmainmix",
     "HttpMethod": "POST",
     "IsController": false,
@@ -1145,7 +1145,23 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_13",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_10",
+    "RelativePath": "api/nav",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_14",
     "RelativePath": "api/router/bmd/{id}/getinfo",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1169,7 +1185,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_14",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_15",
     "RelativePath": "api/router/bmd/{id}/getnames",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1193,7 +1209,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_15",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_16",
     "RelativePath": "api/router/bmd/{id}/getroutes",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1217,7 +1233,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_16",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_17",
     "RelativePath": "api/router/bmd/{id}/setinputname/{input}/{name}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1251,7 +1267,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_17",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_18",
     "RelativePath": "api/router/bmd/{id}/setoutputname/{input}/{name}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1285,7 +1301,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_18",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_19",
     "RelativePath": "api/router/bmd/{id}/setroute/{Input}/{Output}",
     "HttpMethod": "GET",
     "IsController": false,

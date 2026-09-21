@@ -29,6 +29,10 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\header.js",
+      "PackagePath": "staticwebassets\\header.js"
+    },
+    {
       "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\index.html",
       "PackagePath": "staticwebassets\\index.html"
     },
@@ -47,6 +51,26 @@
     {
       "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\tallygrid.html",
       "PackagePath": "staticwebassets\\tallygrid.html"
+    },
+    {
+      "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\test.html",
+      "PackagePath": "staticwebassets\\test.html"
+    },
+    {
+      "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\upload8x8\\firmware.bin",
+      "PackagePath": "staticwebassets\\upload8x8\\firmware.bin"
+    },
+    {
+      "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\upload8x8\\index.html",
+      "PackagePath": "staticwebassets\\upload8x8\\index.html"
+    },
+    {
+      "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\uploadross\\firmware.bin",
+      "PackagePath": "staticwebassets\\uploadross\\firmware.bin"
+    },
+    {
+      "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\uploadross\\index.html",
+      "PackagePath": "staticwebassets\\uploadross\\index.html"
     },
     {
       "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\x32.html",

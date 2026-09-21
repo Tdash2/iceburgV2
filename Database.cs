@@ -1484,8 +1484,7 @@ namespace Iceburg.Database
         public string ApplicationName { get; set; }
             = "Iceburg";
 
-        public string Version { get; set; }
-            = "2.0.1";
+   
 
         public AppSettings Settings { get; set; }
             = new();

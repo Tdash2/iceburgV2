@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.DataProtection;
 using System.Text.Json;
 
 using System.Net;
+using System.Data;
 
 bool debug = false;
 
@@ -35,6 +36,18 @@ builder.Services.ConfigureHttpJsonOptions(options =>
         new JsonStringEnumConverter()
     );
 });
+
+string ProgramVerson = "2.0.1";
+
+// ============================================================
+// DATABASE
+// ============================================================
+Database.Initialize();
+
+TallyDatabase.Initialize();  // tally database loaded
+
+TallyDatabase.SyncDevices(); // copies Type 1 + Type 2 devices
+
 
 builder.WebHost.ConfigureKestrel(options =>
 {
@@ -141,14 +154,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 builder.Services.AddAuthorization();
 var app = builder.Build();
 
-// ============================================================
-// DATABASE
-// ============================================================
-Database.Initialize();
 
-TallyDatabase.Initialize();  // tally database loaded
-
-TallyDatabase.SyncDevices(); // copies Type 1 + Type 2 devices
 // ============================================================
 // HTTPS REDIRECT
 // ============================================================
@@ -641,15 +647,84 @@ app.MapGet("/api/me",(HttpContext httpContext) =>
 
             username =
                 httpContext.User.Identity?.Name,
+            verson = "Iceburg V" + ProgramVerson,
 
-            role =
-                httpContext.User
-                    .FindFirst(
-                        ClaimTypes.Role)
-                    ?.Value
+            role = httpContext.User.FindFirst(ClaimTypes.Role)?.Value
         });
     })
 .RequireAuthorization();
+app.MapGet("/api/nav", (HttpContext httpContext) =>
+{
+    bool isadminuser =
+        httpContext.User.IsInRole("Admin");
+
+    var navigation = new List<NavItem>
+    {
+        new NavItem
+        {
+            Label = "Tally",
+            Children = new List<NavItem>
+            {
+                new NavItem
+                {
+                    Label = "Tally Grid",
+                    Url = "/tallygrid.html"
+                },
+
+                new NavItem
+                {
+                    Label = "Program Tally Hardware",
+                    Children = new List<NavItem>
+                    {
+                        new NavItem
+                        {
+                            Label = "Iceburg Tally 8x8",
+                            Url = "/upload8x8/"
+                        },
+
+                        new NavItem
+                        {
+                            Label = "Iceburg Tally Ross",
+                            Url = "/uploadross/"
+                        }
+                    }
+                }
+            }
+        }
+    };
+
+
+    // Only show Settings to Admin users
+    if (isadminuser)
+    {
+        navigation.Add(
+            new NavItem
+            {
+                Label = "Settings",
+                Children = new List<NavItem>
+                {
+                    new NavItem
+                    {
+                        Label = "Users",
+                        Url = "/users.html"
+                    },
+
+                    new NavItem
+                    {
+                        Label = "Devices",
+                        Url = "/devices.html"
+                    }
+                }
+            }
+        );
+    }
+
+
+    return Results.Ok(navigation);
+})
+.RequireAuthorization();
+
+
 
 
 // ============================================================
@@ -1774,4 +1849,10 @@ public sealed class X32BusRequest
 public sealed class SetRequest
 {
     public JsonElement Value { get; set; }
+}
+public class NavItem
+{
+    public string Label { get; set; } = "";
+    public string? Url { get; set; }
+    public List<NavItem>? Children { get; set; }
 }

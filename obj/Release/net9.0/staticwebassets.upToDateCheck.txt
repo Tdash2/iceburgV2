@@ -1,6 +1,8 @@
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\BMDRouter.html
+C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\upload8x8\index.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\routertally.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\ajafs2.html
+C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\header.js
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\favicon.ico
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\ajafs4.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\tally.html
@@ -9,17 +11,25 @@ C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\tallygrid.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\dashboard.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\favacon.ico
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\login.html
+C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\uploadross\index.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\x32.html
+C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\test.html
 wwwroot\ajafs2.html
 wwwroot\ajafs4.html
 wwwroot\BMDRouter.html
 wwwroot\dashboard.html
 wwwroot\favacon.ico
 wwwroot\favicon.ico
+wwwroot\header.js
 wwwroot\Iceburg Log.png
 wwwroot\index.html
 wwwroot\login.html
 wwwroot\routertally.html
 wwwroot\tally.html
 wwwroot\tallygrid.html
+wwwroot\test.html
+wwwroot\upload8x8\firmware.bin
+wwwroot\upload8x8\index.html
+wwwroot\uploadross\firmware.bin
+wwwroot\uploadross\index.html
 wwwroot\x32.html
