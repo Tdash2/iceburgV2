@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AJA FS4 Control</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial,Helvetica,sans-serif;
+            background: #333;
+            color: #eee;
+        }
+
+        .app {
+            width: 99%;
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            color: #4db2ff;
+            margin-bottom: 4px;
+        }
+
+        .device-info {
+            color: #aaa;
+            margin-top: 0;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin: 20px 0 12px;
+        }
+
+        .tab {
+            border: 1px solid #555;
+            background: #222;
+            color: #eee;
+            padding: 10px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+            .tab:hover {
+                background: #444;
+            }
+
+            .tab.active {
+                background: #4db2ff;
+                color: #000;
+            }
+
+        .status {
+            min-height: 20px;
+            margin: 8px 0 15px;
+            color: #aaa;
+        }
+
+        .group {
+            margin: 15px 0;
+            border: 1px solid #444;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .group-header {
+            background: #222;
+            padding: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            user-select: none;
+        }
+
+            .group-header:hover {
+                background: #292929;
+            }
+
+        .group-body {
+            padding: 10px;
+            background: #111;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+        }
+
+        .subgroup {
+            flex: 1;
+            min-width: 280px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: #0e0e0e;
+            padding: 10px;
+        }
+
+        .subgroup-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #aaa;
+            border-bottom: 1px solid #333;
+            padding-bottom: 6px;
+        }
+
+        .row {
+            margin: 12px 0;
+        }
+
+            .row label {
+                display: block;
+                margin-bottom: 6px;
+            }
+
+        input[type="range"] {
+            width: 100%;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 7px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background: #222;
+            color: #eee;
+        }
+
+            input[type="text"]:focus {
+                outline: 1px solid #4db2ff;
+            }
+
+        button {
+            cursor: pointer;
+        }
+
+        .reset-button {
+            margin-top: 6px;
+            margin-left: 0;
+            padding: 5px 10px;
+            background: #222;
+            border: 1px solid #555;
+            border-radius: 4px;
+            color: #eee;
+        }
+
+            .reset-button:hover:not(:disabled) {
+                background: #444;
+            }
+
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .suggestions {
+            position: fixed;
+            background: #fff;
+            border: 2px solid #000;
+            max-height: 240px;
+            overflow-y: auto;
+            z-index: 999999;
+            color: #000;
+            box-shadow: 0 3px 10px rgba(0,0,0,.5);
+        }
+
+        .suggestion-item {
+            padding: 7px;
+            cursor: pointer;
+            background: antiquewhite;
+        }
+
+            .suggestion-item:hover {
+                background: #0078ff;
+                color: #fff;
+            }
+
+        .readonly {
+            opacity: .6;
+        }
+
+        .loading {
+            color: #aaa;
+            padding: 20px 0;
+        }
+
+        .error {
+            color: #ff8080;
+            padding: 20px 0;
+        }
+
+        @media (max-width:700px) {
+            body {
+                padding: 10px;
+            }
+
+            .app {
+                width: 100%;
+            }
+
+            .group-body {
+                display: block;
+                overflow-x: visible;
+            }
+
+            .subgroup {
+                min-width: 0;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <h2 id="deviceName">AJA FS4</h2>
+        <p class="device-info" id="deviceInfo"></p>
+
+        <div class="tabs">
+            <button class="tab active" id="audioTab">Audio</button>
+            <button class="tab" id="videoTab">Video</button>
+        </div>
+
+        <div id="app"></div>
+    </div>
+
+    <script>"use strict";
+
+const urlParams = new URLSearchParams(window.location.search);
+const deviceId = urlParams.get("id");
+
+let mode = "audio";
+let config = {};
+let dropdownMap = {};
+let userEditing = {};
+let pollInterval = null;
+
+const app = document.getElementById("app");
+
+const deviceNameBox = document.getElementById("deviceName");
+const deviceInfoBox = document.getElementById("deviceInfo");
+
+document.getElementById("audioTab").onclick = () => switchMode("audio");
+document.getElementById("videoTab").onclick = () => switchMode("video");
+
+if (!deviceId) {
+    showError("Missing device ID. Open this page with ?id=<device id>.");
+} else {
+    loadDeviceInfo();
+    init();
+}
+
+async function loadDeviceInfo() {
+    try {
+        const response = await fetch(
+            `/api/Conversion/ajafs2/${encodeURIComponent(deviceId)}/info`
+        );
+
+        if (!response.ok) return;
+
+        const info = await response.json();
+
+        if (info.Name) deviceNameBox.innerText = info.Name;
+        if (info.IP) deviceInfoBox.innerText = info.IP;
+    }
+    catch (err) {
+        console.debug("Device info failed", err);
+    }
+}
+
+function switchMode(newMode) {
+    mode = newMode;
+
+    document.getElementById("audioTab")
+        .classList.toggle("active", mode === "audio");
+
+    document.getElementById("videoTab")
+        .classList.toggle("active", mode === "video");
+
+    init();
+}
+
+async function init() {
+    if (!deviceId) return;
+
+    if (pollInterval) {
+        clearInterval(pollInterval);
+        pollInterval = null;
+    }
+
+    try {
+       
+        app.innerHTML = '<div class="loading">Loading...</div>';
+
+        const response = await fetch(
+            `/api/Conversion/ajafs2/${encodeURIComponent(deviceId)}/${mode}`
+        );
+
+        if (!response.ok)
+            throw new Error(await response.text());
+
+        config = await response.json();
+
+        buildUI();
+        poll();
+
+        // Then continue polling at the normal interval
+        pollInterval = setInterval(poll, "3000");
+
+       
+    }
+    catch (err) {
+        console.error(err);
+        showError(err.message || "Unable to load FS4 configuration.");
+    }
+}
+
+function buildUI() {
+    app.innerHTML = "";
+    dropdownMap = {};
+    userEditing = {};
+
+    const groups = {};
+
+    for (const param in config.params) {
+        const p = config.params[param];
+        const gid = p.group || 0;
+        const sgid = p.subgroup || 0;
+
+        if (!groups[gid]) groups[gid] = {};
+        if (!groups[gid][sgid]) groups[gid][sgid] = [];
+
+        groups[gid][sgid].push({ param, ...p });
+    }
+
+    Object.keys(groups)
+        .sort((a,b) => Number(a) - Number(b))
+        .forEach(gid => {
+            const groupDiv = document.createElement("div");
+            groupDiv.className = "group";
+
+            const header = document.createElement("div");
+            header.className = "group-header";
+            header.innerText =
+                config.groups?.[gid] || ("Group " + gid);
+
+            const body = document.createElement("div");
+            body.className = "group-body";
+
+            header.onclick = () => {
+                body.style.display =
+                    body.style.display === "none" ? "flex" : "none";
+            };
+
+            groupDiv.appendChild(header);
+            groupDiv.appendChild(body);
+
+            Object.keys(groups[gid])
+                .sort((a,b) => Number(a) - Number(b))
+                .forEach(sgid => {
+                    const sub = document.createElement("div");
+                    sub.className = "subgroup";
+
+                    const title = document.createElement("div");
+                    title.className = "subgroup-title";
+                    title.innerText =
+                        config.subgroups?.[gid]?.[sgid] ||
+                        ("Subgroup " + sgid);
+
+                    sub.appendChild(title);
+
+                    groups[gid][sgid].forEach(c => {
+                        const row = document.createElement("div");
+                        row.className = "row";
+
+                        if (c.writable === false)
+                            row.classList.add("readonly");
+
+                        const label = document.createElement("label");
+                        label.innerText = c.name || c.param;
+                        row.appendChild(label);
+
+                        if (c.type === "slider")
+                            buildSlider(row, c);
+                        else
+                            buildDropdown(row, c);
+
+                        sub.appendChild(row);
+                    });
+
+                    body.appendChild(sub);
+                });
+
+            app.appendChild(groupDiv);
+        });
+}
+
+function buildSlider(row, c) {
+    const label = row.querySelector("label");
+
+    const valueSpan = document.createElement("span");
+    valueSpan.id = c.param + "_val";
+    valueSpan.innerText = c.value ?? "";
+    valueSpan.style.marginLeft = "6px";
+    valueSpan.style.color = "#aaa";
+    label.appendChild(valueSpan);
+
+    const input = document.createElement("input");
+    input.type = "range";
+    input.min = c.min ?? 0;
+    input.max = c.max ?? 100;
+    input.value = c.value ?? c.min ?? 0;
+    input.id = c.param;
+    input.disabled = c.writable === false;
+
+    input.oninput = () => {
+        valueSpan.innerText = input.value;
+    };
+
+    input.onchange = () => {
+        if (c.writable !== false)
+            send(c.param, input.value);
+    };
+
+    row.appendChild(input);
+
+    const btn = document.createElement("button");
+    btn.className = "reset-button";
+    btn.innerText = "Reset";
+    btn.disabled = c.writable === false;
+
+    btn.onclick = () => send(c.param, c.default);
+
+    row.appendChild(btn);
+}
+
+        function buildDropdown(row, c) {
+
+            // VIDEO MODE: use a normal select dropdown
+            if (mode === "video") {
+
+                const select = document.createElement("select");
+
+                select.id = c.param;
+                select.dataset.param = c.param;
+                select.disabled = c.writable === false;
+
+                select.style.width = "100%";
+                select.style.padding = "7px";
+                select.style.border = "1px solid #555";
+                select.style.borderRadius = "4px";
+                select.style.background = "#222";
+                select.style.color = "#eee";
+
+                const options = (c.options || []).map(opt => ({
+                    key: opt.value,
+                    label: resolveLabel(opt.text ?? opt.value)
+                }));
+
+                dropdownMap[c.param] = options;
+
+                for (const opt of options) {
+                    const option = document.createElement("option");
+
+                    option.value = opt.key;
+                    option.textContent = opt.label;
+
+                    select.appendChild(option);
+                }
+
+                // Set current value
+                // Set current value, allowing for number/string differences
+                const current = options.find(o =>
+                    String(o.key) === String(c.value)
+                );
+
+                if (current) {
+                    select.value = String(current.key);
+                }
+
+                userEditing[c.param] = false;
+
+                select.addEventListener("focus", () => {
+                    userEditing[c.param] = true;
+                });
+
+                select.addEventListener("change", () => {
+                    userEditing[c.param] = false;
+
+                    if (c.writable !== false)
+                        send(c.param, select.value);
+                });
+
+                select.addEventListener("blur", () => {
+                    userEditing[c.param] = false;
+                });
+
+                row.appendChild(select);
+
+                return;
+            }
+
+
+            // AUDIO MODE: keep the existing searchable dropdown
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "input-wrapper";
+
+            const input = document.createElement("input");
+            input.type = "text";
+            input.autocomplete = "off";
+            input.className = "search-box";
+            input.dataset.param = c.param;
+            input.disabled = c.writable === false;
+
+            const dropdown = document.createElement("div");
+            dropdown.className = "suggestions";
+            dropdown.style.display = "none";
+
+            document.body.appendChild(dropdown);
+
+            const options = (c.options || []).map(opt => ({
+                key: opt.value,
+                label: resolveLabel(opt.text ?? opt.value)
+            }));
+
+            dropdownMap[c.param] = options;
+
+            let highlightedIndex = -1;
+
+            const current = options.find(o => o.key == c.value);
+
+            input.value =
+                current ? current.label : resolveLabel(c.value);
+
+            input.dataset.selectedKey = c.value ?? "";
+            userEditing[c.param] = false;
+
+            function positionDropdown() {
+                const rect = input.getBoundingClientRect();
+                dropdown.style.left = rect.left + "px";
+                dropdown.style.top = rect.bottom + "px";
+                dropdown.style.width = rect.width + "px";
+            }
+
+            function close() {
+                dropdown.style.display = "none";
+                highlightedIndex = -1;
+            }
+
+            function select(opt) {
+                if (!opt) return;
+
+                input.value = opt.label;
+                input.dataset.selectedKey = opt.key;
+                userEditing[c.param] = false;
+
+                if (c.writable !== false)
+                    send(c.param, opt.key);
+
+                close();
+            }
+
+            function render(text) {
+                dropdown.innerHTML = "";
+
+                const filtered = options.filter(o =>
+                    String(o.label).toLowerCase()
+                        .includes(String(text).toLowerCase())
+                );
+
+                if (!filtered.length) {
+                    close();
+                    return;
+                }
+
+                filtered.forEach((opt, idx) => {
+                    const item = document.createElement("div");
+                    item.className = "suggestion-item";
+                    item.textContent = opt.label;
+
+                    if (idx === highlightedIndex) {
+                        item.style.background = "#0078ff";
+                        item.style.color = "white";
+                    }
+
+                    item.onclick = () => select(opt);
+                    dropdown.appendChild(item);
+                });
+
+                positionDropdown();
+                dropdown.style.display = "block";
+            }
+
+            input.addEventListener("focus", () => {
+                userEditing[c.param] = true;
+                render(input.value);
+            });
+
+            input.addEventListener("input", () => {
+                userEditing[c.param] = true;
+                highlightedIndex = -1;
+                render(input.value);
+            });
+
+            input.addEventListener("keydown", e => {
+                const filtered = options.filter(o =>
+                    String(o.label).toLowerCase()
+                        .includes(input.value.toLowerCase())
+                );
+
+                if (e.key === "ArrowDown") {
+                    e.preventDefault();
+                    highlightedIndex =
+                        Math.min(highlightedIndex + 1, filtered.length - 1);
+                    render(input.value);
+                }
+                else if (e.key === "ArrowUp") {
+                    e.preventDefault();
+                    highlightedIndex =
+                        Math.max(highlightedIndex - 1, 0);
+                    render(input.value);
+                }
+                else if (e.key === "Enter") {
+                    e.preventDefault();
+                    select(
+                        filtered[highlightedIndex] || filtered[0]
+                    );
+                }
+                else if (e.key === "Escape") {
+                    close();
+                }
+            });
+
+            input.addEventListener("blur", () => {
+                setTimeout(() => {
+                    userEditing[c.param] = false;
+
+                    const match = options.find(o =>
+                        String(o.label).toLowerCase() ===
+                        input.value.toLowerCase()
+                    );
+
+                    if (match && c.writable !== false)
+                        send(c.param, match.key);
+
+                    close();
+                }, 150);
+            });
+
+            wrapper.appendChild(input);
+            row.appendChild(wrapper);
+
+            window.addEventListener("resize", close);
+            window.addEventListener("scroll", close);
+        }
+
+function resolveLabel(text) {
+    if (text === undefined || text === null)
+        return "";
+
+    const original = String(text);
+
+    const match =
+        original.match(/MADIBNC\s*CH\s*(\d+)/i);
+
+    if (match) {
+        const channel = parseInt(match[1], 10);
+
+        if (config.madiNames &&
+            config.madiNames[channel])
+            return config.madiNames[channel];
+    }
+
+    return original;
+}
+
+async function send(param, value) {
+    try {
+        const response =
+            await fetch(
+                `/api/Conversion/ajafs2/${encodeURIComponent(deviceId)}/param/${encodeURIComponent(param)}`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ value })
+                }
+            );
+
+        const result = await response.json();
+
+        if (!result.ok) {
+            
+        }
+        else {
+           
+        }
+    }
+    catch (err) {
+        console.error(err);
+       
+    }
+}
+
+        async function poll() {
+            try {
+                const response =
+                    await fetch(
+                        `/api/Conversion/ajafs2/${encodeURIComponent(deviceId)}/${mode}/values`
+                    );
+
+                if (!response.ok)
+                    return;
+
+                const data = await response.json();
+
+                for (const param in data) {
+                    if (userEditing[param])
+                        continue;
+
+                    updateSlider(param, data[param]);
+                    updateDropdown(param, data[param]);
+                }
+            }
+            catch (err) {
+                console.debug("Polling failed", err);
+            }
+        }
+
+function updateSlider(param, value) {
+    const slider = document.getElementById(param);
+
+    if (!slider || slider.type !== "range")
+        return;
+
+    slider.value = value;
+
+    const valueLabel =
+        document.getElementById(param + "_val");
+
+    if (valueLabel)
+        valueLabel.innerText = value;
+}
+
+function updateDropdown(param, value) {
+    const options = dropdownMap[param];
+
+    if (!options)
+        return;
+
+    const input =
+        document.querySelector(
+            `input.search-box[data-param="${CSS.escape(param)}"]`
+        );
+
+    if (!input)
+        return;
+
+    const match = options.find(o => o.key == value);
+
+    if (!match)
+        return;
+
+    input.value = match.label;
+    input.dataset.selectedKey = value;
+}
+
+function showError(message) {
+   
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}</script>
+</body>
+</html>

@@ -146,7 +146,9 @@ var app = builder.Build();
 // ============================================================
 Database.Initialize();
 
+TallyDatabase.Initialize();  // tally database loaded
 
+TallyDatabase.SyncDevices(); // copies Type 1 + Type 2 devices
 // ============================================================
 // HTTPS REDIRECT
 // ============================================================
@@ -740,7 +742,7 @@ routerApi.MapGet("/bmd/{id}/setoutputname/{input}/{name}",(string id, string inp
 routerApi.MapGet("/bmd/{id}/setroute/{Input}/{Output}",(string id, string Input, string Output) =>
 
     {
-        Console.WriteLine(id + " " + Input + " " + Output);
+        
         var bmdRouter =new BMD_Router();
    
         return bmdRouter.setroute(

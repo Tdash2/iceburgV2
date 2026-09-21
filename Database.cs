@@ -98,7 +98,79 @@ namespace Iceburg.Database
                 }
             }
         }
+        // ============================================================
+        // DEVICE - PRESENCE
+        // ============================================================
 
+        private static readonly Dictionary<string, DateTime>
+            _lastSeenSaved = new(
+                StringComparer.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Updates a device's IP address and LastSeen time without
+        /// calling EditDevice() or TallyDatabase.SyncDevices().
+        ///
+        /// LastSeen is updated in memory on every call, but the
+        /// configuration file is only rewritten periodically.
+        /// </summary>
+        public static bool UpdateDevicePresence(
+            string id,
+            string? ipAddress)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                return false;
+
+            lock (_lock)
+            {
+                ReloadInternal();
+
+                Device? device = _data.Devices
+                    .FirstOrDefault(d =>
+                        string.Equals(
+                            d.Id,
+                            id,
+                            StringComparison.OrdinalIgnoreCase));
+
+                if (device == null)
+                    return false;
+
+                bool ipChanged =
+                    !string.IsNullOrWhiteSpace(ipAddress) &&
+                    !string.Equals(
+                        device.IpAddress,
+                        ipAddress,
+                        StringComparison.OrdinalIgnoreCase);
+
+                if (ipChanged)
+                {
+                    device.IpAddress = ipAddress!;
+                }
+
+                device.LastSeen = DateTime.Now.ToString();
+
+                // Always save immediately when the IP changes.
+                if (ipChanged)
+                {
+                    SaveInternal();
+                    _lastSeenSaved[id] = DateTime.Now;
+                    return true;
+                }
+
+                // Otherwise only persist LastSeen periodically.
+                DateTime now = DateTime.Now;
+
+                if (!_lastSeenSaved.TryGetValue(
+                        id,
+                        out DateTime lastSaved) ||
+                    (now - lastSaved).TotalSeconds >= 5)
+                {
+                    SaveInternal();
+                    _lastSeenSaved[id] = now;
+                }
+
+                return true;
+            }
+        }
         /// <summary>
         /// Gets a snapshot of the latest users.
         ///

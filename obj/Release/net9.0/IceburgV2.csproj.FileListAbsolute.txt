@@ -29,7 +29,6 @@ C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\compressed\okobdvb
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\compressed\blczlm4liu-ru0oetttc5.gz
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\compressed\dmxrfynz0q-aftefe1v4o.gz
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\compressed\pg787zh4me-oiujy28xem.gz
-C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\compressed\d4lh3gph92-h5dgwulsci.gz
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\compressed\jbr6thvk5v-22rpebcvhe.gz
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\compressed\wo6imnfwaf-h63951f5hr.gz
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\staticwebassets.build.json
@@ -47,7 +46,9 @@ C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\refint\IceburgV2.d
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\IceburgV2.pdb
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\IceburgV2.genruntimeconfig.cache
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\ref\IceburgV2.dll
-C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\compressed\kpfn3dks1g-77i502ag1q.gz
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\compressed\8hcaxzmm9s-x04pbggqyt.gz
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\compressed\cldo4ebxa1-uac7jq8gse.gz
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\compressed\0hzw8gxc77-w0wj4sgv8w.gz
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\compressed\7z0so3v3ko-0l1ablnhxi.gz
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\compressed\kpfn3dks1g-kcx519rsnc.gz
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\compressed\d4lh3gph92-fl36j4s6vm.gz

@@ -262,7 +262,8 @@ const deviceTypeLookup = {
 
     "1": {
         name: "BMD Router",
-        page: "BMDRouter.html"
+        page: "BMDRouter.html",
+        tallypage:"routertally.html"
     },
     "2": {
         name: "Tally Device",
@@ -273,7 +274,7 @@ const deviceTypeLookup = {
         page: "x32.html"
     },
     "4": {
-        name: "AJA FS 4 Or FS HDR",
+        name: "AJA FS 4",
         page: "ajafs4.html"
     },
     "5": {
@@ -608,37 +609,60 @@ function createDeviceCard(device) {
     // Known device
     // --------------------------------------------------------
 
-    card.innerHTML =
-        `
-            <div class="device-name">
-                ${escapeHtml( device.name || "Unnamed Device")}
-        </div >
+    card.innerHTML = `
+    <div class="device-name">
+        ${escapeHtml(device.name || "Unnamed Device")}
+    </div>
 
-        <div class="device-info">
-
-            <div>
-                Type:
-                ${escapeHtml(deviceType.name)}
-            </div>
-
-            <div>
-                IP:
-                ${escapeHtml(
-                    device.ipAddress || "N/A"
-                )}
-            </div>
-
-                            <div class="device-status">
-    <span class="status-value unknown">?</span>
-</div>
-
+    <div class="device-info">
+        <div>
+            Type:
+            ${escapeHtml(deviceType.name)}
         </div>
 
+        <div>
+            IP:
+            ${escapeHtml(device.ipAddress || "N/A")}
+        </div>
+
+        <div class="device-status">
+            <span class="status-value unknown">?</span>
+        </div>
+    </div>
+
+    <div class="device-actions">
         <span class="device-type">
             Open device
         </span>
-        `;
 
+        ${deviceType.tallypage
+            ? `
+                    <button
+                        type="button"
+                        class="setup-tally"
+                        onclick="window.location.href='${escapeHtml(device.tallypage)}?id=${encodeURIComponent(device.id)}'"
+                    >
+                        Setup Tally
+                    </button>
+                `
+            : ""
+        }
+    </div>
+`;
+    const tallyButton = card.querySelector(".setup-tally");
+
+    if (tallyButton) {
+        tallyButton.addEventListener("click", function (event) {
+            event.stopPropagation();
+
+            const url =
+                deviceType.tallypage +
+                "?id=" +
+                encodeURIComponent(device.id);
+
+            window.location.href = url;
+        });
+    }
 
     // --------------------------------------------------------
     // Redirect to device page

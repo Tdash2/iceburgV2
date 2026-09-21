@@ -1,12 +1,17 @@
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\BMDRouter.html
+C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\tally - Copy.html
+C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\routertally.html
+C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\ajafs2.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\favicon.ico
-C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\tally.html
+C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\ajafs4.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\index.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\tallygrid.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\dashboard.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\favacon.ico
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\login.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\x32.html
+wwwroot\ajafs2.html
+wwwroot\ajafs4.html
 wwwroot\BMDRouter.html
 wwwroot\dashboard.html
 wwwroot\favacon.ico
@@ -14,6 +19,7 @@ wwwroot\favicon.ico
 wwwroot\Iceburg Log.png
 wwwroot\index.html
 wwwroot\login.html
-wwwroot\tally.html
+wwwroot\routertally.html
+wwwroot\tally - Copy.html
 wwwroot\tallygrid.html
 wwwroot\x32.html

@@ -1,0 +1,1464 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPIO Tally Configuration</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #232323;
+            color: #f3f4f6;
+        }
+
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        h1 {
+            margin: 0 0 24px;
+            font-size: 28px;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .device-card {
+            background: #373737;
+          
+            padding: 20px;
+            margin-bottom: 24px;
+            color: white;
+        }
+
+        .device-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            color:white;
+        }
+
+        .device-name {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .device-ip {
+            color: #9ca3af;
+            font-size: 14px;
+            margin-top: 5px;
+            color: white;
+        }
+
+        .summary {
+            display: flex;
+            gap: 24px;
+            
+            font-size: 14px;
+            color: white;
+        }
+
+            .summary strong {
+                color: #f9fafb;
+            }
+
+        .gpio-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .gpio-card {
+            background: #373737;
+          
+            overflow: hidden;
+        }
+
+        .gpio-header {
+            padding: 18px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .count-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .count-control button {
+                width: 32px;
+                height: 32px;
+                padding: 0;
+                font-size: 18px;
+                border: 0;
+                border-radius: 6px;
+                background: #4f4f4f;
+                color: white;
+                cursor: pointer;
+            }
+
+                .count-control button:hover {
+                    background: #4f4f4f;
+                }
+
+            .count-control span {
+                min-width: 30px;
+                text-align: center;
+                font-weight: bold;
+            }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid #374151;
+        }
+
+        th {
+            background: #4f4f4f;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .port-static {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #d1d5db;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .lock {
+            font-size: 11px;
+            opacity: 0.5;
+        }
+
+        .channel-input {
+            width: 100%;
+            min-width: 140px;
+            padding: 9px 10px;
+            background: #171616;
+            color: #f9fafb;
+            font-size: 14px;
+            border: 1px, #171616;
+        }
+
+            .channel-input:focus {
+                border-color: #60a5fa;
+            }
+
+            .channel-input.saving {
+                border-color: #f59e0b;
+            }
+
+            .channel-input.saved {
+                border-color: #22c55e;
+            }
+
+            .channel-input.error {
+                border-color: #ef4444;
+            }
+
+        .save-status {
+            display: block;
+            min-width: 55px;
+            margin-top: 4px;
+            font-size: 11px;
+            color: #9ca3af;
+        }
+
+            .save-status.saving {
+                color: #f59e0b;
+            }
+
+            .save-status.saved {
+                color: #22c55e;
+            }
+
+            .save-status.error {
+                color: #ef4444;
+            }
+
+        .empty {
+            padding: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        .status {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            padding: 12px 18px;
+            border-radius: 8px;
+            background: #374151;
+            color: white;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+            .status.success {
+                background: #166534;
+            }
+
+            .status.error {
+                background: #991b1b;
+            }
+
+        @media (max-width: 1000px) {
+            .gpio-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 12px;
+            }
+
+            .device-card {
+                padding: 14px;
+            }
+
+            .gpio-header {
+                padding: 14px;
+            }
+
+            .device-info {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .summary {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Router Tally Configuration</h1>
+
+        <!-- Device information only -->
+        <div class="device-card">
+
+            <div class="device-info">
+
+                <div>
+                    <div id="deviceName"
+                         class="device-name">
+                        Loading...
+                    </div>
+
+                    <div id="deviceIp"
+                         class="device-ip">
+                        IP: -
+                    </div>
+                </div>
+
+                <div class="summary">
+
+                    <div>
+                        Inputs:
+                        <strong id="inputSummary">0</strong>
+                    </div>
+
+                    <div>
+                        Outputs:
+                        <strong id="outputSummary">0</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Inputs / Outputs -->
+        <div class="gpio-grid">
+
+            <!-- INPUTS -->
+            <div class="gpio-card">
+
+                <div class="gpio-header">
+
+                    <h2>Router Outputs</h2>
+                   
+
+
+                    <div class="count-control">
+
+                        <button onclick="changeInputCount(-1)">
+                            −
+                        </button>
+
+                        <span id="inputCount">0</span>
+
+                        <button onclick="changeInputCount(1)">
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Router Port</th>
+                                <th>Port Name</th>
+                                <th>Nickname</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="inputsBody"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <!-- OUTPUTS -->
+            <div class="gpio-card">
+
+                <div class="gpio-header">
+
+                    <h2>Router Inputs</h2>
+
+                    <div class="count-control">
+
+                        <button onclick="changeOutputCount(-1)">
+                            −
+                        </button>
+
+                        <span id="outputCount">0</span>
+
+                        <button onclick="changeOutputCount(1)">
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Router Port</th>
+                                <th>Port Name</th>
+                                <th>Nickname</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="outputsBody"></tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div id="status" class="status"></div>
+
+
+    <script>
+
+        const API_BASE = "";
+
+        let selectedDeviceId = null;
+        let currentDevice = null;
+
+        let inputs = [];
+        let outputs = [];
+
+        /*
+         * Separate debounce timers for each field.
+         *
+         * This prevents an API request on every keystroke.
+         */
+        const saveTimers = {};
+
+
+        // --------------------------------------------------
+        // API
+        // --------------------------------------------------
+
+        async function api(url, options = {}) {
+
+            const response = await fetch(API_BASE + url, {
+                ...options,
+
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(options.headers || {})
+                }
+            });
+
+            if (!response.ok) {
+
+                let message = `HTTP ${response.status}`;
+
+                try {
+
+                    const data = await response.json();
+
+                    if (data.message) {
+                        message = data.message;
+                    }
+
+                } catch (_) { }
+
+                throw new Error(message);
+            }
+
+            if (response.status === 204) {
+                return null;
+            }
+
+            return response.json();
+        }
+
+
+        // --------------------------------------------------
+        // Status
+        // --------------------------------------------------
+
+        function setStatus(message, type = "success") {
+
+            const element =
+                document.getElementById("status");
+
+            element.textContent = message;
+
+            element.className =
+                `status ${type}`;
+
+            element.style.display = "block";
+
+            clearTimeout(window.statusTimer);
+
+            window.statusTimer =
+                setTimeout(() => {
+                    element.style.display = "none";
+                }, 2500);
+        }
+
+
+        // --------------------------------------------------
+        // Escape HTML
+        // --------------------------------------------------
+
+        function escapeHtml(value) {
+
+            if (
+                value === null ||
+                value === undefined
+            ) {
+                return "";
+            }
+
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+
+        // --------------------------------------------------
+        // Load the device
+        //
+        // There is NO device selector anymore.
+        //
+        // We use the first device returned by the API.
+        // --------------------------------------------------
+
+        async function loadDevice() {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const requestedDeviceId = params.get("id");
+
+                const devices = await api("/api/gpio/devices");
+
+                if (!Array.isArray(devices) || devices.length === 0) {
+                    document.getElementById("deviceName").textContent = "No device found";
+                    return;
+                }
+
+                // Use the ID from the URL if provided
+                if (requestedDeviceId) {
+                    const device = devices.find(
+                        d => String(d.deviceId) === String(requestedDeviceId)
+                    );
+
+                    if (!device) {
+                        document.getElementById("deviceName").textContent =
+                            "Device not found";
+                        setStatus("Device ID not found: " + requestedDeviceId, "error");
+                        return;
+                    }
+
+                    selectedDeviceId = device.deviceId;
+                } else {
+                    // Optional fallback
+                    selectedDeviceId = devices[0].deviceId;
+                }
+
+                await loadDeviceData();
+
+            } catch (error) {
+                console.error(error);
+
+                setStatus(
+                    "Failed to load device: " + error.message,
+                    "error"
+                );
+            }
+        }
+
+
+        // --------------------------------------------------
+        // Load device data
+        // --------------------------------------------------
+
+        async function loadDeviceData() {
+
+            if (!selectedDeviceId) {
+                return;
+            }
+
+            try {
+
+                const data =
+                    await api(
+                        `/api/gpio/${selectedDeviceId}`
+                    );
+
+                currentDevice = data;
+
+                /*
+                 * IMPORTANT:
+                 *
+                 * These are loaded directly from the API.
+                 * We do NOT generate ports from indexes.
+                 */
+
+                inputs =
+                    Array.isArray(data.inputs)
+                        ? data.inputs
+                        : [];
+
+                outputs =
+                    Array.isArray(data.outputs)
+                        ? data.outputs
+                        : [];
+
+                document.getElementById(
+                    "deviceName"
+                ).textContent =
+                    data.name || "Unnamed Device";
+
+                document.getElementById(
+                    "deviceIp"
+                ).textContent =
+                    "IP: " + (data.ipAddress || "-");
+
+                renderInputs();
+                renderOutputs();
+                updateSummary();
+
+            } catch (error) {
+
+                console.error(error);
+
+                setStatus(
+                    "Failed to load device: " +
+                    error.message,
+                    "error"
+                );
+            }
+        }
+
+
+        // --------------------------------------------------
+        // Render Inputs
+        // --------------------------------------------------
+
+        function renderInputs() {
+
+            const body =
+                document.getElementById(
+                    "inputsBody"
+                );
+
+            document.getElementById(
+                "inputCount"
+            ).textContent =
+                inputs.length;
+
+            if (inputs.length === 0) {
+
+                body.innerHTML = `
+                    <tr>
+                        <td
+                            colspan="4"
+                            class="empty"
+                        >
+                            No inputs configured
+                        </td>
+                    </tr>
+                `;
+
+                return;
+            }
+
+            body.innerHTML =
+                inputs.map((item, index) => {
+
+                    return `
+                        <tr>
+
+                            <td>
+                                ${index + 1}
+                            </td>
+
+                            <!--
+                                PHYSICAL GPIO PORT
+                                READ ONLY
+                            -->
+                            <td>
+                                <span class="port-static">
+                                    RTR OUT ${escapeHtml(item.port)}
+                                   
+                                </span>
+                            </td>
+
+                            <!--
+                                PORT NAME
+                                AUTO SAVES
+                            -->
+                            <td>
+
+                                <input
+                                    class="channel-input"
+                                    id="input-name-${index}"
+                                    type="text"
+                                    value="${escapeHtml(item.name)}"
+                                    oninput="queueInputSave(${index})"
+                                >
+
+                                <span
+                                    class="save-status"
+                                    id="input-name-status-${index}"
+                                ></span>
+
+                            </td>
+
+                            <!--
+                                NICKNAME
+                                AUTO SAVES
+                            -->
+                            <td>
+
+                                <input
+                                    class="channel-input"
+                                    id="input-nickname-${index}"
+                                    type="text"
+                                    value="${escapeHtml(item.nickname)}"
+                                    oninput="queueInputSave(${index})"
+                                >
+
+                                <span
+                                    class="save-status"
+                                    id="input-nickname-status-${index}"
+                                ></span>
+
+                            </td>
+
+                        </tr>
+                    `;
+
+                }).join("");
+        }
+
+
+        // --------------------------------------------------
+        // Queue Input Save
+        // --------------------------------------------------
+
+        function queueInputSave(index) {
+
+            const item = inputs[index];
+
+            if (!item) {
+                return;
+            }
+
+            const nameInput =
+                document.getElementById(
+                    `input-name-${index}`
+                );
+
+            const nicknameInput =
+                document.getElementById(
+                    `input-nickname-${index}`
+                );
+
+            /*
+             * Mark both fields as waiting to save.
+             */
+
+            setFieldStatus(
+                nameInput,
+                `input-name-status-${index}`,
+                "saving",
+                "Saving..."
+            );
+
+            setFieldStatus(
+                nicknameInput,
+                `input-nickname-status-${index}`,
+                "saving",
+                "Saving..."
+            );
+
+            const timerKey =
+                `input-${item.inputId}`;
+
+            clearTimeout(saveTimers[timerKey]);
+
+            saveTimers[timerKey] =
+                setTimeout(() => {
+
+                    saveInput(index);
+
+                }, 600);
+        }
+
+
+        // --------------------------------------------------
+        // Save Input
+        // --------------------------------------------------
+
+        async function saveInput(index) {
+
+            const item = inputs[index];
+
+            if (!item) {
+                return;
+            }
+
+            const name =
+                document.getElementById(
+                    `input-name-${index}`
+                ).value.trim();
+
+            const nickname =
+                document.getElementById(
+                    `input-nickname-${index}`
+                ).value.trim();
+
+            const nameInput =
+                document.getElementById(
+                    `input-name-${index}`
+                );
+
+            const nicknameInput =
+                document.getElementById(
+                    `input-nickname-${index}`
+                );
+
+            /*
+             * Port Name cannot be empty.
+             */
+
+            if (!name) {
+
+                setFieldStatus(
+                    nameInput,
+                    `input-name-status-${index}`,
+                    "error",
+                    "Required"
+                );
+
+                return;
+            }
+
+            try {
+
+                /*
+                 * Preserve the physical port exactly
+                 * as it came from the API.
+                 *
+                 * Update:
+                 *   name
+                 *   nickname
+                 */
+
+                await api(
+                    `/api/gpio/${selectedDeviceId}/inputs/${item.inputId}`,
+                    {
+                        method: "PUT",
+
+                        body: JSON.stringify({
+
+                            inputId:
+                                item.inputId,
+
+                            port:
+                                item.port,
+
+                            name:
+                                name,
+
+                            nickname:
+                                nickname
+                        })
+                    }
+                );
+
+                item.name =
+                    name;
+
+                item.nickname =
+                    nickname;
+
+                setFieldStatus(
+                    nameInput,
+                    `input-name-status-${index}`,
+                    "saved",
+                    "Saved"
+                );
+
+                setFieldStatus(
+                    nicknameInput,
+                    `input-nickname-status-${index}`,
+                    "saved",
+                    "Saved"
+                );
+
+            } catch (error) {
+
+                console.error(error);
+
+                setFieldStatus(
+                    nameInput,
+                    `input-name-status-${index}`,
+                    "error",
+                    "Error"
+                );
+
+                setFieldStatus(
+                    nicknameInput,
+                    `input-nickname-status-${index}`,
+                    "error",
+                    "Error"
+                );
+            }
+        }
+
+
+        // --------------------------------------------------
+        // Render Outputs
+        // --------------------------------------------------
+
+        function renderOutputs() {
+
+            const body =
+                document.getElementById(
+                    "outputsBody"
+                );
+
+            document.getElementById(
+                "outputCount"
+            ).textContent =
+                outputs.length;
+
+            if (outputs.length === 0) {
+
+                body.innerHTML = `
+                    <tr>
+                        <td
+                            colspan="4"
+                            class="empty"
+                        >
+                            No outputs configured
+                        </td>
+                    </tr>
+                `;
+
+                return;
+            }
+
+            body.innerHTML =
+                outputs.map((item, index) => {
+
+                    return `
+                        <tr>
+
+                            <td>
+                                ${index + 1}
+                            </td>
+
+                            <!--
+                                PHYSICAL GPIO PORT
+                                READ ONLY
+                            -->
+                            <td>
+                                <span class="port-static">
+                                    RTR IN ${escapeHtml(item.port)}
+                                    <span class="lock"></span>
+                                </span>
+                            </td>
+
+                            <!--
+                                PORT NAME
+                                AUTO SAVES
+                            -->
+                            <td>
+
+                                <input
+                                    class="channel-input"
+                                    id="output-name-${index}"
+                                    type="text"
+                                    value="${escapeHtml(item.name)}"
+                                    oninput="queueOutputSave(${index})"
+                                >
+
+                                <span
+                                    class="save-status"
+                                    id="output-name-status-${index}"
+                                ></span>
+
+                            </td>
+
+                            <!--
+                                NICKNAME
+                                AUTO SAVES
+                            -->
+                            <td>
+
+                                <input
+                                    class="channel-input"
+                                    id="output-nickname-${index}"
+                                    type="text"
+                                    value="${escapeHtml(item.nickname)}"
+                                    oninput="queueOutputSave(${index})"
+                                >
+
+                                <span
+                                    class="save-status"
+                                    id="output-nickname-status-${index}"
+                                ></span>
+
+                            </td>
+
+                        </tr>
+                    `;
+
+                }).join("");
+        }
+
+
+        // --------------------------------------------------
+        // Queue Output Save
+        // --------------------------------------------------
+
+        function queueOutputSave(index) {
+
+            const item = outputs[index];
+
+            if (!item) {
+                return;
+            }
+
+            const nameInput =
+                document.getElementById(
+                    `output-name-${index}`
+                );
+
+            const nicknameInput =
+                document.getElementById(
+                    `output-nickname-${index}`
+                );
+
+            setFieldStatus(
+                nameInput,
+                `output-name-status-${index}`,
+                "saving",
+                "Saving..."
+            );
+
+            setFieldStatus(
+                nicknameInput,
+                `output-nickname-status-${index}`,
+                "saving",
+                "Saving..."
+            );
+
+            const timerKey =
+                `output-${item.outputId}`;
+
+            clearTimeout(saveTimers[timerKey]);
+
+            saveTimers[timerKey] =
+                setTimeout(() => {
+
+                    saveOutput(index);
+
+                }, 600);
+        }
+
+
+        // --------------------------------------------------
+        // Save Output
+        // --------------------------------------------------
+
+        async function saveOutput(index) {
+
+            const item = outputs[index];
+
+            if (!item) {
+                return;
+            }
+
+            const name =
+                document.getElementById(
+                    `output-name-${index}`
+                ).value.trim();
+
+            const nickname =
+                document.getElementById(
+                    `output-nickname-${index}`
+                ).value.trim();
+
+            const nameInput =
+                document.getElementById(
+                    `output-name-${index}`
+                );
+
+            const nicknameInput =
+                document.getElementById(
+                    `output-nickname-${index}`
+                );
+
+            if (!name) {
+
+                setFieldStatus(
+                    nameInput,
+                    `output-name-status-${index}`,
+                    "error",
+                    "Required"
+                );
+
+                return;
+            }
+
+            try {
+
+                /*
+                 * Preserve the physical GPIO port.
+                 *
+                 * Update both editable fields.
+                 */
+
+                await api(
+                    `/api/gpio/${selectedDeviceId}/outputs/${item.outputId}`,
+                    {
+                        method: "PUT",
+
+                        body: JSON.stringify({
+
+                            outputId:
+                                item.outputId,
+
+                            port:
+                                item.port,
+
+                            name:
+                                name,
+
+                            nickname:
+                                nickname
+                        })
+                    }
+                );
+
+                item.name =
+                    name;
+
+                item.nickname =
+                    nickname;
+
+                setFieldStatus(
+                    nameInput,
+                    `output-name-status-${index}`,
+                    "saved",
+                    "Saved"
+                );
+
+                setFieldStatus(
+                    nicknameInput,
+                    `output-nickname-status-${index}`,
+                    "saved",
+                    "Saved"
+                );
+
+            } catch (error) {
+
+                console.error(error);
+
+                setFieldStatus(
+                    nameInput,
+                    `output-name-status-${index}`,
+                    "error",
+                    "Error"
+                );
+
+                setFieldStatus(
+                    nicknameInput,
+                    `output-nickname-status-${index}`,
+                    "error",
+                    "Error"
+                );
+            }
+        }
+
+
+        // --------------------------------------------------
+        // Field status
+        // --------------------------------------------------
+
+        function setFieldStatus(
+            input,
+            statusId,
+            type,
+            message
+        ) {
+
+            if (input) {
+
+                input.classList.remove(
+                    "saving",
+                    "saved",
+                    "error"
+                );
+
+                if (type) {
+                    input.classList.add(type);
+                }
+            }
+
+            const status =
+                document.getElementById(statusId);
+
+            if (!status) {
+                return;
+            }
+
+            status.className =
+                `save-status ${type}`;
+
+            status.textContent =
+                message;
+
+            /*
+             * Clear "Saved" after a moment.
+             */
+
+            if (type === "saved") {
+
+                setTimeout(() => {
+
+                    if (
+                        status.classList.contains("saved")
+                    ) {
+                        status.textContent = "";
+                        status.className =
+                            "save-status";
+                    }
+
+                    if (input) {
+                        input.classList.remove("saved");
+                    }
+
+                }, 1500);
+            }
+        }
+
+
+        // --------------------------------------------------
+        // Change Input Count
+        // --------------------------------------------------
+
+        async function changeInputCount(change) {
+
+            if (!selectedDeviceId) {
+                return;
+            }
+
+            try {
+
+                if (change > 0) {
+
+                    /*
+                     * Find next unused physical GPIO port.
+                     */
+
+                    const usedPorts =
+                        inputs.map(
+                            x => Number(x.port)
+                        );
+
+                    let newPort = 1;
+
+                    while (
+                        usedPorts.includes(newPort)
+                    ) {
+                        newPort++;
+                    }
+
+                    await api(
+                        `/api/gpio/${selectedDeviceId}/inputs`,
+                        {
+                            method: "POST",
+
+                            body: JSON.stringify({
+
+                                port:
+                                    newPort,
+
+                                name:
+                                    String("Router Out "+newPort),
+
+                                nickname:
+                                    String("Router Out " + newPort)
+                            })
+                        }
+                    );
+
+                } else {
+
+                    if (inputs.length === 0) {
+                        return;
+                    }
+
+                    const item =
+                        inputs[inputs.length - 1];
+
+                    if (!confirm(
+                        `Remove Router Out ${item.port}?`
+                    )) {
+                        return;
+                    }
+
+                    await api(
+                        `/api/gpio/${selectedDeviceId}/inputs/${item.inputId}`,
+                        {
+                            method: "DELETE"
+                        }
+                    );
+                }
+
+                await loadDeviceData();
+
+            } catch (error) {
+
+                console.error(error);
+
+                setStatus(
+                    "Failed to change input count: " +
+                    error.message,
+                    "error"
+                );
+            }
+        }
+
+
+        // --------------------------------------------------
+        // Change Output Count
+        // --------------------------------------------------
+
+        async function changeOutputCount(change) {
+
+            if (!selectedDeviceId) {
+                return;
+            }
+
+            try {
+
+                if (change > 0) {
+
+                    /*
+                     * Find next unused physical GPIO port.
+                     */
+
+                    const usedPorts =
+                        outputs.map(
+                            x => Number(x.port)
+                        );
+
+                    let newPort = 1;
+
+                    while (
+                        usedPorts.includes(newPort)
+                    ) {
+                        newPort++;
+                    }
+
+                    await api(
+                        `/api/gpio/${selectedDeviceId}/outputs`,
+                        {
+                            method: "POST",
+
+                            body: JSON.stringify({
+
+                                port:
+                                    newPort,
+
+                                name:
+                                    String("Router In " + newPort),
+
+                                nickname:
+                                    String("Router In " + newPort)
+                            })
+                        }
+                    );
+
+                } else {
+
+                    if (outputs.length === 0) {
+                        return;
+                    }
+
+                    const item =
+                        outputs[outputs.length - 1];
+
+                    if (!confirm(
+                        `Remove Router In ${item.port}?`
+                    )) {
+                        return;
+                    }
+
+                    await api(
+                        `/api/gpio/${selectedDeviceId}/outputs/${item.outputId}`,
+                        {
+                            method: "DELETE"
+                        }
+                    );
+                }
+
+                await loadDeviceData();
+
+            } catch (error) {
+
+                console.error(error);
+
+                setStatus(
+                    "Failed to change output count: " +
+                    error.message,
+                    "error"
+                );
+            }
+        }
+
+
+        // --------------------------------------------------
+        // Summary
+        // --------------------------------------------------
+
+        function updateSummary() {
+
+            document.getElementById(
+                "inputSummary"
+            ).textContent =
+                inputs.length;
+
+            document.getElementById(
+                "outputSummary"
+            ).textContent =
+                outputs.length;
+
+            document.getElementById(
+                "inputCount"
+            ).textContent =
+                inputs.length;
+
+            document.getElementById(
+                "outputCount"
+            ).textContent =
+                outputs.length;
+        }
+
+
+        // --------------------------------------------------
+        // START
+        // --------------------------------------------------
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            () => {
+                loadDevice();
+            }
+        );
+
+    </script>
+
+</body>
+</html>

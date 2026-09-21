@@ -1,4 +1,5 @@
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\BMDRouter.html
+C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\routertally.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\ajafs2.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\favicon.ico
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\ajafs4.html
@@ -18,6 +19,7 @@ wwwroot\favicon.ico
 wwwroot\Iceburg Log.png
 wwwroot\index.html
 wwwroot\login.html
+wwwroot\routertally.html
 wwwroot\tally.html
 wwwroot\tallygrid.html
 wwwroot\x32.html

@@ -17,32 +17,12 @@
   ],
   "Devices": [
     {
-      "Id": "9f0eabdd-eb38-49a5-b3a1-16dd354ca03b",
+      "Id": "0",
       "Name": "Tally1",
       "Type": "2",
-      "IpAddress": "10.0.01",
+      "IpAddress": "10.8.0.214",
       "AudioSorce": "",
-      "LastSeen": "9/15/2026 6:48:27 PM",
-      "Username": "",
-      "Password": ""
-    },
-    {
-      "Id": "cfb35e35-44ae-4aa9-8dbb-b53790a3b7b3",
-      "Name": "tally2",
-      "Type": "2",
-      "IpAddress": "1.1.1.1",
-      "AudioSorce": "",
-      "LastSeen": "",
-      "Username": "",
-      "Password": ""
-    },
-    {
-      "Id": "a3a22cba-f500-45bb-9234-a4bf5f0e0fc5",
-      "Name": "HEX-3 Router",
-      "Type": "1",
-      "IpAddress": "10.176.73.40",
-      "AudioSorce": "",
-      "LastSeen": "",
+      "LastSeen": "9/20/2026 8:48:38 PM",
       "Username": "",
       "Password": ""
     },
@@ -71,6 +51,26 @@
       "Name": "hex 3 fs2",
       "Type": "5",
       "IpAddress": "10.176.73.11",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "6e95ed60-30b8-4d6e-a0fe-49f36ae8411b",
+      "Name": "Black Maigc 16x16 Router",
+      "Type": "1",
+      "IpAddress": "10.7.0.224",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "63b83fda-e2da-4cf8-ae7d-9a40d919ce3f",
+      "Name": "test Tally",
+      "Type": "2",
+      "IpAddress": "1.1.1.1",
       "AudioSorce": "",
       "LastSeen": "",
       "Username": "",

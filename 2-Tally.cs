@@ -5,11 +5,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Iceburg.Database;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using static System.Net.Mime.MediaTypeNames;
+using Iceburg.Router.BMD;
 
 namespace Iceburg.Database
 {
@@ -19,6 +21,8 @@ namespace Iceburg.Database
 
     public static class TallyDatabase
     {
+
+
         private static readonly object _lock = new();
 
         private static readonly string FilePath =
@@ -31,6 +35,25 @@ namespace Iceburg.Database
             new();
 
         private static FileSystemWatcher? _watcher;
+
+        // Live Blackmagic router routes. These are intentionally kept
+        // in memory because they are runtime state returned by the router.
+        // Key: Iceburg router device ID. Value: router input (0-based) ->
+        // router output (0-based).
+        private static readonly Dictionary<string, Dictionary<int, int>>
+            _routerRoutes =
+                new(StringComparer.OrdinalIgnoreCase);
+
+        private static readonly Dictionary<string, DateTime>
+            _routerLastSuccessfulPoll =
+                new(StringComparer.OrdinalIgnoreCase);
+
+        private static readonly Dictionary<string, bool>
+            _routerConnected =
+                new(StringComparer.OrdinalIgnoreCase);
+
+        private static CancellationTokenSource? _routerPollingCts;
+        private static Task? _routerPollingTask;
 
         private static readonly JsonSerializerOptions JsonOptions =
             new()
@@ -57,12 +80,251 @@ namespace Iceburg.Database
                 SaveInternal();
 
                 RecalculateAllOutputsInternal();
+
+                StartRouterPollingInternal();
+            }
+        }
+        private static bool IsRouterDeviceInternal(string deviceId)
+        {
+            return Database.Devices.Any(d =>
+                string.Equals(
+                    d.Id,
+                    deviceId,
+                    StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(
+                    d.Type,
+                    "1",
+                    StringComparison.OrdinalIgnoreCase));
+        }
+        private static async Task PollRouterInternal(string routerId)
+        {
+            try
+            {
+                if (!IsRouterDeviceInternal(routerId))
+                    return;
+
+                var router = new BMD_Router();
+
+                string response = await router.GetRoutes(routerId);
+
+                if (string.IsNullOrWhiteSpace(response))
+                    return;
+
+                using JsonDocument document = JsonDocument.Parse(response);
+
+                JsonElement root = document.RootElement;
+
+                // Do not replace the cached routes if the router
+                // returned an error.
+                if (root.ValueKind != JsonValueKind.Object)
+                    return;
+
+                if (root.TryGetProperty("error", out _))
+                {
+                    lock (_lock)
+                    {
+                        _routerConnected[routerId] = false;
+                    }
+
+                    return;
+                }
+
+                if (!root.TryGetProperty("routes", out JsonElement routesElement))
+                    return;
+
+                if (routesElement.ValueKind != JsonValueKind.Object)
+                    return;
+
+                var newRoutes = new Dictionary<int, int>();
+
+                foreach (JsonProperty property in routesElement.EnumerateObject())
+                {
+                    if (!int.TryParse(property.Name, out int routerInput))
+                        continue;
+
+                    int routerOutput;
+
+                    if (property.Value.ValueKind == JsonValueKind.Number)
+                    {
+                        if (!property.Value.TryGetInt32(out routerOutput))
+                            continue;
+                    }
+                    else if (property.Value.ValueKind == JsonValueKind.String)
+                    {
+                        if (!int.TryParse(
+                                property.Value.GetString(),
+                                out routerOutput))
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        continue;
+                    }
+
+                    newRoutes[routerInput] = routerOutput;
+                }
+
+                // A response without usable routes is not considered
+                // a successful poll, so keep the previous cache.
+                if (newRoutes.Count == 0)
+                    return;
+
+                lock (_lock)
+                {
+                    // Replace the cache ONLY after the entire response
+                    // has been successfully parsed.
+                    _routerRoutes[routerId] = newRoutes;
+
+                    _routerLastSuccessfulPoll[routerId] = DateTime.UtcNow;
+
+                    _routerConnected[routerId] = true;
+
+                    // Recalculate using:
+                    //
+                    // 1. Normal Iceburg routes
+                    // 2. Router output -> router input propagation
+                    // 3. Recalculate normal outputs using router inputs
+                    //
+                    // This prevents router-input propagation from becoming
+                    // part of the router-output calculation itself.
+                    RecalculateAllOutputsInternal();
+                }
+            }
+            catch
+            {
+                // Poll failure must NOT destroy the last known-good routes.
+                //
+                // The cached routes remain available and will be used by
+                // ApplyRouterInputTalliesInternal() on the next calculation.
+
+                lock (_lock)
+                {
+                    _routerConnected[routerId] = false;
+                }
             }
         }
 
+        private static void StartRouterPollingInternal()
+        {
+            if (_routerPollingTask != null &&
+                !_routerPollingTask.IsCompleted)
+            {
+                return;
+            }
 
+            _routerPollingCts?.Dispose();
+            _routerPollingCts = new CancellationTokenSource();
+
+            var token = _routerPollingCts.Token;
+
+            _routerPollingTask = Task.Run(
+                async () =>
+                {
+                    while (!token.IsCancellationRequested)
+                    {
+                        try
+                        {
+                            List<string> routerIds;
+
+                            lock (_lock)
+                            {
+                                routerIds = Database.Devices
+                                    .Where(d =>
+                                        !string.IsNullOrWhiteSpace(d.Id) &&
+                                        string.Equals(
+                                            d.Type,
+                                            "1",
+                                            StringComparison.OrdinalIgnoreCase))
+                                    .Select(d => d.Id)
+                                    .Distinct(StringComparer.OrdinalIgnoreCase)
+                                    .ToList();
+                            }
+
+                            foreach (var routerId in routerIds)
+                            {
+                                if (token.IsCancellationRequested)
+                                    break;
+
+                                PollRouterInternal(routerId);
+                            }
+                        }
+                        catch
+                        {
+                            // Keep polling even if one poll fails.
+                        }
+
+                        try
+                        {
+                            await Task.Delay(500, token);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            break;
+                        }
+                    }
+                },
+                token);
+        }
+        private static void ApplyRouterInputTalliesInternal()
+        {
+            foreach (var router in _config.Devices)
+            {
+                if (!IsRouterDeviceInternal(router.DeviceId))
+                    continue;
+
+                // Start with all router inputs OFF.
+                foreach (var input in router.Inputs)
+                {
+                    input.Status = false;
+                }
+
+                if (!_routerRoutes.TryGetValue(
+                        router.DeviceId,
+                        out var routes))
+                {
+                    continue;
+                }
+
+                // Blackmagic router inputs are 0-based.
+                // Iceburg router input ports are 1-based.
+                //
+                // Example:
+                // Blackmagic input 0 -> Iceburg input port 1
+                // Blackmagic input 1 -> Iceburg input port 2
+                // etc.
+                foreach (var route in routes)
+                {
+                    int routerInput = route.Key;
+                    int routerOutput = route.Value;
+
+                    int iceburgInputPort = routerInput + 1;  //Router output to tally input mapping
+                 
+
+                    var input = router.Inputs.FirstOrDefault(x =>
+                        x.Port == iceburgInputPort);
+
+                    if (input == null)
+                        continue;
+
+                    // Router output tally comes from normal Iceburg
+                    // routes feeding that router output.
+                    var output = router.Outputs.FirstOrDefault(x =>x.Port == routerOutput+1);
+
+                    if (output == null)
+                        continue;
+
+                    if (output.Status)
+                    {
+                        input.Status = true;
+                    }
+                }
+            }
+        }
         // ============================================================
-        // FILE WATCHER
+        // BLACKMAGIC ROUTER POLLING
+        // ============================================================
         // ============================================================
 
         private static void StartWatcherInternal()
@@ -223,23 +485,24 @@ namespace Iceburg.Database
         // DEVICES
         // ============================================================
 
-// ============================================================
-// DEVICE SYNCHRONIZATION
-// ============================================================
+        // ============================================================
+        // DEVICE SYNCHRONIZATION
+        // ============================================================
 
-/// <summary>
-/// Synchronizes the GPIO database with the application's
-/// main device database.
-///
-/// Only devices with Type == "2" are GPIO devices.
-///
-/// IMPORTANT:
-/// Existing GPIO inputs, outputs, and cross-device routes are
-/// preserved when a device already exists.
-///
-/// Devices are matched by DeviceId / Database.Device.Id.
-/// </summary>
-public static void SyncDevices()
+        /// <summary>
+        /// Synchronizes the GPIO database with the application's
+        /// main device database.
+        ///
+        /// Devices with Type == "2" are GPIO devices.
+        /// Devices with Type == "1" are Blackmagic router devices.
+        ///
+        /// IMPORTANT:
+        /// Existing GPIO inputs, outputs, and cross-device routes are
+        /// preserved when a device already exists.
+        ///
+        /// Devices are matched by DeviceId / Database.Device.Id.
+        /// </summary>
+        public static void SyncDevices()
         {
             lock (_lock)
             {
@@ -247,6 +510,10 @@ public static void SyncDevices()
                 var sourceDevices =
                     Database.Devices
                         .Where(d =>
+                            string.Equals(
+                                d.Type,
+                                "1",
+                                StringComparison.OrdinalIgnoreCase) ||
                             string.Equals(
                                 d.Type,
                                 "2",
@@ -275,7 +542,7 @@ public static void SyncDevices()
 
                     if (gpioDevice == null)
                     {
-                        // New Type 2 device.
+                        // New GPIO/router device.
                         //
                         // Start it with empty GPIO configuration.
                         // Inputs and outputs can then be configured from
@@ -342,7 +609,7 @@ public static void SyncDevices()
                 }
 
                 // --------------------------------------------------------
-                // REMOVE DEVICES THAT ARE NO LONGER TYPE 2
+                // REMOVE DEVICES THAT ARE NO LONGER TYPE 1 OR TYPE 2
                 // --------------------------------------------------------
 
                 _config.Devices.RemoveAll(
@@ -1324,18 +1591,39 @@ public static void SyncDevices()
          */
         private static void RecalculateAllOutputsInternal()
         {
+            // Pass 1: calculate every output from normal Iceburg routes.
+            // Router inputs are NOT used here; they are derived from the
+            // already-calculated router outputs below.
             foreach (var destinationDevice in _config.Devices)
             {
                 foreach (var output in destinationDevice.Outputs)
                 {
-                    var newState =
+                    output.Status =
                         EvaluateOutputInternal(
                             destinationDevice,
                             output.OutputId
                         );
+                }
+            }
 
+            // Pass 2: walk the Blackmagic router backwards. If router
+            // input N is routed to router output X, input N gets the
+            // current tally state of output X.
+            ApplyRouterInputTalliesInternal();
+
+            // Pass 3: router inputs are now valid source inputs, so any
+            // other Iceburg devices routed from those router inputs need
+            // their outputs recalculated as well. Router outputs remain
+            // based on normal Iceburg routes, preventing a feedback loop.
+            foreach (var destinationDevice in _config.Devices)
+            {
+                foreach (var output in destinationDevice.Outputs)
+                {
                     output.Status =
-                        newState;
+                        EvaluateOutputInternal(
+                            destinationDevice,
+                            output.OutputId
+                        );
                 }
             }
         }
@@ -1543,6 +1831,7 @@ public static void SyncDevices()
     }
 
 
+
     // ==================================================================
     // CONFIGURATION
     // ==================================================================
@@ -1702,11 +1991,11 @@ public static void SyncDevices()
     }
 }
 
-    // ====================================================================
-    // ENDPOINTS
-    // ====================================================================
+// ====================================================================
+// ENDPOINTS
+// ====================================================================
 
-    namespace Iceburg.Database
+namespace Iceburg.Database
 {
     public static class TallyEndpoints
     {
@@ -2205,9 +2494,9 @@ public static void SyncDevices()
     // LEGACY API
     // =================================================================
 
- 
 
-public static class TallyLegacy
+
+    public static class TallyLegacy
     {
         /*
          * Legacy API channel mapping
@@ -2220,18 +2509,16 @@ public static class TallyLegacy
          * The same ordering is used by gettallystatus.php and getumd.php.
          */
 
-        public static IResult GetTallyStatus(string? id, string? ip)
+        public static IResult GetTallyStatus(
+       string? id,
+       string? ip)
         {
-            if (!(ip == null)){
-                Device deviceToUpdateIp = Database.GetDevice(id);
-
-                deviceToUpdateIp.IpAddress = ip;
-                deviceToUpdateIp.LastSeen = DateTime.Now.ToString();
-                Database.EditDevice(deviceToUpdateIp);
+            if (!string.IsNullOrWhiteSpace(id))
+            {
+                Database.UpdateDevicePresence(id, ip);
             }
-            
+
             var d = FindDevice(id);
-            
 
             if (d == null)
             {
@@ -2427,7 +2714,7 @@ public static class TallyLegacy
             return false;
         }
 
-
+      
         private static Dictionary<string, bool> EmptyBoolChannels()
         {
             return Enumerable.Range(1, 8)
@@ -2483,5 +2770,6 @@ public static class TallyLegacy
     public record GpioRouteRequest(
         string SourceDeviceId,
         List<string> InputIds);
+
 }
 

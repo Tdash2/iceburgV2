@@ -12,6 +12,7 @@ public class BMD_Router
         Device? device = Database.Database.GetDevice(id);
         if (device == null)
         {
+        
             return JsonSerializer.Serialize(new
             {
                 error = "No Device Found"
@@ -23,6 +24,7 @@ public class BMD_Router
             Name = device.Name
         });
     }
+    
     public async Task<string> getnames(string id)
     {
         Device? device = Database.Database.GetDevice(id);
@@ -202,7 +204,7 @@ public class BMD_Router
                 else
                 {
                     if (response.Length > 0 &&
-                        (DateTime.UtcNow - lastData).TotalMilliseconds > 300)
+                        (DateTime.UtcNow - lastData).TotalMilliseconds > 10)
                     {
                         break;
                     }
