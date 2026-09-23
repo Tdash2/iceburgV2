@@ -649,7 +649,19 @@
         "change-password.html";
 
     changePassword.textContent =
-        "Change Password";
+            "Change Password";
+
+        const verson =
+            document.createElement("a");
+
+        verson.className =
+            "iceburg-account-item";
+
+        verson.href =
+            "";
+
+        verson.textContent =
+            "Iceburg V0.0.0";
 
 
     /*
@@ -734,6 +746,9 @@
         logout
     );
 
+        accountMenu.appendChild(
+            verson
+        );
 
     account.appendChild(
         accountButton
@@ -838,6 +853,14 @@
 
                 username.textContent =
                     data.username;
+            }
+            if (
+                data &&
+                data.verson
+            ) {
+
+                verson.textContent =
+                    data.verson;
             }
 
         } catch (error) {

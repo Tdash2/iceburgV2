@@ -1,0 +1,17 @@
+[Unit]
+Description=iceburg
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/IceburgV2
+ExecStart=/opt/iceburg/IceburgV2
+Restart=always
+RestartSec=5
+
+# Uncomment and change if you don't want it to run as root
+# User=youruser
+# Group=yourgroup
+
+[Install]
+WantedBy=multi-user.target

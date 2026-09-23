@@ -1,6 +1,5 @@
 {
   "ApplicationName": "Iceburg",
-  "Version": "2.0.1",
   "Settings": {
     "AutoStart": true,
     "RefreshIntervalSeconds": 30,
@@ -29,7 +28,7 @@
       "Type": "2",
       "IpAddress": "10.8.0.214",
       "AudioSorce": "",
-      "LastSeen": "9/20/2026 8:48:38 PM",
+      "LastSeen": "9/22/2026 5:43:37 PM",
       "Username": "",
       "Password": ""
     },
@@ -47,7 +46,7 @@
       "Id": "1448adf3-9cb2-4cfb-be2e-d3dbd5971fd6",
       "Name": "HEX-3 X32",
       "Type": "3",
-      "IpAddress": "10.176.73.32",
+      "IpAddress": "10.176.71.32",
       "AudioSorce": "",
       "LastSeen": "",
       "Username": "",
@@ -79,6 +78,16 @@
       "Type": "2",
       "IpAddress": "1.1.1.1",
       "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "367b5179-38c9-46d0-a242-89fb4d408a6c",
+      "Name": "og9905",
+      "Type": "6",
+      "IpAddress": "10.176.71.61",
+      "AudioSorce": "1448adf3-9cb2-4cfb-be2e-d3dbd5971fd6",
       "LastSeen": "",
       "Username": "",
       "Password": ""

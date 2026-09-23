@@ -6,6 +6,7 @@ using System.Threading;
 using Iceburg.Conversion.AJA.fs4;
 using Iceburg.Database;
 using Iceburg.Mixer.X32;
+using Iceburg.Conversion.Cobalt.OG9905;
 
 namespace Iceburg.Devices.Status;
 public class DeviceStatus
@@ -207,6 +208,30 @@ public class DeviceStatus
                 var fs2 = new AJAFS2(id);
 
                 var result = await fs2.GetParamAsync("eParamID_Audio1Input_Universal");
+
+                string value = result?.ToString() ?? "";
+                if (value != "")
+                {
+
+                    return "connected";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+            catch
+            {
+                return "error";
+            }
+        }
+        if (device.Type == "6")
+        {
+            try
+            {
+                var fs2 = new OG9905MPx(id);
+
+                var result = await fs2.GetParamAsync("6832");
 
                 string value = result?.ToString() ?? "";
                 if (value != "")

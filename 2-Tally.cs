@@ -2510,8 +2510,8 @@ namespace Iceburg.Database
          */
 
         public static IResult GetTallyStatus(
-       string? id,
-       string? ip)
+            string? id,
+            string? ip)
         {
             if (!string.IsNullOrWhiteSpace(id))
             {
@@ -2524,8 +2524,8 @@ namespace Iceburg.Database
             {
                 return Results.Json(new
                 {
-                    inputs = EmptyBoolChannels(),
-                    outputs = EmptyBoolChannels()
+                    inputs = new Dictionary<string, bool>(),
+                    outputs = new Dictionary<string, bool>()
                 });
             }
 
@@ -2534,22 +2534,15 @@ namespace Iceburg.Database
 
             return Results.Json(new
             {
-                inputs = Enumerable.Range(1, 8)
-                    .ToDictionary(
-                        ch => ch.ToString(),
-                        ch => ch <= inputs.Count
-                            ? inputs[ch - 1].Status
-                            : false),
+                inputs = inputs.ToDictionary(
+                    x => x.Port.ToString(),
+                    x => x.Status),
 
-                outputs = Enumerable.Range(1, 8)
-                    .ToDictionary(
-                        ch => ch.ToString(),
-                        ch => ch <= outputs.Count
-                            ? outputs[ch - 1].Status
-                            : false)
+                outputs = outputs.ToDictionary(
+                    x => x.Port.ToString(),
+                    x => x.Status)
             });
         }
-
 
         public static IResult GetUmd(string? id)
         {
@@ -2559,8 +2552,8 @@ namespace Iceburg.Database
             {
                 return Results.Json(new
                 {
-                    inputs = EmptyStringChannels(),
-                    outputs = EmptyStringChannels()
+                    inputs = new Dictionary<string, string>(),
+                    outputs = new Dictionary<string, string>()
                 });
             }
 
@@ -2569,26 +2562,20 @@ namespace Iceburg.Database
 
             return Results.Json(new
             {
-                inputs = Enumerable.Range(1, 8)
-                    .ToDictionary(
-                        ch => ch.ToString(),
-                        ch => ch <= inputs.Count
-                            ? inputs[ch - 1].Nickname ?? ""
-                            : ""),
+                inputs = inputs.ToDictionary(
+                    x => x.Port.ToString(),
+                    x => x.Nickname ?? ""),
 
-                outputs = Enumerable.Range(1, 8)
-                    .ToDictionary(
-                        ch => ch.ToString(),
-                        ch => ch <= outputs.Count
-                            ? outputs[ch - 1].Nickname ?? ""
-                            : "")
+                outputs = outputs.ToDictionary(
+                    x => x.Port.ToString(),
+                    x => x.Nickname ?? "")
             });
         }
 
 
         public static IResult SetTallyStatus(
-            string? id,
-            IQueryCollection query)
+      string? id,
+      IQueryCollection query)
         {
             var d = FindDevice(id);
 
@@ -2602,30 +2589,30 @@ namespace Iceburg.Database
 
             var inputs = OrderedInputs(d);
 
-            /*
-             * Look for:
-             *
-             *   ch1=1
-             *   ch2=0
-             *   ch3=1
-             *
-             * Only channels included in the request are changed.
-             */
-
-            for (int channel = 1; channel <= 8; channel++)
+            foreach (var item in query)
             {
-                var key = $"ch{channel}";
+                if (!item.Key.StartsWith(
+                        "ch",
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
 
-                if (!query.TryGetValue(key, out var value))
+                if (!int.TryParse(item.Key[2..], out var channel))
                     continue;
 
-                if (channel > inputs.Count)
+                var input = inputs.FirstOrDefault(
+                    x => x.Port == channel);
+
+                if (input == null)
                     continue;
 
-                if (!TryParseStatus(value.ToString(), out var status))
+                if (!TryParseStatus(
+                        item.Value.ToString(),
+                        out var status))
+                {
                     continue;
-
-                var input = inputs[channel - 1];
+                }
 
                 if (string.IsNullOrWhiteSpace(input.InputId))
                     continue;
@@ -2673,7 +2660,6 @@ namespace Iceburg.Database
         {
             return device.Inputs
                 .OrderBy(x => x.Port)
-                .Take(8)
                 .ToList();
         }
 
@@ -2683,7 +2669,6 @@ namespace Iceburg.Database
         {
             return device.Outputs
                 .OrderBy(x => x.Port)
-                .Take(8)
                 .ToList();
         }
 

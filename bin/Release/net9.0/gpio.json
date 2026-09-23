@@ -70,6 +70,20 @@
           "Name": "Output 8",
           "Nickname": "Output 8",
           "Status": false
+        },
+        {
+          "OutputId": "0870dc55ee9e4a39b922fc0cf787f061",
+          "Port": 9,
+          "Name": "Output 9",
+          "Nickname": "Output 9",
+          "Status": false
+        },
+        {
+          "OutputId": "e41a6370ce8f4558a44378d5958b3c9f",
+          "Port": 10,
+          "Name": "Output 10",
+          "Nickname": "Output 10",
+          "Status": false
         }
       ],
       "Routes": [

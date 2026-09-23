@@ -20,6 +20,7 @@ using System.Text.Json;
 
 using System.Net;
 using System.Data;
+using Iceburg.Conversion.Cobalt.OG9905;
 
 bool debug = false;
 
@@ -724,9 +725,6 @@ app.MapGet("/api/nav", (HttpContext httpContext) =>
 })
 .RequireAuthorization();
 
-
-
-
 // ============================================================
 // ACCESS DENIED
 // ============================================================
@@ -1261,6 +1259,205 @@ FS2api.MapGet("/ajafs2/{id}/setparam/{paramId}/{value}", async (string id, strin
             },
             statusCode: 500);
     }
+});
+
+
+//Fog9905S4-fs2 api
+
+var og9905api = app.MapGroup("/api/Conversion").RequireAuthorization();
+og9905api.MapGet("/OG9905MPx/{id}/info", (string id) =>
+{
+    try
+    {
+        var og9905 = new OG9905MPx(id);
+
+        return Results.Content(
+            og9905.GetInfo(),
+            "application/json");
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new { error = ex.Message },
+            statusCode: 404);
+    }
+});
+
+og9905api.MapGet("/OG9905MPx/{id}/audio", async (string id, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var og9905 = new OG9905MPx(id);
+
+        return Results.Json(
+            await og9905.GetConfigurationAsync(
+                true,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new { error = ex.Message },
+            statusCode: 500);
+    }
+});
+
+og9905api.MapGet("/OG9905MPx/{id}/video", async (string id, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var og9905 = new OG9905MPx(id);
+
+        return Results.Json(
+            await og9905.GetConfigurationAsync(
+                false,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new { error = ex.Message },
+            statusCode: 500);
+    }
+});
+
+og9905api.MapGet("/OG9905MPx/{id}/audio/values", async (string id, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var og9905 = new OG9905MPx(id);
+
+        return Results.Json(
+            await og9905.GetValuesAsync(
+                true,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new { error = ex.Message },
+            statusCode: 500);
+    }
+});
+
+og9905api.MapGet("/OG9905MPx/{id}/video/values", async (string id, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var og9905 = new OG9905MPx(id);
+
+        return Results.Json(
+            await og9905.GetValuesAsync(
+                false,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new { error = ex.Message },
+            statusCode: 500);
+    }
+});
+
+// GET one eParamID
+og9905api.MapGet("/OG9905MPx/{id}/param/{paramId}", async (string id, string paramId, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var og9905 = new OG9905MPx(id);
+
+        return Results.Json(
+            await og9905.GetParamAsync(
+                paramId,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new
+            {
+                ok = false,
+                error = ex.Message
+            },
+            statusCode: 500);
+    }
+});
+
+// SET one eParamID
+og9905api.MapPost("/OG9905MPx/{id}/param/{paramId}", async (string id, string paramId, SetRequest request, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var og9905 = new OG9905MPx(id);
+
+        object? value =
+           JsonElementToObject(
+                request.Value);
+
+        return Results.Json(
+            await og9905.SetParamAsync(
+                paramId,
+                value,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new
+            {
+                ok = false,
+                error = ex.Message
+            },
+            statusCode: 500);
+    }
+});
+
+// Convenience GET matching the style of the supplied BMD route.
+og9905api.MapGet("/OG9905MPx/{id}/setparam/{paramId}/{value}", async (string id, string paramId, string value, CancellationToken cancellationToken) =>
+{
+    try
+    {
+        var og9905 = new OG9905MPx(id);
+
+        return Results.Json(
+            await og9905.SetParamAsync(
+                paramId,
+                value,
+                cancellationToken));
+    }
+    catch (Exception ex)
+    {
+        return Results.Json(
+            new
+            {
+                ok = false,
+                error = ex.Message
+            },
+            statusCode: 500);
+    }
+});
+
+og9905api.MapGet("/OG9905MPx/{id}/GetMadiSorce/", (string id) =>
+{
+    Device device = Database.GetDevice(id);
+
+    if (device.AudioSorce != null)
+    {
+        var x32 = new X32();
+        return x32.getallnames(device.AudioSorce);
+    }
+    else
+    {
+        return Task.FromResult(JsonSerializer.Serialize(new
+        {
+            AudioSorce = "NULL"
+
+
+
+        }));
+    }
+
+
 });
 
 // ============================================================

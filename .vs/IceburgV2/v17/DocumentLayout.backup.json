@@ -3,60 +3,92 @@
   "WorkspaceRootPath": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
-      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\device status.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:device status.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\wwwroot\\tally.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:wwwroot\\tally.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\wwwroot\\og9905.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:wwwroot\\og9905.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\wwwroot\\bmdrouter.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:wwwroot\\bmdrouter.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\bin\\Release\\net9.0\\config.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:bin\\Release\\net9.0\\config.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\wwwroot\\x32.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:wwwroot\\x32.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\6-cobalt-9905-mpx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:6-cobalt-9905-mpx.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\1-bmd-router.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:1-bmd-router.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\iceburg.service||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:iceburg.service||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\wwwroot\\dashboard.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:wwwroot\\dashboard.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\device status.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:device status.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\wwwroot\\ajafs4.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:wwwroot\\ajafs4.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\3-x32.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:3-x32.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\4-aja-fs4-fs-hdr.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:4-aja-fs4-fs-hdr.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\2-tally.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:2-tally.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\database.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:database.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\bin\\Debug\\net9.0\\config.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:bin\\Debug\\net9.0\\config.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\bin\\Debug\\net9.0\\gpio.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:bin\\Debug\\net9.0\\gpio.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\wwwroot\\header.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:wwwroot\\header.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\wwwroot\\tallygrid.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:wwwroot\\tallygrid.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\2-tally.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:2-tally.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\wwwroot\\uploadross\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:wwwroot\\uploadross\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\wwwroot\\upload8x8\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:wwwroot\\upload8x8\\index.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\wwwroot\\ajafs2.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:wwwroot\\ajafs2.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\wwwroot\\bmdrouter.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:wwwroot\\bmdrouter.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\wwwroot\\routertally.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:wwwroot\\routertally.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\wwwroot\\tally.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:wwwroot\\tally.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\wwwroot\\x32.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:wwwroot\\x32.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\wwwroot\\test.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:wwwroot\\test.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|solutionrelative:readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{903A900C-CF10-4D2E-B883-3A62208FDE3E}|IceburgV2.csproj|c:\\users\\tj\\desktop\\github repos\\iceburgv2\\wwwroot\\login.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
@@ -75,64 +107,29 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "README.md",
-              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\README.md",
-              "RelativeDocumentMoniker": "README.md",
-              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\README.md",
-              "RelativeToolTip": "README.md",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
-              "WhenOpened": "2026-09-16T13:57:38.915Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "BMDRouter.html",
-              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\BMDRouter.html",
-              "RelativeDocumentMoniker": "wwwroot\\BMDRouter.html",
-              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\BMDRouter.html",
-              "RelativeToolTip": "wwwroot\\BMDRouter.html",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2026-09-15T23:54:14.883Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "x32.html",
-              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\x32.html",
-              "RelativeDocumentMoniker": "wwwroot\\x32.html",
-              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\x32.html",
-              "RelativeToolTip": "wwwroot\\x32.html",
-              "ViewState": "AgIAAIAAAAAAAAAAAAAAwKcAAAAHAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2026-09-15T21:35:21.688Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "3-X32.cs",
-              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\3-X32.cs",
-              "RelativeDocumentMoniker": "3-X32.cs",
-              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\3-X32.cs",
-              "RelativeToolTip": "3-X32.cs",
-              "ViewState": "AgIAAE4CAAAAAAAAAAD4v5QCAAAFAAAAAAAAAA==",
+              "Title": "Device Status.cs",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\Device Status.cs",
+              "RelativeDocumentMoniker": "Device Status.cs",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\Device Status.cs*",
+              "RelativeToolTip": "Device Status.cs*",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAOkAAAA6AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-15T17:58:38.147Z"
+              "WhenOpened": "2026-09-11T03:12:34.981Z",
+              "IsPinned": true,
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 9,
-              "Title": "Database.cs",
-              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\Database.cs",
-              "RelativeDocumentMoniker": "Database.cs",
-              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\Database.cs",
-              "RelativeToolTip": "Database.cs",
-              "ViewState": "AgIAAC0EAAAAAAAAAAAswFIEAAAJAAAAAAAAAA==",
+              "Title": "2-Tally.cs",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\2-Tally.cs",
+              "RelativeDocumentMoniker": "2-Tally.cs",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\2-Tally.cs",
+              "RelativeToolTip": "2-Tally.cs",
+              "ViewState": "AgIAADkKAAAAAAAAAAAAwEUKAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-14T02:15:28.61Z"
+              "WhenOpened": "2026-09-22T22:31:43.877Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -142,94 +139,49 @@
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAADAAAAAAAAAAAAAAAA4DAAAQAAAAAAAAAA==",
+              "ViewState": "AgIAAEMEAAAAAAAAAAAowJ8FAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-14T02:04:27.727Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "tallygrid.html",
-              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\tallygrid.html",
-              "RelativeDocumentMoniker": "wwwroot\\tallygrid.html",
-              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\tallygrid.html",
-              "RelativeToolTip": "wwwroot\\tallygrid.html",
-              "ViewState": "AgIAAPYKAAAAAAAAAAAAwB0LAAAPAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2026-09-14T01:49:08.166Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "gpio.json",
-              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\bin\\Debug\\net9.0\\gpio.json",
-              "RelativeDocumentMoniker": "bin\\Debug\\net9.0\\gpio.json",
-              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\bin\\Debug\\net9.0\\gpio.json",
-              "RelativeToolTip": "bin\\Debug\\net9.0\\gpio.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAUAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-09-13T23:00:44.611Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "tally.html",
-              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\tally.html",
-              "RelativeDocumentMoniker": "wwwroot\\tally.html",
-              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\tally.html",
-              "RelativeToolTip": "wwwroot\\tally.html",
-              "ViewState": "AgIAAI0CAAAAAAAAAAAWwKkCAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2026-09-13T22:27:24.9Z",
+              "WhenOpened": "2026-09-14T02:04:27.727Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "2-Tally.cs",
-              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\2-Tally.cs",
-              "RelativeDocumentMoniker": "2-Tally.cs",
-              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\2-Tally.cs",
-              "RelativeToolTip": "2-Tally.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-13T22:16:02.776Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "login.html",
-              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\login.html",
-              "RelativeDocumentMoniker": "wwwroot\\login.html",
-              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\login.html",
-              "RelativeToolTip": "wwwroot\\login.html",
-              "ViewState": "AgIAAPMCAAAAAAAAAADwvxADAAAZAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2026-09-11T04:22:49.874Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 2,
               "Title": "config.json",
-              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\bin\\Debug\\net9.0\\config.json",
-              "RelativeDocumentMoniker": "bin\\Debug\\net9.0\\config.json",
-              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\bin\\Debug\\net9.0\\config.json",
-              "RelativeToolTip": "bin\\Debug\\net9.0\\config.json",
-              "ViewState": "AgIAAH4AAAAAAAAAAAAAAJcAAAASAAAAAAAAAA==",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\bin\\Release\\net9.0\\config.json",
+              "RelativeDocumentMoniker": "bin\\Release\\net9.0\\config.json",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\bin\\Release\\net9.0\\config.json",
+              "RelativeToolTip": "bin\\Release\\net9.0\\config.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFgAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-09-11T03:30:10.881Z"
+              "WhenOpened": "2026-09-21T04:10:30.49Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Device Status.cs",
-              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\Device Status.cs",
-              "RelativeDocumentMoniker": "Device Status.cs",
-              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\Device Status.cs",
-              "RelativeToolTip": "Device Status.cs",
-              "ViewState": "AgIAAAEAAAAAAAAAAAAowKIAAAALAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "og9905.html",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\og9905.html",
+              "RelativeDocumentMoniker": "wwwroot\\og9905.html",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\og9905.html",
+              "RelativeToolTip": "wwwroot\\og9905.html",
+              "ViewState": "AgIAAC4BAAAAAAAAAAAUwE0BAAASAQAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-09-22T23:56:20.117Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "6-Cobalt-9905-MPx.cs",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\6-Cobalt-9905-MPx.cs",
+              "RelativeDocumentMoniker": "6-Cobalt-9905-MPx.cs",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\6-Cobalt-9905-MPx.cs",
+              "RelativeToolTip": "6-Cobalt-9905-MPx.cs",
+              "ViewState": "AgIAAMAAAAAAAAAAAAAuwE4BAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-11T03:12:34.981Z"
+              "WhenOpened": "2026-09-22T23:26:23.934Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -239,21 +191,218 @@
               "RelativeDocumentMoniker": "wwwroot\\dashboard.html",
               "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\dashboard.html",
               "RelativeToolTip": "wwwroot\\dashboard.html",
-              "ViewState": "AgIAANIAAAAAAAAAAAAAAO0AAAAKAAAAAAAAAA==",
+              "ViewState": "AgIAAM4BAAAAAAAAAAAAAOYBAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
-              "WhenOpened": "2026-09-11T01:34:43.962Z"
+              "WhenOpened": "2026-09-11T01:34:43.962Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ajafs4.html",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\ajafs4.html",
+              "RelativeDocumentMoniker": "wwwroot\\ajafs4.html",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\ajafs4.html",
+              "RelativeToolTip": "wwwroot\\ajafs4.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-09-18T19:46:56.105Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
-              "Title": "1-BMD-Router.cs",
-              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\1-BMD-Router.cs",
-              "RelativeDocumentMoniker": "1-BMD-Router.cs",
-              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\1-BMD-Router.cs",
-              "RelativeToolTip": "1-BMD-Router.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwBcAAAALAAAAAAAAAA==",
+              "Title": "iceburg.service",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\iceburg.service",
+              "RelativeDocumentMoniker": "iceburg.service",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\iceburg.service",
+              "RelativeToolTip": "iceburg.service",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-09-21T13:28:14.368Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "4-AJA-FS4-FS-HDR.cs",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\4-AJA-FS4-FS-HDR.cs",
+              "RelativeDocumentMoniker": "4-AJA-FS4-FS-HDR.cs",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\4-AJA-FS4-FS-HDR.cs",
+              "RelativeToolTip": "4-AJA-FS4-FS-HDR.cs",
+              "ViewState": "AgIAACkBAAAAAAAAAAA1wEkBAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-09-08T18:06:57.513Z"
+              "WhenOpened": "2026-09-21T19:28:56.575Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "BMDRouter.html",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\BMDRouter.html",
+              "RelativeDocumentMoniker": "wwwroot\\BMDRouter.html",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\BMDRouter.html",
+              "RelativeToolTip": "wwwroot\\BMDRouter.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-09-15T23:54:14.883Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "routertally.html",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\routertally.html",
+              "RelativeDocumentMoniker": "wwwroot\\routertally.html",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\routertally.html",
+              "RelativeToolTip": "wwwroot\\routertally.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-09-20T23:59:30.577Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "tallygrid.html",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\tallygrid.html",
+              "RelativeDocumentMoniker": "wwwroot\\tallygrid.html",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\tallygrid.html",
+              "RelativeToolTip": "wwwroot\\tallygrid.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-09-21T03:44:50.235Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "header.js",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\header.js",
+              "RelativeDocumentMoniker": "wwwroot\\header.js",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\header.js",
+              "RelativeToolTip": "wwwroot\\header.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAF0DAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-09-21T04:52:12.448Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Database.cs",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\Database.cs",
+              "RelativeDocumentMoniker": "Database.cs",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\Database.cs",
+              "RelativeToolTip": "Database.cs",
+              "ViewState": "AgIAAMIFAAAAAAAAAAAUwM4FAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-09-21T05:16:39.692Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "index.html",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\upload8x8\\index.html",
+              "RelativeDocumentMoniker": "wwwroot\\upload8x8\\index.html",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\upload8x8\\index.html",
+              "RelativeToolTip": "wwwroot\\upload8x8\\index.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-09-21T04:18:20.38Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "tally.html",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\tally.html",
+              "RelativeDocumentMoniker": "wwwroot\\tally.html",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\tally.html",
+              "RelativeToolTip": "wwwroot\\tally.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-09-21T03:44:56.265Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "index.html",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\uploadross\\index.html",
+              "RelativeDocumentMoniker": "wwwroot\\uploadross\\index.html",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\uploadross\\index.html",
+              "RelativeToolTip": "wwwroot\\uploadross\\index.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-09-21T04:17:37.555Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "ajafs2.html",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\ajafs2.html",
+              "RelativeDocumentMoniker": "wwwroot\\ajafs2.html",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\ajafs2.html",
+              "RelativeToolTip": "wwwroot\\ajafs2.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-09-21T03:45:16.17Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "x32.html",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\x32.html",
+              "RelativeDocumentMoniker": "wwwroot\\x32.html",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\x32.html",
+              "RelativeToolTip": "wwwroot\\x32.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-09-15T21:35:21.688Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "test.html",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\test.html",
+              "RelativeDocumentMoniker": "wwwroot\\test.html",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\test.html",
+              "RelativeToolTip": "wwwroot\\test.html",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-09-21T03:18:46.142Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "README.md",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\README.md",
+              "RelativeDocumentMoniker": "README.md",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\README.md",
+              "RelativeToolTip": "README.md",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAkwBwAAAACAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2026-09-16T13:57:38.915Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "login.html",
+              "DocumentMoniker": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\login.html",
+              "RelativeDocumentMoniker": "wwwroot\\login.html",
+              "ToolTip": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\login.html",
+              "RelativeToolTip": "wwwroot\\login.html",
+              "ViewState": "AgIAAPMCAAAAAAAAAADwvxADAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2026-09-11T04:22:49.874Z",
+              "EditorCaption": ""
             }
           ]
         }
