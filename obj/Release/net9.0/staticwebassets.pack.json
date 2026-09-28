@@ -9,6 +9,14 @@
       "PackagePath": "staticwebassets\\Iceburg Log.png"
     },
     {
+      "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\admin\\devices.html",
+      "PackagePath": "staticwebassets\\admin\\devices.html"
+    },
+    {
+      "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\admin\\users.html",
+      "PackagePath": "staticwebassets\\admin\\users.html"
+    },
+    {
       "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\ajafs2.html",
       "PackagePath": "staticwebassets\\ajafs2.html"
     },
@@ -47,6 +55,10 @@
     {
       "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\routertally.html",
       "PackagePath": "staticwebassets\\routertally.html"
+    },
+    {
+      "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\servertoservertally.html",
+      "PackagePath": "staticwebassets\\servertoservertally.html"
     },
     {
       "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\tally.html",

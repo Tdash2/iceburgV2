@@ -748,29 +748,48 @@ function updateSlider(param, value) {
         valueLabel.innerText = value;
 }
 
-function updateDropdown(param, value) {
-    const options = dropdownMap[param];
+        function updateDropdown(param, value) {
+            const options = dropdownMap[param];
 
-    if (!options)
-        return;
+            if (!options)
+                return;
 
-    const input =
-        document.querySelector(
-            `input.search-box[data-param="${CSS.escape(param)}"]`
-        );
+            // VIDEO MODE: update the native <select>
+            if (mode === "video") {
+                const select = document.getElementById(param);
 
-    if (!input)
-        return;
+                if (!select || select.tagName !== "SELECT")
+                    return;
 
-    const match = options.find(o => o.key == value);
+                const match = options.find(o =>
+                    String(o.key) === String(value)
+                );
 
-    if (!match)
-        return;
+                if (!match)
+                    return;
 
-    input.value = match.label;
-    input.dataset.selectedKey = value;
-}
+                select.value = String(match.key);
+                return;
+            }
 
+            // AUDIO MODE: update the searchable text input
+            const input = document.querySelector(
+                `input.search-box[data-param="${CSS.escape(param)}"]`
+            );
+
+            if (!input)
+                return;
+
+            const match = options.find(o =>
+                String(o.key) === String(value)
+            );
+
+            if (!match)
+                return;
+
+            input.value = match.label;
+            input.dataset.selectedKey = match.key;
+        }
 function showError(message) {
    
 }

@@ -1,7 +1,7 @@
 [
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_11",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_19",
     "RelativePath": "access-denied",
     "HttpMethod": "GET",
     "IsController": false,
@@ -17,7 +17,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_37",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_50",
     "RelativePath": "api/Conversion/ajafs2/{id}/audio",
     "HttpMethod": "GET",
     "IsController": false,
@@ -39,7 +39,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_39",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_52",
     "RelativePath": "api/Conversion/ajafs2/{id}/audio/values",
     "HttpMethod": "GET",
     "IsController": false,
@@ -61,7 +61,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_36",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_49",
     "RelativePath": "api/Conversion/ajafs2/{id}/info",
     "HttpMethod": "GET",
     "IsController": false,
@@ -83,7 +83,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_41",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_54",
     "RelativePath": "api/Conversion/ajafs2/{id}/param/{paramId}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -110,7 +110,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_42",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_55",
     "RelativePath": "api/Conversion/ajafs2/{id}/param/{paramId}",
     "HttpMethod": "POST",
     "IsController": false,
@@ -142,7 +142,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_43",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_56",
     "RelativePath": "api/Conversion/ajafs2/{id}/setparam/{paramId}/{value}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -174,7 +174,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_38",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_51",
     "RelativePath": "api/Conversion/ajafs2/{id}/video",
     "HttpMethod": "GET",
     "IsController": false,
@@ -196,7 +196,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_40",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_53",
     "RelativePath": "api/Conversion/ajafs2/{id}/video/values",
     "HttpMethod": "GET",
     "IsController": false,
@@ -218,7 +218,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_28",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_41",
     "RelativePath": "api/Conversion/ajafs4/{id}/audio",
     "HttpMethod": "GET",
     "IsController": false,
@@ -240,7 +240,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_30",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_43",
     "RelativePath": "api/Conversion/ajafs4/{id}/audio/values",
     "HttpMethod": "GET",
     "IsController": false,
@@ -262,7 +262,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_35",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_48",
     "RelativePath": "api/Conversion/ajafs4/{id}/GetMadiSorce/",
     "HttpMethod": "GET",
     "IsController": false,
@@ -286,7 +286,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_27",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_40",
     "RelativePath": "api/Conversion/ajafs4/{id}/info",
     "HttpMethod": "GET",
     "IsController": false,
@@ -308,7 +308,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_32",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_45",
     "RelativePath": "api/Conversion/ajafs4/{id}/param/{paramId}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -335,7 +335,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_33",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_46",
     "RelativePath": "api/Conversion/ajafs4/{id}/param/{paramId}",
     "HttpMethod": "POST",
     "IsController": false,
@@ -367,7 +367,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_34",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_47",
     "RelativePath": "api/Conversion/ajafs4/{id}/setparam/{paramId}/{value}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -399,7 +399,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_29",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_42",
     "RelativePath": "api/Conversion/ajafs4/{id}/video",
     "HttpMethod": "GET",
     "IsController": false,
@@ -421,7 +421,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_31",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_44",
     "RelativePath": "api/Conversion/ajafs4/{id}/video/values",
     "HttpMethod": "GET",
     "IsController": false,
@@ -443,7 +443,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_45",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_58",
     "RelativePath": "api/Conversion/OG9905MPx/{id}/audio",
     "HttpMethod": "GET",
     "IsController": false,
@@ -465,7 +465,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_47",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_60",
     "RelativePath": "api/Conversion/OG9905MPx/{id}/audio/values",
     "HttpMethod": "GET",
     "IsController": false,
@@ -487,7 +487,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_52",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_65",
     "RelativePath": "api/Conversion/OG9905MPx/{id}/GetMadiSorce/",
     "HttpMethod": "GET",
     "IsController": false,
@@ -511,7 +511,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_44",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_57",
     "RelativePath": "api/Conversion/OG9905MPx/{id}/info",
     "HttpMethod": "GET",
     "IsController": false,
@@ -533,7 +533,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_49",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_62",
     "RelativePath": "api/Conversion/OG9905MPx/{id}/param/{paramId}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -560,7 +560,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_50",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_63",
     "RelativePath": "api/Conversion/OG9905MPx/{id}/param/{paramId}",
     "HttpMethod": "POST",
     "IsController": false,
@@ -592,7 +592,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_51",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_64",
     "RelativePath": "api/Conversion/OG9905MPx/{id}/setparam/{paramId}/{value}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -624,7 +624,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_46",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_59",
     "RelativePath": "api/Conversion/OG9905MPx/{id}/video",
     "HttpMethod": "GET",
     "IsController": false,
@@ -646,7 +646,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_48",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_61",
     "RelativePath": "api/Conversion/OG9905MPx/{id}/video/values",
     "HttpMethod": "GET",
     "IsController": false,
@@ -668,7 +668,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_12",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_20",
     "RelativePath": "api/device/getdevices/",
     "HttpMethod": "GET",
     "IsController": false,
@@ -686,7 +686,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_13",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_21",
     "RelativePath": "api/device/getdevicestatus/{id}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -704,6 +704,109 @@
         "MediaTypes": [
           "text/plain"
         ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_22",
+    "RelativePath": "api/devices",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_23",
+    "RelativePath": "api/devices",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "device",
+        "Type": "Iceburg.Database.Device",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_24",
+    "RelativePath": "api/devices/{id}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "device",
+        "Type": "Iceburg.Database.Device",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_25",
+    "RelativePath": "api/devices/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_26",
+    "RelativePath": "api/devices/type/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 200
       }
     ]
@@ -980,6 +1083,77 @@
   },
   {
     "ContainingType": "Iceburg.Database.TallyEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMap\u003Eb__0_16",
+    "RelativePath": "api/gpio/{deviceId}/remote-tally-source",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "deviceId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Iceburg.Database.TallyEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMap\u003Eb__0_17",
+    "RelativePath": "api/gpio/{deviceId}/remote-tally-source",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "deviceId",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "Iceburg.Database.RemoteTallySourceRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Iceburg.Database.TallyEndpoints\u002B\u003C\u003Ec",
+    "Method": "\u003CMap\u003Eb__0_18",
+    "RelativePath": "api/gpio/{deviceId}/remote-tally-source",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "deviceId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Iceburg.Database.TallyEndpoints\u002B\u003C\u003Ec",
     "Method": "\u003CMap\u003Eb__0_12",
     "RelativePath": "api/gpio/{deviceId}/routes",
     "HttpMethod": "GET",
@@ -1125,7 +1299,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec__DisplayClass0_0",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__7",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__9",
     "RelativePath": "api/login",
     "HttpMethod": "POST",
     "IsController": false,
@@ -1147,7 +1321,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec__DisplayClass0_0",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__6",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__8",
     "RelativePath": "api/login/challenge",
     "HttpMethod": "POST",
     "IsController": false,
@@ -1169,7 +1343,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_8",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_10",
     "RelativePath": "api/logout",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1184,8 +1358,24 @@
     ]
   },
   {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_11",
+    "RelativePath": "api/logout",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "Program\u002B\u003C\u003Ec__DisplayClass0_0",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__9",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__17",
     "RelativePath": "api/me",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1201,7 +1391,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_26",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_39",
     "RelativePath": "api/mixer/x32/{id}/getallnames",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1225,7 +1415,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_23",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_36",
     "RelativePath": "api/mixer/x32/{id}/getbus/{bus}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1254,7 +1444,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_24",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_37",
     "RelativePath": "api/mixer/x32/{id}/getbusnames",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1278,7 +1468,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_20",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_33",
     "RelativePath": "api/mixer/x32/{id}/getinfo",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1302,7 +1492,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_21",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_34",
     "RelativePath": "api/mixer/x32/{id}/getmainmix",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1326,7 +1516,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_25",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_38",
     "RelativePath": "api/mixer/x32/{id}/setbus",
     "HttpMethod": "POST",
     "IsController": false,
@@ -1348,7 +1538,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_22",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_35",
     "RelativePath": "api/mixer/x32/{id}/setmainmix",
     "HttpMethod": "POST",
     "IsController": false,
@@ -1370,7 +1560,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_10",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_18",
     "RelativePath": "api/nav",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1386,7 +1576,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_14",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_27",
     "RelativePath": "api/router/bmd/{id}/getinfo",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1410,7 +1600,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_15",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_28",
     "RelativePath": "api/router/bmd/{id}/getnames",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1434,7 +1624,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_16",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_29",
     "RelativePath": "api/router/bmd/{id}/getroutes",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1458,7 +1648,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_17",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_30",
     "RelativePath": "api/router/bmd/{id}/setinputname/{input}/{name}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1492,7 +1682,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_18",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_31",
     "RelativePath": "api/router/bmd/{id}/setoutputname/{input}/{name}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1526,7 +1716,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_19",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_32",
     "RelativePath": "api/router/bmd/{id}/setroute/{Input}/{Output}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1559,8 +1749,95 @@
     ]
   },
   {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_14",
+    "RelativePath": "api/users",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_15",
+    "RelativePath": "api/users",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "UserCreateRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_13",
+    "RelativePath": "api/users/{id}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "request",
+        "Type": "UserUpdateRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_16",
+    "RelativePath": "api/users/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "Iceburg.Database.TallyEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMap\u003Eb__0_16",
+    "Method": "\u003CMap\u003Eb__0_19",
     "RelativePath": "tally/gettallystatus.php",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1587,7 +1864,7 @@
   },
   {
     "ContainingType": "Iceburg.Database.TallyEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMap\u003Eb__0_17",
+    "Method": "\u003CMap\u003Eb__0_20",
     "RelativePath": "tally/getumd.php",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1609,7 +1886,7 @@
   },
   {
     "ContainingType": "Iceburg.Database.TallyEndpoints\u002B\u003C\u003Ec",
-    "Method": "\u003CMap\u003Eb__0_18",
+    "Method": "\u003CMap\u003Eb__0_21",
     "RelativePath": "tally/settallystatus.php",
     "HttpMethod": "GET",
     "IsController": false,
@@ -1617,6 +1894,11 @@
     "Parameters": [
       {
         "Name": "id",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ip",
         "Type": "System.String",
         "IsRequired": false
       }

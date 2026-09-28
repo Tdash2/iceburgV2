@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
@@ -12,10 +13,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using static System.Net.Mime.MediaTypeNames;
 using Iceburg.Router.BMD;
-
+using System;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 namespace Iceburg.Database
 {
-
+    using System.Net;
     using System.Text.Json;
     using System.Text.Json.Serialization;
 
@@ -55,6 +59,18 @@ namespace Iceburg.Database
         private static CancellationTokenSource? _routerPollingCts;
         private static Task? _routerPollingTask;
 
+        // Type 7 devices can mirror an input from another legacy Tally server.
+        // The mirrored state is written into a normal GpioInput, so routes and
+        // outputs treat it exactly like any other source input.
+        private static CancellationTokenSource? _remoteTallyPollingCts;
+        private static Task? _remoteTallyPollingTask;
+
+        private static readonly HttpClient _remoteTallyHttpClient =
+            new()
+            {
+                Timeout = TimeSpan.FromSeconds(2)
+            };
+
         private static readonly JsonSerializerOptions JsonOptions =
             new()
             {
@@ -82,6 +98,8 @@ namespace Iceburg.Database
                 RecalculateAllOutputsInternal();
 
                 StartRouterPollingInternal();
+
+                StartRemoteTallyPollingInternal();
             }
         }
         private static bool IsRouterDeviceInternal(string deviceId)
@@ -267,6 +285,315 @@ namespace Iceburg.Database
                 },
                 token);
         }
+        private static bool IsRemoteTallyDeviceInternal(string deviceId)
+        {
+            return Database.Devices.Any(d =>
+                string.Equals(
+                    d.Id,
+                    deviceId,
+                    StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(
+                    d.Type,
+                    "7",
+                    StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static void StartRemoteTallyPollingInternal()
+        {
+            if (_remoteTallyPollingTask != null &&
+                !_remoteTallyPollingTask.IsCompleted)
+            {
+                return;
+            }
+
+            _remoteTallyPollingCts?.Dispose();
+            _remoteTallyPollingCts = new CancellationTokenSource();
+
+            var token = _remoteTallyPollingCts.Token;
+
+            _remoteTallyPollingTask = Task.Run(
+                async () =>
+                {
+                    while (!token.IsCancellationRequested)
+                    {
+                        try
+                        {
+                            List<GpioDevice> devices;
+
+                            lock (_lock)
+                            {
+                                devices = _config.Devices
+                                    .Where(d =>
+                                        IsRemoteTallyDeviceInternal(d.DeviceId) &&
+                                        d.RemoteTallySource != null)
+                                    .Select(CloneDevice)
+                                    .ToList();
+                            }
+
+                            foreach (var device in devices)
+                            {
+                                if (token.IsCancellationRequested)
+                                    break;
+
+                                await PollRemoteTallyDeviceInternal(
+                                    device,
+                                    token);
+                            }
+                        }
+                        catch
+                        {
+                            // Keep polling if one remote source fails.
+                        }
+
+                        try
+                        {
+                            await Task.Delay(100, token);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            break;
+                        }
+                    }
+                },
+                token);
+        }
+
+        private static async Task PollRemoteTallyDeviceInternal(
+     GpioDevice device,
+     CancellationToken cancellationToken)
+        {
+            var source = device.RemoteTallySource;
+
+            if (source == null)
+                return;
+
+            if (string.IsNullOrWhiteSpace(device.IpAddress) ||
+                string.IsNullOrWhiteSpace(source.RemoteTallyId))
+            {
+                return;
+            }
+
+            if (source.Port < 1 ||
+                source.Port > 65535)
+            {
+                return;
+            }
+
+            /*
+             * The local inputs determine how many remote channels
+             * we consume.
+             *
+             * Example:
+             *
+             * Remote has 10 outputs.
+             * Local device has 4 inputs.
+             *
+             * Remote output 1 -> local input 1
+             * Remote output 2 -> local input 2
+             * Remote output 3 -> local input 3
+             * Remote output 4 -> local input 4
+             *
+             * Remote outputs 5-10 are ignored.
+             */
+
+            var localInputs = device.Inputs
+                .OrderBy(x => x.Port)
+                .ToList();
+
+            if (localInputs.Count == 0)
+                return;
+
+            try
+            {
+                var url =
+                    $"http://{device.IpAddress}:{source.Port}" +
+                    "/tally/gettallystatus.php?" + "IP=" + GetLocalIPAddress()+ "&id=" +
+                    Uri.EscapeDataString(source.RemoteTallyId);
+                
+                using var response =
+                    await _remoteTallyHttpClient.GetAsync(
+                        url,
+                        cancellationToken);
+
+                if (!response.IsSuccessStatusCode)
+                    return;
+
+                var json =
+                    await response.Content.ReadAsStringAsync(
+                        cancellationToken);
+
+                using var document =
+                    JsonDocument.Parse(json);
+
+                var root = document.RootElement;
+
+                /*
+                 * The remote legacy API returns:
+                 *
+                 * {
+                 *     "inputs": {
+                 *         "1": false,
+                 *         "2": true
+                 *     },
+                 *
+                 *     "outputs": {
+                 *         "1": true,
+                 *         "2": false
+                 *     }
+                 * }
+                 *
+                 * We want the REMOTE OUTPUTS.
+                 */
+                if (!root.TryGetProperty(
+                        "outputs",
+                        out var remoteOutputs) ||
+                    remoteOutputs.ValueKind != JsonValueKind.Object)
+                {
+                    return;
+                }
+
+                /*
+                 * Build the new local states before changing anything.
+                 *
+                 * This prevents partially updating the device if the
+                 * remote response is malformed.
+                 */
+                var newStates =
+                    new List<(string InputId, bool Status)>();
+
+                for (int i = 0; i < localInputs.Count; i++)
+                {
+                    /*
+                     * Remote channels are 1-based:
+                     *
+                     * i = 0 -> output 1
+                     * i = 1 -> output 2
+                     * etc.
+                     */
+                    var remoteChannel =
+                        (i + 1).ToString();
+
+                    bool status = false;
+
+                    if (remoteOutputs.TryGetProperty(
+                            remoteChannel,
+                            out var remoteStatus))
+                    {
+                        if (remoteStatus.ValueKind ==
+                            JsonValueKind.True)
+                        {
+                            status = true;
+                        }
+                        else if (remoteStatus.ValueKind ==
+                                 JsonValueKind.False)
+                        {
+                            status = false;
+                        }
+                        else
+                        {
+                            // Invalid channel value.
+                            return;
+                        }
+                    }
+
+                    /*
+                     * If the remote server doesn't have this channel,
+                     * treat it as OFF.
+                     */
+                    newStates.Add(
+                        (
+                            localInputs[i].InputId,
+                            status
+                        ));
+                }
+
+                /*
+                 * Apply all states to the real device.
+                 */
+                lock (_lock)
+                {
+                    var actualDevice =
+                        FindDeviceInternal(device.DeviceId);
+
+                    if (actualDevice == null)
+                        return;
+
+                    if (!IsRemoteTallyDeviceInternal(
+                            actualDevice.DeviceId))
+                    {
+                        return;
+                    }
+
+                    bool changed = false;
+
+                    foreach (var state in newStates)
+                    {
+                        var localInput =
+                            actualDevice.Inputs.FirstOrDefault(
+                                x =>
+                                    string.Equals(
+                                        x.InputId,
+                                        state.InputId,
+                                        StringComparison.OrdinalIgnoreCase));
+
+                        if (localInput == null)
+                            continue;
+
+                        if (localInput.Status != state.Status)
+                        {
+                            localInput.Status = state.Status;
+                            changed = true;
+                        }
+                    }
+
+                    /*
+                     * The remote outputs are now represented by ordinary
+                     * local inputs.
+                     *
+                     * Therefore the existing routing system can handle
+                     * everything else automatically.
+                     */
+                    if (changed)
+                    {
+                        RecalculateAllOutputsInternal();
+
+                        SaveInternal();
+                    }
+                }
+            }
+            catch
+            {
+                /*
+                 * Leave the existing local tally state unchanged if:
+                 *
+                 * - remote server is offline
+                 * - connection times out
+                 * - invalid JSON is returned
+                 * - remote endpoint is unavailable
+                 */
+            }
+        }
+
+        public static string GetLocalIPAddress()
+        {
+            // Get the host name of the local computer
+            string hostName = Dns.GetHostName();
+
+            // Get the DNS entries associated with the host
+            IPHostEntry hostEntry = Dns.GetHostEntry(hostName);
+
+            // Filter the address list for the first IPv4 address found
+            var ipAddress = hostEntry.AddressList
+                .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+
+            if (ipAddress != null)
+            {
+                return ipAddress.ToString();
+            }
+
+            throw new Exception("No network adapters with an IPv4 address found in the system!");
+        }
+
         private static void ApplyRouterInputTalliesInternal()
         {
             foreach (var router in _config.Devices)
@@ -300,7 +627,7 @@ namespace Iceburg.Database
                     int routerOutput = route.Value;
 
                     int iceburgInputPort = routerInput + 1;  //Router output to tally input mapping
-                 
+
 
                     var input = router.Inputs.FirstOrDefault(x =>
                         x.Port == iceburgInputPort);
@@ -310,7 +637,7 @@ namespace Iceburg.Database
 
                     // Router output tally comes from normal Iceburg
                     // routes feeding that router output.
-                    var output = router.Outputs.FirstOrDefault(x =>x.Port == routerOutput+1);
+                    var output = router.Outputs.FirstOrDefault(x => x.Port == routerOutput + 1);
 
                     if (output == null)
                         continue;
@@ -495,6 +822,7 @@ namespace Iceburg.Database
         ///
         /// Devices with Type == "2" are GPIO devices.
         /// Devices with Type == "1" are Blackmagic router devices.
+        /// Devices with Type == "7" are remote Tally source devices.
         ///
         /// IMPORTANT:
         /// Existing GPIO inputs, outputs, and cross-device routes are
@@ -517,6 +845,10 @@ namespace Iceburg.Database
                             string.Equals(
                                 d.Type,
                                 "2",
+                                StringComparison.OrdinalIgnoreCase) ||
+                            string.Equals(
+                                d.Type,
+                                "7",
                                 StringComparison.OrdinalIgnoreCase))
                         .ToList();
 
@@ -529,7 +861,7 @@ namespace Iceburg.Database
                         StringComparer.OrdinalIgnoreCase);
 
                 // --------------------------------------------------------
-                // ADD OR UPDATE GPIO DEVICES
+                // ADD OR UPDATE TALLY DEVICES
                 // --------------------------------------------------------
 
                 foreach (var sourceDevice in sourceDevices)
@@ -542,7 +874,7 @@ namespace Iceburg.Database
 
                     if (gpioDevice == null)
                     {
-                        // New GPIO/router device.
+                        // New GPIO/router/source device.
                         //
                         // Start it with empty GPIO configuration.
                         // Inputs and outputs can then be configured from
@@ -609,7 +941,7 @@ namespace Iceburg.Database
                 }
 
                 // --------------------------------------------------------
-                // REMOVE DEVICES THAT ARE NO LONGER TYPE 1 OR TYPE 2
+                // REMOVE DEVICES THAT ARE NO LONGER TYPE 1, TYPE 2, OR TYPE 7
                 // --------------------------------------------------------
 
                 _config.Devices.RemoveAll(
@@ -634,6 +966,77 @@ namespace Iceburg.Database
                 // --------------------------------------------------------
 
                 SaveInternal();
+            }
+        }
+
+
+        public static GpioDevice? SetRemoteTallySource(
+            string deviceId,
+
+            string remoteTallyId)
+        {
+            lock (_lock)
+            {
+                if (!IsRemoteTallyDeviceInternal(deviceId))
+                    return null;
+
+                var device =
+                    FindDeviceInternal(deviceId);
+
+                if (device == null)
+                    return null;
+
+
+
+                if (string.IsNullOrWhiteSpace(remoteTallyId))
+                    return null;
+
+                /*
+                 * No local input is selected here.
+                 *
+                 * The first local input automatically receives
+                 * remote output 1, the second receives output 2, etc.
+                 */
+                device.RemoteTallySource =
+                    new RemoteTallySource
+                    {
+                      
+
+                        
+
+                        RemoteTallyId =
+                            remoteTallyId.Trim()
+                    };
+
+                SaveInternal();
+
+                /*
+                 * Start using the remote tally immediately rather than
+                 * waiting for the next application restart.
+                 *
+                 * The background poller will pick it up on its next cycle.
+                 */
+                return CloneDevice(device);
+            }
+        }
+
+        public static bool ClearRemoteTallySource(string deviceId)
+        {
+            lock (_lock)
+            {
+                if (!IsRemoteTallyDeviceInternal(deviceId))
+                    return false;
+
+                var device = FindDeviceInternal(deviceId);
+
+                if (device == null)
+                    return false;
+
+                device.RemoteTallySource = null;
+
+                SaveInternal();
+
+                return true;
             }
         }
 
@@ -1758,7 +2161,21 @@ namespace Iceburg.Database
                 Routes =
                     device.Routes
                         .Select(CloneRoute)
-                        .ToList()
+                        .ToList(),
+
+                RemoteTallySource =
+    device.RemoteTallySource == null
+        ? null
+        : new RemoteTallySource
+        {
+          
+
+            Port =
+                device.RemoteTallySource.Port,
+
+            RemoteTallyId =
+                device.RemoteTallySource.RemoteTallyId
+        }
             };
         }
 
@@ -1869,8 +2286,24 @@ namespace Iceburg.Database
 
         public List<GpioRoute> Routes { get; set; } =
             new();
+
+        // Optional remote Tally source configuration for a type 7 device.
+        // The resulting state is stored in a normal GpioInput.
+        public RemoteTallySource? RemoteTallySource { get; set; }
     }
 
+
+    // ==================================================================
+    // REMOTE TALLY SOURCE
+    // ==================================================================
+
+    public class RemoteTallySource
+    {
+        public int Port { get; set; } = 80;
+
+        // ID of the device on the remote legacy Tally server.
+        public string RemoteTallyId { get; set; } = "";
+    }
 
     // ==================================================================
     // GPIO INPUT
@@ -2032,7 +2465,7 @@ namespace Iceburg.Database
                             new
                             {
                                 error =
-                                    "GPIO device not found or device Type is not \"2\"."
+                                    "GPIO device not found or device Type is not \"1\", \"2\", or \"7\"."
                             })
                         : Results.Ok(d);
                 });
@@ -2055,7 +2488,7 @@ namespace Iceburg.Database
                             new
                             {
                                 error =
-                                    "GPIO device not found or device Type is not \"2\"."
+                                    "GPIO device not found or device Type is not \"1\", \"2\", or \"7\"."
                             })
                         : Results.Ok(d.Inputs);
                 });
@@ -2089,7 +2522,7 @@ namespace Iceburg.Database
                             new
                             {
                                 error =
-                                    "GPIO device not found or device Type is not \"2\"."
+                                    "GPIO device not found or device Type is not \"1\", \"2\", or \"7\"."
                             })
                         : Results.Ok(x);
                 });
@@ -2196,7 +2629,7 @@ namespace Iceburg.Database
                             new
                             {
                                 error =
-                                    "GPIO device not found or device Type is not \"2\"."
+                                    "GPIO device not found or device Type is not \"1\", \"2\", or \"7\"."
                             })
                         : Results.Ok(d.Outputs);
                 });
@@ -2230,7 +2663,7 @@ namespace Iceburg.Database
                             new
                             {
                                 error =
-                                    "GPIO device not found or device Type is not \"2\"."
+                                    "GPIO device not found or device Type is not \"1\", \"2\", or \"7\"."
                             })
                         : Results.Ok(x);
                 });
@@ -2462,6 +2895,84 @@ namespace Iceburg.Database
 
 
             // ========================================================
+            // REMOTE TALLY SOURCE
+            // ========================================================
+
+            gpioApi.MapGet(
+                "/{deviceId}/remote-tally-source",
+                (string deviceId) =>
+                {
+                    var device =
+                        TallyDatabase.GetDevice(deviceId);
+
+                    if (device == null)
+                    {
+                        return Results.NotFound(new
+                        {
+                            error = "GPIO device not found."
+                        });
+                    }
+
+                    return Results.Ok(device.RemoteTallySource);
+                });
+
+            gpioApi.MapPut(
+        "/{deviceId}/remote-tally-source",
+        (
+            string deviceId,
+            RemoteTallySourceRequest request) =>
+        {
+            if (request == null)
+            {
+                return Results.BadRequest(new
+                {
+                    error = "Request is required."
+                });
+            }
+
+
+
+            if (string.IsNullOrWhiteSpace(
+                    request.RemoteTallyId))
+            {
+                return Results.BadRequest(new
+                {
+                    error =
+                        "RemoteTallyId is required."
+                });
+            }
+
+            var device =
+                TallyDatabase.SetRemoteTallySource(
+                    deviceId,
+
+                    request.RemoteTallyId);
+
+            if (device == null)
+            {
+                return Results.NotFound(new
+                {
+                    error =
+                        "Device not found or is not a type 7 device."
+                });
+            }
+
+            return Results.Ok(device);
+        });
+
+            gpioApi.MapDelete(
+                "/{deviceId}/remote-tally-source",
+                (string deviceId) =>
+                {
+                    return TallyDatabase.ClearRemoteTallySource(deviceId)
+                        ? Results.Ok(new { success = true })
+                        : Results.NotFound(new
+                        {
+                            error = "Type 7 device not found."
+                        });
+                });
+
+            // ========================================================
             // LEGACY TALLY ENDPOINTS
             // ========================================================
 
@@ -2480,10 +2991,10 @@ namespace Iceburg.Database
             app.MapGet(
                 "/tally/settallystatus.php",
                 (
-                    string? id,
+                    string? id, string? ip,
                     HttpRequest request) =>
                     TallyLegacy.SetTallyStatus(
-                        id,
+                        id, ip,
                         request.Query));
 
         }
@@ -2574,7 +3085,7 @@ namespace Iceburg.Database
 
 
         public static IResult SetTallyStatus(
-      string? id,
+      string? id, string ip,
       IQueryCollection query)
         {
             var d = FindDevice(id);
@@ -2585,6 +3096,10 @@ namespace Iceburg.Database
                 {
                     error = "GPIO device not found."
                 });
+            }
+            if (!string.IsNullOrWhiteSpace(id))
+            {
+                Database.UpdateDevicePresence(id, ip);
             }
 
             var inputs = OrderedInputs(d);
@@ -2699,7 +3214,7 @@ namespace Iceburg.Database
             return false;
         }
 
-      
+
         private static Dictionary<string, bool> EmptyBoolChannels()
         {
             return Enumerable.Range(1, 8)
@@ -2738,6 +3253,12 @@ namespace Iceburg.Database
 
     public record GpioStatusRequest(
         bool Status);
+
+
+    public record RemoteTallySourceRequest(
+        string IpAddress,
+        int Port,
+        string RemoteTallyId);
 
 
     /// <summary>

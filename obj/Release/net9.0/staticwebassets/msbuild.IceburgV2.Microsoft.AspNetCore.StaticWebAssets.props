@@ -1,5 +1,41 @@
 ﻿<Project>
   <ItemGroup>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\admin\devices.html'))">
+      <SourceType>Package</SourceType>
+      <SourceId>IceburgV2</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/IceburgV2</BasePath>
+      <RelativePath>admin/devices.html</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>ruoq9o4yzy</Fingerprint>
+      <Integrity>U8nEC06b7ktbIjoQWUHTYyQqkqub/rW7Ymxm8k44Tyg=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\admin\devices.html'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\admin\users.html'))">
+      <SourceType>Package</SourceType>
+      <SourceId>IceburgV2</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/IceburgV2</BasePath>
+      <RelativePath>admin/users.html</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>wgrne9mox6</Fingerprint>
+      <Integrity>MCM+HCkopAvvg4uTAL5V3MOUhrYkTNgclT0x/16y4z0=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\admin\users.html'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\ajafs2.html'))">
       <SourceType>Package</SourceType>
       <SourceId>IceburgV2</SourceId>
@@ -12,8 +48,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>4v64ea8797</Fingerprint>
-      <Integrity>wHHF8+uaqqMWIB5dnd5JdAE98wio9GMTWI43dqfeDUg=</Integrity>
+      <Fingerprint>c99sg82eg9</Fingerprint>
+      <Integrity>4O2cziRIzVENpfBON5s/ky0H/SaXnrqy1HKfTIj1yQ4=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\ajafs2.html'))</OriginalItemSpec>
@@ -30,8 +66,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>c7sgv8767n</Fingerprint>
-      <Integrity>yIGNLPG6CotBELJ8imNy1Yr8LoodPvc5mHdfg15cIn4=</Integrity>
+      <Fingerprint>7nim0dunvw</Fingerprint>
+      <Integrity>HQRbGqmF2dyGMZRxhQomfn3bAJ6pA2YiJ0AdFBWY4ug=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\ajafs4.html'))</OriginalItemSpec>
@@ -48,8 +84,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>29qcdbtk3f</Fingerprint>
-      <Integrity>5hhsdPDR8PJgt4sgQewjce9cPbKJIVeDpZ3B+OacNJI=</Integrity>
+      <Fingerprint>fu8yi4jo25</Fingerprint>
+      <Integrity>uYylbmNOGRjPSsflx00NdG6lSHaP92X1tH2lk+ROhTo=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\BMDRouter.html'))</OriginalItemSpec>
@@ -66,8 +102,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>4s18eamgfc</Fingerprint>
-      <Integrity>/K56qNXrd0u+2iPEzWWKVghxf9+x99xWONy2zZ160EQ=</Integrity>
+      <Fingerprint>q802vlcxvp</Fingerprint>
+      <Integrity>Rp+GlDud2Z6OQvIDuvbcdvnxmPMBUQXIqGpo2llT9nE=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\dashboard.html'))</OriginalItemSpec>
@@ -174,8 +210,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>oiujy28xem</Fingerprint>
-      <Integrity>wHRgq7vaeF3I96S7+sAldqNSd1+DCf52ShJhVjK4vWM=</Integrity>
+      <Fingerprint>8yl0ib60ev</Fingerprint>
+      <Integrity>IC1nvfEsVP99MqdO9jKMgDZJpz/53Dcrb87k8ApaWZA=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\login.html'))</OriginalItemSpec>
@@ -192,8 +228,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>qa7489nbgt</Fingerprint>
-      <Integrity>8vlqbaZGLZAdITQQ+kWG1+uQcErIpt7M5TNkZ/hip7M=</Integrity>
+      <Fingerprint>qooyp5rdxa</Fingerprint>
+      <Integrity>eo63OceJRZl6bu6Yq9PV1/y10+nNh32gNzkG/BHFShE=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\og9905.html'))</OriginalItemSpec>
@@ -216,6 +252,24 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\routertally.html'))</OriginalItemSpec>
     </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\servertoservertally.html'))">
+      <SourceType>Package</SourceType>
+      <SourceId>IceburgV2</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/IceburgV2</BasePath>
+      <RelativePath>servertoservertally.html</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>j2qtzv7hx6</Fingerprint>
+      <Integrity>xUdrxxZZl/qK3nSiF80ZKcVkNxRGhY0JOBmbXCfyw14=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\servertoservertally.html'))</OriginalItemSpec>
+    </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\tally.html'))">
       <SourceType>Package</SourceType>
       <SourceId>IceburgV2</SourceId>
@@ -228,8 +282,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>lvfmu3ecfo</Fingerprint>
-      <Integrity>4aN98cM1MrIedepL8lLGAd2Q4uxv3EEwt5s8NvjTFJg=</Integrity>
+      <Fingerprint>r8s6e82xfd</Fingerprint>
+      <Integrity>hd3XqtBOoxHFb3DQdh/rVrriKKNolhM5aCdFtsUF6Kk=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\tally.html'))</OriginalItemSpec>
@@ -246,8 +300,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>641duzzt0e</Fingerprint>
-      <Integrity>5gBzUY6KaOFprKTF+lUgDxVzQIApN05Dusc3BjTvOTA=</Integrity>
+      <Fingerprint>ucla984osh</Fingerprint>
+      <Integrity>YmwKgHByVLGgQnLmI9CvI+j16jPtPpGpOCUEzv3b+dI=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\tallygrid.html'))</OriginalItemSpec>
@@ -300,8 +354,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>dpjmvx751s</Fingerprint>
-      <Integrity>v5/Uq1cIAMKjOCjoUBs/ePyt8fblDb3q00KodFqx6aw=</Integrity>
+      <Fingerprint>6utv3rmado</Fingerprint>
+      <Integrity>MkhmnjjWZ1fRNurO+/5kchgYFWi26RxYX3FhCFKX9AY=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\upload8x8\index.html'))</OriginalItemSpec>
@@ -336,8 +390,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>n7lrtt5cqb</Fingerprint>
-      <Integrity>I8WLRWswNAl7HVW0sSJZJpRwQaz2EF02a3tDK6C/aEw=</Integrity>
+      <Fingerprint>r02ndpx42s</Fingerprint>
+      <Integrity>BVX8y9PMipnNFsM9rB7l6putkJ0TZaZhVjHuHPNvmQw=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\uploadross\index.html'))</OriginalItemSpec>

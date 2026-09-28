@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devices - Iceburg</title>
+    <script src="/header.js"></script>
+
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #232323;
+            color: #eee;
+        }
+
+        .page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+            .header h1 {
+                margin: 0;
+                font-size: 28px;
+            }
+
+            .header p {
+                margin: 6px 0 0;
+                color: #777;
+            }
+
+        button {
+            border: 0;
+            border-radius: 7px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+            button:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+            .btn-primary:hover {
+                background: #1d4ed8;
+            }
+
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #222;
+        }
+
+
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+
+        .btn-edit {
+            background: #333;
+            color: #eee;
+        }
+
+    
+
+        .card {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, .06);
+            border: 1px solid #303030;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid #303030;
+            background: #1B1B1B;
+        }
+
+
+        th {
+            background: #222222;
+            font-size: 13px;
+            color: #eee;
+            text-transform: uppercase;
+        }
+
+        tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .device-name {
+            font-weight: 600;
+        }
+
+        .device-ip {
+        
+        }
+
+        .device-type {
+            font-weight: 500;
+        }
+
+        .device-group {
+            display: block;
+            margin-top: 3px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 50px;
+            color: #777;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 12px 15px;
+            border-radius: 7px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+            padding: 12px 15px;
+            border-radius: 7px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        /* Modal */
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .45);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+            .modal-overlay.open {
+                display: flex;
+            }
+
+        .modal {
+            width: 100%;
+            max-width: 550px;
+            background: #1b1b1b;
+            border: 1px solid #333;
+            padding: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+           
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .modal-header h2 {
+                margin: 0;
+            }
+
+        .close {
+            background: transparent;
+            font-size: 24px;
+            padding: 4px 8px;
+        }
+
+            .close:hover {
+                background: #f3f4f6;
+            }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 11px 12px;
+           
+            border-radius: 7px;
+            font-size: 14px;
+            outline: none;
+            background: #111;
+            border: 1px solid #444;
+            color: white;
+        }
+
+            input:focus,
+            select:focus {
+                border-color: #2563eb;
+                box-shadow: 0 0 0 2px rgba(37, 99, 235, .1);
+            }
+
+            input[readonly] {
+                background: #f3f4f6;
+                color: #777;
+            }
+
+        .modal-footer {
+            padding: 16px 24px;
+           
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .loading {
+            padding: 40px;
+            text-align: center;
+            color: #777;
+        }
+
+        @media (max-width: 800px) {
+
+            .page {
+                padding: 15px;
+            }
+
+            .header {
+                align-items: flex-start;
+                gap: 15px;
+                flex-direction: column;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 850px;
+            }
+        }
+    </style>
+
+
+</head>
+
+<body>
+
+    
+    <div class="page">
+
+        <div class="header">
+
+            <div>
+                <h1>Devices</h1>
+            </div>
+
+            <button class="btn-primary"
+                    onclick="openAddModal()">
+                + Add Device
+            </button>
+
+        </div>
+
+
+        <div id="errorMessage" class="error"></div>
+
+        <div id="successMessage" class="success"></div>
+
+
+        <div class="card">
+
+            <div id="loading" class="loading">
+                Loading devices...
+            </div>
+
+
+            <table id="deviceTable"
+                   style="display:none;">
+
+                <thead>
+
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>IP Address</th>
+                        <th>Audio Source</th>
+                        <th>Last Seen</th>
+                        <th>Actions</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="deviceTableBody"></tbody>
+
+            </table>
+
+
+            <div id="empty"
+                 class="empty"
+                 style="display:none;">
+
+                No devices have been configured.
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Device Modal -->
+
+    <div id="deviceModal"
+         class="modal-overlay">
+
+        <div class="modal">
+
+
+            <div class="modal-header">
+
+                <h2 id="modalTitle">
+                    Add Device
+                </h2>
+
+
+
+
+            </div>
+
+
+            <form id="deviceForm">
+
+                <div class="modal-body">
+
+
+                    <!-- Name -->
+
+                    <div class="form-group">
+
+                        <label for="name">
+                            Name
+                        </label>
+
+                        <input id="name"
+                               name="name"
+                               type="text"
+                               required
+                               placeholder="Device name">
+
+                    </div>
+
+
+                    <!-- Type / IP -->
+
+                    <div class="form-row">
+
+
+                        <div class="form-group">
+
+                            <label for="type">
+                                Type
+                            </label>
+
+                            <select id="type"
+                                    name="type"
+                                    required>
+
+                                <option value="">
+                                    Select device type...
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="ipAddress">
+                                IP Address
+                            </label>
+
+                            <input id="ipAddress"
+                                   name="ipAddress"
+                                   type="text"
+                                   required
+                                   placeholder="192.168.1.100">
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Audio Source -->
+
+                    <div class="form-group">
+
+                        <label for="audioSorce">
+                            Audio Source
+                        </label>
+
+                        <select id="audioSorce"
+                                name="audioSorce">
+
+                            <option value="">
+                                No Audio Source
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Username / Password -->
+
+                    <div class="form-row">
+
+
+                        <div class="form-group">
+
+                            <label for="username">
+                                Username
+                            </label>
+
+                            <input id="username"
+                                   name="username"
+                                   type="text"
+                                   autocomplete="off"
+                                   placeholder="Device username">
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="password">
+                                Password
+                            </label>
+
+                            <input id="password"
+                                   name="password"
+                                   type="password"
+                                   autocomplete="new-password"
+                                   placeholder="Device password">
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Last Seen -->
+
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button type="button"
+                            class="btn-secondary"
+                            onclick="closeModal()">
+
+                        Cancel
+
+                    </button>
+
+
+                    <button type="submit"
+                            class="btn-primary"
+                            id="saveButton">
+
+                        Add Device
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        let devices = [];
+
+        let deviceTypes = {};
+
+        let editingDeviceId = null;
+
+
+        /*
+         * Initialize page
+         */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            async () => {
+
+                await loadDeviceTypes();
+
+                await loadDevices();
+
+
+                document
+                    .getElementById("deviceForm")
+                    .addEventListener(
+                        "submit",
+                        saveDevice
+                    );
+
+            }
+        );
+
+
+        /*
+         * Load device types
+         *
+         * /api/devices/type/
+         */
+
+        async function loadDeviceTypes() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/devices/type/",
+                        {
+                            method: "GET",
+
+                            headers: {
+                                "Accept":
+                                    "application/json"
+                            }
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        await getErrorMessage(response)
+                    );
+
+                }
+
+
+                deviceTypes =
+                    await response.json();
+
+
+                if (
+                    !deviceTypes ||
+                    typeof deviceTypes !== "object"
+                ) {
+
+                    throw new Error(
+                        "Invalid device type response."
+                    );
+
+                }
+
+
+                populateDeviceTypeSelect();
+
+
+            } catch (error) {
+
+                showError(
+                    "Unable to load device types: " +
+                    error.message
+                );
+
+            }
+
+        }
+
+
+        /*
+         * Populate Device Type dropdown
+         */
+
+        function populateDeviceTypeSelect() {
+
+            const select =
+                document.getElementById("type");
+
+
+            select.innerHTML = "";
+
+
+            const defaultOption =
+                document.createElement("option");
+
+
+            defaultOption.value = "";
+
+            defaultOption.textContent =
+                "Select device type...";
+
+
+            select.appendChild(
+                defaultOption
+            );
+
+
+            const typeNumbers =
+                Object.keys(deviceTypes)
+                    .sort(
+                        (a, b) =>
+                            Number(a) - Number(b)
+                    );
+
+
+            for (
+                const typeNumber
+                of typeNumbers
+            ) {
+
+                const deviceType =
+                    deviceTypes[typeNumber];
+
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    typeNumber;
+
+
+                option.textContent =
+                    `${deviceType.name}`;
+
+
+                select.appendChild(
+                    option
+                );
+
+            }
+
+        }
+
+
+        /*
+         * Get friendly device type name
+         */
+
+        function getDeviceTypeName(type) {
+
+            const typeInfo =
+                deviceTypes[
+                String(type)
+                ];
+
+
+            if (typeInfo) {
+
+                return typeInfo.name;
+
+            }
+
+
+            return `Unknown (${type})`;
+
+        }
+
+
+        /*
+         * Get device type group
+         */
+
+        function getDeviceTypeGroup(type) {
+
+            const typeInfo =
+                deviceTypes[
+                String(type)
+                ];
+
+
+            if (
+                typeInfo &&
+                typeInfo.group
+            ) {
+
+                return typeInfo.group;
+
+            }
+
+
+            return "";
+
+        }
+
+
+        /*
+         * Populate Audio Source dropdown
+         *
+         * Only device types with:
+         *
+         * "isaudiosorce": true
+         *
+         * will be included.
+         */
+
+        function populateAudioSourceSelect() {
+
+            const select =
+                document.getElementById(
+                    "audioSorce"
+                );
+
+
+            select.innerHTML = "";
+
+
+            /*
+             * No Audio Source option
+             */
+
+            const noneOption =
+                document.createElement(
+                    "option"
+                );
+
+
+            noneOption.value = "";
+
+            noneOption.textContent =
+                "No Audio Source";
+
+
+            select.appendChild(
+                noneOption
+            );
+
+
+            /*
+             * Find devices whose
+             * device type has
+             * isaudiosorce === true
+             */
+
+            const audioDevices =
+                devices.filter(device => {
+
+                    const typeInfo =
+                        deviceTypes[
+                        String(device.type)
+                        ];
+
+
+                    return (
+                        typeInfo &&
+                        typeInfo.isaudiosorce === true
+                    );
+
+                });
+
+
+            /*
+             * Add audio devices
+             */
+
+            for (
+                const device
+                of audioDevices
+            ) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    device.id;
+
+
+                option.textContent =
+                    device.name;
+
+
+                select.appendChild(
+                    option
+                );
+
+            }
+
+        }
+
+
+        /*
+         * Load devices
+         */
+
+        async function loadDevices() {
+
+            hideMessages();
+
+
+            const loading =
+                document.getElementById(
+                    "loading"
+                );
+
+
+            const table =
+                document.getElementById(
+                    "deviceTable"
+                );
+
+
+            const empty =
+                document.getElementById(
+                    "empty"
+                );
+
+
+            loading.style.display =
+                "block";
+
+
+            table.style.display =
+                "none";
+
+
+            empty.style.display =
+                "none";
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/devices",
+                        {
+                            method: "GET",
+
+                            headers: {
+                                "Accept":
+                                    "application/json"
+                            }
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        await getErrorMessage(response)
+                    );
+
+                }
+
+
+                devices =
+                    await response.json();
+
+
+                /*
+                 * Now that both the
+                 * devices and type definitions
+                 * are loaded, build the
+                 * audio source dropdown.
+                 */
+
+                populateAudioSourceSelect();
+
+
+                renderDevices();
+
+
+            } catch (error) {
+
+                showError(
+                    error.message
+                );
+
+            } finally {
+
+                loading.style.display =
+                    "none";
+
+            }
+
+        }
+
+
+        /*
+         * Render Devices
+         */
+
+        function renderDevices() {
+
+            const table =
+                document.getElementById(
+                    "deviceTable"
+                );
+
+
+            const empty =
+                document.getElementById(
+                    "empty"
+                );
+
+
+            const tbody =
+                document.getElementById(
+                    "deviceTableBody"
+                );
+
+
+            tbody.innerHTML = "";
+
+
+            if (
+                !devices ||
+                devices.length === 0
+            ) {
+
+                table.style.display =
+                    "none";
+
+
+                empty.style.display =
+                    "block";
+
+
+                return;
+
+            }
+
+
+            table.style.display =
+                "table";
+
+
+            empty.style.display =
+                "none";
+
+
+            for (
+                const device
+                of devices
+            ) {
+
+                const row =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                const typeName =
+                    getDeviceTypeName(
+                        device.type
+                    );
+
+
+                const typeGroup =
+                    getDeviceTypeGroup(
+                        device.type
+                    );
+
+
+                /*
+                 * Find the name of the
+                 * audio source device.
+                 */
+
+                const audioSourceName =
+                    getAudioSourceName(
+                        device.audioSorce
+                    );
+
+
+                row.innerHTML = `
+
+                    <td>
+
+                        <div class="device-name">
+                            ${escapeHtml(device.name)}
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <div class="device-type">
+                            ${escapeHtml(typeName)}
+                        </div>
+
+                        
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="device-ip">
+                            ${escapeHtml(device.ipAddress)}
+                        </span>
+
+                    </td>
+
+
+                    <td>
+                        ${escapeHtml(audioSourceName)}
+                    </td>
+
+
+                    <td>
+                        ${escapeHtml(
+                        device.lastSeen ||
+                        "Never"
+                    )}
+                    </td>
+
+
+                    <td>
+
+                        <div class="actions">
+
+                            <button
+                                class="btn-edit"
+                                onclick="openEditModal('${escapeJs(device.id)}')">
+
+                                Edit
+
+                            </button>
+
+
+                            <button
+                                class="btn-danger"
+                                onclick="deleteDevice('${escapeJs(device.id)}')">
+
+                                Delete
+
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                `;
+
+
+                tbody.appendChild(row);
+
+            }
+
+        }
+
+
+        /*
+         * Find Audio Source Name
+         */
+
+        function getAudioSourceName(
+            audioSourceId
+        ) {
+
+            if (!audioSourceId) {
+
+                return "";
+
+            }
+
+
+            const audioDevice =
+                devices.find(
+                    device =>
+                        String(device.id) ===
+                        String(audioSourceId)
+                );
+
+
+            if (audioDevice) {
+
+                return audioDevice.name;
+
+            }
+
+
+            /*
+             * If the stored value isn't
+             * an ID, display it as-is.
+             */
+
+            return String(audioSourceId);
+
+        }
+
+
+        /*
+         * Open Add Modal
+         */
+
+        function openAddModal() {
+
+            editingDeviceId =
+                null;
+
+
+            document.getElementById(
+                "modalTitle"
+            ).textContent =
+                "Add Device";
+
+
+            document.getElementById(
+                "saveButton"
+            ).textContent =
+                "Add Device";
+
+
+            document.getElementById(
+                "deviceForm"
+            ).reset();
+
+
+    
+
+            /*
+             * Make sure the latest
+             * audio device list is shown.
+             */
+
+            populateAudioSourceSelect();
+
+
+            document.getElementById(
+                "deviceModal"
+            ).classList.add("open");
+
+
+            document.getElementById(
+                "name"
+            ).focus();
+
+        }
+
+
+        /*
+         * Open Edit Modal
+         */
+
+        function openEditModal(id) {
+
+            const device =
+                devices.find(
+                    d =>
+                        String(d.id) ===
+                        String(id)
+                );
+
+
+            if (!device) {
+
+                showError(
+                    "Device not found."
+                );
+
+                return;
+
+            }
+
+
+            editingDeviceId =
+                id;
+
+
+            document.getElementById(
+                "modalTitle"
+            ).textContent =
+                "Edit Device";
+
+
+            document.getElementById(
+                "saveButton"
+            ).textContent =
+                "Save Changes";
+
+
+            /*
+             * Refresh audio source options
+             */
+
+            populateAudioSourceSelect();
+
+
+            document.getElementById(
+                "name"
+            ).value =
+                device.name || "";
+
+
+            document.getElementById(
+                "type"
+            ).value =
+                String(
+                    device.type ?? ""
+                );
+
+
+            document.getElementById(
+                "ipAddress"
+            ).value =
+                device.ipAddress || "";
+
+
+            document.getElementById(
+                "audioSorce"
+            ).value =
+                device.audioSorce || "";
+
+
+            document.getElementById(
+                "username"
+            ).value =
+                device.username || "";
+
+
+            document.getElementById(
+                "password"
+            ).value =
+                device.password || "";
+
+
+     
+
+
+
+
+
+            document.getElementById(
+                "deviceModal"
+            ).classList.add("open");
+
+
+            document.getElementById(
+                "name"
+            ).focus();
+
+        }
+
+
+        /*
+         * Close Modal
+         */
+
+        function closeModal() {
+
+            document.getElementById(
+                "deviceModal"
+            ).classList.remove("open");
+
+
+            editingDeviceId =
+                null;
+
+        }
+
+
+        /*
+         * Save Device
+         */
+
+        async function saveDevice(event) {
+
+            event.preventDefault();
+
+            hideMessages();
+
+
+            const saveButton =
+                document.getElementById(
+                    "saveButton"
+                );
+
+
+            saveButton.disabled =
+                true;
+
+
+            saveButton.textContent =
+                "Saving...";
+
+
+            /*
+             * Remember whether this
+             * is an edit before closing.
+             */
+
+            const wasEditing =
+                !!editingDeviceId;
+
+
+            const device = {
+
+                name:
+                    document
+                        .getElementById("name")
+                        .value
+                        .trim(),
+
+
+                type:
+                    document
+                        .getElementById("type")
+                        .value,
+
+
+                ipAddress:
+                    document
+                        .getElementById("ipAddress")
+                        .value
+                        .trim(),
+
+
+                audioSorce:
+                    document
+                        .getElementById("audioSorce")
+                        .value,
+
+
+                username:
+                    document
+                        .getElementById("username")
+                        .value
+                        .trim(),
+
+
+                password:
+                    document
+                        .getElementById("password")
+                        .value,
+
+
+               
+
+            };
+
+
+            try {
+
+                let response;
+
+
+                /*
+                 * Update
+                 */
+
+                if (wasEditing) {
+
+                    device.id =
+                        editingDeviceId;
+
+
+                    response =
+                        await fetch(
+                            `/api/devices/${encodeURIComponent(editingDeviceId)}`,
+                            {
+                                method: "PUT",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json",
+
+                                    "Accept":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        device
+                                    )
+                            }
+                        );
+
+                }
+
+
+                /*
+                 * Add
+                 */
+
+                else {
+
+                    response =
+                        await fetch(
+                            "/api/devices",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json",
+
+                                    "Accept":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        device
+                                    )
+                            }
+                        );
+
+                }
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        await getErrorMessage(
+                            response
+                        )
+                    );
+
+                }
+
+
+                closeModal();
+
+
+                showSuccess(
+                    wasEditing
+                        ? "Device updated successfully."
+                        : "Device added successfully."
+                );
+
+
+                await loadDevices();
+
+
+            } catch (error) {
+
+                showError(
+                    error.message
+                );
+
+            } finally {
+
+                saveButton.disabled =
+                    false;
+
+
+                saveButton.textContent =
+                    "Add Device";
+
+            }
+
+        }
+
+
+        /*
+         * Delete Device
+         */
+
+        async function deleteDevice(id) {
+
+            const device =
+                devices.find(
+                    d =>
+                        String(d.id) ===
+                        String(id)
+                );
+
+
+            if (!device)
+                return;
+
+
+            const confirmed =
+                confirm(
+                    `Are you sure you want to delete "${device.name}"?`
+                );
+
+
+            if (!confirmed)
+                return;
+
+
+            hideMessages();
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/api/devices/${encodeURIComponent(id)}`,
+                        {
+                            method: "DELETE",
+
+                            headers: {
+                                "Accept":
+                                    "application/json"
+                            }
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        await getErrorMessage(
+                            response
+                        )
+                    );
+
+                }
+
+
+                showSuccess(
+                    "Device deleted successfully."
+                );
+
+
+                await loadDevices();
+
+
+            } catch (error) {
+
+                showError(
+                    error.message
+                );
+
+            }
+
+        }
+
+
+        /*
+         * Get API Error Message
+         */
+
+        async function getErrorMessage(
+            response
+        ) {
+
+            try {
+
+                const data =
+                    await response.json();
+
+
+                if (data.error)
+                    return data.error;
+
+
+                if (data.message)
+                    return data.message;
+
+
+            } catch {
+
+                // Ignore JSON parsing errors.
+
+            }
+
+
+            return `Request failed (${response.status}).`;
+
+        }
+
+
+        /*
+         * Escape HTML
+         */
+
+        function escapeHtml(value) {
+
+            return String(value ?? "")
+                .replaceAll(
+                    "&",
+                    "&amp;"
+                )
+                .replaceAll(
+                    "<",
+                    "&lt;"
+                )
+                .replaceAll(
+                    ">",
+                    "&gt;"
+                )
+                .replaceAll(
+                    '"',
+                    "&quot;"
+                )
+                .replaceAll(
+                    "'",
+                    "&#039;"
+                );
+
+        }
+
+
+        /*
+         * Escape JavaScript string
+         */
+
+        function escapeJs(value) {
+
+            return String(value ?? "")
+                .replaceAll(
+                    "\\",
+                    "\\\\"
+                )
+                .replaceAll(
+                    "'",
+                    "\\'"
+                )
+                .replaceAll(
+                    "\n",
+                    "\\n"
+                )
+                .replaceAll(
+                    "\r",
+                    "\\r"
+                );
+
+        }
+
+
+        /*
+         * Show Error
+         */
+
+        function showError(message) {
+
+            const element =
+                document.getElementById(
+                    "errorMessage"
+                );
+
+
+            element.textContent =
+                message;
+
+
+            element.style.display =
+                "block";
+
+
+            document.getElementById(
+                "successMessage"
+            ).style.display =
+                "none";
+
+        }
+
+
+        /*
+         * Show Success
+         */
+
+        function showSuccess(message) {
+
+            const element =
+                document.getElementById(
+                    "successMessage"
+                );
+
+
+            element.textContent =
+                message;
+
+
+            element.style.display =
+                "block";
+
+
+            document.getElementById(
+                "errorMessage"
+            ).style.display =
+                "none";
+
+        }
+
+
+        /*
+         * Hide Messages
+         */
+
+        function hideMessages() {
+
+            document.getElementById(
+                "errorMessage"
+            ).style.display =
+                "none";
+
+
+            document.getElementById(
+                "successMessage"
+            ).style.display =
+                "none";
+
+        }
+
+
+        /*
+         * Close modal when clicking
+         * outside it.
+         */
+
+        document.getElementById(
+            "deviceModal"
+        ).addEventListener(
+            "click",
+            event => {
+
+                if (
+                    event.target.id ===
+                    "deviceModal"
+                ) {
+
+                    closeModal();
+
+                }
+
+            }
+        );
+
+
+        /*
+         * Close modal with Escape.
+         */
+
+        document.addEventListener(
+            "keydown",
+            event => {
+
+                if (
+                    event.key ===
+                    "Escape"
+                ) {
+
+                    closeModal();
+
+                }
+
+            }
+        );
+
+    </script>
+    
+
+</body>
+</html>

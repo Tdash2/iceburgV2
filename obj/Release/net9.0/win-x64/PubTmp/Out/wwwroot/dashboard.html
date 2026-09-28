@@ -1,0 +1,1487 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Iceburg Dashboard</title>
+    <script src="header.js"></script>
+
+    <style>
+
+        /* =========================================================
+           GLOBAL
+           ========================================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #232323;
+            color: white;
+        }
+
+
+        /* =========================================================
+           MAIN
+           ========================================================= */
+
+        main {
+            padding: 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+
+        /* =========================================================
+           TOOLBAR
+           ========================================================= */
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+
+            .toolbar h2 {
+                margin: 0;
+                font-size: 24px;
+            }
+
+
+        button {
+            border: 0;
+            border-radius: 6px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+
+        #refreshButton {
+            background: #2563eb;
+            color: white;
+        }
+
+
+            #refreshButton:hover {
+                background: #1d4ed8;
+            }
+
+
+        /* =========================================================
+           STATUS
+           ========================================================= */
+
+        #status {
+            /* margin-bottom: 20px; */
+            color: #999;
+            font-size: 1px;
+            visibility: hidden;
+        }
+
+
+        /* =========================================================
+           DEVICE GROUPS
+           ========================================================= */
+
+        #devices {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+
+        .device-group {
+            width: 100%;
+        }
+
+
+        /* Group heading */
+
+        .device-group-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #3d3d3d;
+        }
+
+
+        .device-group-title {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+
+        .device-group-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 28px;
+            height: 24px;
+            padding: 0 9px;
+            border-radius: 20px;
+            background: #363636;
+            color: #cfcfcf;
+            font-size: 12px;
+        }
+
+
+        /* Device grid inside each group */
+
+        .device-group-grid {
+            display: grid;
+            grid-template-columns: repeat( auto-fill, minmax(260px, 1fr) );
+            gap: 18px;
+        }
+
+
+        /* =========================================================
+           DEVICE CARD
+           ========================================================= */
+
+        .device-card {
+            position: relative;
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 165px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+
+            .device-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 18px rgba(0, 0, 0, 0.40);
+            }
+
+
+            .device-card.disabled {
+                cursor: default;
+                opacity: 0.65;
+            }
+
+
+                .device-card.disabled:hover {
+                    transform: none;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+                }
+
+
+        /* =========================================================
+           DEVICE NAME
+           ========================================================= */
+
+        .device-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            padding-right: 35px;
+        }
+
+
+        /* =========================================================
+           DEVICE INFORMATION
+           ========================================================= */
+
+        .device-info {
+            font-size: 14px;
+            color: #aaaaaa;
+            line-height: 1.7;
+        }
+
+
+            .device-info strong {
+                color: #dddddd;
+            }
+
+
+        /* =========================================================
+           DEVICE TYPE LABEL
+           ========================================================= */
+
+        .device-type {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 5px 9px;
+            border-radius: 4px;
+            background: #333333;
+            color: #dddddd;
+            font-size: 12px;
+        }
+
+
+        /* =========================================================
+           DEVICE STATUS
+           ========================================================= */
+
+        .device-status {
+            position: absolute;
+            right: 12px;
+            top: 12px;
+            width: 28px;
+            height: 28px;
+        }
+
+
+        .status-value {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+
+            .status-value.connected {
+                background-color: #2e9d50;
+            }
+
+
+            .status-value.error {
+                background-color: #d64545;
+            }
+
+
+            .status-value.unknown {
+                background-color: #888888;
+            }
+
+
+        /* =========================================================
+           DEVICE ACTIONS
+           ========================================================= */
+
+        .device-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+
+        .setup-tally {
+            background: #2563eb;
+            color: white;
+            padding: 5px 10px;
+            font-size: 12px;
+            margin-top: 14px;
+        }
+
+
+            .setup-tally:hover {
+                background: #1d4ed8;
+            }
+
+
+        /* =========================================================
+           EMPTY STATE
+           ========================================================= */
+
+        .empty {
+            background: #1a1a1a;
+            padding: 40px;
+            text-align: center;
+            border-radius: 10px;
+            color: #999;
+        }
+
+
+        /* =========================================================
+           ERROR
+           ========================================================= */
+
+        .error {
+            background: #4a1f1f;
+            color: #ffb4b4;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+
+        /* =========================================================
+           MOBILE
+           ========================================================= */
+
+        @media (max-width: 600px) {
+
+            main {
+                padding: 15px;
+            }
+
+
+            .toolbar {
+                gap: 10px;
+            }
+
+
+                .toolbar h2 {
+                    font-size: 20px;
+                }
+
+
+            .device-group-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+</head>
+
+
+<!-- Your existing header -->
+
+
+
+
+<body>
+
+
+    <main>
+
+
+        <!-- =====================================================
+             TOOLBAR
+             ===================================================== -->
+
+
+
+
+        <!-- =====================================================
+             STATUS
+             ===================================================== -->
+
+        <div id="status">
+            Loading devices...
+        </div>
+
+
+        <!-- =====================================================
+             DEVICE GROUPS WILL BE INSERTED HERE
+             ===================================================== -->
+
+        <div id="devices"></div>
+
+
+    </main>
+
+
+    <script>
+
+
+        // ========================================================
+        // DEVICE TYPE CONFIGURATION
+        // ========================================================
+        //
+        // "group" controls which section the device appears in.
+        //
+        // You can add new device types here without changing
+        // the grouping code.
+        //
+        // ========================================================
+        const preferredOrder = [
+
+            "Routing",
+
+            "Video",
+
+            "Cameras",
+            "Tally",
+
+            "Audio",
+
+           
+
+            
+
+            "Unknown"
+
+        ];
+
+        let deviceTypeLookup = {};
+
+        async function loadDeviceTypes() {
+            const response = await fetch(
+                "/api/devices/type/",
+                {
+                    method: "GET",
+                    credentials: "same-origin",
+                    cache: "no-store"
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to load device types: HTTP " + response.status);
+            }
+
+            deviceTypeLookup = await response.json();
+        }
+
+        // ========================================================
+        // DOM ELEMENTS
+        // ========================================================
+
+        const devicesElement =
+            document.getElementById("devices");
+
+
+        const statusElement =
+            document.getElementById("status");
+
+
+        const refreshButton =
+            document.getElementById("refreshButton");
+
+
+        // ========================================================
+        // LOAD DEVICES
+        // ========================================================
+
+        async function loadDevices() {
+
+
+            // Remember scroll position so refreshing doesn't
+            // jump the page back to the top.
+
+            const scrollX =
+                window.scrollX;
+
+            const scrollY =
+                window.scrollY;
+
+
+            try {
+
+
+                // ------------------------------------------------
+                // Get devices
+                // ------------------------------------------------
+
+                const response =
+                    await fetch(
+                        "/api/device/getdevices/",
+                        {
+                            method: "GET",
+
+                            credentials:
+                                "same-origin",
+
+                            cache:
+                                "no-store"
+                        }
+                    );
+
+
+                // ------------------------------------------------
+                // Authentication failure
+                // ------------------------------------------------
+
+                if (response.status === 401) {
+
+                    window.location.replace(
+                        "/login.html?returnUrl=" +
+                        encodeURIComponent(
+                            window.location.pathname +
+                            window.location.search
+                        )
+                    );
+
+                    return;
+                }
+
+
+                // ------------------------------------------------
+                // Permission failure
+                // ------------------------------------------------
+
+                if (response.status === 403) {
+
+                    statusElement.textContent =
+                        "You do not have permission to view devices.";
+
+                    return;
+                }
+
+
+                // ------------------------------------------------
+                // Other HTTP errors
+                // ------------------------------------------------
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "HTTP " +
+                        response.status
+                    );
+                }
+
+
+                // ------------------------------------------------
+                // Read devices
+                // ------------------------------------------------
+
+                const devices =
+                    await response.json();
+
+
+                // ------------------------------------------------
+                // No devices
+                // ------------------------------------------------
+
+                if (
+                    !Array.isArray(devices) ||
+                    devices.length === 0
+                ) {
+
+                    statusElement.textContent = "";
+
+                    devicesElement.innerHTML = `
+
+                            <div class="empty">
+
+                                No devices configured.
+
+                            </div>
+
+                        `;
+
+                    window.scrollTo(
+                        scrollX,
+                        scrollY
+                    );
+
+                    return;
+                }
+
+
+                // ------------------------------------------------
+                // Device count
+                // ------------------------------------------------
+
+                statusElement.textContent =
+                    devices.length +
+                    " device" +
+                    (
+                        devices.length === 1
+                            ? ""
+                            : "s"
+                    );
+
+
+                // ------------------------------------------------
+                // Group devices
+                // ------------------------------------------------
+
+                const groups = {};
+
+
+                for (
+                    const device
+                    of devices
+                ) {
+
+
+                    const type =
+                        String(
+                            device.type ?? ""
+                        );
+
+
+                    const deviceType =
+                        deviceTypeLookup[type];
+
+
+                    // Use configured group.
+                    //
+                    // If the type isn't known,
+                    // put it into Unknown.
+
+                    const groupName =
+                        deviceType?.group ||
+                        "Unknown";
+
+
+                    if (!groups[groupName]) {
+
+                        groups[groupName] = [];
+
+                    }
+
+
+                    groups[groupName].push(
+                        device
+                    );
+
+                }
+
+
+                // ------------------------------------------------
+                // Clear existing dashboard
+                // ------------------------------------------------
+
+                devicesElement.innerHTML = "";
+
+
+                // ------------------------------------------------
+                // Group order
+                // ------------------------------------------------
+                //
+                // This keeps the groups in a predictable order.
+                //
+                // Any group not listed here will be added after
+                // these groups.
+                //
+                // ------------------------------------------------
+
+
+
+
+                const groupNames =
+                    Object.keys(groups);
+
+
+                groupNames.sort(
+                    (a, b) => {
+
+                        const aIndex =
+                            preferredOrder.indexOf(a);
+
+                        const bIndex =
+                            preferredOrder.indexOf(b);
+
+
+                        if (
+                            aIndex !== -1 &&
+                            bIndex !== -1
+                        ) {
+
+                            return aIndex - bIndex;
+
+                        }
+
+
+                        if (aIndex !== -1) {
+
+                            return -1;
+
+                        }
+
+
+                        if (bIndex !== -1) {
+
+                            return 1;
+
+                        }
+
+
+                        return a.localeCompare(b);
+
+                    }
+                );
+
+
+                // ------------------------------------------------
+                // Create groups
+                // ------------------------------------------------
+
+                for (
+                    const groupName
+                    of groupNames
+                ) {
+
+                    createDeviceGroup(
+                        groupName,
+
+                        groups[groupName]
+                    );
+
+                }
+
+
+                // ------------------------------------------------
+                // Restore scroll position
+                // ------------------------------------------------
+
+                window.scrollTo(
+                    scrollX,
+                    scrollY
+                );
+
+
+            }
+            catch (error) {
+
+
+                console.error(
+                    "Failed to load devices:",
+                    error
+                );
+
+
+                statusElement.textContent = "";
+
+
+                devicesElement.innerHTML = `
+
+                        <div class="error">
+
+                            Unable to load devices.
+
+                            <br>
+
+                            ${escapeHtml(
+                    error.message
+                )}
+
+                        </div>
+
+                    `;
+
+
+                window.scrollTo(
+                    scrollX,
+                    scrollY
+                );
+
+            }
+
+        }
+
+
+        // ========================================================
+        // CREATE DEVICE GROUP
+        // ========================================================
+
+        function createDeviceGroup(
+            groupName,
+            devices
+        ) {
+
+
+            // ----------------------------------------------------
+            // Group container
+            // ----------------------------------------------------
+
+            const group =
+                document.createElement("section");
+
+
+            group.className =
+                "device-group";
+
+
+            // ----------------------------------------------------
+            // Group header
+            // ----------------------------------------------------
+
+            const header =
+                document.createElement("div");
+
+
+            header.className =
+                "device-group-header";
+
+
+            // ----------------------------------------------------
+            // Group title
+            // ----------------------------------------------------
+
+            const title =
+                document.createElement("h3");
+
+
+            title.className =
+                "device-group-title";
+
+
+            title.textContent =
+                groupName;
+
+
+            // ----------------------------------------------------
+            // Device count
+            // ----------------------------------------------------
+
+            const count =
+                document.createElement("span");
+
+
+            count.className =
+                "device-group-count";
+
+
+            count.textContent =
+                devices.length +
+                (
+                    devices.length === 1
+                        ? " device"
+                        : " devices"
+                );
+
+
+            // ----------------------------------------------------
+            // Add header elements
+            // ----------------------------------------------------
+
+            header.appendChild(
+                title
+            );
+
+
+            header.appendChild(
+                count
+            );
+
+
+            // ----------------------------------------------------
+            // Device grid
+            // ----------------------------------------------------
+
+            const grid =
+                document.createElement("div");
+
+
+            grid.className =
+                "device-group-grid";
+
+
+            // ----------------------------------------------------
+            // Create cards
+            // ----------------------------------------------------
+
+            for (
+                const device
+                of devices
+            ) {
+
+                createDeviceCard(
+                    device,
+                    grid
+                );
+
+            }
+
+
+            // ----------------------------------------------------
+            // Add group to page
+            // ----------------------------------------------------
+
+            group.appendChild(
+                header
+            );
+
+
+            group.appendChild(
+                grid
+            );
+
+
+            devicesElement.appendChild(
+                group
+            );
+
+        }
+
+
+        // ========================================================
+        // CREATE DEVICE CARD
+        // ========================================================
+
+        function createDeviceCard(
+            device,
+            parentElement
+        ) {
+
+
+            const type =
+                String(
+                    device.type ?? ""
+                );
+
+
+            const deviceType =
+                deviceTypeLookup[type];
+
+
+            // ----------------------------------------------------
+            // Card
+            // ----------------------------------------------------
+
+            const card =
+                document.createElement("div");
+
+
+            card.className =
+                "device-card";
+
+
+            // ====================================================
+            // UNKNOWN DEVICE
+            // ====================================================
+
+            if (!deviceType) {
+
+
+                card.classList.add(
+                    "disabled"
+                );
+
+
+                card.innerHTML = `
+
+                        <div class="device-name">
+
+                            ${escapeHtml(
+                    device.name ||
+                    "Unnamed Device"
+                )}
+
+                        </div>
+
+
+                        <div class="device-info">
+
+                            <div>
+
+                                Type:
+                                Unknown
+
+                            </div>
+
+
+                            <div>
+
+                                IP:
+                                ${escapeHtml(
+                    device.ipAddress ||
+                    "N/A"
+                )}
+
+                            </div>
+
+
+                            <div>
+
+                                Device ID:
+                                ${escapeHtml(
+                    device.id ||
+                    "N/A"
+                )}
+
+                            </div>
+
+
+                            <div class="device-status">
+
+                                <span
+                                    class="
+                                        status-value
+                                        unknown
+                                    "
+                                >
+                                    ?
+                                </span>
+
+                            </div>
+
+
+                            <span class="device-type">
+
+                                Unknown type:
+                                ${escapeHtml(type)}
+
+                            </span>
+
+                        </div>
+
+                    `;
+
+
+                parentElement.appendChild(
+                    card
+                );
+
+
+                loadDeviceStatus(
+                    device,
+                    card
+                );
+
+
+                return;
+
+            }
+
+
+            // ====================================================
+            // KNOWN DEVICE
+            // ====================================================
+
+            card.innerHTML = `
+
+                    <div class="device-name">
+
+                        ${escapeHtml(
+                device.name ||
+                "Unnamed Device"
+            )}
+
+                    </div>
+
+
+                    <div class="device-info">
+
+
+                        <div>
+
+                            Type:
+                            ${escapeHtml(
+                deviceType.name
+            )}
+
+                        </div>
+
+
+                        <div>
+
+                            IP:
+                            ${escapeHtml(
+                device.ipAddress ||
+                "N/A"
+            )}
+
+                        </div>
+
+
+                        <div class="device-status">
+
+                            <span
+                                class="
+                                    status-value
+                                    unknown
+                                "
+                            >
+                                ?
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="device-actions">
+
+
+                        <span class="device-type">
+
+                            Open device
+
+                        </span>
+
+
+                        ${deviceType.tallypage
+                    ? `
+
+                                    <button
+                                        type="button"
+                                        class="setup-tally"
+                                    >
+                                        Setup Tally
+                                    </button>
+
+                                `
+                    : ""
+                }
+
+
+                    </div>
+
+                `;
+
+
+            // ====================================================
+            // TALLY BUTTON
+            // ====================================================
+
+            const tallyButton =
+                card.querySelector(
+                    ".setup-tally"
+                );
+
+
+            if (tallyButton) {
+
+
+                tallyButton.addEventListener(
+                    "click",
+                    function (event) {
+
+
+                        // Don't open the device page
+                        // when clicking Setup Tally.
+
+                        event.stopPropagation();
+
+
+                        const url =
+                            deviceType.tallypage +
+                            "?id=" +
+                            encodeURIComponent(
+                                device.id
+                            );
+
+
+                        window.location.href =
+                            url;
+
+                    }
+                );
+
+            }
+
+
+            // ====================================================
+            // DEVICE CLICK
+            // ====================================================
+
+            card.addEventListener(
+                "click",
+                function () {
+
+
+                    if (!device.id) {
+
+                        return;
+
+                    }
+
+
+                    const url =
+                        deviceType.page +
+                        "?id=" +
+                        encodeURIComponent(
+                            device.id
+                        );
+
+
+                    window.location.href =
+                        url;
+
+                }
+            );
+
+
+            // ----------------------------------------------------
+            // Add card
+            // ----------------------------------------------------
+
+            parentElement.appendChild(
+                card
+            );
+
+
+            // ----------------------------------------------------
+            // Load status
+            // ----------------------------------------------------
+
+            loadDeviceStatus(
+                device,
+                card
+            );
+
+        }
+
+
+        // ========================================================
+        // LOAD DEVICE STATUS
+        // ========================================================
+
+        async function loadDeviceStatus(
+            device,
+            card
+        ) {
+
+
+            const statusElement =
+                card.querySelector(
+                    ".status-value"
+                );
+
+
+            if (!statusElement) {
+
+                return;
+
+            }
+
+
+            try {
+
+
+                const response =
+                    await fetch(
+                        `/api/device/getdevicestatus/${encodeURIComponent(device.id)}`,
+                        {
+                            credentials:
+                                "same-origin"
+                        }
+                    );
+
+
+                // ------------------------------------------------
+                // Authentication
+                // ------------------------------------------------
+
+                if (
+                    response.status === 401
+                ) {
+
+
+                    const returnUrl =
+                        window.location.pathname +
+                        window.location.search;
+
+
+                    window.location.href =
+                        `/login.html?returnUrl=${encodeURIComponent(returnUrl)}`;
+
+
+                    return;
+
+                }
+
+
+                // ------------------------------------------------
+                // Permission
+                // ------------------------------------------------
+
+                if (
+                    response.status === 403
+                ) {
+
+
+                    statusElement.textContent =
+                        "?";
+
+
+                    statusElement.className =
+                        "status-value unknown";
+
+
+                    return;
+
+                }
+
+
+                // ------------------------------------------------
+                // Error
+                // ------------------------------------------------
+
+                if (!response.ok) {
+
+
+                    statusElement.textContent =
+                        "✕";
+
+
+                    statusElement.className =
+                        "status-value error";
+
+
+                    return;
+
+                }
+
+
+                // ------------------------------------------------
+                // Status text
+                // ------------------------------------------------
+
+                const status =
+                    (
+                        await response.text()
+                    )
+                        .trim()
+                        .toLowerCase();
+
+
+                // ------------------------------------------------
+                // Connected
+                // ------------------------------------------------
+
+                if (
+                    status === "connected"
+                ) {
+
+
+                    statusElement.textContent =
+                        "✓";
+
+
+                    statusElement.className =
+                        "status-value connected";
+
+                }
+
+
+                // ------------------------------------------------
+                // Error
+                // ------------------------------------------------
+
+                else if (
+                    status === "error"
+                ) {
+
+
+                    statusElement.textContent =
+                        "✕";
+
+
+                    statusElement.className =
+                        "status-value error";
+
+                }
+
+
+                // ------------------------------------------------
+                // Unknown
+                // ------------------------------------------------
+
+                else {
+
+
+                    statusElement.textContent =
+                        "?";
+
+
+                    statusElement.className =
+                        "status-value unknown";
+
+                }
+
+            }
+            catch (error) {
+
+
+                console.error(
+                    `Failed to get status for device ${device.id}:`,
+                    error
+                );
+
+
+                statusElement.textContent =
+                    "✕";
+
+
+                statusElement.className =
+                    "status-value error";
+
+            }
+
+        }
+
+
+        // ========================================================
+        // HTML ESCAPING
+        // ========================================================
+
+        function escapeHtml(value) {
+
+            return String(value)
+
+                .replaceAll(
+                    "&",
+                    "&amp;"
+                )
+
+                .replaceAll(
+                    "<",
+                    "&lt;"
+                )
+
+                .replaceAll(
+                    ">",
+                    "&gt;"
+                )
+
+                .replaceAll(
+                    '"',
+                    "&quot;"
+                )
+
+                .replaceAll(
+                    "'",
+                    "&#039;"
+                );
+
+        }
+
+
+        // ========================================================
+        // REFRESH BUTTON
+        // ========================================================
+
+
+
+        // ========================================================
+        // INITIAL LOAD
+        // ========================================================
+
+        (async function () {
+            try {
+                await loadDeviceTypes();
+                await loadDevices();
+            }
+            catch (error) {
+                console.error("Failed to initialize dashboard:", error);
+                statusElement.textContent = "";
+                devicesElement.innerHTML = `
+            <div class="error">
+                Unable to load device information.<br>
+                ${escapeHtml(error.message)}
+            </div>
+        `;
+            }
+        })();
+
+
+        // ========================================================
+        // AUTOMATIC REFRESH
+        // ========================================================
+
+        setInterval(
+            loadDevices,
+            10000
+        );
+
+
+    </script>
+
+
+</body>
+
+</html>
+

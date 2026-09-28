@@ -1,0 +1,1070 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="/header.js"></script>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Iceburg - Users</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #232323;
+            color: #eee;
+        }
+
+        .page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+            .header h1 {
+                margin: 0;
+                font-size: 28px;
+            }
+
+            .header p {
+                margin: 5px 0 0;
+                color: #999;
+            }
+
+        button {
+            border: 0;
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            background: #333;
+            color: white;
+        }
+
+
+
+            button.primary {
+                background: #1976d2;
+            }
+
+            button.danger {
+                background: #b3261e;
+            }
+
+
+
+        .card {
+            background: #1b1b1b;
+            border: 1px solid #303030;
+          
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #303030;
+        }
+
+        th {
+            background: #222;
+            color: #aaa;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+        }
+
+        /* Modal */
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+            .modal-backdrop.visible {
+                display: flex;
+            }
+
+        .modal {
+            width: 100%;
+            max-width: 550px;
+            background: #1b1b1b;
+            border: 1px solid #333;
+           
+            padding: 25px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
+        }
+
+            .modal h2 {
+                margin-top: 0;
+            }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+            .field label {
+                display: block;
+                margin-bottom: 7px;
+                color: #bbb;
+                font-size: 14px;
+            }
+
+            .field input,
+            .field select {
+                width: 100%;
+                padding: 11px;
+                background: #111;
+                border: 1px solid #444;
+               
+                color: white;
+                font-size: 15px;
+            }
+
+                .field input:focus,
+                .field select:focus {
+                    outline: none;
+                    border-color: #1976d2;
+                }
+
+        .help {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #777;
+        }
+
+        .ip-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .ip-row {
+            display: flex;
+            gap: 8px;
+        }
+
+            .ip-row input {
+                flex: 1;
+            }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .error {
+            background: #3b1717;
+            color: #ff8a80;
+            border: 1px solid #632626;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+            .error.visible {
+                display: block;
+            }
+
+        .loading {
+            padding: 30px;
+            text-align: center;
+            color: #888;
+        }
+
+        @media (max-width: 700px) {
+            .page {
+                padding: 15px;
+            }
+
+            .header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            th:nth-child(1),
+            td:nth-child(1) {
+                display: none;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page">
+
+        <div class="header">
+
+            <div>
+                <h1>User Management</h1>
+
+            </div>
+
+            <button class="primary"
+                    onclick="openAddUser()">
+                Add User
+            </button>
+
+        </div>
+
+        <div class="card">
+
+            <div id="loading"
+                 class="loading">
+                Loading users...
+            </div>
+
+            <table id="userTable" style="display:none">
+
+                <thead>
+                    <tr>
+
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Auto Login IPs</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="userTableBody"></tbody>
+
+            </table>
+
+            <div id="empty"
+                 class="empty"
+                 style="display:none">
+
+                No users found.
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================================================
+         USER MODAL
+         ============================================================ -->
+
+    <div id="modalBackdrop"
+         class="modal-backdrop">
+
+        <div class="modal">
+
+            <h2 id="modalTitle">
+                Add User
+            </h2>
+
+            <div id="error"
+                 class="error">
+            </div>
+
+            <div class="field">
+
+                <label for="username">
+                    Username
+                </label>
+
+                <input id="username"
+                       type="text"
+                       autocomplete="off">
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="role">
+                    Role
+                </label>
+
+                <select id="role">
+
+                    <option value="User">
+                        User
+                    </option>
+
+                    <option value="Admin">
+                        Admin
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="field">
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input id="password"
+                       type="password"
+                       autocomplete="new-password">
+
+                <div id="passwordHelp"
+                     class="help">
+
+                    Enter a password for this user.
+
+                </div>
+
+            </div>
+
+
+            <div class="field">
+
+                <label>
+                    Auto Login IP Addresses
+                </label>
+
+                <div id="ipList"
+                     class="ip-list">
+                </div>
+
+                <button type="button"
+                        onclick="addIpField()"
+                        style="margin-top:8px">
+
+                    + Add IP
+
+                </button>
+
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button onclick="closeModal()">
+
+                    Cancel
+
+                </button>
+
+                <button class="primary"
+                        onclick="saveUser()">
+
+                    Save User
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+const PASSWORD_ITERATIONS = 600000;
+const PASSWORD_SALT_SIZE = 32;
+const PASSWORD_HASH_SIZE = 32;
+
+let users = [];
+let editingUserId = null;
+
+
+// ============================================================
+// API
+// ============================================================
+
+async function api(url, options = {}) {
+
+    const response =
+        await fetch(url, {
+            ...options,
+
+            headers: {
+                "Content-Type": "application/json",
+                ...(options.headers || {})
+            },
+
+            credentials: "same-origin"
+        });
+
+    if (!response.ok) {
+
+        let message =
+            `Request failed (${response.status})`;
+
+        try {
+
+            const data =
+                await response.json();
+
+            if (data.error) {
+                message = data.error;
+            }
+
+        } catch {
+            // Ignore invalid JSON response.
+        }
+
+        throw new Error(message);
+    }
+
+    return response.json();
+}
+
+
+// ============================================================
+// LOAD USERS
+// ============================================================
+
+async function loadUsers() {
+
+    const loading =
+        document.getElementById("loading");
+
+    const table =
+        document.getElementById("userTable");
+
+    const empty =
+        document.getElementById("empty");
+
+    loading.style.display = "block";
+    table.style.display = "none";
+    empty.style.display = "none";
+
+    try {
+
+        users =
+            await api("/api/users");
+
+        renderUsers();
+
+    } catch (error) {
+
+        loading.textContent =
+            error.message;
+
+    } finally {
+
+        loading.style.display = "none";
+
+    }
+}
+
+
+// ============================================================
+// RENDER USERS
+// ============================================================
+
+function renderUsers() {
+
+    const tbody =
+        document.getElementById("userTableBody");
+
+    const table =
+        document.getElementById("userTable");
+
+    const empty =
+        document.getElementById("empty");
+
+    tbody.innerHTML = "";
+
+    if (!users.length) {
+
+        table.style.display = "none";
+        empty.style.display = "block";
+
+        return;
+    }
+
+    table.style.display = "table";
+    empty.style.display = "none";
+
+    for (const user of users) {
+
+        const row =
+            document.createElement("tr");
+
+        const ips =
+            user.autoLoginIps || [];
+
+        const roleClass =
+            user.role === "Admin"
+                ? "admin"
+                : "user";
+
+        row.innerHTML = `
+
+
+
+            <td>
+                <strong>
+                    ${escapeHtml(user.username)}
+                </strong>
+            </td>
+
+            <td>
+                <span class="role ${roleClass}">
+                    ${escapeHtml(user.role)}
+                </span>
+            </td>
+
+            <td>
+                ${
+                    ips.length
+                        ? ips.map(escapeHtml).join("<br>")
+                        : "<span style='color:#666'>None</span>"
+                }
+            </td>
+
+            <td>
+
+                <div class="actions">
+
+                    <button
+                        onclick="openEditUser('${escapeJs(user.id)}')">
+
+                        Edit
+
+                    </button>
+
+                    <button
+                        class="danger"
+                        onclick="deleteUser('${escapeJs(user.id)}')">
+
+                        Delete
+
+                    </button>
+
+                </div>
+
+            </td>
+        `;
+
+        tbody.appendChild(row);
+    }
+}
+
+
+// ============================================================
+// ADD USER
+// ============================================================
+
+function openAddUser() {
+
+    editingUserId = null;
+
+    document.getElementById("modalTitle")
+        .textContent = "Add User";
+
+    document.getElementById("username")
+        .value = "";
+
+    document.getElementById("role")
+        .value = "User";
+
+    document.getElementById("password")
+        .value = "";
+
+    document.getElementById("passwordHelp")
+        .textContent =
+        "Enter a password for this user.";
+
+    clearError();
+
+    createIpFields([]);
+
+    showModal();
+}
+
+
+// ============================================================
+// EDIT USER
+// ============================================================
+
+function openEditUser(id) {
+
+    const user =
+        users.find(u => u.id === id);
+
+    if (!user)
+        return;
+
+    editingUserId = id;
+
+    document.getElementById("modalTitle")
+        .textContent = "Edit User";
+
+    document.getElementById("username")
+        .value = user.username;
+
+    document.getElementById("role")
+        .value = user.role;
+
+    document.getElementById("password")
+        .value = "";
+
+    document.getElementById("passwordHelp")
+        .textContent =
+        "Leave blank to keep the existing password.";
+
+    clearError();
+
+    createIpFields(
+        user.autoLoginIps || []
+    );
+
+    showModal();
+}
+
+
+// ============================================================
+// PASSWORD HASHING
+// ============================================================
+
+async function generatePasswordMaterial(password) {
+
+    const encoder =
+        new TextEncoder();
+
+    const passwordBytes =
+        encoder.encode(password);
+
+    const salt =
+        crypto.getRandomValues(
+            new Uint8Array(PASSWORD_SALT_SIZE)
+        );
+
+    const key =
+        await crypto.subtle.importKey(
+            "raw",
+            passwordBytes,
+            {
+                name: "PBKDF2"
+            },
+            false,
+            [
+                "deriveBits"
+            ]
+        );
+
+    const derivedBits =
+        await crypto.subtle.deriveBits(
+            {
+                name: "PBKDF2",
+                salt: salt,
+                iterations: PASSWORD_ITERATIONS,
+                hash: "SHA-256"
+            },
+            key,
+            PASSWORD_HASH_SIZE * 8
+        );
+
+    const hash =
+        new Uint8Array(derivedBits);
+
+    return {
+        passwordSalt:
+            arrayBufferToBase64(salt),
+
+        passwordHash:
+            arrayBufferToBase64(hash)
+    };
+}
+
+
+function arrayBufferToBase64(buffer) {
+
+    const bytes =
+        new Uint8Array(buffer);
+
+    let binary = "";
+
+    for (const byte of bytes) {
+        binary += String.fromCharCode(byte);
+    }
+
+    return btoa(binary);
+}
+
+
+// ============================================================
+// SAVE USER
+// ============================================================
+
+async function saveUser() {
+
+    clearError();
+
+    const username =
+        document.getElementById("username")
+            .value.trim();
+
+    const role =
+        document.getElementById("role")
+            .value;
+
+    const password =
+        document.getElementById("password")
+            .value;
+
+    if (!username) {
+
+        showError(
+            "Username is required."
+        );
+
+        return;
+    }
+
+
+    if (!editingUserId && !password) {
+
+        showError(
+            "A password is required."
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const autoLoginIps =
+            getIps();
+
+
+        let passwordMaterial = {};
+
+
+        if (password) {
+
+            passwordMaterial =
+                await generatePasswordMaterial(
+                    password
+                );
+
+        }
+
+
+        if (editingUserId) {
+
+            await api(
+                `/api/users/${encodeURIComponent(editingUserId)}`,
+                {
+                    method: "PUT",
+
+                    body: JSON.stringify({
+
+                        username,
+
+                        role,
+
+                        autoLoginIps,
+
+                        passwordSalt:
+                            passwordMaterial.passwordSalt
+                            || null,
+
+                        passwordHash:
+                            passwordMaterial.passwordHash
+                            || null
+
+                    })
+                }
+            );
+
+        } else {
+
+            await api(
+                "/api/users",
+                {
+                    method: "POST",
+
+                    body: JSON.stringify({
+
+                        username,
+
+                        role,
+
+                        autoLoginIps,
+
+                        passwordSalt:
+                            passwordMaterial.passwordSalt,
+
+                        passwordHash:
+                            passwordMaterial.passwordHash
+
+                    })
+                }
+            );
+
+        }
+
+
+        closeModal();
+
+        await loadUsers();
+
+    } catch (error) {
+
+        showError(
+            error.message
+        );
+
+    }
+}
+
+
+// ============================================================
+// DELETE USER
+// ============================================================
+
+async function deleteUser(id) {
+
+    const user =
+        users.find(u => u.id === id);
+
+    if (!user)
+        return;
+
+    const confirmed =
+        confirm(
+            `Delete user "${user.username}"?\n\n` +
+            `This cannot be undone.`
+        );
+
+    if (!confirmed)
+        return;
+
+    try {
+
+        await api(
+            `/api/users/${encodeURIComponent(id)}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        await loadUsers();
+
+    } catch (error) {
+
+        alert(error.message);
+
+    }
+}
+
+
+// ============================================================
+// AUTO LOGIN IPs
+// ============================================================
+
+function createIpFields(ips) {
+
+    const container =
+        document.getElementById("ipList");
+
+    container.innerHTML = "";
+
+    if (!ips.length) {
+
+        addIpField("");
+
+        return;
+    }
+
+    for (const ip of ips) {
+
+        addIpField(ip);
+
+    }
+}
+
+
+function addIpField(value = "") {
+
+    const container =
+        document.getElementById("ipList");
+
+    const row =
+        document.createElement("div");
+
+    row.className = "ip-row";
+
+    row.innerHTML = `
+
+        <input
+            type="text"
+            placeholder="192.168.1.100"
+            value="${escapeHtml(value)}">
+
+        <button
+            type="button"
+            onclick="this.parentElement.remove()">
+
+            Remove
+
+        </button>
+    `;
+
+    container.appendChild(row);
+}
+
+
+function getIps() {
+
+    const inputs =
+        document.querySelectorAll(
+            "#ipList input"
+        );
+
+    return Array.from(inputs)
+        .map(input => input.value.trim())
+        .filter(ip => ip.length > 0);
+}
+
+
+// ============================================================
+// MODAL
+// ============================================================
+
+function showModal() {
+
+    document
+        .getElementById("modalBackdrop")
+        .classList.add("visible");
+}
+
+
+function closeModal() {
+
+    document
+        .getElementById("modalBackdrop")
+        .classList.remove("visible");
+
+    editingUserId = null;
+}
+
+
+document
+    .getElementById("modalBackdrop")
+    .addEventListener(
+        "click",
+        event => {
+
+            if (
+                event.target.id ===
+                "modalBackdrop"
+            ) {
+                closeModal();
+            }
+
+        }
+    );
+
+
+// ============================================================
+// ERRORS
+// ============================================================
+
+function showError(message) {
+
+    const element =
+        document.getElementById("error");
+
+    element.textContent = message;
+
+    element.classList.add("visible");
+}
+
+
+function clearError() {
+
+    const element =
+        document.getElementById("error");
+
+    element.textContent = "";
+
+    element.classList.remove("visible");
+}
+
+
+// ============================================================
+// HTML / JS ESCAPING
+// ============================================================
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+
+function escapeJs(value) {
+
+    return String(value)
+        .replaceAll("\\", "\\\\")
+        .replaceAll("'", "\\'");
+}
+
+
+// ============================================================
+// START
+// ============================================================
+
+loadUsers();
+
+    </script>
+
+</body>
+</html>

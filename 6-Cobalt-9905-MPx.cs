@@ -1,28 +1,10 @@
 using Iceburg.Database;
 using System.Globalization;
 using System.Net;
-using System.Net.Http;
-using System.Reflection;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using Iceburg.Database;
-using System.Diagnostics;
-using System;
 
 namespace Iceburg.Conversion.Cobalt.OG9905;
 
-/// <summary>
-/// Single-file AJA/Cobalt OG9905 controller.
-///
-/// IMPORTANT:
-/// The OG9905 does NOT use desc.json.
-/// All parameter definitions, dropdown options and slider ranges
-/// are defined locally in this class.
-///
-/// Communication:
-///     GET http://<IP>:9002/getOid?oid=<PARAM>
-///     GET http://<IP>:9002/setOid?oid=<PARAM>&value=<VALUE>
-/// </summary>
 public sealed class OG9905MPx
 {
     private static readonly HttpClient Http = new(new HttpClientHandler
@@ -33,8 +15,7 @@ public sealed class OG9905MPx
         Timeout = TimeSpan.FromSeconds(3)
     };
 
-    private static readonly Dictionary<string, OG9905ParameterDefinition>
-        Definitions = BuildDefinitions();
+    private static readonly Dictionary<string, OG9905ParameterDefinition>Definitions = BuildDefinitions();
 
     private static readonly Dictionary<int, string> VideoGroups = new()
     {
@@ -52,18 +33,14 @@ public sealed class OG9905MPx
         [4] = "Audio 4 Processing"
     };
 
-    private static readonly Dictionary<int, Dictionary<int, string>>
-        VideoSubgroups =
-            BuildSubgroups(
+    private static readonly Dictionary<int, Dictionary<int, string>>VideoSubgroups = BuildSubgroups(
                 "Input Settings",
                 "ProcAmp",
                 "Red Channel",
                 "Green Channel",
                 "Blue Channel");
 
-    private static readonly Dictionary<int, Dictionary<int, string>>
-        AudioSubgroups =
-            BuildSubgroups(
+    private static readonly Dictionary<int, Dictionary<int, string>>AudioSubgroups = BuildSubgroups(
                 "Input Settings",
                 "Channel Map 1-4",
                 "Channel Map 5-8",
@@ -72,10 +49,6 @@ public sealed class OG9905MPx
 
     private readonly string _id;
     private readonly Device _device;
-
-    // ============================================================
-    // PARAMETER MODEL
-    // ============================================================
 
     public enum OG9905ParameterType
     {
@@ -108,61 +81,26 @@ public sealed class OG9905MPx
         public List<OG9905ParameterOption> Options { get; init; } = new();
     }
 
-    // ============================================================
-    // CONSTRUCTOR
-    // ============================================================
-
-
     public OG9905MPx(string id)
     {
         _id = id ?? throw new ArgumentNullException(nameof(id));
-        _device = Database.Database.GetDevice(id)
-            ?? throw new InvalidOperationException(
-                $"Device '{id}' could not be found in the database.");
+        _device = Database.Database.GetDevice(id) ?? throw new InvalidOperationException($"Device '{id}' could not be found in the database.");
     }
     // ============================================================
     // PARAMETER DEFINITIONS
     // ============================================================
 
-    private static Dictionary<string, OG9905ParameterDefinition>
-        BuildDefinitions()
+    private static Dictionary<string, OG9905ParameterDefinition>BuildDefinitions()
     {
-        var d =
-            new Dictionary<string, OG9905ParameterDefinition>(
-                StringComparer.Ordinal);
+        var d = new Dictionary<string, OG9905ParameterDefinition>(StringComparer.Ordinal);
 
-        void Add(
-            string id,
-            OG9905ParameterType type,
-            int group,
-            int subgroup,
-            bool writable = true,
-            IEnumerable<(int Value, string Text)>? options = null,
-            double? min = null,
-            double? max = null)
+        void Add(string id,OG9905ParameterType type,int group,int subgroup,bool writable = true,IEnumerable<(int Value, string Text)>? options = null,double? min = null,double? max = null)
         {
-            var definition =
-                new OG9905ParameterDefinition
-                {
-                    ParamId = id,
-                    Type = type,
-                    Group = group,
-                    Subgroup = subgroup,
-                    Writable = writable,
-                    Min = min,
-                    Max = max
-                };
+            var definition = new OG9905ParameterDefinition{ParamId = id,Type = type,Group = group,Subgroup = subgroup,Writable = writable,Min = min,Max = max};
 
             if (options != null)
             {
-                definition.Options.AddRange(
-                    options.Select(x =>
-                        new OG9905ParameterOption
-                        {
-                            Value = x.Value.ToString(
-                                CultureInfo.InvariantCulture),
-                            Text = x.Text
-                        }));
+                definition.Options.AddRange(options.Select(x =>new OG9905ParameterOption{Value = x.Value.ToString(CultureInfo.InvariantCulture), Text = x.Text}));
             }
 
             d[id] = definition;
@@ -175,8 +113,7 @@ public sealed class OG9905MPx
         // routing parameters.
         // ========================================================
 
-        var audioRoutingOptions =
-            BuildAudioRoutingOptions();
+        var audioRoutingOptions =BuildAudioRoutingOptions();
 
         // ========================================================
         // AUDIO PATH 1
@@ -187,63 +124,15 @@ public sealed class OG9905MPx
         // 6839 = Ch 8
         // ========================================================
 
-        Add(
-            "6832",
-            OG9905ParameterType.Dropdown,
-            1,
-            2,
-            true,
-            audioRoutingOptions);
+        Add("6832", OG9905ParameterType.Dropdown, 1, 2, true, audioRoutingOptions);
+        Add("6833", OG9905ParameterType.Dropdown, 1, 2, true, audioRoutingOptions);
+        Add("6834", OG9905ParameterType.Dropdown, 1, 2, true, audioRoutingOptions);
+        Add("6835", OG9905ParameterType.Dropdown, 1, 2, true, audioRoutingOptions);
 
-        Add(
-            "6833",
-            OG9905ParameterType.Dropdown,
-            1,
-            2,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6834",
-            OG9905ParameterType.Dropdown,
-            1,
-            2,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6835",
-            OG9905ParameterType.Dropdown,
-            1,
-            2,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6836",
-            OG9905ParameterType.Dropdown,
-            1,
-            3,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6837",
-            OG9905ParameterType.Dropdown,
-            1,
-            3,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6838",
-            OG9905ParameterType.Dropdown,
-            1,
-            3,
-            true,
-            audioRoutingOptions);
-
-        Add("6839",OG9905ParameterType.Dropdown,1,3,true,audioRoutingOptions);
+        Add("6836", OG9905ParameterType.Dropdown, 1, 3, true, audioRoutingOptions);
+        Add("6837", OG9905ParameterType.Dropdown, 1, 3, true, audioRoutingOptions);
+        Add("6838", OG9905ParameterType.Dropdown, 1, 3, true, audioRoutingOptions);
+        Add("6839", OG9905ParameterType.Dropdown, 1, 3, true, audioRoutingOptions);
 
         Add("6840", OG9905ParameterType.Dropdown, 1, 4, true, audioRoutingOptions);
         Add("6841", OG9905ParameterType.Dropdown, 1, 4, true, audioRoutingOptions);
@@ -260,71 +149,15 @@ public sealed class OG9905MPx
         //
         // 6848 - 6855
         // ========================================================
+        Add("6848", OG9905ParameterType.Dropdown, 2, 2, true, audioRoutingOptions);
+        Add("6849", OG9905ParameterType.Dropdown, 2, 2, true, audioRoutingOptions);
+        Add("6850", OG9905ParameterType.Dropdown, 2, 2, true, audioRoutingOptions);
+        Add("6851", OG9905ParameterType.Dropdown, 2, 2, true, audioRoutingOptions);
 
-        Add(
-            "6848",
-            OG9905ParameterType.Dropdown,
-            2,
-            2,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6849",
-            OG9905ParameterType.Dropdown,
-            2,
-            2,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6850",
-            OG9905ParameterType.Dropdown,
-            2,
-            2,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6851",
-            OG9905ParameterType.Dropdown,
-            2,
-            2,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6852",
-            OG9905ParameterType.Dropdown,
-            2,
-            3,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6853",
-            OG9905ParameterType.Dropdown,
-            2,
-            3,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6854",
-            OG9905ParameterType.Dropdown,
-            2,
-            3,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6855",
-            OG9905ParameterType.Dropdown,
-            2,
-            3,
-            true,
-            audioRoutingOptions);
-
+        Add("6852", OG9905ParameterType.Dropdown, 2, 3, true, audioRoutingOptions);
+        Add("6853", OG9905ParameterType.Dropdown, 2, 3, true, audioRoutingOptions);
+        Add("6854", OG9905ParameterType.Dropdown, 2, 3, true, audioRoutingOptions);
+        Add("6855", OG9905ParameterType.Dropdown, 2, 3, true, audioRoutingOptions);
 
         Add("6856", OG9905ParameterType.Dropdown, 2, 4, true, audioRoutingOptions);
         Add("6857", OG9905ParameterType.Dropdown, 2, 4, true, audioRoutingOptions);
@@ -342,69 +175,15 @@ public sealed class OG9905MPx
         // 6864 - 6871
         // ========================================================
 
-        Add(
-            "6864",
-            OG9905ParameterType.Dropdown,
-            3,
-            2,
-            true,
-            audioRoutingOptions);
+        Add("6864", OG9905ParameterType.Dropdown, 3, 2, true, audioRoutingOptions);
+        Add("6865", OG9905ParameterType.Dropdown, 3, 2, true, audioRoutingOptions);
+        Add("6866", OG9905ParameterType.Dropdown, 3, 2, true, audioRoutingOptions);
+        Add("6867", OG9905ParameterType.Dropdown, 3, 2, true, audioRoutingOptions);
 
-        Add(
-            "6865",
-            OG9905ParameterType.Dropdown,
-            3,
-            2,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6866",
-            OG9905ParameterType.Dropdown,
-            3,
-            2,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6867",
-            OG9905ParameterType.Dropdown,
-            3,
-            2,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6868",
-            OG9905ParameterType.Dropdown,
-            3,
-            3,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6869",
-            OG9905ParameterType.Dropdown,
-            3,
-            3,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6870",
-            OG9905ParameterType.Dropdown,
-            3,
-            3,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6871",
-            OG9905ParameterType.Dropdown,
-            3,
-            3,
-            true,
-            audioRoutingOptions);
+        Add("6868", OG9905ParameterType.Dropdown, 3, 3, true, audioRoutingOptions);
+        Add("6869", OG9905ParameterType.Dropdown, 3, 3, true, audioRoutingOptions);
+        Add("6870", OG9905ParameterType.Dropdown, 3, 3, true, audioRoutingOptions);
+        Add("6871", OG9905ParameterType.Dropdown, 3, 3, true, audioRoutingOptions);
 
         Add("6872", OG9905ParameterType.Dropdown, 3, 4, true, audioRoutingOptions);
         Add("6873", OG9905ParameterType.Dropdown, 3, 4, true, audioRoutingOptions);
@@ -420,71 +199,15 @@ public sealed class OG9905MPx
         //
         // 6880 - 6887
         // ========================================================
+        Add("6880", OG9905ParameterType.Dropdown, 4, 2, true, audioRoutingOptions);
+        Add("6881", OG9905ParameterType.Dropdown, 4, 2, true, audioRoutingOptions);
+        Add("6882", OG9905ParameterType.Dropdown, 4, 2, true, audioRoutingOptions);
+        Add("6883", OG9905ParameterType.Dropdown, 4, 2, true, audioRoutingOptions);
 
-        Add(
-            "6880",
-            OG9905ParameterType.Dropdown,
-            4,
-            2,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6881",
-            OG9905ParameterType.Dropdown,
-            4,
-            2,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6882",
-            OG9905ParameterType.Dropdown,
-            4,
-            2,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6883",
-            OG9905ParameterType.Dropdown,
-            4,
-            2,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6884",
-            OG9905ParameterType.Dropdown,
-            4,
-            3,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6885",
-            OG9905ParameterType.Dropdown,
-            4,
-            3,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6886",
-            OG9905ParameterType.Dropdown,
-            4,
-            3,
-            true,
-            audioRoutingOptions);
-
-        Add(
-            "6887",
-            OG9905ParameterType.Dropdown,
-            4,
-            3,
-            true,
-            audioRoutingOptions);
-
+        Add("6884", OG9905ParameterType.Dropdown, 4, 3, true, audioRoutingOptions);
+        Add("6885", OG9905ParameterType.Dropdown, 4, 3, true, audioRoutingOptions);
+        Add("6886", OG9905ParameterType.Dropdown, 4, 3, true, audioRoutingOptions);
+        Add("6887", OG9905ParameterType.Dropdown, 4, 3, true, audioRoutingOptions);
 
         Add("6888", OG9905ParameterType.Dropdown, 4, 4, true, audioRoutingOptions);
         Add("6889", OG9905ParameterType.Dropdown, 4, 4, true, audioRoutingOptions);
@@ -511,21 +234,9 @@ public sealed class OG9905MPx
         return d;
     }
 
-    // ============================================================
-    // RGB VIDEO HELPERS
-    // ============================================================
-
-   
-
-    // ============================================================
-    // AUDIO OPTION MAP
-    // ============================================================
-
-    private static List<(int Value, string Text)>
-        BuildAudioRoutingOptions()
+    private static List<(int Value, string Text)>BuildAudioRoutingOptions()
     {
-        var options =
-            new List<(int Value, string Text)>();
+        var options = new List<(int Value, string Text)>();
 
         // --------------------------------------------------------
         // Path 1 EB
@@ -533,11 +244,7 @@ public sealed class OG9905MPx
 
         for (int i = 0; i < 16; i++)
         {
-            options.Add(
-                (
-                    i,
-                    $"Path 1 EB Ch {i + 1}"
-                ));
+            options.Add((i,$"Path 1 EB Ch {i + 1}"));
         }
 
         // --------------------------------------------------------
@@ -546,11 +253,7 @@ public sealed class OG9905MPx
 
         for (int i = 0; i < 16; i++)
         {
-            options.Add(
-                (
-                    16 + i,
-                    $"Path 2 EB Ch {i + 1}"
-                ));
+            options.Add((16 + i,$"Path 2 EB Ch {i + 1}"));
         }
 
         // --------------------------------------------------------
@@ -559,11 +262,7 @@ public sealed class OG9905MPx
 
         for (int i = 0; i < 16; i++)
         {
-            options.Add(
-                (
-                    32 + i,
-                    $"Path 3 EB Ch {i + 1}"
-                ));
+            options.Add((32 + i,$"Path 3 EB Ch {i + 1}"));
         }
 
         // --------------------------------------------------------
@@ -572,11 +271,7 @@ public sealed class OG9905MPx
 
         for (int i = 0; i < 16; i++)
         {
-            options.Add(
-                (
-                    48 + i,
-                    $"Path 4 EB Ch {i + 1}"
-                ));
+            options.Add((48 + i,$"Path 4 EB Ch {i + 1}"));
         }
 
         // --------------------------------------------------------
@@ -585,22 +280,14 @@ public sealed class OG9905MPx
 
         for (int i = 0; i < 32; i++)
         {
-            options.Add(
-                (
-                    128 + i,
-                    $"MADI RX {i + 1}"
-                ));
+            options.Add((128 + i,$"MADI RX {i + 1}"));
         }
 
         // --------------------------------------------------------
         // Silence
         // --------------------------------------------------------
 
-        options.Add(
-            (
-                4080,
-                "Silence"
-            ));
+        options.Add((4080,"Silence"));
 
         return options;
     }
@@ -609,21 +296,13 @@ public sealed class OG9905MPx
     // SUBGROUPS
     // ============================================================
 
-    private static Dictionary<int, Dictionary<int, string>>
-        BuildSubgroups(
-            string s1,
-            string s2,
-            string s3,
-            string s4,
-            string s5)
+    private static Dictionary<int, Dictionary<int, string>>BuildSubgroups(string s1,string s2,string s3,string s4,string s5)
     {
-        var result =
-            new Dictionary<int, Dictionary<int, string>>();
+        var result =new Dictionary<int, Dictionary<int, string>>();
 
         for (int group = 1; group <= 4; group++)
         {
-            result[group] =
-                new Dictionary<int, string>
+            result[group] = new Dictionary<int, string>
                 {
                     [1] = s1,
                     [2] = s2,
@@ -632,7 +311,6 @@ public sealed class OG9905MPx
                     [5] = s5
                 };
         }
-
         return result;
     }
 
@@ -655,8 +333,7 @@ public sealed class OG9905MPx
     // BASE URL
     // ============================================================
 
-    private string BaseUrl =>
-        $"http://{_device.IpAddress}";
+    private string BaseUrl => $"http://{_device.IpAddress}";
 
 
     // ============================================================
@@ -664,74 +341,35 @@ public sealed class OG9905MPx
     // ============================================================
 
   
-private async Task<JsonElement?> GetValueAsync(
-    string paramId,
-    CancellationToken cancellationToken)
+private async Task<JsonElement?> GetValueAsync(string paramId,CancellationToken cancellationToken)
     {
         if (_device == null)
-        {
-            
-
-            throw new InvalidOperationException(
-                "OG9905 device is not initialized.");
+        {throw new InvalidOperationException("OG9905 device is not initialized.");
         }
 
         if (!int.TryParse(paramId, out var oid))
         {
-          
-
-            throw new ArgumentException(
-                $"OG9905 parameter ID '{paramId}' is not numeric.",
-                nameof(paramId));
+            throw new ArgumentException( $"OG9905 parameter ID '{paramId}' is not numeric.", nameof(paramId));
         }
 
-        var url =
-            $"{BaseUrl}:9002/getOid?oid={Uri.EscapeDataString(paramId)}";
-
+        var url = $"{BaseUrl}:9002/getOid?oid={Uri.EscapeDataString(paramId)}";
         var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-
-        
 
         try
         {
-            using var request = new HttpRequestMessage(
-     HttpMethod.Get,
-     url);
-
+            using var request = new HttpRequestMessage(HttpMethod.Get,url);
             request.Headers.ConnectionClose = true;
-
-            using var response =
-                await Http.SendAsync(
-                    request,
-                    HttpCompletionOption.ResponseContentRead,
-                    cancellationToken);
-
+            using var response = await Http.SendAsync(request, HttpCompletionOption.ResponseContentRead,cancellationToken);
             stopwatch.Stop();
-
-       
-
-
-
-            var body =
-                await response.Content.ReadAsStringAsync(
-                    cancellationToken);
-
-
+            var body = await response.Content.ReadAsStringAsync( cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
-               
-
-                throw new HttpRequestException(
-                    $"OG9905 returned HTTP {(int)response.StatusCode} " +
-                    $"{response.ReasonPhrase} for OID {oid}. " +
-                    $"Response: {body}");
+                throw new HttpRequestException($"OG9905 returned HTTP {(int)response.StatusCode} " + $"{response.ReasonPhrase} for OID {oid}. " +$"Response: {body}");
             }
 
             if (string.IsNullOrWhiteSpace(body))
             {
-               
-
-                return null;
+              return null;
             }
 
             JsonDocument document;
@@ -742,117 +380,57 @@ private async Task<JsonElement?> GetValueAsync(
             }
             catch (JsonException ex)
             {
-                
-
-                Console.WriteLine(
-                    $"[OG9905]     Exception: {ex}");
-
+                Console.WriteLine($"[OG9905]     Exception: {ex}");
                 throw;
             }
 
             using (document)
             {
                 var json = document.RootElement;
-
-      
-
                 if (!json.TryGetProperty(
                         "data_updates",
                         out var dataUpdates))
                 {
-                   
-
-                    throw new InvalidOperationException(
-                        $"OG9905 response for OID {oid} " +
-                        $"did not contain 'data_updates'. " +
-                        $"Response: {body}");
+                    throw new InvalidOperationException($"OG9905 response for OID {oid} " + $"did not contain 'data_updates'. " +$"Response: {body}");
                 }
 
-                if (!dataUpdates.TryGetProperty(
-                        "oids",
-                        out var oids))
+                if (!dataUpdates.TryGetProperty("oids",out var oids))
                 {
-                  
-
-                    throw new InvalidOperationException(
-                        $"OG9905 response for OID {oid} " +
-                        $"did not contain 'oids'. " +
-                        $"Response: {body}");
+                    throw new InvalidOperationException( $"OG9905 response for OID {oid} " +$"did not contain 'oids'. " +$"Response: {body}");
                 }
 
                 foreach (var item in oids.EnumerateArray())
                 {
-                    if (!item.TryGetProperty(
-                            "oid",
-                            out var returnedOid))
-                    {
-                        
+                    if (!item.TryGetProperty( "oid",out var returnedOid))
+                    { 
                         continue;
                     }
 
-                    var returnedOidValue =
-                        returnedOid.GetInt32();
-
-                 
-
+                    var returnedOidValue =returnedOid.GetInt32();
                     if (returnedOidValue != oid)
                         continue;
 
-                    if (!item.TryGetProperty(
-                            "data_value",
-                            out var dataValue))
+                    if (!item.TryGetProperty("data_value",out var dataValue))
                     {
-                      
-
-                        throw new InvalidOperationException(
-                            $"OG9905 response for OID {oid} " +
-                            $"did not contain 'data_value'. " +
-                            $"Response: {body}");
+                        throw new InvalidOperationException($"OG9905 response for OID {oid} " + $"did not contain 'data_value'. " +$"Response: {body}");
                     }
-
-                 
-                        
-
                     return dataValue.Clone();
                 }
-
-                Console.WriteLine(
-                    $"[OG9905] WARNING: Requested OID {oid} " +
-                    $"was not found in the response.");
-
                 return null;
             }
         }
-        catch (OperationCanceledException ex)
+        catch (OperationCanceledException )
         {
             stopwatch.Stop();
-
-           
-
             throw;
         }
-        catch (Exception ex)
+        catch (Exception )
         {
             stopwatch.Stop();
-
-            
-
-            if (ex.InnerException != null)
-            {
-                
-            }
-
-            
-
-
-           
 
             throw;
         }
     }
-
-
-
 
     // ============================================================
     // SET VALUE

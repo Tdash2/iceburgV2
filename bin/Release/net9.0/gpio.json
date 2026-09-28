@@ -2,7 +2,7 @@
   "Devices": [
     {
       "DeviceId": "0",
-      "Name": "Tally1",
+      "Name": "Tally 1",
       "Nickname": "Tally1",
       "IpAddress": "10.8.0.214",
       "Inputs": [
@@ -142,15 +142,9 @@
           "InputIds": [
             "c9480dfbbd834985b5b8af54a5cfb139"
           ]
-        },
-        {
-          "SourceDeviceId": "0",
-          "OutputId": "a1c2f97d9d56403d9bcb4bb43137dce5",
-          "InputIds": [
-            "1fee65dd81644044ace5b41a3faf6a49"
-          ]
         }
-      ]
+      ],
+      "RemoteTallySource": null
     },
     {
       "DeviceId": "6e95ed60-30b8-4d6e-a0fe-49f36ae8411b",
@@ -428,11 +422,12 @@
             "1fee65dd81644044ace5b41a3faf6a49"
           ]
         }
-      ]
+      ],
+      "RemoteTallySource": null
     },
     {
       "DeviceId": "63b83fda-e2da-4cf8-ae7d-9a40d919ce3f",
-      "Name": "test Tally",
+      "Name": "Tally 2",
       "Nickname": "test Tally",
       "IpAddress": "1.1.1.1",
       "Inputs": [
@@ -452,7 +447,88 @@
         }
       ],
       "Outputs": [],
-      "Routes": []
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "8ce27400-51c1-4780-bd5b-9231f2cefcd5",
+      "Name": "Test device",
+      "Nickname": "Test device",
+      "IpAddress": "10.8.0.214",
+      "Inputs": [],
+      "Outputs": [],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "72392bc0-dd84-4270-8267-1a8a67424e65",
+      "Name": "Tally From Rush Studios",
+      "Nickname": "rush tally",
+      "IpAddress": "47.225.212.98",
+      "Inputs": [
+        {
+          "InputId": "37699c71d84b4ed598952a258a878c7a",
+          "Port": 1,
+          "Name": "Input 1",
+          "Nickname": "Input 1",
+          "Status": true
+        },
+        {
+          "InputId": "789658b5d243455e99157ebd0fbbe74d",
+          "Port": 2,
+          "Name": "Input 2",
+          "Nickname": "Input 2",
+          "Status": false
+        },
+        {
+          "InputId": "4026904208234c9bb5e398f4261da6c5",
+          "Port": 3,
+          "Name": "Input 3",
+          "Nickname": "Input 3",
+          "Status": false
+        },
+        {
+          "InputId": "314e9907a7ca481baff036c0ce1bc7a1",
+          "Port": 4,
+          "Name": "Input 4",
+          "Nickname": "Input 4",
+          "Status": false
+        },
+        {
+          "InputId": "943f6813dfe14031af04e7385b6e869b",
+          "Port": 5,
+          "Name": "Input 5",
+          "Nickname": "Input 5",
+          "Status": false
+        },
+        {
+          "InputId": "df3450c8d1f541faab4a346bf3a5fc2a",
+          "Port": 6,
+          "Name": "Input 6",
+          "Nickname": "Input 6",
+          "Status": false
+        },
+        {
+          "InputId": "9c4d563f1f2d4535bab21d2c34b3e65d",
+          "Port": 7,
+          "Name": "Input 7",
+          "Nickname": "Input 7",
+          "Status": false
+        },
+        {
+          "InputId": "08b37adb69f343eabaa197da830ddf4d",
+          "Port": 8,
+          "Name": "Input 8",
+          "Nickname": "Input 8",
+          "Status": false
+        }
+      ],
+      "Outputs": [],
+      "Routes": [],
+      "RemoteTallySource": {
+        "Port": 80,
+        "RemoteTallyId": "66"
+      }
     }
   ]
 }

@@ -1,7 +1,8 @@
 
 <!DOCTYPE html>
-<html lang="en">
 <script src="/header.js"></script>
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>ESP32 Web Flasher</title>
@@ -60,7 +61,7 @@
                 {
                     chipFamily: "ESP32-S3",
                     parts: [
-                        { path: "https://<?php echo $serverurl= $_SERVER['HTTP_HOST']; ?>/tally/uploadross/firmware.bin", offset: 0 }
+                        { path: "/tally/uploadross/firmware.bin", offset: 0 }
                     ]
                 }
             ]

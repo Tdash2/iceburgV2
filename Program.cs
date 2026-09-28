@@ -21,6 +21,8 @@ using System.Text.Json;
 using System.Net;
 using System.Data;
 using Iceburg.Conversion.Cobalt.OG9905;
+using System.Threading;
+using System.Reflection;
 
 bool debug = false;
 
@@ -69,8 +71,10 @@ builder.Services.AddHttpsRedirection(options =>
 
 
 
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
-{
+builder.Services.AddAuthentication(
+    CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
         options.Cookie.Name = "IceburgAuthv2";
 
         // JavaScript cannot read the authentication cookie.
@@ -146,10 +150,40 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 
         // --------------------------------------------------------
-        // DEBUG COOKIE VALIDATION
+        // COOKIE VALIDATION
         // --------------------------------------------------------
 
+        options.Events.OnValidatePrincipal = context =>
+        {
+            // Get the user ID stored in the cookie.
+            string? userId =
+                context.Principal?
+                    .FindFirst(ClaimTypes.NameIdentifier)?
+                    .Value;
 
+            // No user ID = invalid authentication cookie.
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                context.RejectPrincipal();
+
+                return Task.CompletedTask;
+            }
+
+            // Look up the CURRENT user from config.json.
+            User? user = Database.GetUserById(userId);
+
+            // User no longer exists.
+            if (user == null)
+            {
+                context.RejectPrincipal();
+
+                return context.HttpContext.SignOutAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme);
+            }
+
+            // User still exists.
+            return Task.CompletedTask;
+        };
     });
 
 builder.Services.AddAuthorization();
@@ -189,6 +223,7 @@ app.Use(async (context, next) =>
         stopwatch.Stop();
 
         Console.WriteLine(
+        
             $"{context.Request.Method} " +
             $"{context.Request.Path}" +
             $"{context.Request.QueryString} - " +
@@ -200,21 +235,82 @@ app.Use(async (context, next) =>
     }
 });
 
-// ============================================================
-// AUTHENTICATION
-// ============================================================
-//
-// IMPORTANT:
-// This must run BEFORE UseAuthorization() and before any
-// middleware that checks context.User.
-//
-// This reads the IceburgAuth cookie and populates
-// HttpContext.User.
-//
 app.UseAuthentication();
+
 // ============================================================
-// AUTHORIZATION
+// IP AUTO LOGIN
 // ============================================================
+
+app.Use(async (context, next) =>
+{
+    if (context.User.Identity?.IsAuthenticated != true)
+    {
+        var remoteIp =
+            context.Connection.RemoteIpAddress;
+
+        if (debug)
+        {
+            Console.WriteLine("Auto Login IP: "+remoteIp);
+        }
+
+        if (remoteIp != null)
+        {
+            var users =
+                Database.GetUsers();
+
+            var user =
+                users.FirstOrDefault(u =>
+                    u.AutoLoginIps.Any(ipString =>
+                    {
+                        if (IPAddress.TryParse(
+                                ipString,
+                                out var configuredIp))
+                        {
+                            return configuredIp.Equals(remoteIp);
+                        }
+
+                        return false;
+                    }));
+
+            if (user != null)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(
+                        ClaimTypes.NameIdentifier,
+                        user.Id),
+
+                    new Claim(
+                        ClaimTypes.Name,
+                        user.Username),
+
+                    new Claim(
+                        ClaimTypes.Role,
+                        user.Role)
+                };
+
+                var identity =
+                    new ClaimsIdentity(
+                        claims,
+                        CookieAuthenticationDefaults
+                            .AuthenticationScheme);
+
+                var principal =
+                    new ClaimsPrincipal(identity);
+
+                await context.SignInAsync(
+                    CookieAuthenticationDefaults
+                        .AuthenticationScheme,
+                    principal);
+
+
+            }
+        }
+    }
+
+    await next();
+});
+
 app.UseAuthorization();
 
 // ============================================================
@@ -255,20 +351,34 @@ app.Use(async (context, next) =>
 
     await next();
 });
+// ============================================================
+// ADMIN AREA PROTECTION
+// ============================================================
 
-// ============================================================
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path.StartsWithSegments("/admin"))
+    {
+        if (context.User.Identity?.IsAuthenticated != true)
+        {
+            context.Response.Redirect("/login.html");
+            return;
+        }
+
+        if (!IsAdmin(context))
+        {
+            context.Response.Redirect("/");
+            return;
+        }
+    }
+
+    await next();
+});
+
 // STATIC FILES
-// ============================================================
 app.UseDefaultFiles();
 app.UseStaticFiles();
-// ============================================================
-// LOGIN CHALLENGES
-// ============================================================
 var loginChallenges = new ConcurrentDictionary<string, LoginChallenge>();
-
-// ============================================================
-// LOGIN CHALLENGE ENDPOINT
-// ============================================================
 
 app.MapPost("/api/login/challenge",(LoginChallengeRequest request) =>
     {
@@ -360,10 +470,6 @@ app.MapPost("/api/login/challenge",(LoginChallengeRequest request) =>
         });
     });
 
-// ============================================================
-// LOGIN
-// ============================================================
-
 app.MapPost("/api/login",async (LoginRequest request,HttpContext httpContext) =>
     {
         // --------------------------------------------------------
@@ -399,6 +505,24 @@ app.MapPost("/api/login",async (LoginRequest request,HttpContext httpContext) =>
 
         var challengeId =
             request.ChallengeId.Trim();
+
+
+
+        var user2 = Database.GetUser(username);
+
+        if (user2 == null)
+        {
+            return Results.Unauthorized();
+        }
+
+        // Accounts with AutoLoginIps are not allowed to use
+        // username/password authentication.
+        if (user2.AutoLoginIps != null && user2.AutoLoginIps.Count > 0)
+        {
+            return Results.Unauthorized();
+        }
+
+        // Continue with your existing password verification...
 
 
         // --------------------------------------------------------
@@ -609,11 +733,6 @@ app.MapPost("/api/login",async (LoginRequest request,HttpContext httpContext) =>
         });
     });
 
-
-// ============================================================
-// LOGOUT
-// ============================================================
-
 app.MapGet("/api/logout",async (HttpContext httpContext) =>
     {
         await httpContext.SignOutAsync(
@@ -626,11 +745,260 @@ app.MapGet("/api/logout",async (HttpContext httpContext) =>
         });
     });
 
+app.MapPost("/api/logout", async (HttpContext httpContext) =>
+{
+    await httpContext.SignOutAsync(
+        CookieAuthenticationDefaults
+            .AuthenticationScheme);
 
-// ============================================================
-// CURRENT USER
-// ============================================================
+    return Results.Ok(new
+    {
+        success = true
+    });
+});
 
+//User managment API
+static bool IsAdmin(HttpContext context)
+{
+    if (context.User.Identity?.IsAuthenticated != true)
+        return false;
+
+    string? userId =
+        context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+    if (string.IsNullOrWhiteSpace(userId))
+        return false;
+
+    User? user = Database.GetUserById(userId);
+
+    return user != null &&
+           string.Equals(
+               user.Role,
+               "Admin",
+               StringComparison.OrdinalIgnoreCase);
+}
+
+app.MapPut("/api/users/{id}",(string id,HttpContext httpContext,UserUpdateRequest request) =>
+    {
+        // --------------------------------------------------------
+        // Admin only
+        // --------------------------------------------------------
+
+        if (!IsAdmin(httpContext))
+        {
+            return Results.Forbid();
+        }
+
+
+        // --------------------------------------------------------
+        // Make sure the user exists
+        // --------------------------------------------------------
+
+        User? existingUser = Database.GetUserById(id);
+
+        if (existingUser == null)
+        {
+            return Results.NotFound(new
+            {
+                error = "User not found."
+            });
+        }
+
+
+        // --------------------------------------------------------
+        // Validate username
+        // --------------------------------------------------------
+
+        if (string.IsNullOrWhiteSpace(request.Username))
+        {
+            return Results.BadRequest(new
+            {
+                error = "Username is required."
+            });
+        }
+
+
+        // --------------------------------------------------------
+        // Normalize role
+        //
+        // Only Admin or User are allowed.
+        // --------------------------------------------------------
+
+        string role =
+            string.Equals(
+                request.Role,
+                "Admin",
+                StringComparison.OrdinalIgnoreCase)
+                ? "Admin"
+                : "User";
+
+
+        // --------------------------------------------------------
+        // Change password only if a new password was supplied
+        // --------------------------------------------------------
+
+        bool hasNewPassword =
+            !string.IsNullOrWhiteSpace(request.PasswordHash) &&
+            !string.IsNullOrWhiteSpace(request.PasswordSalt);
+
+        if (hasNewPassword)
+        {
+            // Validate the password material first.
+            if (!Database.IsValidPasswordMaterial(
+                    request.PasswordSalt,
+                    request.PasswordHash))
+            {
+                return Results.BadRequest(new
+                {
+                    error = "Invalid password."
+                });
+            }
+
+
+            // Change the password.
+            bool passwordChanged =
+                Database.ChangePassword(
+                    id,
+                    request.PasswordSalt,
+                    request.PasswordHash);
+
+            if (!passwordChanged)
+            {
+                return Results.NotFound(new
+                {
+                    error = "User not found."
+                });
+            }
+        }
+
+
+        // --------------------------------------------------------
+        // Update username, role and Auto Login IPs
+        // --------------------------------------------------------
+
+        User? updated = Database.UpdateUser(
+            id,
+            request.Username,
+            role,
+            request.AutoLoginIps ?? new List<string>());
+
+
+        // --------------------------------------------------------
+        // Handle update failure
+        // --------------------------------------------------------
+
+        if (updated == null)
+        {
+            return Results.Conflict(new
+            {
+                error =
+                    "Username already exists or user was not found."
+            });
+        }
+
+
+        // --------------------------------------------------------
+        // Return updated user
+        // --------------------------------------------------------
+
+        return Results.Ok(updated);
+    })
+.RequireAuthorization();
+
+app.MapGet("/api/users", (HttpContext httpContext) =>
+{
+    if (!IsAdmin(httpContext))
+        return Results.Forbid();
+
+    return Results.Ok(Database.GetUsers());
+})
+.RequireAuthorization();
+
+app.MapPost("/api/users", (HttpContext httpContext,UserCreateRequest request) =>
+{
+    if (!IsAdmin(httpContext))
+        return Results.Forbid();
+
+    if (string.IsNullOrWhiteSpace(request.Username))
+        return Results.BadRequest(new
+        {
+            error = "Username is required."
+        });
+
+    if (!Database.IsValidPasswordMaterial(
+            request.PasswordSalt,
+            request.PasswordHash))
+    {
+        return Results.BadRequest(new
+        {
+            error = "Invalid password."
+        });
+    }
+
+    string role =
+        string.Equals(
+            request.Role,
+            "Admin",
+            StringComparison.OrdinalIgnoreCase)
+            ? "Admin"
+            : "User";
+
+    User? user = Database.AddUserWithPasswordHash(
+        request.Username,
+        request.PasswordSalt,
+        request.PasswordHash,
+        role,
+        request.AutoLoginIps ?? new List<string>());
+
+    if (user == null)
+    {
+        return Results.Conflict(new
+        {
+            error = "A user with that username already exists."
+        });
+    }
+
+    return Results.Ok(user);
+})
+.RequireAuthorization();
+
+app.MapDelete("/api/users/{id}", (string id,HttpContext httpContext) =>
+{
+if (!IsAdmin(httpContext))
+return Results.Forbid();
+
+string? currentUserId =
+    httpContext.User
+        .FindFirst(ClaimTypes.NameIdentifier)
+        ?.Value;
+
+if (string.Equals(
+        currentUserId,
+        id,
+        StringComparison.OrdinalIgnoreCase))
+{
+return Results.BadRequest(new
+{
+error = "You cannot delete your own account."
+});
+}
+
+if (!Database.RemoveUser(id))
+{
+return Results.NotFound(new
+{
+error = "User not found."
+});
+}
+
+return Results.Ok(new
+{
+success = true
+});
+})
+.RequireAuthorization();
+
+//Current User
 app.MapGet("/api/me",(HttpContext httpContext) =>
     {
         if (httpContext.User.Identity?.IsAuthenticated != true)
@@ -656,8 +1024,7 @@ app.MapGet("/api/me",(HttpContext httpContext) =>
 .RequireAuthorization();
 app.MapGet("/api/nav", (HttpContext httpContext) =>
 {
-    bool isadminuser =
-        httpContext.User.IsInRole("Admin");
+    bool isadminuser = IsAdmin(httpContext);
 
     var navigation = new List<NavItem>
     {
@@ -707,13 +1074,13 @@ app.MapGet("/api/nav", (HttpContext httpContext) =>
                     new NavItem
                     {
                         Label = "Users",
-                        Url = "/users.html"
+                        Url = "/admin/users.html"
                     },
 
                     new NavItem
                     {
                         Label = "Devices",
-                        Url = "/devices.html"
+                        Url = "/admin/devices.html"
                     }
                 }
             }
@@ -725,10 +1092,6 @@ app.MapGet("/api/nav", (HttpContext httpContext) =>
 })
 .RequireAuthorization();
 
-// ============================================================
-// ACCESS DENIED
-// ============================================================
-
 app.MapGet("/access-denied",() =>
     {
         return Results.Json(
@@ -738,11 +1101,6 @@ app.MapGet("/access-denied",() =>
             },
             statusCode: 403);
     });
-
-
-// ============================================================
-// DEVICE API
-// ============================================================
 
 var deviceApi =app.MapGroup("/api/device").RequireAuthorization();
 
@@ -758,12 +1116,212 @@ deviceApi.MapGet("/getdevicestatus/{id}",async (string id) =>
 
         return await devicetest.Getstatus(id);
     });
+app.MapGet("/api/devices", (HttpContext httpContext) =>
+{
+    if (!IsAdmin(httpContext))
+        return Results.Forbid();
+
+    return Results.Ok(Database.GetDevices());
+})
+.RequireAuthorization();
 
 
-// ============================================================
-// VIDEO HUB / ROUTER API
-// ============================================================
+app.MapPost("/api/devices", (
+    Device device,
+    HttpContext httpContext) =>
+{
+    if (!IsAdmin(httpContext))
+        return Results.Forbid();
 
+    if (string.IsNullOrWhiteSpace(device.Name))
+    {
+        return Results.BadRequest(new
+        {
+            error = "Device name is required."
+        });
+    }
+
+    if (string.IsNullOrWhiteSpace(device.Type))
+    {
+        return Results.BadRequest(new
+        {
+            error = "Device type is required."
+        });
+    }
+
+    if (string.IsNullOrWhiteSpace(device.IpAddress))
+    {
+        return Results.BadRequest(new
+        {
+            error = "IP address is required."
+        });
+    }
+
+    Device created = Database.AddDevice(
+        device.Name,
+        device.Type,
+        device.IpAddress,
+        string.IsNullOrWhiteSpace(device.AudioSorce)
+            ? null
+            : Guid.TryParse(device.AudioSorce, out Guid audioSource)
+                ? audioSource
+                : null,
+        "",
+        device.Username ?? "",
+        device.Password ?? ""
+    );
+
+    return Results.Ok(created);
+})
+.RequireAuthorization();
+
+
+app.MapPut("/api/devices/{id}", (
+    string id,
+    Device device,
+    HttpContext httpContext) =>
+{
+    if (!IsAdmin(httpContext))
+        return Results.Forbid();
+
+    if (!string.Equals(
+        id,
+        device.Id,
+        StringComparison.OrdinalIgnoreCase))
+    {
+        return Results.BadRequest(new
+        {
+            error = "Device ID does not match the URL."
+        });
+    }
+
+    if (string.IsNullOrWhiteSpace(device.Name))
+    {
+        return Results.BadRequest(new
+        {
+            error = "Device name is required."
+        });
+    }
+
+    if (string.IsNullOrWhiteSpace(device.Type))
+    {
+        return Results.BadRequest(new
+        {
+            error = "Device type is required."
+        });
+    }
+
+    if (string.IsNullOrWhiteSpace(device.IpAddress))
+    {
+        return Results.BadRequest(new
+        {
+            error = "IP address is required."
+        });
+    }
+
+    bool updated = Database.EditDevice(device);
+
+    if (!updated)
+    {
+        return Results.NotFound(new
+        {
+            error = "Device not found."
+        });
+    }
+
+    return Results.Ok(new
+    {
+        success = true,
+        device = Database.GetDevice(id)
+    });
+})
+.RequireAuthorization();
+
+
+app.MapDelete("/api/devices/{id}", (
+    string id,
+    HttpContext httpContext) =>
+{
+    if (!IsAdmin(httpContext))
+        return Results.Forbid();
+
+    if (!Database.RemoveDevice(id))
+    {
+        return Results.NotFound(new
+        {
+            error = "Device not found."
+        });
+    }
+
+    return Results.Ok(new
+    {
+        success = true
+    });
+})
+.RequireAuthorization();
+
+
+app.MapGet("/api/devices/type/", (HttpContext httpContext) =>
+{
+    var devices = new Dictionary<string, object>
+    {
+        ["1"] = new
+        {
+            name = "BMD Router",
+            group = "Routing",
+            page = "BMDRouter.html",
+            tallypage = "routertally.html"
+        },
+
+        ["2"] = new
+        {
+            name = "Tally Device",
+            group = "Tally",
+            page = "tally.html"
+        },
+
+        ["3"] = new
+        {
+            name = "X32 Mixer",
+            group = "Audio",
+            page = "x32.html",
+            isaudiosorce = true
+        },
+
+        ["4"] = new
+        {
+            name = "AJA FS 4",
+            group = "Video",
+            page = "ajafs4.html"
+        },
+
+        ["5"] = new
+        {
+            name = "AJA FS 2",
+            group = "Video",
+            page = "ajafs2.html"
+        },
+
+        ["6"] = new
+        {
+            name = "Cobalt 9905-MPX",
+            group = "Video",
+            page = "og9905.html"
+        },
+        ["7"] = new
+        {
+            name = "Server To Server Tally",
+            group = "Tally",
+            page = "servertoservertally.html"
+        }
+    };
+
+    return Results.Ok(devices);
+})
+.RequireAuthorization();
+
+
+//BMD Router
 var routerApi = app.MapGroup("/api/router").RequireAuthorization();
 
 routerApi.MapGet("/bmd/{id}/getinfo",async (string id) =>
@@ -832,7 +1390,6 @@ routerApi.MapGet("/bmd/{id}/setroute/{Input}/{Output}",(string id, string Input,
 TallyEndpoints.Map(app);
 
 // X32 HTTP API endpoints
-// Add these alongside your other routerApi.MapGet/MapPost routes.
 
 var mixerapi =app.MapGroup("/api/mixer").RequireAuthorization();
 
@@ -887,9 +1444,7 @@ mixerapi.MapGet("/x32/{id}/getallnames",(string id) =>
         return x32.getallnames(id);
     });
 
-
 //FS4-fs2 api
-
 var FS4api = app.MapGroup("/api/Conversion").RequireAuthorization();
 FS4api.MapGet("/ajafs4/{id}/info", (string id) =>
 {
@@ -985,7 +1540,6 @@ FS4api.MapGet("/ajafs4/{id}/video/values", async (string id, CancellationToken c
     }
 });
 
-// GET one eParamID
 FS4api.MapGet("/ajafs4/{id}/param/{paramId}", async (string id, string paramId, CancellationToken cancellationToken) =>
 {
     try
@@ -1009,7 +1563,6 @@ FS4api.MapGet("/ajafs4/{id}/param/{paramId}", async (string id, string paramId, 
     }
 });
 
-// SET one eParamID
 FS4api.MapPost("/ajafs4/{id}/param/{paramId}", async (string id, string paramId, SetRequest request, CancellationToken cancellationToken) =>
 {
     try
@@ -1038,7 +1591,6 @@ FS4api.MapPost("/ajafs4/{id}/param/{paramId}", async (string id, string paramId,
     }
 });
 
-// Convenience GET matching the style of the supplied BMD route.
 FS4api.MapGet("/ajafs4/{id}/setparam/{paramId}/{value}", async (string id, string paramId, string value, CancellationToken cancellationToken) =>
 {
     try
@@ -1087,7 +1639,6 @@ FS4api.MapGet("/ajafs4/{id}/GetMadiSorce/", (string id) =>
 });
 
 //FS4-fs2 api
-
 var FS2api = app.MapGroup("/api/Conversion").RequireAuthorization();
 FS2api.MapGet("/ajafs2/{id}/info", (string id) =>
 {
@@ -1183,7 +1734,6 @@ FS2api.MapGet("/ajafs2/{id}/video/values", async (string id, CancellationToken c
     }
 });
 
-// GET one eParamID
 FS2api.MapGet("/ajafs2/{id}/param/{paramId}", async (string id, string paramId, CancellationToken cancellationToken) =>
 {
     try
@@ -1207,7 +1757,6 @@ FS2api.MapGet("/ajafs2/{id}/param/{paramId}", async (string id, string paramId, 
     }
 });
 
-// SET one eParamID
 FS2api.MapPost("/ajafs2/{id}/param/{paramId}", async (string id, string paramId, SetRequest request, CancellationToken cancellationToken) =>
 {
     try
@@ -1236,7 +1785,6 @@ FS2api.MapPost("/ajafs2/{id}/param/{paramId}", async (string id, string paramId,
     }
 });
 
-// Convenience GET matching the style of the supplied BMD route.
 FS2api.MapGet("/ajafs2/{id}/setparam/{paramId}/{value}", async (string id, string paramId, string value, CancellationToken cancellationToken) =>
 {
     try
@@ -1261,9 +1809,7 @@ FS2api.MapGet("/ajafs2/{id}/setparam/{paramId}/{value}", async (string id, strin
     }
 });
 
-
-//Fog9905S4-fs2 api
-
+//og9905 api
 var og9905api = app.MapGroup("/api/Conversion").RequireAuthorization();
 og9905api.MapGet("/OG9905MPx/{id}/info", (string id) =>
 {
@@ -1359,7 +1905,6 @@ og9905api.MapGet("/OG9905MPx/{id}/video/values", async (string id, CancellationT
     }
 });
 
-// GET one eParamID
 og9905api.MapGet("/OG9905MPx/{id}/param/{paramId}", async (string id, string paramId, CancellationToken cancellationToken) =>
 {
     try
@@ -1383,7 +1928,6 @@ og9905api.MapGet("/OG9905MPx/{id}/param/{paramId}", async (string id, string par
     }
 });
 
-// SET one eParamID
 og9905api.MapPost("/OG9905MPx/{id}/param/{paramId}", async (string id, string paramId, SetRequest request, CancellationToken cancellationToken) =>
 {
     try
@@ -1412,7 +1956,6 @@ og9905api.MapPost("/OG9905MPx/{id}/param/{paramId}", async (string id, string pa
     }
 });
 
-// Convenience GET matching the style of the supplied BMD route.
 og9905api.MapGet("/OG9905MPx/{id}/setparam/{paramId}/{value}", async (string id, string paramId, string value, CancellationToken cancellationToken) =>
 {
     try
@@ -1460,9 +2003,6 @@ og9905api.MapGet("/OG9905MPx/{id}/GetMadiSorce/", (string id) =>
 
 });
 
-// ============================================================
-// COMMAND LINE
-// ============================================================
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 Console.WriteLine(@"
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -1503,9 +2043,6 @@ foreach (var ni in NetworkInterface.GetAllNetworkInterfaces())
         }
     }
 }
-// ============================================================
-// COMMAND LINE PARSER
-// ============================================================
 static List<string> SplitCommandLine(string input)
 {
     var result =
@@ -1568,9 +2105,7 @@ static List<string> SplitCommandLine(string input)
 }
 Console.WriteLine("");
 Console.WriteLine("");
-// ============================================================
-// INITIAL ADMIN
-// ============================================================
+
 if (Database.GetUsers().Count == 0)
 {
     Database.AddUser(
@@ -1582,14 +2117,23 @@ if (Database.GetUsers().Count == 0)
         "Created initial Iceburg admin account.");
 }
 Console.WriteLine("For Help Type \"help\" ");
-// ============================================================
-// COMMAND HANDLER
-// ============================================================
+
+if (Database.GetUser("localadmin") == null)
+{
+    Database.AddUser(
+           "localadmin",
+           "localadminpassword",
+           "Admin",
+           new List<string> { "::1", "127.0.0.1" });
+    Console.WriteLine(
+       "Created initial Iceburg Local admin account.");
+}
+
 _ = Task.Run(async () =>
 {
     while (true)
     {
-        Console.Write("iceburg2> ");
+        Console.Write("ICEBURG> ");
 
         var input =
             await Console.In.ReadLineAsync();
@@ -1923,13 +2467,7 @@ _ = Task.Run(async () =>
     }
 });
 
-// ============================================================
-// START SERVER
-// ============================================================
 app.Run();
-// ============================================================
-// HELPERS
-// ============================================================
 
  static object? JsonElementToObject(
     JsonElement value)
@@ -2052,4 +2590,46 @@ public class NavItem
     public string Label { get; set; } = "";
     public string? Url { get; set; }
     public List<NavItem>? Children { get; set; }
+}
+
+public class UserCreateRequest
+{
+    public string Username { get; set; } = "";
+
+    public string PasswordSalt { get; set; } = "";
+
+    public string PasswordHash { get; set; } = "";
+
+    public string Role { get; set; } = "User";
+
+    public List<string>? AutoLoginIps { get; set; }
+}
+
+
+public class UserUpdateRequest
+{
+    public string Username { get; set; } = "";
+
+    public string? PasswordSalt { get; set; }
+
+    public string? PasswordHash { get; set; }
+
+    public string Role { get; set; } = "User";
+
+    public List<string>? AutoLoginIps { get; set; }
+}
+
+public class DeviceTypeGroup
+{
+    public string Label { get; set; } = string.Empty;
+    public List<DeviceType> Children { get; set; } = new();
+}
+
+public class DeviceType
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string? Page { get; set; }
+    public string? TallyPage { get; set; }
+    public bool IsAudioSorce { get; set; }
 }

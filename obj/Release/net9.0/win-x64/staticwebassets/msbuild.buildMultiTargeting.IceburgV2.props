@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\IceburgV2.props" />
+</Project>

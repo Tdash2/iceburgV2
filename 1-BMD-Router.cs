@@ -204,7 +204,7 @@ public class BMD_Router
                 else
                 {
                     if (response.Length > 0 &&
-                        (DateTime.UtcNow - lastData).TotalMilliseconds > 10)
+                        (DateTime.UtcNow - lastData).TotalMilliseconds > 100)
                     {
                         break;
                     }

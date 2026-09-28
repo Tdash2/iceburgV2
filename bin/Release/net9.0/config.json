@@ -11,24 +11,29 @@
       "Username": "admin",
       "PasswordSalt": "gLQ05wqfs32CDMtxKGDyrAXk5witOPMjEAnRlyXISlg=",
       "PasswordHash": "mMenU/729bHchMpmNmCyfTpcN\u002BPWEEnvYa/hLwfJ44k=",
-      "Role": "Admin"
+      "Role": "Admin",
+      "AutoLoginIps": []
     },
     {
-      "Id": "209718ff-4580-4ca4-8dce-6ba10cc9828b",
-      "Username": "user",
-      "PasswordSalt": "4vmuTyua5TLdfYxy3rs3denNicZ2QEQlcrxifylZMJA=",
-      "PasswordHash": "eqrsmb5zl5oRHyyGVo4uC2doIvDss4eye1orZKKJwME=",
-      "Role": "User"
+      "Id": "998ccd6a-e1f3-4ee9-95de-46f7172d1061",
+      "Username": "localadmin",
+      "PasswordSalt": "FMWm18suH\u002BNcQ\u002BIfwhoxoZsgGU\u002BoBsmFGj3jhHIuW2A=",
+      "PasswordHash": "IR1Qd7o/M5rMyM2B6ztrpRW7XYWYW/1EFZA6ZhDpgTU=",
+      "Role": "Admin",
+      "AutoLoginIps": [
+        "::1",
+        "127.0.0.1"
+      ]
     }
   ],
   "Devices": [
     {
       "Id": "0",
-      "Name": "Tally1",
+      "Name": "Tally 1",
       "Type": "2",
       "IpAddress": "10.8.0.214",
       "AudioSorce": "",
-      "LastSeen": "9/22/2026 5:43:37 PM",
+      "LastSeen": "",
       "Username": "",
       "Password": ""
     },
@@ -54,7 +59,7 @@
     },
     {
       "Id": "abc57429-0ed4-4e5b-9cd7-805bce1e04aa",
-      "Name": "hex 3 fs2",
+      "Name": "HEX-3 FS 2",
       "Type": "5",
       "IpAddress": "10.176.73.11",
       "AudioSorce": "",
@@ -74,7 +79,7 @@
     },
     {
       "Id": "63b83fda-e2da-4cf8-ae7d-9a40d919ce3f",
-      "Name": "test Tally",
+      "Name": "Tally 2",
       "Type": "2",
       "IpAddress": "1.1.1.1",
       "AudioSorce": "",
@@ -84,10 +89,30 @@
     },
     {
       "Id": "367b5179-38c9-46d0-a242-89fb4d408a6c",
-      "Name": "og9905",
+      "Name": "Cobalt 9905-MPX",
       "Type": "6",
       "IpAddress": "10.176.71.61",
-      "AudioSorce": "1448adf3-9cb2-4cfb-be2e-d3dbd5971fd6",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "8ce27400-51c1-4780-bd5b-9231f2cefcd5",
+      "Name": "Test device",
+      "Type": "1",
+      "IpAddress": "10.8.0.214",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "72392bc0-dd84-4270-8267-1a8a67424e65",
+      "Name": "Tally From Rush Studios",
+      "Type": "7",
+      "IpAddress": "47.225.212.98",
+      "AudioSorce": "",
       "LastSeen": "",
       "Username": "",
       "Password": ""

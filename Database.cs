@@ -460,6 +460,10 @@ namespace Iceburg.Database
             _data.Settings ??= new AppSettings();
             _data.Devices ??= new List<Device>();
             _data.Users ??= new List<User>();
+            foreach (var user in _data.Users)
+            {
+                user.AutoLoginIps ??= new List<string>();
+            }
         }
 
         /// <summary>
@@ -566,7 +570,8 @@ namespace Iceburg.Database
         public static User? AddUser(
             string username,
             string password,
-            string role = "User")
+            string role = "User",
+            List<string> autoLoginIP = null)
         {
             if (string.IsNullOrWhiteSpace(username))
                 throw new ArgumentException(
@@ -617,7 +622,9 @@ namespace Iceburg.Database
                         Convert.ToBase64String(salt),
                     PasswordHash =
                         Convert.ToBase64String(hash),
-                    Role = role
+                    Role = role,
+                    AutoLoginIps= autoLoginIP
+
                 };
 
                 _data.Users.Add(user);
@@ -627,6 +634,98 @@ namespace Iceburg.Database
                 return CreatePublicUser(user);
             }
         }
+
+        // ============================================================
+        // USERS - UPDATE USERNAME / AUTO LOGIN IPS
+        // ============================================================
+
+        /// <summary>
+        /// Updates the non-password information for an existing user.
+        ///
+        /// Updates:
+        /// - Username
+        /// - AutoLoginIps
+        ///
+        /// Password and role are intentionally not changed here.
+        /// Use ChangePassword() and SetUserRole() for those.
+        ///
+        /// Returns the updated public user, or null if the update failed.
+        /// </summary>
+        // ============================================================
+        // USERS - UPDATE
+        // ============================================================
+
+        public static User? UpdateUser(
+            string id,
+            string username,
+            string role,
+            List<string>? autoLoginIps = null)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                return null;
+
+            if (string.IsNullOrWhiteSpace(username))
+                return null;
+
+            // Normalize role to either "Admin" or "User".
+            role = NormalizeRole(role);
+
+            lock (_lock)
+            {
+                // Reload the latest data before modifying it.
+                ReloadInternal();
+
+                // Find the user.
+                User? user = _data.Users.FirstOrDefault(u =>
+                    string.Equals(
+                        u.Id,
+                        id,
+                        StringComparison.OrdinalIgnoreCase));
+
+                if (user == null)
+                    return null;
+
+                // Make sure another user isn't already using
+                // this username.
+                bool usernameExists = _data.Users.Any(u =>
+                    !string.Equals(
+                        u.Id,
+                        id,
+                        StringComparison.OrdinalIgnoreCase)
+                    &&
+                    string.Equals(
+                        u.Username,
+                        username.Trim(),
+                        StringComparison.OrdinalIgnoreCase));
+
+                if (usernameExists)
+                    return null;
+
+                // Update username.
+                user.Username = username.Trim();
+
+                // Update role.
+                user.Role = role;
+
+                // Update Auto Login IPs.
+                user.AutoLoginIps =
+                    autoLoginIps?
+                        .Where(ip =>
+                            !string.IsNullOrWhiteSpace(ip))
+                        .Select(ip => ip.Trim())
+                        .Distinct(
+                            StringComparer.OrdinalIgnoreCase)
+                        .ToList()
+                    ?? new List<string>();
+
+                // Save everything in one operation.
+                SaveInternal();
+
+                // Return the public/sanitized user.
+                return CreatePublicUser(user);
+            }
+        }
+
 
 
         // ============================================================
@@ -650,7 +749,8 @@ namespace Iceburg.Database
             string id,
             string username,
             string password,
-            string role)
+            string role,
+            List<string> autoLoginIP = null)
         {
             if (string.IsNullOrWhiteSpace(id))
                 return null;
@@ -718,6 +818,7 @@ namespace Iceburg.Database
                 // Update password.
                 user.PasswordSalt = passwordSalt;
                 user.PasswordHash = passwordHash;
+                user.AutoLoginIps = autoLoginIP;
 
                 // Save changes.
                 SaveInternal();
@@ -741,7 +842,8 @@ namespace Iceburg.Database
             string username,
             string passwordSalt,
             string passwordHash,
-            string role = "User")
+            string role = "User",
+            List<string> autoLoginIP = null)
         {
             if (string.IsNullOrWhiteSpace(username))
                 throw new ArgumentException(
@@ -780,7 +882,8 @@ namespace Iceburg.Database
                     Username = username.Trim(),
                     PasswordSalt = passwordSalt,
                     PasswordHash = passwordHash,
-                    Role = role
+                    Role = role,
+                    AutoLoginIps = autoLoginIP
                 };
 
                 _data.Users.Add(user);
@@ -1389,8 +1492,7 @@ namespace Iceburg.Database
         /// <summary>
         /// Creates a safe copy of a user object.
         /// </summary>
-        private static User CloneUser(
-            User user)
+        private static User CloneUser(User user)
         {
             return new User
             {
@@ -1398,15 +1500,18 @@ namespace Iceburg.Database
                 Username = user.Username,
                 PasswordSalt = user.PasswordSalt,
                 PasswordHash = user.PasswordHash,
-                Role = user.Role
+                Role = user.Role,
+
+                AutoLoginIps =
+                    user.AutoLoginIps?.ToList()
+                    ?? new List<string>()
             };
         }
 
         /// <summary>
         /// Creates a sanitized user object.
         /// </summary>
-        private static User CreatePublicUser(
-            User user)
+        private static User CreatePublicUser(User user)
         {
             return new User
             {
@@ -1414,7 +1519,11 @@ namespace Iceburg.Database
                 Username = user.Username,
                 PasswordSalt = "",
                 PasswordHash = "",
-                Role = user.Role
+                Role = user.Role,
+
+                AutoLoginIps =
+                    user.AutoLoginIps?.ToList()
+                    ?? new List<string>()
             };
         }
 
@@ -1535,6 +1644,8 @@ namespace Iceburg.Database
 
         public string Role { get; set; }
             = "User";
+        public List<string> AutoLoginIps { get; set; }
+       = new();
     }
 
     // ================================================================

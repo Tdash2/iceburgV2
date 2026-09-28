@@ -132,7 +132,7 @@ public class DeviceStatus
 
                 return "connected";
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 return "error";
             }

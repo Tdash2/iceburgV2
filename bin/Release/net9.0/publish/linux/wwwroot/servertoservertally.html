@@ -1,0 +1,1803 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="header.js"></script>
+    <title>Remote Tally Settings</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #232323;
+            color: #e8edf5;
+        }
+
+        .page {
+            margin: 0 auto;
+            padding-top: 40px;
+            padding-left: 40px;
+        }
+
+        .header {
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            padding-top: 10px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 32px;
+            line-height: 1.15;
+        }
+
+        .subtitle {
+            margin: 10px 0 0;
+            color: #96a1b3;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .card {
+            background: rgb(25 25 25 / 92%);
+            border: 1px solid rgb(25 25 25 / 92%);
+            padding: 24px;
+            margin-bottom: 20px;
+            margin: 40px;
+        }
+
+            .card h2 {
+                margin: 0 0 6px;
+                font-size: 18px;
+            }
+
+        .card-description {
+            margin: 0 0 20px;
+            color: #8995a8;
+            font-size: 14px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        label {
+            color: #cdd5e2;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            height: 44px;
+            border: 1px solid #2f2f2f;
+            border-radius: 8px;
+            background: #555353;
+            color: #eef3fa;
+            padding: 0 13px;
+            outline: none;
+            font-size: 14px;
+        }
+
+            input:focus {
+                border-color: #5f8fe8;
+                box-shadow: 0 0 0 3px rgba(95, 143, 232, 0.12);
+            }
+
+            input::placeholder {
+                color: #566173;
+            }
+
+        .help {
+            color: #748095;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .device-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            padding: 16px 18px;
+            background: #0d1725;
+            border: 1px solid #29384f;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .device-banner-label {
+            color: #728096;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .device-name {
+            color: #eef4fc;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .device-id {
+            color: #8190a5;
+            font-size: 12px;
+            margin-top: 3px;
+            word-break: break-all;
+        }
+
+        .device-ip {
+            color: #a9c8fa;
+            font-size: 13px;
+            margin-top: 5px;
+            font-family: Consolas, Monaco, monospace;
+        }
+
+        .device-badge {
+            flex-shrink: 0;
+            padding: 7px 11px;
+            background: #182943;
+            border: 1px solid #31527f;
+            border-radius: 20px;
+            color: #a8c8fa;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .mapping-info {
+            margin-top: 22px;
+            padding: 18px;
+            background: #0c121c;
+            border: 1px solid #273244;
+            border-radius: 10px;
+        }
+
+            .mapping-info strong {
+                color: #eaf0f8;
+            }
+
+            .mapping-info p {
+                margin: 7px 0 0;
+                color: #8995a8;
+                font-size: 13px;
+                line-height: 1.6;
+            }
+
+        .destinations {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .destination-controls {
+            display: flex;
+            align-items: end;
+            gap: 12px;
+        }
+
+        .destination-count {
+            width: 180px;
+        }
+
+        button {
+            height: 42px;
+            border: 0;
+            border-radius: 8px;
+            padding: 0 17px;
+            color: white;
+            background: #356dcc;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s ease, transform 0.1s ease;
+        }
+
+            button:hover {
+                background: #427bdc;
+            }
+
+            button:active {
+                transform: translateY(1px);
+            }
+
+            button.secondary {
+                background: #202a3a;
+                border: 1px solid #344055;
+            }
+
+                button.secondary:hover {
+                    background: #293548;
+                }
+
+            button.danger {
+                background: #7b2933;
+            }
+
+                button.danger:hover {
+                    background: #96323e;
+                }
+
+            button:disabled {
+                opacity: 0.45;
+                cursor: not-allowed;
+            }
+
+        .destination-row {
+            display: grid;
+            grid-template-columns: 70px minmax(0, 1fr) 180px 180px;
+            gap: 12px;
+            align-items: center;
+            padding: 12px;
+            /* background: #1f1f1f; */
+            border-bottom: 1px solid #252f40;
+            /* border-radius: 9px; */
+        }
+
+        .destination-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 38px;
+            border-radius: 7px;
+            background: #2f2f2f;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .destination-name {
+            height: 38px;
+        }
+
+        .mapping-channel {
+            height: 38px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            border-radius: 7px;
+            background: #2f2f2f;
+            border: 1px solid #2f2f2f;
+            color: #cccccc;
+            font-size: 12px;
+        }
+
+            .mapping-channel span {
+                color: white;
+                font-weight: 700;
+                margin-left: 4px;
+            }
+
+        .status {
+            display: none;
+            padding: 12px 14px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+            .status.show {
+                display: block;
+            }
+
+            .status.success {
+                background: #102719;
+                border: 1px solid #285c3a;
+                color: #9be0b2;
+            }
+
+            .status.error {
+                background: #291316;
+                border: 1px solid #663039;
+                color: #f0a5ae;
+            }
+
+            .status.info {
+                background: #101b2b;
+                border: 1px solid #29446b;
+                color: #a9c8fa;
+            }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .left-actions,
+        .right-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .empty {
+            padding: 22px;
+            text-align: center;
+            color: #687488;
+            border: 1px dashed #303a4c;
+            border-radius: 9px;
+        }
+
+        .warning {
+            margin-top: 12px;
+            padding: 11px 13px;
+            background: #211d11;
+            border: 1px solid #5b4c25;
+            border-radius: 8px;
+            color: #d8c98d;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        code {
+            color: #a9c8fa;
+        }
+
+        @media (max-width: 800px) {
+            .device-banner {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .destination-row {
+                grid-template-columns: 60px minmax(0, 1fr);
+            }
+
+            .mapping-channel {
+                grid-column: 2;
+            }
+
+            .destination-controls {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .destination-count {
+                width: 100%;
+            }
+
+            .actions {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .left-actions,
+            .right-actions {
+                width: 100%;
+            }
+
+                .left-actions button,
+                .right-actions button {
+                    flex: 1;
+                }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page">
+
+        <!-- ========================================================= -->
+        <!-- HEADER -->
+        <!-- ========================================================= -->
+
+        <div class="header">
+
+            <h1 Class="pageTitle" id="deviceName">
+
+                Remote Tally Source
+            </h1>
+
+            <div class="eyebrow" id="deviceIp">
+                Iceburg Tally
+            </div>
+
+
+
+        </div>
+
+
+        <!-- ========================================================= -->
+        <!-- STATUS -->
+        <!-- ========================================================= -->
+
+        <div id="status" class="status"></div>
+
+
+
+        </div>
+
+
+        <!-- ========================================================= -->
+        <!-- REMOTE SERVER -->
+        <!-- ========================================================= -->
+
+        <div class="card">
+
+            <h2>
+                Remote Tally Device
+            </h2>
+
+
+
+            <div class="field">
+
+                <label for="remoteTallyId">
+                    Remote Tally Device ID
+                </label>
+
+                <input id="remoteTallyId"
+                       type="text"
+                       placeholder="Remote device ID">
+
+
+            </div>
+
+
+            
+
+        </div>
+
+
+        <!-- ========================================================= -->
+        <!-- DESTINATIONS -->
+        <!-- ========================================================= -->
+
+        <div class="card">
+
+            <h2>
+                Destinations
+            </h2>
+
+            <p class="card-description">
+                Specify how many local destination inputs you need.
+                Missing inputs will be created automatically.
+                Destination names are saved automatically.
+            </p>
+
+
+            <div class="destination-controls">
+
+                <div class="field destination-count">
+
+                    <label for="destinationCount">
+                        Number of destinations
+                    </label>
+
+                    <input id="destinationCount"
+                           type="number"
+                           min="0"
+                           max="128"
+                           value="0">
+
+                </div>
+
+
+                <button type="button"
+                        id="createDestinationsButton">
+
+                    Create destinations
+
+                </button>
+
+            </div>
+
+
+            <div class="help"
+                 style="margin-top:10px;">
+
+                Enter the number of destinations and click
+                <strong>Create destinations</strong> to create any
+                missing local inputs.
+
+            </div>
+
+
+            <div id="destinationWarning"
+                 class="warning"
+                 style="display:none;">
+            </div>
+
+
+            <div id="destinations"
+                 class="destinations">
+
+                <div class="empty">
+                    No destinations configured.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================================================= -->
+        <!-- ACTIONS -->
+        <!-- ========================================================= -->
+
+        
+
+    </div>
+
+
+    <script>
+
+        // =============================================================
+        // CONFIGURATION
+        // =============================================================
+
+        const API_BASE = "/api/gpio";
+
+
+        // =============================================================
+        // GET DEVICE ID FROM URL
+        // =============================================================
+
+        const urlParams =
+            new URLSearchParams(
+                window.location.search
+            );
+
+        const deviceId =
+            urlParams.get("id");
+
+
+        // =============================================================
+        // STATE
+        // =============================================================
+
+        let selectedDevice = null;
+
+        let existingInputs = [];
+
+        let autoSaveTimer = null;
+
+        let autoSaveInProgress = false;
+
+
+        // =============================================================
+        // DOM
+        // =============================================================
+
+     
+        const deviceName =
+            document.getElementById(
+                "deviceName"
+            );
+
+        const deviceIp =
+            document.getElementById(
+                "deviceIp"
+            );
+
+
+
+        const remoteTallyId =
+            document.getElementById(
+                "remoteTallyId"
+            );
+
+        const destinationCount =
+            document.getElementById(
+                "destinationCount"
+            );
+
+        const destinations =
+            document.getElementById(
+                "destinations"
+            );
+
+        const destinationWarning =
+            document.getElementById(
+                "destinationWarning"
+            );
+
+        const status =
+            document.getElementById(
+                "status"
+            );
+
+        const clearButton =
+            document.getElementById(
+                "clearButton"
+            );
+
+        const reloadButton =
+            document.getElementById(
+                "reloadButton"
+            );
+
+        const createDestinationsButton =
+            document.getElementById(
+                "createDestinationsButton"
+            );
+
+
+        // =============================================================
+        // STATUS
+        // =============================================================
+
+        function showStatus(
+            message,
+            type = "info"
+        ) {
+
+            status.textContent =
+                message;
+
+            status.className =
+                "status show " + type;
+
+        }
+
+
+        function hideStatus() {
+
+            status.textContent =
+                "";
+
+            status.className =
+                "status";
+
+        }
+
+
+        // =============================================================
+        // API HELPER
+        // =============================================================
+
+        async function apiFetch(
+            url,
+            options = {}
+        ) {
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        credentials: "same-origin",
+                        ...options
+                    }
+                );
+
+
+            let data = null;
+
+
+            const contentType =
+                response.headers.get(
+                    "content-type"
+                ) || "";
+
+
+            if (
+                contentType.includes(
+                    "application/json"
+                )
+            ) {
+
+                data =
+                    await response.json();
+
+            }
+            else {
+
+                const text =
+                    await response.text();
+
+                data =
+                    text
+                        ? { message: text }
+                        : null;
+
+            }
+
+
+            if (!response.ok) {
+
+                let message =
+                    `HTTP ${response.status}`;
+
+
+                if (data) {
+
+                    if (data.error) {
+
+                        message =
+                            data.error;
+
+                    }
+                    else if (data.message) {
+
+                        message =
+                            data.message;
+
+                    }
+
+                }
+
+
+                throw new Error(
+                    message
+                );
+
+            }
+
+
+            return data;
+
+        }
+
+
+        // =============================================================
+        // VALIDATE URL
+        // =============================================================
+
+        function validateDeviceId() {
+
+            if (!deviceId) {
+
+                showStatus(
+                    "No device ID was supplied. Open this page using ?id=DEVICE_ID.",
+                    "error"
+                );
+
+
+                deviceName.textContent =
+                    "No device selected";
+
+
+                deviceIp.textContent =
+                    "";
+
+
+            
+
+
+              
+
+
+                disableControls();
+
+
+                return false;
+
+            }
+
+
+            return true;
+
+        }
+
+
+        // =============================================================
+        // DISABLE CONTROLS
+        // =============================================================
+
+        function disableControls() {
+
+            remoteTallyId.disabled =
+                true;
+
+            destinationCount.disabled =
+                true;
+
+            createDestinationsButton.disabled =
+                true;
+
+            clearButton.disabled =
+                true;
+
+        }
+
+
+        // =============================================================
+        // LOAD DEVICE
+        // =============================================================
+
+        async function loadDevice() {
+
+            if (!validateDeviceId())
+                return;
+
+
+            try {
+
+                showStatus(
+                    "Loading device...",
+                    "info"
+                );
+
+
+                selectedDevice =
+                    await apiFetch(
+                        `${API_BASE}/${encodeURIComponent(
+                            deviceId
+                        )}`
+                    );
+
+
+                if (!selectedDevice) {
+
+                    throw new Error(
+                        "Device was not found."
+                    );
+
+                }
+
+
+                existingInputs =
+                    Array.isArray(
+                        selectedDevice.inputs
+                    )
+                        ? selectedDevice.inputs
+                        : [];
+
+
+                displayDevice();
+
+
+                await loadRemoteConfiguration();
+
+
+                hideStatus();
+
+            }
+            catch (error) {
+
+                console.error(error);
+
+
+                showStatus(
+                    `Unable to load device: ${error.message}`,
+                    "error"
+                );
+
+
+                deviceName.textContent =
+                    "Device unavailable";
+
+
+                deviceIp.textContent =
+                    "";
+
+
+              
+
+
+
+
+                disableControls();
+
+            }
+
+        }
+
+
+        // =============================================================
+        // DISPLAY DEVICE
+        // =============================================================
+
+        function displayDevice() {
+
+            const name =
+                selectedDevice.name ||
+                selectedDevice.nickname ||
+                selectedDevice.deviceId ||
+                "Unnamed Device";
+
+
+            const ip =
+                selectedDevice.ipAddress ||
+                "No IP address configured";
+
+
+            deviceName.textContent =
+                name;
+
+
+            deviceIp.textContent =
+                `IP: ${ip}`;
+
+
+
+
+        }
+
+
+        // =============================================================
+        // LOAD REMOTE CONFIGURATION
+        // =============================================================
+
+        async function loadRemoteConfiguration() {
+
+            try {
+
+                const source =
+                    await apiFetch(
+                        `${API_BASE}/${encodeURIComponent(
+                            deviceId
+                        )}/remote-tally-source`
+                    );
+
+
+                if (source) {
+
+                    remoteTallyId.value =
+                        source.remoteTallyId || "";
+
+                }
+                else {
+
+                    remoteTallyId.value =
+                        "";
+
+                }
+
+            }
+            catch (error) {
+
+                console.log(
+                    "No remote tally source configured.",
+                    error
+                );
+
+
+                remoteTallyId.value =
+                    "";
+
+            }
+
+
+            destinationCount.value =
+                existingInputs.length;
+
+
+            renderDestinations(
+                existingInputs.length
+            );
+
+        }
+
+
+        // =============================================================
+        // CREATE DESTINATIONS
+        // =============================================================
+
+        createDestinationsButton.addEventListener(
+            "click",
+            async () => {
+
+                await createDestinations();
+
+            }
+        );
+
+
+        async function createDestinations() {
+
+            if (!selectedDevice) {
+
+                showStatus(
+                    "No device is loaded.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            let count =
+                parseInt(
+                    destinationCount.value,
+                    10
+                );
+
+
+            if (
+                !Number.isFinite(count) ||
+                count < 0
+            ) {
+
+                showStatus(
+                    "Enter a valid number of destinations.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (count > 128) {
+
+                showStatus(
+                    "The maximum is 128 destinations.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const currentCount =
+                existingInputs.length;
+
+
+            if (count <= currentCount) {
+
+                renderDestinations(
+                    count
+                );
+
+
+                if (count < currentCount) {
+
+                    showStatus(
+                        `The device already has ${currentCount} local inputs. No existing inputs were deleted.`,
+                        "info"
+                    );
+
+                }
+                else {
+
+                    showStatus(
+                        "The requested number of destinations already exists.",
+                        "success"
+                    );
+
+                }
+
+
+                return;
+
+            }
+
+
+            const numberToCreate =
+                count - currentCount;
+
+
+            try {
+
+                createDestinationsButton.disabled =
+                    true;
+
+
+                showStatus(
+                    `Creating ${numberToCreate} destination input${numberToCreate === 1 ? "" : "s"}...`,
+                    "info"
+                );
+
+
+                const usedPorts =
+                    new Set(
+                        existingInputs.map(
+                            input =>
+                                Number(input.port)
+                        )
+                    );
+
+
+                let nextPort =
+                    1;
+
+
+                for (
+                    let index = currentCount;
+                    index < count;
+                    index++
+                ) {
+
+                    while (
+                        usedPorts.has(nextPort)
+                    ) {
+
+                        nextPort++;
+
+                    }
+
+
+                    const destinationNumber =
+                        index + 1;
+
+
+                    await apiFetch(
+                        `${API_BASE}/${encodeURIComponent(
+                            deviceId
+                        )}/inputs`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    port:
+                                        nextPort,
+
+                                    name:
+                                        `Destination ${destinationNumber}`,
+
+                                    nickname:
+                                        `Destination ${destinationNumber}`
+                                })
+                        }
+                    );
+
+
+                    usedPorts.add(
+                        nextPort
+                    );
+
+
+                    nextPort++;
+
+                }
+
+
+                selectedDevice =
+                    await apiFetch(
+                        `${API_BASE}/${encodeURIComponent(
+                            deviceId
+                        )}`
+                    );
+
+
+                existingInputs =
+                    Array.isArray(
+                        selectedDevice.inputs
+                    )
+                        ? selectedDevice.inputs
+                        : [];
+
+
+                displayDevice();
+
+
+                destinationCount.value =
+                    count;
+
+
+                renderDestinations(
+                    count
+                );
+
+
+                showStatus(
+                    `Created ${numberToCreate} destination input${numberToCreate === 1 ? "" : "s"}.`,
+                    "success"
+                );
+
+            }
+            catch (error) {
+
+                console.error(error);
+
+
+                showStatus(
+                    `Unable to create destinations: ${error.message}`,
+                    "error"
+                );
+
+            }
+            finally {
+
+                createDestinationsButton.disabled =
+                    false;
+
+            }
+
+        }
+
+
+        // =============================================================
+        // RENDER DESTINATIONS
+        // =============================================================
+
+        function renderDestinations(
+            count
+        ) {
+
+            destinations.innerHTML =
+                "";
+
+
+            if (
+                !count ||
+                count < 1
+            ) {
+
+                destinations.innerHTML =
+                    `<div class="empty">
+                        No destinations configured.
+                     </div>`;
+
+
+                destinationWarning.style.display =
+                    "none";
+
+
+                return;
+
+            }
+
+
+            if (
+                count > existingInputs.length
+            ) {
+
+                destinationWarning.textContent =
+                    `You have requested ${count} destinations, but this device currently has only ${existingInputs.length} local input${existingInputs.length === 1 ? "" : "s"}. Click "Create destinations" to create the missing inputs.`;
+
+
+                destinationWarning.style.display =
+                    "block";
+
+            }
+            else if (
+                count < existingInputs.length
+            ) {
+
+                destinationWarning.textContent =
+                    `This device has ${existingInputs.length} local inputs. The page will not automatically delete the extra inputs.`;
+
+
+                destinationWarning.style.display =
+                    "block";
+
+            }
+            else {
+
+                destinationWarning.style.display =
+                    "none";
+
+            }
+
+
+            const sortedInputs =
+                [...existingInputs]
+                    .sort(
+                        (a, b) =>
+                            Number(a.port) -
+                            Number(b.port)
+                    );
+
+
+            for (
+                let index = 0;
+                index < count;
+                index++
+            ) {
+
+                const input =
+                    sortedInputs[index] ||
+                    null;
+
+
+                const row =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                row.className =
+                    "destination-row";
+
+
+                const number =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                number.className =
+                    "destination-number";
+
+
+                number.textContent =
+                    index + 1;
+
+
+                const name =
+                    document.createElement(
+                        "input"
+                    );
+
+
+                name.className =
+                    "destination-name";
+
+                name.type =
+                    "text";
+
+
+                name.value =
+                    input
+                        ? (
+                            input.nickname ||
+                            input.name ||
+                            `Destination ${index + 1}`
+                        )
+                        : `Destination ${index + 1}`;
+
+
+                name.placeholder =
+                    `Destination ${index + 1}`;
+
+
+                if (input) {
+
+                    name.dataset.inputId =
+                        input.inputId;
+
+                }
+
+
+                // Save destination name automatically
+                name.addEventListener(
+                    "change",
+                    async () => {
+
+                        await saveDestinationName(
+                            name,
+                            input
+                        );
+
+                    }
+                );
+
+
+                const remoteMapping =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                remoteMapping.className =
+                    "mapping-channel";
+
+
+                remoteMapping.innerHTML =
+                    `Remote OUT <span>${index + 1}</span>`;
+
+
+                const localMapping =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                localMapping.className =
+                    "mapping-channel";
+
+
+                if (input) {
+
+                    localMapping.innerHTML =
+                        `Local IN <span>${input.port}</span>`;
+
+                }
+                else {
+
+                    localMapping.innerHTML =
+                        `Local IN <span>not created</span>`;
+
+                }
+
+
+                row.appendChild(
+                    number
+                );
+
+                row.appendChild(
+                    name
+                );
+
+                row.appendChild(
+                    remoteMapping
+                );
+
+                row.appendChild(
+                    localMapping
+                );
+
+
+                destinations.appendChild(
+                    row
+                );
+
+            }
+
+        }
+
+
+        // =============================================================
+        // SAVE DESTINATION NAME
+        // =============================================================
+
+        async function saveDestinationName(
+            nameInput,
+            input
+        ) {
+
+            if (!input)
+                return;
+
+
+            const newName =
+                nameInput.value.trim();
+
+
+            if (!newName)
+                return;
+
+
+            const oldName =
+                (
+                    input.nickname ||
+                    input.name ||
+                    ""
+                ).trim();
+
+
+            if (
+                newName === oldName
+            ) {
+
+                return;
+
+            }
+
+
+            try {
+
+                await apiFetch(
+                    `${API_BASE}/${encodeURIComponent(
+                        deviceId
+                    )}/inputs/${encodeURIComponent(
+                        input.inputId
+                    )}`,
+                    {
+                        method: "PUT",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                port:
+                                    input.port,
+
+                                name:
+                                    newName,
+
+                                nickname:
+                                    newName
+                            })
+                    }
+                );
+
+
+                input.name =
+                    newName;
+
+                input.nickname =
+                    newName;
+
+
+                showStatus(
+                    "Destination name saved.",
+                    "success"
+                );
+
+            }
+            catch (error) {
+
+                console.error(error);
+
+
+                showStatus(
+                    `Unable to save destination name: ${error.message}`,
+                    "error"
+                );
+
+            }
+
+        }
+
+
+        // =============================================================
+        // DESTINATION COUNT CHANGED
+        // =============================================================
+
+        destinationCount.addEventListener(
+            "input",
+            () => {
+
+                let count =
+                    parseInt(
+                        destinationCount.value,
+                        10
+                    );
+
+
+                if (
+                    !Number.isFinite(count)
+                ) {
+
+                    renderDestinations(
+                        0
+                    );
+
+                    return;
+
+                }
+
+
+                count =
+                    Math.max(
+                        0,
+                        Math.min(
+                            128,
+                            count
+                        )
+                    );
+
+
+                renderDestinations(
+                    count
+                );
+
+            }
+        );
+
+
+        // =============================================================
+        // AUTO SAVE REMOTE CONFIGURATION
+        // =============================================================
+
+        remoteTallyId.addEventListener(
+            "input",
+            () => {
+
+                clearTimeout(
+                    autoSaveTimer
+                );
+
+
+                autoSaveTimer =
+                    setTimeout(
+                        () => {
+
+                            saveRemoteConfiguration();
+
+                        },
+                        500
+                    );
+
+            }
+        );
+
+
+        async function saveRemoteConfiguration() {
+
+            if (
+                !selectedDevice ||
+                autoSaveInProgress
+            ) {
+
+                return;
+
+            }
+
+
+            const remoteId =
+                remoteTallyId.value.trim();
+
+
+            if (!remoteId) {
+
+                return;
+
+            }
+
+
+            try {
+
+                autoSaveInProgress =
+                    true;
+
+
+                showStatus(
+                    "Saving remote tally configuration...",
+                    "info"
+                );
+
+
+                await apiFetch(
+                    `${API_BASE}/${encodeURIComponent(
+                        deviceId
+                    )}/remote-tally-source`,
+                    {
+                        method: "PUT",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                remoteTallyId:
+                                    remoteId,
+                                    port:80
+                            })
+                    }
+                );
+
+
+                showStatus(
+                    "Remote tally configuration saved.",
+                    "success"
+                );
+
+            }
+            catch (error) {
+
+                console.error(error);
+
+
+                showStatus(
+                    `Unable to save remote tally configuration: ${error.message}`,
+                    "error"
+                );
+
+            }
+            finally {
+
+                autoSaveInProgress =
+                    false;
+
+            }
+
+        }
+
+
+        // =============================================================
+        // CLEAR REMOTE SOURCE
+        // =============================================================
+
+
+
+        async function clearRemoteSource() {
+
+            if (!selectedDevice) {
+
+                showStatus(
+                    "No device is loaded.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const confirmed =
+                window.confirm(
+                    "Clear the remote tally source from this device?"
+                );
+
+
+            if (!confirmed)
+                return;
+
+
+            try {
+
+                clearButton.disabled =
+                    true;
+
+
+                showStatus(
+                    "Clearing remote tally source...",
+                    "info"
+                );
+
+
+                await apiFetch(
+                    `${API_BASE}/${encodeURIComponent(
+                        deviceId
+                    )}/remote-tally-source`,
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+
+                remoteTallyId.value =
+                    "";
+
+
+                showStatus(
+                    "Remote tally source cleared.",
+                    "success"
+                );
+
+            }
+            catch (error) {
+
+                console.error(error);
+
+
+                showStatus(
+                    `Unable to clear remote source: ${error.message}`,
+                    "error"
+                );
+
+            }
+            finally {
+
+                clearButton.disabled =
+                    false;
+
+            }
+
+        }
+
+
+        // =============================================================
+        // RELOAD
+        // =============================================================
+
+
+
+        // =============================================================
+        // INITIAL LOAD
+        // =============================================================
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            async () => {
+
+                await loadDevice();
+
+            }
+        );
+
+    </script>
+
+</body>
+</html>

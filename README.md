@@ -19,7 +19,7 @@ Below is a list of currently supported devices:
 + Blackmagic Design Videohub
 + (Supported in V1 not in V2) Blackmagic Design Videohub Smart Control (40 button)
 + (Supported in V1 not in V2) Blackmagic Design Videohub Smart Control Pro (48 button)
-+ (Supported in V1 not in V2) Cobalt Digital TOPAZ 9905-MPx
++ Cobalt Digital TOPAZ 9905-MPx
 + (Supported in V1 not in V2) Blackmagic Design SmartScope Duo
 + VMIX (Tally Only)
 + Symetrix DSP (logic Inputs Only)

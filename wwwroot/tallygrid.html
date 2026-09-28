@@ -238,48 +238,10 @@
             </div>
         </div>
 
-
+        </div>
         
         <script>
-            /*
-             * ============================================================
-             * TALLY MATRIX
-             * ============================================================
-             *
-             * Keeps the old PHP grid appearance/behavior:
-             *
-             *  - Inputs across the top
-             *  - Outputs down the left
-             *  - Device groups can collapse independently
-             *  - Rotated input headers
-             *  - Sticky top and left headers
-             *  - Orange = mapped
-             *  - Dark red = mapped + input active
-             *  - Green = device online
-             *  - Clicking an input forces it ON/OFF
-             *  - Clicking a crosspoint creates/removes a route
-             *
-             * API:
-             *
-             *  GET  /api/gpio/devices
-             *  GET  /api/gpio/routes/all
-             *  GET  /api/gpio/{deviceId}/routes
-             *  PUT  /api/gpio/{deviceId}/routes/{outputId}
-             *  DELETE /api/gpio/{deviceId}/routes/{outputId}/source/{sourceDeviceId}
-             *  PUT  /api/gpio/{deviceId}/inputs/{inputId}/status
-             *
-             * Status:
-             *  Inputs/outputs every 100ms
-             *  Routes every 500ms
-             * ============================================================
-             */
 
-
-            /*
-             * ------------------------------------------------------------
-             * GLOBAL STATE
-             * ------------------------------------------------------------
-             */
 
             let devices = [];
             let routes = [];
@@ -291,21 +253,8 @@
             let routeRefreshInProgress = false;
             let routeChangeInProgress = false;
 
-            /*
-             * These are deliberately kept outside renderMatrix().
-             *
-             * That means collapsing a device survives the 500ms
-             * route refresh.
-             */
             const collapsedInputs = {};
             const collapsedOutputs = {};
-
-
-            /*
-             * ------------------------------------------------------------
-             * API
-             * ------------------------------------------------------------
-             */
 
             async function api(url, options = {}) {
 

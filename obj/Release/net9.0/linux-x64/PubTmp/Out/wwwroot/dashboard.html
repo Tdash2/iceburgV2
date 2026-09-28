@@ -10,7 +10,7 @@
           content="width=device-width, initial-scale=1.0">
 
     <title>Iceburg Dashboard</title>
-
+    <script src="header.js"></script>
 
     <style>
 
@@ -85,9 +85,10 @@
            ========================================================= */
 
         #status {
-            margin-bottom: 20px;
+            /* margin-bottom: 20px; */
             color: #999;
-            font-size: 14px;
+            font-size: 1px;
+            visibility: hidden;
         }
 
 
@@ -352,7 +353,7 @@
 
 <!-- Your existing header -->
 
-<script src="header.js"></script>
+
 
 
 <body>
@@ -365,19 +366,7 @@
              TOOLBAR
              ===================================================== -->
 
-        <div class="toolbar">
 
-            <h2>
-                Devices
-            </h2>
-
-
-            <button id="refreshButton"
-                    type="button">
-                Refresh
-            </button>
-
-        </div>
 
 
         <!-- =====================================================
@@ -431,103 +420,24 @@
 
         ];
 
-        const deviceTypeLookup = {
+        let deviceTypeLookup = {};
 
+        async function loadDeviceTypes() {
+            const response = await fetch(
+                "/api/devices/type/",
+                {
+                    method: "GET",
+                    credentials: "same-origin",
+                    cache: "no-store"
+                }
+            );
 
-            "1": {
-
-                name: "BMD Router",
-
-                group: "Routing",
-
-                page: "BMDRouter.html",
-
-                tallypage: "routertally.html"
-
-            },
-
-
-            "2": {
-
-                name: "Tally Device",
-
-                group: "Tally",
-
-                page: "tally.html"
-
-            },
-
-
-            "3": {
-
-                name: "X32 Mixer",
-
-                group: "Audio",
-
-                page: "x32.html"
-
-            },
-
-
-            "4": {
-
-                name: "AJA FS 4",
-
-                group: "Video",
-
-                page: "ajafs4.html"
-
-            },
-            "6": {
-
-                name: "Cobalt 9905-MPX",
-
-                group: "Video",
-
-                page: "og9905.html"
-
-            },
-
-
-            "5": {
-
-                name: "AJA FS 2",
-
-                group: "Video",
-
-                page: "ajafs2.html"
-
+            if (!response.ok) {
+                throw new Error("Failed to load device types: HTTP " + response.status);
             }
 
-
-            // ====================================================
-            // EXAMPLES
-            // ====================================================
-
-            // "6": {
-            //
-            //     name: "AJA FS 3G",
-            //
-            //     group: "Video",
-            //
-            //     page: "ajafs3g.html"
-            //
-            // },
-
-
-            // "7": {
-            //
-            //     name: "Studio Camera",
-            //
-            //     group: "Cameras",
-            //
-            //     page: "camera.html"
-            //
-            // }
-
-
-        };
-
+            deviceTypeLookup = await response.json();
+        }
 
         // ========================================================
         // DOM ELEMENTS
@@ -1534,17 +1444,28 @@
         // REFRESH BUTTON
         // ========================================================
 
-        refreshButton.addEventListener(
-            "click",
-            loadDevices
-        );
 
 
         // ========================================================
         // INITIAL LOAD
         // ========================================================
 
-        loadDevices();
+        (async function () {
+            try {
+                await loadDeviceTypes();
+                await loadDevices();
+            }
+            catch (error) {
+                console.error("Failed to initialize dashboard:", error);
+                statusElement.textContent = "";
+                devicesElement.innerHTML = `
+            <div class="error">
+                Unable to load device information.<br>
+                ${escapeHtml(error.message)}
+            </div>
+        `;
+            }
+        })();
 
 
         // ========================================================

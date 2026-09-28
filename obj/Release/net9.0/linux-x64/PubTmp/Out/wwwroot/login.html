@@ -287,6 +287,58 @@
             return url;
         }
 
+async function checkExistingSession() {
+
+    try {
+
+        const response = await fetch(
+            "/api/me/",
+            {
+                method: "GET",
+                credentials: "same-origin",
+                headers: {
+                    "Accept": "application/json"
+                },
+                cache: "no-store"
+            }
+        );
+
+        // Not logged in.
+        // Leave the login form available.
+        if (!response.ok) {
+            return;
+        }
+
+        const user = await response.json();
+
+        // Make sure we actually received a user object.
+        if (!user || !user.id) {
+            return;
+        }
+
+        console.log(
+            "Already logged in as:",
+            user.username
+        );
+
+        // Already authenticated, so there is no reason
+        // to show the login page.
+        window.location.replace(
+            returnUrl || "/dashboard.html"
+        );
+
+    } catch (error) {
+
+        // If /api/me/ cannot be reached, don't prevent
+        // the user from attempting a normal login.
+        console.warn(
+            "Unable to check existing session:",
+            error
+        );
+    }
+}
+
+
 
         // ============================================================
         // SHOW ERROR
@@ -627,6 +679,11 @@
             //
             // --------------------------------------------------------
 
+
+
+
+
+
             const response =
                 await fetch(
                     "/api/login",
@@ -779,13 +836,28 @@
                 passwordInput.value = "";
             }
         );
-
-
+       
         // ============================================================
         // FOCUS USERNAME
         // ============================================================
 
-        usernameInput.focus();
+        
+// ============================================================
+// STARTUP
+// ============================================================
+
+(async function initializeLoginPage() {
+
+    // Check whether this browser already has
+    // an authenticated session.
+    await checkExistingSession();
+
+    // If /api/me/ did not find an authenticated session,
+    // allow the user to log in normally.
+    usernameInput.focus();
+
+})();
+
 
     </script>
 
