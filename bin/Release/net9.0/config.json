@@ -17,13 +17,10 @@
     {
       "Id": "998ccd6a-e1f3-4ee9-95de-46f7172d1061",
       "Username": "localadmin",
-      "PasswordSalt": "FMWm18suH\u002BNcQ\u002BIfwhoxoZsgGU\u002BoBsmFGj3jhHIuW2A=",
-      "PasswordHash": "IR1Qd7o/M5rMyM2B6ztrpRW7XYWYW/1EFZA6ZhDpgTU=",
+      "PasswordSalt": "NTmujXZ5nHrN2ZnOIJTjsGfCOwz5zDcNL4pD/dgzGxA=",
+      "PasswordHash": "Wwyz13G0CzXiGEpIXw6oZ6nv35Ave0tVsN8U5NDtgGs=",
       "Role": "Admin",
-      "AutoLoginIps": [
-        "::1",
-        "127.0.0.1"
-      ]
+      "AutoLoginIps": []
     }
   ],
   "Devices": [
@@ -112,6 +109,36 @@
       "Name": "Tally From Rush Studios",
       "Type": "7",
       "IpAddress": "47.225.212.98",
+      "AudioSorce": "",
+      "LastSeen": "9/30/2026 8:21:30 PM",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "e21d1131-4cde-4709-96dc-4b1d1e305656",
+      "Name": "HEX-3 V1 Router Panle",
+      "Type": "8",
+      "IpAddress": "10.176.73.41",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "bf7769e0-ca72-4c6d-8c18-d11afe5a8d15",
+      "Name": "hex-3 40x40",
+      "Type": "1",
+      "IpAddress": "10.176.73.40",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "5ba6d3f0-4f29-411f-83af-4353bf2f9485",
+      "Name": "Smart Scope",
+      "Type": "9",
+      "IpAddress": "10.176.73.44",
       "AudioSorce": "",
       "LastSeen": "",
       "Username": "",

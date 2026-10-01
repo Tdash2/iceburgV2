@@ -7,6 +7,8 @@ using Iceburg.Conversion.AJA.fs4;
 using Iceburg.Database;
 using Iceburg.Mixer.X32;
 using Iceburg.Conversion.Cobalt.OG9905;
+using Iceburg.Interfaces.BMD.Panle40;
+using Iceburg.Monitor.BMD.smartscope;
 
 namespace Iceburg.Devices.Status;
 public class DeviceStatus
@@ -232,6 +234,75 @@ public class DeviceStatus
                 var fs2 = new OG9905MPx(id);
 
                 var result = await fs2.GetParamAsync("6832");
+
+                string value = result?.ToString() ?? "";
+                if (value != "")
+                {
+
+                    return "connected";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+            catch
+            {
+                return "error";
+            }
+        }
+        if (device.Type == "7")
+        {
+            string timeString = device.LastSeen;
+
+            // Later...
+            if (DateTime.TryParse(timeString, out DateTime savedTime))
+            {
+                if (Math.Abs((DateTime.Now - savedTime).TotalSeconds) <= 5)
+                {
+                    return "connected";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+            else
+            {
+                return "error";
+            }
+        }
+        if (device.Type == "8")
+        {
+            try
+            {
+                var fs2 = new BMD_Panle40();
+
+                var result = await fs2.GetPanelStatus(id);
+
+                string value = result?.ToString() ?? "";
+                if (value != "")
+                {
+
+                    return "connected";
+                }
+                else
+                {
+                    return "error";
+                }
+            }
+            catch
+            {
+                return "error";
+            }
+        }
+        if (device.Type == "9")
+        {
+            try
+            {
+                var fs2 = new BMD_SmartScope();
+
+                var result = await fs2.GetState(id);
 
                 string value = result?.ToString() ?? "";
                 if (value != "")

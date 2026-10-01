@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Videohub Smart Control Programmer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="header.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #232323;
+            color: #eee;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(20, 1fr);
+            grid-auto-rows: 60px;
+            gap: 6px;
+            width: 100%;
+            max-width: 100%;
+            justify-items: center;
+        }
+
+        button.grid-btn {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            font-size: 12px;
+            text-align: center;
+            white-space: normal;
+            word-break: break-word;
+        }
+
+        .grid-btn.source {
+            background: #7f8c8d;
+            color: #000;
+        }
+
+        .grid-btn.destination {
+            background: #f1c40f;
+            color: #fff;
+        }
+
+        .grid-btn.salvo {
+            background: #27ae60;
+            color: #fff;
+        }
+
+        h1, h2 {
+            width: 100%;
+            text-align: left;
+            margin: 0 0 8px 0;
+            color: #4db2ff;
+        }
+
+        .container p {
+            width: 100%;
+            text-align: left;
+            margin: 0 0 20px 0;
+        }
+
+        .dialog {
+            display: none;
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #222;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            z-index: 20;
+        }
+
+        .dialog input,
+        .dialog select {
+            width: 100%;
+            margin: 5px 0;
+            padding: 8px;
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .dialog button {
+            margin-top: 10px;
+            width: 100%;
+            padding: 8px;
+            color: black;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+
+        .suggestions {
+            position: absolute;
+            background: #333;
+            border: 1px solid #555;
+            width: calc(100% - 40px);
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 30;
+            display: none;
+            color: #fff;
+        }
+
+        .suggestion-item {
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .suggestion-item:hover {
+            background: #0078ff;
+        }
+
+        .vh-selector {
+            margin-bottom: 20px;
+        }
+
+        .vh-selector select {
+            margin: 0 8px 0 5px;
+            padding: 6px;
+        }
+
+        button, input, select, textarea {
+            font-family: inherit;
+            font-size: inherit;
+            line-height: inherit;
+            color: black;
+        }
+
+        .status {
+            margin: 8px 0 15px 0;
+            color: #aaa;
+        }
+        .vh-selector select {
+            /* margin: 0 8px 0 5px; */
+            /* padding: 8px; */
+            background: #333;
+            color: white;
+            /* border: 1px solid #555; */
+            /* border-radius: 4px; */
+            min-width: 220px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container" style="margin: 30px;">
+    <br>
+
+    <h2 id="panel-title">Videohub Panel Control</h2>
+    <p>Panel: <strong id="panel-ip">Loading...</strong></p>
+
+    <div class="vh-selector">
+        <label for="vh-select">Videohub Router:</label>
+        <select id="vh-select">
+            <option value="">Loading routers...</option>
+        </select>
+    </div>
+
+    <div class="status" id="status"></div>
+
+    <div class="grid">
+        <button class="grid-btn" data-button="0"></button>
+        <button class="grid-btn" data-button="1"></button>
+        <button class="grid-btn" data-button="2"></button>
+        <button class="grid-btn" data-button="3"></button>
+        <button class="grid-btn" data-button="4"></button>
+        <button class="grid-btn" data-button="5"></button>
+        <button class="grid-btn" data-button="6"></button>
+        <button class="grid-btn" data-button="7"></button>
+        <button class="grid-btn" data-button="8"></button>
+        <button class="grid-btn" data-button="9"></button>
+        <button class="grid-btn" data-button="10"></button>
+        <button class="grid-btn" data-button="11"></button>
+        <button class="grid-btn" data-button="12"></button>
+        <button class="grid-btn" data-button="13"></button>
+        <button class="grid-btn" data-button="14"></button>
+        <button class="grid-btn" data-button="15"></button>
+        <button class="grid-btn" data-button="16"></button>
+        <button class="grid-btn" data-button="17"></button>
+        <button class="grid-btn" data-button="18"></button>
+        <button class="grid-btn" data-button="19"></button>
+        <button class="grid-btn" data-button="20"></button>
+        <button class="grid-btn" data-button="21"></button>
+        <button class="grid-btn" data-button="22"></button>
+        <button class="grid-btn" data-button="23"></button>
+        <button class="grid-btn" data-button="24"></button>
+        <button class="grid-btn" data-button="25"></button>
+        <button class="grid-btn" data-button="26"></button>
+        <button class="grid-btn" data-button="27"></button>
+        <button class="grid-btn" data-button="28"></button>
+        <button class="grid-btn" data-button="29"></button>
+        <button class="grid-btn" data-button="30"></button>
+        <button class="grid-btn" data-button="31"></button>
+        <button class="grid-btn" data-button="32"></button>
+        <button class="grid-btn" data-button="33"></button>
+        <button class="grid-btn" data-button="34"></button>
+        <button class="grid-btn" data-button="35"></button>
+        <button class="grid-btn" data-button="36"></button>
+        <button class="grid-btn" data-button="37"></button>
+        <button class="grid-btn" data-button="38"></button>
+        <button class="grid-btn" data-button="39"></button>
+    </div>
+</div>
+
+<div class="overlay"></div>
+
+<div class="dialog">
+    <h3>Button <span id="dialog-button"></span></h3>
+
+    <form id="button-form">
+        <input type="hidden" id="form-button">
+
+        <label>Type:</label>
+        <select id="form-type">
+            <option>Source</option>
+            <option>Destination</option>
+            <option>Salvo</option>
+        </select>
+
+        <label>Target Name:</label>
+        <input type="text" id="form-target" autocomplete="off">
+
+        <div class="suggestions"></div>
+
+        <button type="submit">Apply</button>
+        <button type="button" id="close-dialog">Cancel</button>
+    </form>
+</div>
+
+<script>
+    // ICEBURG should expose the device id as ?id=... just as the PHP page did.
+    const params = new URLSearchParams(window.location.search);
+    const deviceId = params.get("id");
+
+    const dialog = document.querySelector(".dialog");
+    const overlay = document.querySelector(".overlay");
+    const form = document.getElementById("button-form");
+    const typeSelect = document.getElementById("form-type");
+    const targetInput = document.getElementById("form-target");
+    const sugBox = document.querySelector(".suggestions");
+    const vhSelect = document.getElementById("vh-select");
+
+    let videohubDevices = [];
+    let currentVideohubIp = "";
+    const statusBox = document.getElementById("status");
+
+    let selectedIndex = -1;
+    let hubNames = { inputs: [], outputs: [] };
+    let buttonStatus = Array.from({length: 40}, () => ({
+        type: "Source",
+        target: 0
+    }));
+
+    function api(path) {
+        return `/api/control/bmd/40panle/${encodeURIComponent(deviceId)}${path}`;
+    }
+
+    function setStatus(text) {
+        statusBox.textContent = text || "";
+    }
+
+    function updateButtonAppearance() {
+        document.querySelectorAll(".grid-btn").forEach(btn => {
+            const i = parseInt(btn.dataset.button);
+            const data = buttonStatus[i] || {
+                type: "Source",
+                target: 0
+            };
+
+            const type = data.type.toLowerCase();
+
+            btn.classList.remove("source", "destination", "salvo");
+
+            if (type === "source")
+                btn.classList.add("source");
+            else if (type === "destination")
+                btn.classList.add("destination");
+            else if (type === "salvo")
+                btn.classList.add("salvo");
+
+            let label = "";
+
+            if (data.target !== -1) {
+                if (type === "source" &&
+                    hubNames.inputs &&
+                    hubNames.inputs[data.target] !== undefined) {
+                    label = hubNames.inputs[data.target];
+                }
+                else if (type === "destination" &&
+                         hubNames.outputs &&
+                         hubNames.outputs[data.target] !== undefined) {
+                    label = hubNames.outputs[data.target];
+                }
+                else {
+                    label = data.target;
+                }
+            }
+
+            btn.textContent = label;
+            btn.title =
+                `Type: ${data.type}\nTarget: ${data.target}`;
+        });
+    }
+    async function loadVideohubDevice(panelVideohubIp = "") {
+        try {
+            vhSelect.innerHTML =
+                '<option value="">Loading routers...</option>';
+
+            const response = await fetch("/api/devices");
+
+            if (!response.ok) {
+                throw new Error("Failed to load devices.");
+            }
+
+            const devices = await response.json();
+
+            // Only include Videohub devices (type 1)
+            videohubDevices = devices.filter(
+                device => String(device.type) === "1"
+            );
+
+            vhSelect.innerHTML = "";
+
+            if (videohubDevices.length === 0) {
+                vhSelect.innerHTML =
+                    '<option value="">No Videohub devices found</option>';
+
+                setStatus("No devices with type 1 were found.");
+                return;
+            }
+
+            // Populate dropdown
+            videohubDevices.forEach(device => {
+                const option = document.createElement("option");
+
+                option.value = device.ipAddress;
+                option.textContent =
+                    `${device.name} (${device.ipAddress})`;
+
+                vhSelect.appendChild(option);
+            });
+
+            // Find the router the panel is already configured to use
+            const connectedRouter = videohubDevices.find(
+                device => device.ipAddress === panelVideohubIp
+            );
+
+            if (connectedRouter) {
+                vhSelect.value = connectedRouter.ipAddress;
+                currentVideohubIp = connectedRouter.ipAddress;
+
+                setStatus(
+                    `Panel router: ${connectedRouter.name}`
+                );
+            } else {
+                // If the saved router isn't in the device list,
+                // select the first available router.
+                vhSelect.selectedIndex = 0;
+
+                currentVideohubIp = videohubDevices[0].ipAddress;
+
+                setStatus(
+                    `Selected ${videohubDevices[0].name}.`
+                );
+            }
+
+        } catch (err) {
+            console.error(err);
+
+            vhSelect.innerHTML =
+                '<option value="">Unable to load routers</option>';
+
+            setStatus("Failed to load Videohub devices.");
+        }
+    }
+    vhSelect.addEventListener("change", async () => {
+        const newIp = vhSelect.value;
+
+        if (!newIp || newIp === currentVideohubIp)
+            return;
+
+        const selectedDevice = videohubDevices.find(
+            device => device.ipAddress === newIp
+        );
+
+        try {
+            setStatus(`Switching to ${selectedDevice?.name || newIp}...`);
+
+            vhSelect.disabled = true;
+
+            const response = await fetch(
+                api(`/setvideohub/${encodeURIComponent(newIp)}`)
+            );
+
+            const data = await response.json();
+
+            if (data.success) {
+                currentVideohubIp = newIp;
+
+                setStatus(
+                    `Videohub changed to: ${selectedDevice?.name || newIp}`
+                );
+                window.location.reload();
+                await loadNames();
+                updateButtonAppearance();
+            } else {
+                setStatus(
+                    `Failed to change router: ${data.error || data.ack}`
+                );
+
+                // Restore previous selection
+                vhSelect.value = currentVideohubIp;
+            }
+
+        } catch (err) {
+            console.error(err);
+
+            setStatus("Failed to change Videohub.");
+
+            vhSelect.value = currentVideohubIp;
+        } finally {
+            vhSelect.disabled = false;
+        }
+    });
+
+    async function loadPanel() {
+        if (!deviceId) {
+            setStatus("Missing device id.");
+            return;
+        }
+
+        try {
+            const response = await fetch(api("/getpanelstatus"));
+            const data = await response.json();
+
+            if (data.error) {
+                setStatus(data.error);
+                return;
+            }
+
+            document.getElementById("panel-title").textContent =
+                `${data.panel_name || "Videohub"}`;
+
+            document.getElementById("panel-ip").textContent =
+                data.panel_ip || "";
+
+           
+
+            if (Array.isArray(data.buttons)) {
+                data.buttons.forEach(item => {
+                    if (item.button >= 0 && item.button < 40) {
+                        buttonStatus[item.button] = {
+                            type: item.type,
+                            target: item.target
+                        };
+                    }
+                });
+            }
+
+            await loadNames();
+            updateButtonAppearance();
+        }
+        catch (err) {
+            console.error(err);
+            setStatus("Unable to read panel.");
+            updateButtonAppearance();
+
+        }
+
+    }
+
+    async function loadNames() {
+        try {
+            const response = await fetch(api("/getnames"));
+            const data = await response.json();
+
+            if (data.error) {
+                setStatus(data.error);
+                return;
+            }
+
+            hubNames = {
+                inputs: data.inputs || [],
+                outputs: data.outputs || []
+            };
+
+            updateButtonAppearance();
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }
+
+    function populateSuggestions(type) {
+        let list = [];
+
+        if (type === "Source")
+            list = hubNames.inputs || [];
+        else if (type === "Destination")
+            list = hubNames.outputs || [];
+
+        sugBox.innerHTML = "";
+
+        const none = document.createElement("div");
+        none.className = "suggestion-item";
+        none.textContent = "None";
+        none.dataset.index = -1;
+
+        none.onclick = () => {
+            targetInput.value = "None";
+            targetInput.dataset.index = "-1";
+            sugBox.style.display = "none";
+            selectedIndex = -1;
+        };
+
+        sugBox.appendChild(none);
+
+        list.forEach((name, idx) => {
+            const div = document.createElement("div");
+
+            div.className = "suggestion-item";
+            div.textContent = name;
+            div.dataset.index = idx;
+
+            div.onclick = () => {
+                targetInput.value = name;
+                targetInput.dataset.index = idx;
+                sugBox.style.display = "none";
+                selectedIndex = -1;
+            };
+
+            sugBox.appendChild(div);
+        });
+    }
+
+    document.querySelectorAll(".grid-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const i = parseInt(btn.dataset.button);
+            const data = buttonStatus[i];
+
+            document.getElementById("dialog-button").textContent = i;
+            document.getElementById("form-button").value = i;
+
+            typeSelect.value = data.type;
+
+            if (data.target === -1) {
+                targetInput.value = "None";
+                targetInput.dataset.index = "-1";
+            }
+            else if (data.type === "Source") {
+                targetInput.value =
+                    hubNames.inputs[data.target] ?? data.target;
+                targetInput.dataset.index = data.target;
+            }
+            else if (data.type === "Destination") {
+                targetInput.value =
+                    hubNames.outputs[data.target] ?? data.target;
+                targetInput.dataset.index = data.target;
+            }
+            else {
+                targetInput.value = data.target;
+                targetInput.dataset.index = data.target;
+            }
+
+            populateSuggestions(data.type);
+            sugBox.style.display = "none";
+            selectedIndex = -1;
+
+            dialog.style.display = "block";
+            overlay.style.display = "block";
+        });
+    });
+
+    typeSelect.addEventListener("change", () => {
+        populateSuggestions(typeSelect.value);
+        targetInput.value = "";
+        targetInput.dataset.index = "";
+        sugBox.style.display = "none";
+        selectedIndex = -1;
+    });
+
+    targetInput.addEventListener("input", () => {
+        const val = targetInput.value.toLowerCase();
+
+        const visibleItems =
+            Array.from(sugBox.children).filter(item => {
+                const show =
+                    item.textContent.toLowerCase().includes(val);
+
+                item.style.display = show ? "block" : "none";
+                return show;
+            });
+
+        selectedIndex = -1;
+        sugBox.style.display =
+            visibleItems.length ? "block" : "none";
+    });
+
+    targetInput.addEventListener("keydown", e => {
+        const visibleItems =
+            Array.from(sugBox.children)
+                .filter(item => item.style.display !== "none");
+
+        if (!visibleItems.length)
+            return;
+
+        if (e.key === "ArrowDown") {
+            e.preventDefault();
+            selectedIndex =
+                (selectedIndex + 1) % visibleItems.length;
+            updateHighlight(visibleItems);
+        }
+        else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            selectedIndex =
+                (selectedIndex - 1 + visibleItems.length) %
+                visibleItems.length;
+            updateHighlight(visibleItems);
+        }
+        else if (e.key === "Enter") {
+            e.preventDefault();
+
+            if (selectedIndex === -1)
+                selectedIndex = 0;
+
+            const item = visibleItems[selectedIndex];
+
+            targetInput.value = item.textContent;
+            targetInput.dataset.index = item.dataset.index;
+
+            sugBox.style.display = "none";
+            selectedIndex = -1;
+        }
+    });
+
+    function updateHighlight(visibleItems) {
+        visibleItems.forEach((item, i) => {
+            item.style.background =
+                (i === selectedIndex) ? "#0078ff" : "";
+        });
+    }
+
+    document.getElementById("close-dialog").addEventListener("click", () => {
+        dialog.style.display = "none";
+        overlay.style.display = "none";
+    });
+
+    form.addEventListener("submit", async e => {
+        e.preventDefault();
+
+        const button = parseInt(
+            document.getElementById("form-button").value);
+
+        const type = typeSelect.value;
+
+        let target = targetInput.dataset.index;
+
+        if (target === undefined || target === "")
+            target = targetInput.value;
+
+        target = parseInt(target);
+
+        if (Number.isNaN(target)) {
+            alert("Please select a target.");
+            return;
+        }
+
+        dialog.style.display = "none";
+        overlay.style.display = "none";
+
+        buttonStatus[button] = {
+            type,
+            target
+        };
+
+        updateButtonAppearance();
+
+        try {
+            const response = await fetch(
+                api(
+                    `/setbutton/${button}/` +
+                    `${encodeURIComponent(type)}/` +
+                    `${target}`));
+
+            const data = await response.json();
+
+            if (!data.success) {
+                setStatus(
+                    `Button update failed: ${data.error || data.ack}`);
+                await loadPanel();
+            }
+            else {
+                setStatus(`Button ${button} updated.`);
+            }
+        }
+        catch (err) {
+            console.error(err);
+            setStatus("Button update failed.");
+            await loadPanel();
+        }
+    });
+
+    async function init() {
+        if (!deviceId) {
+            setStatus("Missing device id.");
+            return;
+        }
+
+        try {
+            // First get the panel's current configuration
+            const response = await fetch(api("/getpanelstatus"));
+            const data = await response.json();
+
+            if (data.error) {
+                setStatus(data.error);
+                return;
+            }
+
+            document.getElementById("panel-title").textContent =
+                data.panel_name || "Videohub";
+
+            document.getElementById("panel-ip").textContent =
+                data.panel_ip || "";
+
+            // Load routers and select the one matching panel configuration
+            await loadVideohubDevice(data.videohub_ip || "");
+
+            // Load button configuration
+            if (Array.isArray(data.buttons)) {
+                data.buttons.forEach(item => {
+                    if (item.button >= 0 && item.button < 40) {
+                        buttonStatus[item.button] = {
+                            type: item.type,
+                            target: item.target
+                        };
+                    }
+                });
+            }
+
+            await loadNames();
+            updateButtonAppearance();
+
+        } catch (err) {
+            console.error(err);
+            setStatus("Unable to initialize panel.");
+        }
+    }
+
+    init();
+
+    init();
+</script>
+</body>
+</html>

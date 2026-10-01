@@ -471,7 +471,7 @@
           "Port": 1,
           "Name": "Input 1",
           "Nickname": "Input 1",
-          "Status": true
+          "Status": false
         },
         {
           "InputId": "789658b5d243455e99157ebd0fbbe74d",
@@ -529,6 +529,41 @@
         "Port": 80,
         "RemoteTallyId": "66"
       }
+    },
+    {
+      "DeviceId": "bf7769e0-ca72-4c6d-8c18-d11afe5a8d15",
+      "Name": "hex-3 40x40",
+      "Nickname": "hex-3 40x40",
+      "IpAddress": "10.176.73.40",
+      "Inputs": [],
+      "Outputs": [],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "5ba6d3f0-4f29-411f-83af-4353bf2f9485",
+      "Name": "Smart Scope",
+      "Nickname": "Smart Scope",
+      "IpAddress": "10.176.73.44",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "OutputId": "647c73b9ecc04d158809259efa0fdd8b",
+          "Port": 1,
+          "Name": "MON A",
+          "Nickname": "CH1",
+          "Status": false
+        },
+        {
+          "OutputId": "8b746c05355144cdb6270397dd45b287",
+          "Port": 2,
+          "Name": "MON B",
+          "Nickname": "CH2",
+          "Status": false
+        }
+      ],
+      "Routes": [],
+      "RemoteTallySource": null
     }
   ]
 }

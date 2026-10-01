@@ -23,6 +23,8 @@ using System.Data;
 using Iceburg.Conversion.Cobalt.OG9905;
 using System.Threading;
 using System.Reflection;
+using Iceburg.Interfaces.BMD.Panle40;
+using Iceburg.Monitor.BMD.smartscope;
 
 bool debug = false;
 
@@ -40,7 +42,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     );
 });
 
-string ProgramVerson = "2.0.1";
+string ProgramVerson = "2.0.2";
 
 // ============================================================
 // DATABASE
@@ -89,7 +91,7 @@ builder.Services.AddAuthentication(
 
         // Fixed 30 minute session.
         options.ExpireTimeSpan =
-            TimeSpan.FromMinutes(30);
+            TimeSpan.FromMinutes(120);
 
         options.SlidingExpiration = false;
 
@@ -1116,6 +1118,7 @@ deviceApi.MapGet("/getdevicestatus/{id}",async (string id) =>
 
         return await devicetest.Getstatus(id);
     });
+
 app.MapGet("/api/devices", (HttpContext httpContext) =>
 {
     if (!IsAdmin(httpContext))
@@ -1125,10 +1128,7 @@ app.MapGet("/api/devices", (HttpContext httpContext) =>
 })
 .RequireAuthorization();
 
-
-app.MapPost("/api/devices", (
-    Device device,
-    HttpContext httpContext) =>
+app.MapPost("/api/devices", (Device device,HttpContext httpContext) =>
 {
     if (!IsAdmin(httpContext))
         return Results.Forbid();
@@ -1175,11 +1175,7 @@ app.MapPost("/api/devices", (
 })
 .RequireAuthorization();
 
-
-app.MapPut("/api/devices/{id}", (
-    string id,
-    Device device,
-    HttpContext httpContext) =>
+app.MapPut("/api/devices/{id}", (string id, Device device, HttpContext httpContext) =>
 {
     if (!IsAdmin(httpContext))
         return Results.Forbid();
@@ -1237,10 +1233,7 @@ app.MapPut("/api/devices/{id}", (
 })
 .RequireAuthorization();
 
-
-app.MapDelete("/api/devices/{id}", (
-    string id,
-    HttpContext httpContext) =>
+app.MapDelete("/api/devices/{id}", (string id,HttpContext httpContext) =>
 {
     if (!IsAdmin(httpContext))
         return Results.Forbid();
@@ -1259,7 +1252,6 @@ app.MapDelete("/api/devices/{id}", (
     });
 })
 .RequireAuthorization();
-
 
 app.MapGet("/api/devices/type/", (HttpContext httpContext) =>
 {
@@ -1313,13 +1305,25 @@ app.MapGet("/api/devices/type/", (HttpContext httpContext) =>
             name = "Server To Server Tally",
             group = "Tally",
             page = "servertoservertally.html"
+        },
+        ["8"] = new
+        {
+            name = "BMD 40 Button Router Panle",
+            group = "Control",
+            page = "bmd40panle.html"
+        }
+        ,
+        ["9"] = new
+        {
+            name = "BMD Smart Scope",
+            group = "Video",
+            page = "BMD-SmartScope.html"
         }
     };
 
     return Results.Ok(devices);
 })
 .RequireAuthorization();
-
 
 //BMD Router
 var routerApi = app.MapGroup("/api/router").RequireAuthorization();
@@ -2002,6 +2006,69 @@ og9905api.MapGet("/OG9905MPx/{id}/GetMadiSorce/", (string id) =>
 
 
 });
+
+
+var bndrouterpnale40 = app.MapGroup("/api/control").RequireAuthorization();
+//BMD 40 Butotn Panle
+bndrouterpnale40.MapGet("/bmd/40panle/{id}/getinfo", (string id) =>
+{
+    var bmdRouter = new BMD_Panle40();
+    return bmdRouter.getinfo(id);
+});
+
+bndrouterpnale40.MapGet("/bmd/40panle/{id}/getpanelstatus", (string id) =>
+{
+    var bmdRouter = new BMD_Panle40();
+    return bmdRouter.GetPanelStatus(id);
+});
+
+bndrouterpnale40.MapGet("/bmd/40panle/{id}/getnames", (string id) =>
+{
+    var bmdRouter = new BMD_Panle40();
+    return bmdRouter.GetNames(id);
+});
+
+bndrouterpnale40.MapGet("/bmd/40panle/{id}/setbutton/{button}/{type}/{target}",
+    (string id, string button, string type, string target) =>
+    {
+        var bmdRouter = new BMD_Panle40();
+        return bmdRouter.SetButton(id, button, type, target);
+    });
+
+bndrouterpnale40.MapGet("/bmd/40panle/{id}/setvideohub/{ip}",
+    (string id, string ip) =>
+    {
+        var bmdRouter = new BMD_Panle40();
+        return bmdRouter.SetVideohub(id, ip);
+    });
+
+
+//BMD Smartscope
+var smarscopeapi = app.MapGroup("/api/monitors").RequireAuthorization();
+
+smarscopeapi.MapGet("/bmd/{id}/getinfo", (string id) =>
+            new BMD_SmartScope().GetInfo(id));
+
+smarscopeapi.MapGet("/bmd/{id}/getstate", (string id) =>
+    new BMD_SmartScope().GetState(id));
+
+smarscopeapi.MapGet("/bmd/{id}/set/{monitor}/{param}/{value}",
+    (string id, string monitor, string param, string value) =>
+        new BMD_SmartScope().Set(id, monitor, param, value));
+
+        
+
+
+
+smarscopeapi.MapPost("/bmd/{id}/set",
+    async (string id, HttpRequest request) =>
+    {
+        var form = await request.ReadFormAsync();
+        string monitor = form["monitor"].ToString();
+        string param = form["param"].ToString();
+        string value = form["value"].ToString();
+        return await new BMD_SmartScope().Set(id, monitor, param, value);
+    });
 
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 Console.WriteLine(@"

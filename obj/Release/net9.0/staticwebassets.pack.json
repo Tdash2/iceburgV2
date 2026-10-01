@@ -1,6 +1,10 @@
 {
   "Files": [
     {
+      "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\BMD-SmartScope.html",
+      "PackagePath": "staticwebassets\\BMD-SmartScope.html"
+    },
+    {
       "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\BMDRouter.html",
       "PackagePath": "staticwebassets\\BMDRouter.html"
     },
@@ -23,6 +27,10 @@
     {
       "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\ajafs4.html",
       "PackagePath": "staticwebassets\\ajafs4.html"
+    },
+    {
+      "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\bmd40panle.html",
+      "PackagePath": "staticwebassets\\bmd40panle.html"
     },
     {
       "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\dashboard.html",

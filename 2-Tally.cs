@@ -17,9 +17,11 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using Iceburg.Monitor.BMD.smartscope;
 namespace Iceburg.Database
 {
     using System.Net;
+    using System.Reflection.PortableExecutable;
     using System.Text.Json;
     using System.Text.Json.Serialization;
 
@@ -58,7 +60,7 @@ namespace Iceburg.Database
 
         private static CancellationTokenSource? _routerPollingCts;
         private static Task? _routerPollingTask;
-
+        private static Dictionary<string, (bool Channel1, bool Channel2)> _device9TallyStates = new();
         // Type 7 devices can mirror an input from another legacy Tally server.
         // The mirrored state is written into a normal GpioInput, so routes and
         // outputs treat it exactly like any other source input.
@@ -77,7 +79,17 @@ namespace Iceburg.Database
                 WriteIndented = true,
                 PropertyNameCaseInsensitive = true
             };
+        // Type 9 devices are tally-trigger devices.
+        // They have two automatically-created inputs.
+        //
+        // Channel 1 OR Channel 2 = device tally state.
+        //
+        // The state is checked every 100 ms, but device9tally()
+        // is only called when the state changes.
+        private static CancellationTokenSource? _device9TallyPollingCts;
+        private static Task? _device9TallyPollingTask;
 
+    
 
         // ============================================================
         // INITIALIZATION
@@ -100,6 +112,7 @@ namespace Iceburg.Database
                 StartRouterPollingInternal();
 
                 StartRemoteTallyPollingInternal();
+                StartDevice9TallyPollingInternal();
             }
         }
         private static bool IsRouterDeviceInternal(string deviceId)
@@ -357,10 +370,160 @@ namespace Iceburg.Database
                 },
                 token);
         }
+        // ============================================================
+        // TYPE 9 TALLY POLLING
+        // ============================================================
 
-        private static async Task PollRemoteTallyDeviceInternal(
-     GpioDevice device,
-     CancellationToken cancellationToken)
+        private static bool IsDevice9Internal(string deviceId)
+        {
+            return Database.Devices.Any(d =>
+                string.Equals(
+                    d.Id,
+                    deviceId,
+                    StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(
+                    d.Type,
+                    "9",
+                    StringComparison.OrdinalIgnoreCase));
+        }
+
+
+        private static void StartDevice9TallyPollingInternal()
+        {
+            if (_device9TallyPollingTask != null &&
+                !_device9TallyPollingTask.IsCompleted)
+            {
+                return;
+            }
+
+            _device9TallyPollingCts?.Dispose();
+
+            _device9TallyPollingCts =
+                new CancellationTokenSource();
+
+            var token =
+                _device9TallyPollingCts.Token;
+
+            _device9TallyPollingTask =
+                Task.Run(
+                    async () =>
+                    {
+                        while (!token.IsCancellationRequested)
+                        {
+                            try
+                            {
+                                List<GpioDevice> devices;
+
+                                lock (_lock)
+                                {
+                                    devices =
+                                        _config.Devices
+                                            .Where(d =>
+                                                IsDevice9Internal(
+                                                    d.DeviceId))
+                                            .Select(CloneDevice)
+                                            .ToList();
+                                }
+
+                                foreach (var device in devices)
+                                {
+                                    if (token.IsCancellationRequested)
+                                        break;
+
+                                    CheckDevice9TallyInternal(
+                                        device);
+                                  
+
+                                }
+                            }
+                            catch
+                            {
+                                // Keep the Type 9 polling loop alive.
+                            }
+
+                            try
+                            {
+                                await Task.Delay(
+                                    100,
+                                    token);
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                break;
+                            }
+                        }
+                    },
+                    token);
+        }
+
+
+        private async static void CheckDevice9TallyInternal(GpioDevice device)
+        {
+            if (device == null || string.IsNullOrWhiteSpace(device.DeviceId))
+                return;
+
+            bool channel1 = device.Outputs.Any(x => x.Port == 1 && x.Status);
+            bool channel2 = device.Outputs.Any(x => x.Port == 2 && x.Status);
+
+            bool previousChannel1;
+            bool previousChannel2;
+
+            lock (_lock)
+            {
+                if (!_device9TallyStates.TryGetValue(device.DeviceId, out var previousState))
+                {
+                    _device9TallyStates[device.DeviceId] = (channel1, channel2);
+
+                    // Apply initial states
+                    previousChannel1 = !channel1;
+                    previousChannel2 = !channel2;
+                }
+                else
+                {
+                    previousChannel1 = previousState.Channel1;
+                    previousChannel2 = previousState.Channel2;
+
+                    if (previousChannel1 == channel1 && previousChannel2 == channel2)
+                        return;
+
+                    _device9TallyStates[device.DeviceId] = (channel1, channel2);
+                }
+            }
+
+            var smartScope = new BMD_SmartScope();
+
+            // Channel A
+            if (channel1 != previousChannel1)
+            {
+                if (channel1)
+                {
+                    await smartScope.Settallyon(device.DeviceId, "A");
+                   
+                }
+                else
+                {
+                    await smartScope.Settallyoff(device.DeviceId, "A");
+                   
+                }
+            }
+
+            // Channel B
+            if (channel2 != previousChannel2)
+            {
+                if (channel2)
+                {
+                    await smartScope.Settallyon(device.DeviceId, "B");
+                  
+                }
+                else
+                {
+                    await smartScope.Settallyoff(device.DeviceId, "B");
+                  
+                }
+            }
+        }
+
+        private static async Task PollRemoteTallyDeviceInternal(GpioDevice device,CancellationToken cancellationToken)
         {
             var source = device.RemoteTallySource;
 
@@ -409,7 +572,9 @@ namespace Iceburg.Database
                     $"http://{device.IpAddress}:{source.Port}" +
                     "/tally/gettallystatus.php?" + "IP=" + GetLocalIPAddress()+ "&id=" +
                     Uri.EscapeDataString(source.RemoteTallyId);
+
                 
+
                 using var response =
                     await _remoteTallyHttpClient.GetAsync(
                         url,
@@ -512,6 +677,7 @@ namespace Iceburg.Database
                  */
                 lock (_lock)
                 {
+                    Database.UpdateDevicePresence(device.DeviceId, device.IpAddress);
                     var actualDevice =
                         FindDeviceInternal(device.DeviceId);
 
@@ -838,18 +1004,12 @@ namespace Iceburg.Database
                 var sourceDevices =
                     Database.Devices
                         .Where(d =>
-                            string.Equals(
-                                d.Type,
-                                "1",
-                                StringComparison.OrdinalIgnoreCase) ||
-                            string.Equals(
-                                d.Type,
-                                "2",
-                                StringComparison.OrdinalIgnoreCase) ||
-                            string.Equals(
-                                d.Type,
-                                "7",
-                                StringComparison.OrdinalIgnoreCase))
+                            string.Equals(d.Type, "1",StringComparison.OrdinalIgnoreCase) ||
+                            string.Equals(d.Type, "2",StringComparison.OrdinalIgnoreCase) ||
+                            string.Equals(d.Type, "7",StringComparison.OrdinalIgnoreCase) ||
+                            string.Equals(d.Type, "9", StringComparison.OrdinalIgnoreCase))
+
+
                         .ToList();
 
                 var sourceIds =
@@ -880,32 +1040,39 @@ namespace Iceburg.Database
                         // Inputs and outputs can then be configured from
                         // the tally page.
                         gpioDevice =
-                            new GpioDevice
-                            {
-                                DeviceId =
-                                    sourceDevice.Id,
+    new GpioDevice
+    {
+        DeviceId =
+            sourceDevice.Id,
 
-                                Name =
-                                    sourceDevice.Name ?? "",
+        Name =
+            sourceDevice.Name ?? "",
 
-                                Nickname =
-                                    sourceDevice.Name ?? "",
+        Nickname =
+            sourceDevice.Name ?? "",
 
-                                IpAddress =
-                                    sourceDevice.IpAddress ?? "",
+        IpAddress =
+            sourceDevice.IpAddress ?? "",
 
-                                Inputs =
-                                    new List<GpioInput>(),
+        Inputs =
+            new List<GpioInput>(),
 
-                                Outputs =
-                                    new List<GpioOutput>(),
+        Outputs =
+            new List<GpioOutput>(),
 
-                                Routes =
-                                    new List<GpioRoute>()
-                            };
+        Routes =
+            new List<GpioRoute>()
+    };
+
+                        /*
+                         * Type 9 devices always have exactly two automatic
+                         * tally input channels.
+                         */
+
 
                         _config.Devices.Add(
                             gpioDevice);
+
                     }
                     else
                     {
@@ -937,6 +1104,59 @@ namespace Iceburg.Database
 
                         gpioDevice.Routes ??=
                             new List<GpioRoute>();
+                        /*
+ * Type 9 devices always require Channel 1 and Channel 2.
+ *
+ * This also upgrades existing Type 9 devices that were
+ * created before Type 9 support was added.
+ */
+                        if (string.Equals(
+                                sourceDevice.Type,
+                                "9",
+                                StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (!gpioDevice.Outputs.Any(
+                                    x => x.Port == 1))
+                            {
+                                gpioDevice.Outputs.Add(
+                                    new GpioOutput
+                                    {
+                                        OutputId =
+                                            Guid.NewGuid().ToString("N"),
+
+                                        Port = 1,
+
+                                        Name =
+                                            "MON A",
+
+                                        Nickname =
+                                            "CH1",
+
+                                        Status = false
+                                    });
+                            }
+
+                            if (!gpioDevice.Outputs.Any(
+                                    x => x.Port == 2))
+                            {
+                                gpioDevice.Outputs.Add(
+                                    new GpioOutput
+                                    {
+                                        OutputId =
+                                            Guid.NewGuid().ToString("N"),
+
+                                        Port = 2,
+
+                                        Name =
+                                            "MON B",
+
+                                        Nickname =
+                                            "CH2",
+
+                                        Status = false
+                                    });
+                            }
+                        }
                     }
                 }
 
@@ -3019,6 +3239,8 @@ namespace Iceburg.Database
          *
          * The same ordering is used by gettallystatus.php and getumd.php.
          */
+
+
 
         public static IResult GetTallyStatus(
             string? id,
