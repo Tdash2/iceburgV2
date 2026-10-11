@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("IceburgV2")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e170fb9a33c49fc3f4739740a4aef5c115eb529e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+21f3d23652193a0838639dcde9b2fede87bc755c")]
 [assembly: System.Reflection.AssemblyProductAttribute("IceburgV2")]
 [assembly: System.Reflection.AssemblyTitleAttribute("IceburgV2")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

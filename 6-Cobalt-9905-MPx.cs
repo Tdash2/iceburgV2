@@ -15,10 +15,11 @@ public sealed class OG9905MPx
         Timeout = TimeSpan.FromSeconds(3)
     };
 
-    private static readonly Dictionary<string, OG9905ParameterDefinition>Definitions = BuildDefinitions();
+    private static readonly Dictionary<string, OG9905ParameterDefinition> Definitions = BuildDefinitions();
 
     private static readonly Dictionary<int, string> VideoGroups = new()
     {
+        [0] = "Path Select",
         [1] = "Video 1 Processing",
         [2] = "Video 2 Processing",
         [3] = "Video 3 Processing",
@@ -33,14 +34,16 @@ public sealed class OG9905MPx
         [4] = "Audio 4 Processing"
     };
 
-    private static readonly Dictionary<int, Dictionary<int, string>>VideoSubgroups = BuildSubgroups(
+    private static readonly Dictionary<int, Dictionary<int, string>> VideoSubgroups = BuildSubgroups(
+               
                 "Input Settings",
                 "ProcAmp",
                 "Red Channel",
                 "Green Channel",
                 "Blue Channel");
 
-    private static readonly Dictionary<int, Dictionary<int, string>>AudioSubgroups = BuildSubgroups(
+    private static readonly Dictionary<int, Dictionary<int, string>> AudioSubgroups = BuildSubgroups(
+        
                 "Input Settings",
                 "Channel Map 1-4",
                 "Channel Map 5-8",
@@ -53,6 +56,7 @@ public sealed class OG9905MPx
     public enum OG9905ParameterType
     {
         Dropdown,
+        ButtonSelector,
         Slider
     }
 
@@ -60,6 +64,10 @@ public sealed class OG9905MPx
     {
         public string Value { get; init; } = "";
         public string Text { get; init; } = "";
+
+        // Optional caption used only when this option is rendered as a button.
+        // When omitted, the UI falls back to Text.
+        public string? ButtonName { get; init; }
     }
 
     public sealed class OG9905ParameterDefinition
@@ -90,17 +98,44 @@ public sealed class OG9905MPx
     // PARAMETER DEFINITIONS
     // ============================================================
 
-    private static Dictionary<string, OG9905ParameterDefinition>BuildDefinitions()
+    private static Dictionary<string, OG9905ParameterDefinition> BuildDefinitions()
     {
         var d = new Dictionary<string, OG9905ParameterDefinition>(StringComparer.Ordinal);
 
-        void Add(string id,OG9905ParameterType type,int group,int subgroup,bool writable = true,IEnumerable<(int Value, string Text)>? options = null,double? min = null,double? max = null)
+        void Add(string id, OG9905ParameterType type, int group, int subgroup,
+            bool writable = true,
+            IEnumerable<(int Value, string Text)>? options = null,
+            double? min = null,
+            double? max = null,
+            IEnumerable<(int Value, string Text, string ButtonName)>? buttonOptions = null)
         {
-            var definition = new OG9905ParameterDefinition{ParamId = id,Type = type,Group = group,Subgroup = subgroup,Writable = writable,Min = min,Max = max};
-
-            if (options != null)
+            var definition = new OG9905ParameterDefinition
             {
-                definition.Options.AddRange(options.Select(x =>new OG9905ParameterOption{Value = x.Value.ToString(CultureInfo.InvariantCulture), Text = x.Text}));
+                ParamId = id,
+                Type = type,
+                Group = group,
+                Subgroup = subgroup,
+                Writable = writable,
+                Min = min,
+                Max = max
+            };
+
+            if (buttonOptions != null)
+            {
+                definition.Options.AddRange(buttonOptions.Select(x => new OG9905ParameterOption
+                {
+                    Value = x.Value.ToString(CultureInfo.InvariantCulture),
+                    Text = x.Text,
+                    ButtonName = x.ButtonName
+                }));
+            }
+            else if (options != null)
+            {
+                definition.Options.AddRange(options.Select(x => new OG9905ParameterOption
+                {
+                    Value = x.Value.ToString(CultureInfo.InvariantCulture),
+                    Text = x.Text
+                }));
             }
 
             d[id] = definition;
@@ -113,7 +148,7 @@ public sealed class OG9905MPx
         // routing parameters.
         // ========================================================
 
-        var audioRoutingOptions =BuildAudioRoutingOptions();
+        var audioRoutingOptions = BuildAudioRoutingOptions();
 
         // ========================================================
         // AUDIO PATH 1
@@ -229,12 +264,138 @@ public sealed class OG9905MPx
         // OG9905 video enum values are supplied.
         // ========================================================
 
+        Add("4864", OG9905ParameterType.ButtonSelector,0, 0, true, buttonOptions: new[]
+        {
+            (0, "Path 1", "Path 1"),
+            (1, "Path 2", "Path 2"),
+            (2, "Path 3", "Path 3"),
+            (3, "Path 4", "Path 4")
+         });
+        Add("6404", OG9905ParameterType.Dropdown, 1, 1, true, buttonOptions: new[]
+        {
+            //(1, "525i 59.94","525i 59.94"),
+            //(2, "625i 50"," 625i 50"),
+           // (3, "1280x720p 23.98", "1280x720p 23.98"),
+            //(4, "1280x720p 24", "1280x720p 24"),
+            //(5, "1280x720p 25", " 1280x720p 25"),
+            //(6, "1280x720p 29.97", "1280x720p 29.97"),
+            //(7, "1280x720p 30", "1280x720p 30"),
+            (8, "1280x720p 50", "1280x720p 50"),
+            (9, "1280x720p 59.94", " 1280x720p 59.94"),
+            //(10, "1280x720p 60", " 1280x720p 60"   ),
+            (11, "1920x1080i 50", "1920x1080i 50"),
+            (12, "1920x1080i 59.94", "1920x1080i 59.94"),
+            //(13, "1920x1080i 60", "1920x1080i 60"),
+            //(14, "1920x1080p 23.98", " 1920x1080p 23.98"),
+            //(15, "1920x1080p 24", "1920x1080p 24"),
+            //(16, "1920x1080p 25", "1920x1080p 25"),
+            //(17, "1920x1080p 29.97", "1920x1080p 29.97"),
+            //(18, "1920x1080p 30", "1920x1080p 30"),
+            //(19, "2048x1080p 23.98", "2048x1080p 23.98"),
+            //(20, "2048x1080p 24", "2048x1080p 24"),
+           // (21, "2048x1080p 25", "2048x1080p 25"),
+           // (22, "1920x1080psf 23.98", "1920x1080psf 23.98"),
+           // (23, "1920x1080psf 24", " 1920x1080psf 24"),
+           // (24, "1920x1080psf 25", "1920x1080psf 25"),
+          //  (25, "1920x1080psf 29.97", "1920x1080psf 29.97"),
+          //  (26, "1920x1080psf 30", "1920x1080psf 30"),
+            (27, "1920x1080p 50 A", "1920x1080p 50 A"),
+            (28, "1920x1080p 59.94 A", "1920x1080p 59.94 A"),
+           // (29, "1920x1080p 60 A", "1920x1080p 60 A"),
+           // (30, "2048x1080p 50 A", "2048x1080p 50 A"),
+            //(31, "2048x1080p 59.94 A", "2048x1080p 59.94 A"),
+           // (32, "2048x1080p 60 A", "2048x1080p 60 A")
 
+         });
+        Add("6018", OG9905ParameterType.Dropdown, 1, 1, true, buttonOptions: new[]
+{
+            //(1, "525i 59.94","525i 59.94"),
+            //(2, "625i 50"," 625i 50"),
+           // (3, "1280x720p 23.98", "1280x720p 23.98"),
+            //(4, "1280x720p 24", "1280x720p 24"),
+            //(5, "1280x720p 25", " 1280x720p 25"),
+            //(6, "1280x720p 29.97", "1280x720p 29.97"),
+            //(7, "1280x720p 30", "1280x720p 30"),
+            (8, "1280x720p 50", "1280x720p 50"),
+            (9, "1280x720p 59.94", " 1280x720p 59.94"),
+            //(10, "1280x720p 60", " 1280x720p 60"   ),
+            (11, "1920x1080i 50", "1920x1080i 50"),
+            (12, "1920x1080i 59.94", "1920x1080i 59.94"),
+            //(13, "1920x1080i 60", "1920x1080i 60"),
+            //(14, "1920x1080p 23.98", " 1920x1080p 23.98"),
+            //(15, "1920x1080p 24", "1920x1080p 24"),
+            //(16, "1920x1080p 25", "1920x1080p 25"),
+            //(17, "1920x1080p 29.97", "1920x1080p 29.97"),
+            //(18, "1920x1080p 30", "1920x1080p 30"),
+            //(19, "2048x1080p 23.98", "2048x1080p 23.98"),
+            //(20, "2048x1080p 24", "2048x1080p 24"),
+           // (21, "2048x1080p 25", "2048x1080p 25"),
+           // (22, "1920x1080psf 23.98", "1920x1080psf 23.98"),
+           // (23, "1920x1080psf 24", " 1920x1080psf 24"),
+           // (24, "1920x1080psf 25", "1920x1080psf 25"),
+          //  (25, "1920x1080psf 29.97", "1920x1080psf 29.97"),
+          //  (26, "1920x1080psf 30", "1920x1080psf 30"),
+            (27, "1920x1080p 50 A", "1920x1080p 50 A"),
+            (28, "1920x1080p 59.94 A", "1920x1080p 59.94 A"),
+           // (29, "1920x1080p 60 A", "1920x1080p 60 A"),
+           // (30, "2048x1080p 50 A", "2048x1080p 50 A"),
+            //(31, "2048x1080p 59.94 A", "2048x1080p 59.94 A"),
+           // (32, "2048x1080p 60 A", "2048x1080p 60 A")
+
+         });
+
+        Add("6146", OG9905ParameterType.ButtonSelector, 1, 1, true, buttonOptions: new[]
+{
+            (1, "Reset", "Reset"),
+
+
+         });
+
+        Add("6153", OG9905ParameterType.ButtonSelector, 1, 1, true, buttonOptions: new[]
+        {
+            (1, "Reset", "Reset"),
+
+
+         });
+
+        Add("6147", OG9905ParameterType.Slider, 1, 2, true, min: 0.0, max: 200);
+        Add("6148", OG9905ParameterType.Slider, 1, 2, true, min: -100.0, max: 100);
+        Add("6149", OG9905ParameterType.Slider, 1, 2, true, min: 0.0, max: 200);
+        Add("6150", OG9905ParameterType.Slider, 1, 2, true, min: -360.0, max: 360);
+
+
+
+        Add("6154", OG9905ParameterType.Slider, 1, 3, true, min: -100.0, max: 100.0);
+        Add("6157", OG9905ParameterType.Slider, 1, 3, true, min: 0.0, max: 200);
+        Add("6160", OG9905ParameterType.Slider, 1, 3, true, min: 0.125, max: 8.0);
+
+        Add("6155", OG9905ParameterType.Slider, 1, 4, true, min: -100.0, max: 100.0);
+        Add("6158", OG9905ParameterType.Slider, 1, 4, true, min: 0.0, max: 200);
+        Add("6161", OG9905ParameterType.Slider, 1, 4, true, min: 0.125, max: 8.0);
+
+        Add("6156", OG9905ParameterType.Slider, 1, 5, true, min: -100.0, max: 100.0);
+        Add("6159", OG9905ParameterType.Slider, 1, 5, true, min: 0.0, max: 200);
+        Add("6162", OG9905ParameterType.Slider, 1, 5, true, min: 0.125, max: 8.0);
 
         return d;
     }
+    private static bool IsVideoParameter(string paramId)
+    {
+        // Existing named video parameters.
+        if (paramId.StartsWith(
+                "eParamID_Vid",
+                StringComparison.Ordinal))
+        {
+            return true;
+        }
 
-    private static List<(int Value, string Text)>BuildAudioRoutingOptions()
+        // Numeric video parameters.
+        return paramId == "4864" || paramId == "6404" || paramId == "6018"  || paramId == "6147" || paramId == "6148" || paramId == "6149" || paramId == "6150" || paramId == "6146"||
+paramId == "6154" || paramId == "6157" || paramId == "6160" || paramId == "6153"
+|| paramId == "6155" || paramId == "6158" || paramId == "6161"
+|| paramId == "6156" || paramId == "6159" || paramId == "6162";
+    }
+    private static List<(int Value, string Text)> BuildAudioRoutingOptions()
     {
         var options = new List<(int Value, string Text)>();
 
@@ -244,7 +405,7 @@ public sealed class OG9905MPx
 
         for (int i = 0; i < 16; i++)
         {
-            options.Add((i,$"Path 1 EB Ch {i + 1}"));
+            options.Add((i, $"Path 1 EB Ch {i + 1}"));
         }
 
         // --------------------------------------------------------
@@ -253,7 +414,7 @@ public sealed class OG9905MPx
 
         for (int i = 0; i < 16; i++)
         {
-            options.Add((16 + i,$"Path 2 EB Ch {i + 1}"));
+            options.Add((16 + i, $"Path 2 EB Ch {i + 1}"));
         }
 
         // --------------------------------------------------------
@@ -262,7 +423,7 @@ public sealed class OG9905MPx
 
         for (int i = 0; i < 16; i++)
         {
-            options.Add((32 + i,$"Path 3 EB Ch {i + 1}"));
+            options.Add((32 + i, $"Path 3 EB Ch {i + 1}"));
         }
 
         // --------------------------------------------------------
@@ -271,7 +432,7 @@ public sealed class OG9905MPx
 
         for (int i = 0; i < 16; i++)
         {
-            options.Add((48 + i,$"Path 4 EB Ch {i + 1}"));
+            options.Add((48 + i, $"Path 4 EB Ch {i + 1}"));
         }
 
         // --------------------------------------------------------
@@ -280,14 +441,14 @@ public sealed class OG9905MPx
 
         for (int i = 0; i < 32; i++)
         {
-            options.Add((128 + i,$"MADI RX {i + 1}"));
+            options.Add((128 + i, $"MADI RX {i + 1}"));
         }
 
         // --------------------------------------------------------
         // Silence
         // --------------------------------------------------------
 
-        options.Add((4080,"Silence"));
+        options.Add((4080, "Silence"));
 
         return options;
     }
@@ -296,20 +457,21 @@ public sealed class OG9905MPx
     // SUBGROUPS
     // ============================================================
 
-    private static Dictionary<int, Dictionary<int, string>>BuildSubgroups(string s1,string s2,string s3,string s4,string s5)
+    private static Dictionary<int, Dictionary<int, string>> BuildSubgroups(string s1, string s2, string s3, string s4, string s5)
     {
-        var result =new Dictionary<int, Dictionary<int, string>>();
+        var result = new Dictionary<int, Dictionary<int, string>>();
 
         for (int group = 1; group <= 4; group++)
         {
             result[group] = new Dictionary<int, string>
-                {
-                    [1] = s1,
-                    [2] = s2,
-                    [3] = s3,
-                    [4] = s4,
-                    [5] = s5
-                };
+            {
+                [0] = "",
+                [1] = s1,
+                [2] = s2,
+                [3] = s3,
+                [4] = s4,
+                [5] = s5
+            };
         }
         return result;
     }
@@ -340,16 +502,17 @@ public sealed class OG9905MPx
     // GET VALUE
     // ============================================================
 
-  
-private async Task<JsonElement?> GetValueAsync(string paramId,CancellationToken cancellationToken)
+
+    private async Task<JsonElement?> GetValueAsync(string paramId, CancellationToken cancellationToken)
     {
         if (_device == null)
-        {throw new InvalidOperationException("OG9905 device is not initialized.");
+        {
+           // throw new InvalidOperationException("OG9905 device is not initialized.");
         }
 
         if (!int.TryParse(paramId, out var oid))
         {
-            throw new ArgumentException( $"OG9905 parameter ID '{paramId}' is not numeric.", nameof(paramId));
+           throw new ArgumentException($"OG9905 parameter ID '{paramId}' is not numeric.", nameof(paramId));
         }
 
         var url = $"{BaseUrl}:9002/getOid?oid={Uri.EscapeDataString(paramId)}";
@@ -357,19 +520,19 @@ private async Task<JsonElement?> GetValueAsync(string paramId,CancellationToken 
 
         try
         {
-            using var request = new HttpRequestMessage(HttpMethod.Get,url);
+            using var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.ConnectionClose = true;
-            using var response = await Http.SendAsync(request, HttpCompletionOption.ResponseContentRead,cancellationToken);
+            using var response = await Http.SendAsync(request, HttpCompletionOption.ResponseContentRead, cancellationToken);
             stopwatch.Stop();
-            var body = await response.Content.ReadAsStringAsync( cancellationToken);
+            var body = await response.Content.ReadAsStringAsync(cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
-                throw new HttpRequestException($"OG9905 returned HTTP {(int)response.StatusCode} " + $"{response.ReasonPhrase} for OID {oid}. " +$"Response: {body}");
+               throw new HttpRequestException($"OG9905 returned HTTP {(int)response.StatusCode} " + $"{response.ReasonPhrase} for OID {oid}. " + $"Response: {body}");
             }
 
             if (string.IsNullOrWhiteSpace(body))
             {
-              return null;
+                return null;
             }
 
             JsonDocument document;
@@ -380,7 +543,7 @@ private async Task<JsonElement?> GetValueAsync(string paramId,CancellationToken 
             }
             catch (JsonException ex)
             {
-                Console.WriteLine($"[OG9905]     Exception: {ex}");
+               // Console.WriteLine($"[OG9905]     Exception: {ex}");
                 throw;
             }
 
@@ -391,40 +554,40 @@ private async Task<JsonElement?> GetValueAsync(string paramId,CancellationToken 
                         "data_updates",
                         out var dataUpdates))
                 {
-                    throw new InvalidOperationException($"OG9905 response for OID {oid} " + $"did not contain 'data_updates'. " +$"Response: {body}");
+                    throw new InvalidOperationException($"OG9905 response for OID {oid} " + $"did not contain 'data_updates'. " + $"Response: {body}");
                 }
 
-                if (!dataUpdates.TryGetProperty("oids",out var oids))
+                if (!dataUpdates.TryGetProperty("oids", out var oids))
                 {
-                    throw new InvalidOperationException( $"OG9905 response for OID {oid} " +$"did not contain 'oids'. " +$"Response: {body}");
+                    throw new InvalidOperationException($"OG9905 response for OID {oid} " + $"did not contain 'oids'. " + $"Response: {body}");
                 }
 
                 foreach (var item in oids.EnumerateArray())
                 {
-                    if (!item.TryGetProperty( "oid",out var returnedOid))
-                    { 
+                    if (!item.TryGetProperty("oid", out var returnedOid))
+                    {
                         continue;
                     }
 
-                    var returnedOidValue =returnedOid.GetInt32();
+                    var returnedOidValue = returnedOid.GetInt32();
                     if (returnedOidValue != oid)
                         continue;
 
-                    if (!item.TryGetProperty("data_value",out var dataValue))
+                    if (!item.TryGetProperty("data_value", out var dataValue))
                     {
-                        throw new InvalidOperationException($"OG9905 response for OID {oid} " + $"did not contain 'data_value'. " +$"Response: {body}");
+                        throw new InvalidOperationException($"OG9905 response for OID {oid} " + $"did not contain 'data_value'. " + $"Response: {body}");
                     }
                     return dataValue.Clone();
                 }
                 return null;
             }
         }
-        catch (OperationCanceledException )
+        catch (OperationCanceledException)
         {
             stopwatch.Stop();
             throw;
         }
-        catch (Exception )
+        catch (Exception)
         {
             stopwatch.Stop();
 
@@ -684,10 +847,10 @@ private async Task<JsonElement?> GetValueAsync(string paramId,CancellationToken 
     // CONFIGURATION
     // ============================================================
 
-  
-public async Task<object> GetConfigurationAsync(
-    bool audio,
-    CancellationToken cancellationToken = default)
+
+    public async Task<object> GetConfigurationAsync(
+        bool audio,
+        CancellationToken cancellationToken = default)
     {
         var groups =
             audio
@@ -719,10 +882,12 @@ public async Task<object> GetConfigurationAsync(
                 new Dictionary<string, object?>
                 {
                     ["type"] =
-                        definition.Type ==
-                        OG9905ParameterType.Slider
-                            ? "slider"
-                            : "dropdown",
+                        definition.Type switch
+                        {
+                            OG9905ParameterType.Slider => "slider",
+                            OG9905ParameterType.ButtonSelector => "buttonselector",
+                            _ => "dropdown"
+                        },
 
                     ["group"] =
                         definition.Group,
@@ -758,9 +923,9 @@ public async Task<object> GetConfigurationAsync(
             }
             catch (Exception ex)
             {
-                Console.WriteLine(
-                    $"[OG9905 CONFIG] Failed to read " +
-                    $"OID {definition.ParamId}: {ex}");
+                //Console.WriteLine(
+                   // $"[OG9905 CONFIG] Failed to read " +
+                   // $"OID {definition.ParamId}: {ex}");
 
                 // Keep configuration alive even if
                 // one OID fails.
@@ -793,7 +958,8 @@ public async Task<object> GetConfigurationAsync(
                             x => new
                             {
                                 value = x.Value,
-                                text = x.Text
+                                text = x.Text,
+                                buttonName = x.ButtonName
                             })
                         .ToList();
             }
@@ -874,14 +1040,7 @@ public async Task<object> GetConfigurationAsync(
                );
     }
 
-    private static bool
-        IsVideoParameter(
-            string paramId)
-    {
-        return paramId.StartsWith(
-                   "eParamID_Vid",
-                   StringComparison.Ordinal);
-    }
+
 
     // ============================================================
     // DISPLAY NAMES
@@ -947,7 +1106,167 @@ public async Task<object> GetConfigurationAsync(
             return true;
         }
 
+        if (oid == 4864)
+        {
+            name =
+                $"Path Select";
+
+            return true;
+        }
+        if (oid == 4864)
+        {
+            name =
+                $"Path Select";
+
+            return true;
+        }
+
+        if (oid == 6404)
+        {
+            name =
+                $"Startup Format";
+            
+
+            return true;
+        }
+        if (oid == 6018)
+        {
+            name =
+                $"Output Format";
+
+            return true;
+        }
+
+        if (oid == 6147)
+        {
+            name =
+                $"Luma Gain";
+            
+
+            return true;
+        }
+        if (oid == 6148)
+        {
+            name =
+                $"Luma Lift";
+
+            return true;
+        }
+        if (oid == 6149)
+        {
+            name =
+                $"Color Gain";
+
+            return true;
+        }
+        if (oid == 6150)
+        {
+            name =
+                $"Color Phase";
+
+            return true;
+        }
+
+        if (oid == 6146)
+        {
+            name =
+                $"Reset ProcAmp";
+
+            return true;
+        }
+
+        //red
+
+        if (oid == 6154)
+        {
+            name =
+                $"Red Black Offset";
+
+            return true;
+        }
+
+        if (oid == 6157)
+        {
+            name =
+                $"Red White Gain";
+
+            return true;
+        }
+
+        if (oid ==6160)
+        {
+            name =
+                $"Red Gamma Factor";
+
+            return true;
+        }
+
+   
+        if (oid == 6153)
+        {
+            name =
+                $"Reset Color Proc";
+
+            return true;
+        }
+
+        //green
+        if (oid == 6155)
+        {
+            name =
+                $"Green Black Offset";
+
+            return true;
+        }
+
+        if (oid == 6158)
+        {
+            name =
+                $"Green White Gain";
+
+            return true;
+        }
+
+        if (oid == 6161)
+        {
+            name =
+                $"Green Gamma Factor";
+
+            return true;
+        }
+        //blue
+        if (oid == 6156)
+        {
+            name =
+                $"Blue Black Offset";
+
+            return true;
+        }
+
+        if (oid == 6159)
+        {
+            name =
+                $"Blue White Gain";
+
+            return true;
+        }
+
+        if (oid == 6162)
+        {
+            name =
+                $"Blue Gamma Factor";
+
+            return true;
+        }
+
+
+
+
+
+
         return false;
+
+        
     }
 
     // ============================================================

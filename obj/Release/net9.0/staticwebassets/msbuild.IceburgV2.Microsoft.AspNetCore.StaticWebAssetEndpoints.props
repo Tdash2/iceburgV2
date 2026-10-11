@@ -171,14 +171,14 @@
     <StaticWebAssetEndpoint Include="_content/IceburgV2/og9905.html">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\og9905.html'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-eo63OceJRZl6bu6Yq9PV1/y10\u002BnNh32gNzkG/BHFShE="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"25994"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022eo63OceJRZl6bu6Yq9PV1/y10\u002BnNh32gNzkG/BHFShE=\u0022"},{"Name":"Last-Modified","Value":"Thu, 24 Sep 2026 23:43:24 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-c6Btnplu3SI0OjxGZjL7TofE\u002BlmyK1K3KrBVbwVa7iM="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"28183"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022c6Btnplu3SI0OjxGZjL7TofE\u002BlmyK1K3KrBVbwVa7iM=\u0022"},{"Name":"Last-Modified","Value":"Sun, 11 Oct 2026 00:02:48 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
-    <StaticWebAssetEndpoint Include="_content/IceburgV2/og9905.qooyp5rdxa.html">
+    <StaticWebAssetEndpoint Include="_content/IceburgV2/og9905.zgxod5gige.html">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\og9905.html'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"qooyp5rdxa"},{"Name":"integrity","Value":"sha256-eo63OceJRZl6bu6Yq9PV1/y10\u002BnNh32gNzkG/BHFShE="},{"Name":"label","Value":"_content/IceburgV2/og9905.html"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"25994"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022eo63OceJRZl6bu6Yq9PV1/y10\u002BnNh32gNzkG/BHFShE=\u0022"},{"Name":"Last-Modified","Value":"Thu, 24 Sep 2026 23:43:24 GMT"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"zgxod5gige"},{"Name":"integrity","Value":"sha256-c6Btnplu3SI0OjxGZjL7TofE\u002BlmyK1K3KrBVbwVa7iM="},{"Name":"label","Value":"_content/IceburgV2/og9905.html"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"28183"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022c6Btnplu3SI0OjxGZjL7TofE\u002BlmyK1K3KrBVbwVa7iM=\u0022"},{"Name":"Last-Modified","Value":"Sun, 11 Oct 2026 00:02:48 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/IceburgV2/routertally.ci0ap2rw2y.html">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\routertally.html'))</AssetFile>

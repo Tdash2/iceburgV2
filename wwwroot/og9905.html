@@ -139,6 +139,39 @@
             cursor: pointer;
         }
 
+        .button-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            width: 100%;
+        }
+
+        .selector-option {
+        
+            min-width: 86px;
+            padding: 8px 10px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background: #222;
+            color: #eee;
+        }
+
+        .selector-option:hover:not(:disabled) {
+            background: #444;
+        }
+
+        .selector-option.active {
+            background: #4db2ff;
+            border-color: #4db2ff;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .selector-option:disabled {
+            cursor: not-allowed;
+            opacity: .6;
+        }
+
         .reset-button {
             margin-top: 6px;
             margin-left: 0;
@@ -341,7 +374,7 @@ async function init() {
 
         console.log("[OG9905] 10. Initial poll complete");
 
-        pollInterval = setInterval(poll, 6000);
+        pollInterval = setInterval(poll, 1000);
 
         console.log("[OG9905] 11. Poll interval started");
     }
@@ -451,6 +484,8 @@ async function init() {
 
                                 if (c.type === "slider")
                                     buildSlider(row, c);
+                                else if (c.type === "buttonselector")
+                                    buildButtonSelector(row, c);
                                 else
                                     buildDropdown(row, c);
 
@@ -487,20 +522,56 @@ async function init() {
             };
 
             input.onchange = () => {
-                if (c.writable !== false)
-                    send(c.param, input.value);
+                if (c.writable !== false) {
+                    send(c.param, Number(input.value));
+                }
             };
 
             row.appendChild(input);
 
-            const btn = document.createElement("button");
-            btn.className = "reset-button";
-            btn.innerText = "Reset";
-            btn.disabled = c.writable === false;
 
-            btn.onclick = () => send(c.param, c.default);
 
-            row.appendChild(btn);
+         
+        }
+
+        function buildButtonSelector(row, c) {
+            const container = document.createElement("div");
+            container.className = "button-selector";
+            container.dataset.param = c.param;
+
+            const options = (c.options || []).map(opt => ({
+                key: opt.value,
+                // buttonName lets the button caption differ from the dropdown label.
+                label: resolveLabel(opt.buttonName ?? opt.text ?? opt.value)
+            }));
+
+            dropdownMap[c.param] = options;
+            userEditing[c.param] = false;
+
+            for (const opt of options) {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "selector-option";
+                button.textContent = opt.label;
+                button.dataset.value = opt.key;
+                button.disabled = c.writable === false;
+                button.setAttribute("aria-pressed",
+                    String(String(opt.key) === String(c.value)));
+
+                if (String(opt.key) === String(c.value))
+                    button.classList.add("active");
+
+                button.addEventListener("click", () => {
+                    if (c.writable === false) return;
+                    userEditing[c.param] = false;
+                    updateDropdown(c.param, opt.key);
+                    send(c.param, opt.key);
+                });
+
+                container.appendChild(button);
+            }
+
+            row.appendChild(container);
         }
 
         function buildDropdown(row, c) {
@@ -743,34 +814,45 @@ async function init() {
             return original;
         }
 
-        async function send(param, value) {
-            try {
-                const response =
-                    await fetch(
-                        `/api/Conversion/OG9905MPx/${encodeURIComponent(deviceId)}/param/${encodeURIComponent(param)}`,
-                        {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({ value })
-                        }
-                    );
 
-                const result = await response.json();
+async function send(param, value) {
+    try {
+        const slider = document.getElementById(param);
 
-                if (!result.ok) {
-                    
-                }
-                else {
-                   
-                }
+        if (slider?.type === "range") {
+            const numberValue = Number(value);
+
+            if (!Number.isFinite(numberValue)) {
+                console.error("Invalid slider value:", value);
+                return;
             }
-            catch (err) {
-                console.error(err);
-              
-            }
+
+            // Format with one decimal place, e.g. "100.0"
+            value = numberValue.toFixed(1);
         }
+
+        const response = await fetch(
+            `/api/Conversion/OG9905MPx/${ encodeURIComponent(deviceId) }/param/${ encodeURIComponent(param) }`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ value })
+            }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok || !result.ok) {
+            console.error("Failed to set parameter:", result);
+        }
+    } catch (err) {
+        console.error("Failed to send parameter:", err);
+    }
+}
+
+
 
         async function poll() {
             try {
@@ -818,6 +900,20 @@ async function init() {
 
             if (!options)
                 return;
+
+            // Button selector: keep the selected button in sync with polling.
+            const selector = document.querySelector(
+                `.button-selector[data-param="${CSS.escape(param)}"]`
+            );
+
+            if (selector) {
+                selector.querySelectorAll(".selector-option").forEach(button => {
+                    const selected = String(button.dataset.value) === String(value);
+                    button.classList.toggle("active", selected);
+                    button.setAttribute("aria-pressed", String(selected));
+                });
+                return;
+            }
 
             // VIDEO MODE: update the native <select>
             if (mode === "video") {

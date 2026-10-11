@@ -9,11 +9,13 @@ C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\favicon.ico
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\ajafs4.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\tally.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\index.html
+C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\BMD-SmartScope.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\tallygrid.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\dashboard.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\admin\users.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\favacon.ico
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\login.html
+C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\bmd40panle.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\uploadross\index.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\x32.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\admin\devices.html
@@ -22,7 +24,9 @@ wwwroot\admin\devices.html
 wwwroot\admin\users.html
 wwwroot\ajafs2.html
 wwwroot\ajafs4.html
+wwwroot\bmd40panle.html
 wwwroot\BMDRouter.html
+wwwroot\BMD-SmartScope.html
 wwwroot\dashboard.html
 wwwroot\favacon.ico
 wwwroot\favicon.ico
