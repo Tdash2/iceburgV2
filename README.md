@@ -28,4 +28,4 @@ Below is a list of currently supported devices:
 + AJA FS-2 Frame Synchronizer and Converter
 + AJA FS-4 Frame Synchronizer and Converter
 + Magewell Pro Convert for NDI® to SDI
-+ (Supported in V1 not in V2) Aqua Streams Software Playback
++ Aqua Streams Software Playback
