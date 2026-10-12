@@ -1,4 +1,5 @@
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\BMDRouter.html
+C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\aquastreamsplayback.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\servertoservertally.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\upload8x8\index.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\og9905.html
@@ -25,6 +26,7 @@ wwwroot\admin\devices.html
 wwwroot\admin\users.html
 wwwroot\ajafs2.html
 wwwroot\ajafs4.html
+wwwroot\aquastreamsplayback.html
 wwwroot\bmd40panle.html
 wwwroot\BMDRouter.html
 wwwroot\BMD-SmartScope.html

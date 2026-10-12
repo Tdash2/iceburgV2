@@ -48,6 +48,18 @@
       <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-HQRbGqmF2dyGMZRxhQomfn3bAJ6pA2YiJ0AdFBWY4ug="}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"25047"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022HQRbGqmF2dyGMZRxhQomfn3bAJ6pA2YiJ0AdFBWY4ug=\u0022"},{"Name":"Last-Modified","Value":"Thu, 24 Sep 2026 23:42:00 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/IceburgV2/aquastreamsplayback.html">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\aquastreamsplayback.html'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"8700"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk=\u0022"},{"Name":"Last-Modified","Value":"Mon, 12 Oct 2026 02:10:08 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/IceburgV2/aquastreamsplayback.r92ljeed83.html">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\aquastreamsplayback.html'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"r92ljeed83"},{"Name":"integrity","Value":"sha256-vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk="},{"Name":"label","Value":"_content/IceburgV2/aquastreamsplayback.html"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"8700"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk=\u0022"},{"Name":"Last-Modified","Value":"Mon, 12 Oct 2026 02:10:08 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/IceburgV2/BMD-SmartScope.html">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\BMD-SmartScope.html'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>

@@ -110,7 +110,7 @@
       "Type": "7",
       "IpAddress": "47.225.212.98",
       "AudioSorce": "",
-      "LastSeen": "10/11/2026 2:16:58 PM",
+      "LastSeen": "10/11/2026 9:27:34 PM",
       "Username": "",
       "Password": ""
     },
@@ -139,6 +139,16 @@
       "Name": "Smart Scope",
       "Type": "9",
       "IpAddress": "10.176.73.44",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "67ce9484-47bf-4468-ab75-76fe0d01cece",
+      "Name": "aquastreams playback",
+      "Type": "11",
+      "IpAddress": "10.7.0.56",
       "AudioSorce": "",
       "LastSeen": "",
       "Username": "",

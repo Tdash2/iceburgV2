@@ -10,6 +10,7 @@ using Iceburg.Conversion.Cobalt.OG9905;
 using Iceburg.Interfaces.BMD.Panle40;
 using Iceburg.Monitor.BMD.smartscope;
 using Iceburg.Conversion.Magewell.Decoder;
+using Iceburg.Mixer.Aquastreams.Playback;
 
 namespace Iceburg.Devices.Status;
 public class DeviceStatus
@@ -338,6 +339,30 @@ public class DeviceStatus
                 else
                 {
                     return "error " ;
+                }
+            }
+            catch
+            {
+                return "error";
+            }
+        }
+        if (device.Type == "11")
+        {
+            try
+            {
+                var fs2 = new AquastreamsPlayback(id);
+
+                bool result = await fs2.Getdevicestatus();
+
+
+                if (result)
+                {
+
+                    return "connected";
+                }
+                else
+                {
+                    return "error ";
                 }
             }
             catch

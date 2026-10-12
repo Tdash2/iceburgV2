@@ -26,6 +26,7 @@ using System.Reflection;
 using Iceburg.Interfaces.BMD.Panle40;
 using Iceburg.Monitor.BMD.smartscope;
 using Iceburg.Conversion.Magewell.Decoder;
+using Iceburg.Mixer.Aquastreams.Playback;
 
 bool debug = false;
 
@@ -1323,6 +1324,12 @@ app.MapGet("/api/devices/type/", (HttpContext httpContext) =>
             name = "Magewell Proconvert Decoder",
             group = "Video",
             page = "magewell-decoder.html"
+        },
+        ["11"] = new
+        {
+            name = "Aquastreams Playback",
+            group = "Audio",
+            page = "aquastreamsplayback.html"
         }
     };
 
@@ -2075,10 +2082,7 @@ decoder.MapGet("/magewell/{id}", async (string id, HttpRequest request) =>
     return await magewell.GetStateAsync();
 });
 
-decoder.MapPost("/magewell/{id}/source", async (
-    string id,
-    HttpRequest request,
-    SwitchSourceRequest body) =>
+decoder.MapPost("/magewell/{id}/source", async (string id,HttpRequest request,SwitchSourceRequest body) =>
 {
     var magewell = new MagewellDecoder(id);
     return await magewell.SwitchSourceAsync(
@@ -2086,10 +2090,7 @@ decoder.MapPost("/magewell/{id}/source", async (
         body.SourceName);
 });
 
-decoder.MapPost("/magewell/{id}/video-mode", async (
-    string id,
-    HttpRequest request,
-    VideoModeRequest body) =>
+decoder.MapPost("/magewell/{id}/video-mode", async (string id,HttpRequest request,VideoModeRequest body) =>
 {
     var magewell = new MagewellDecoder(id);
     return await magewell.SetVideoModeAsync(
@@ -2100,18 +2101,59 @@ decoder.MapPost("/magewell/{id}/video-mode", async (
         body.Interlaced);
 });
 
-decoder.MapPost("/magewell/{id}/hdmi-output", async (
-    string id,
-    HttpRequest request,
-    HdmiOutputRequest body) =>
+decoder.MapPost("/magewell/{id}/hdmi-output", async (string id,HttpRequest request,HdmiOutputRequest body) =>
 {
     var magewell = new MagewellDecoder(id);
     return await magewell.SetHdmiOutputAsync(body.Enabled);
 });
 
+//Aquastreams Playback
 
+var aquastreamsplayback = app.MapGroup("/api/aquastreams").RequireAuthorization();
 
+aquastreamsplayback.MapGet("/playback/{id}", async (string id) =>
+{
+    Console.WriteLine("Playback endpoint reached!");
 
+    var aquastreamsplayback = new AquastreamsPlayback(id);
+    return await aquastreamsplayback.GetButtons();
+});
+
+aquastreamsplayback.MapGet("/playback/{id}/status", async (string id) =>
+{
+    var aquastreamsplayback = new AquastreamsPlayback(id);
+    return await aquastreamsplayback.Getstatus();
+});
+
+aquastreamsplayback.MapGet("/playback/{id}/toggleplayback", async (string id) =>
+{
+    var aquastreamsplayback = new AquastreamsPlayback(id);
+    await aquastreamsplayback.toggleplayback();
+  
+
+});
+
+aquastreamsplayback.MapGet("/playback/{id}/play",
+    async (string id, HttpRequest request) =>
+    {
+        var aquastreamsplayback = new AquastreamsPlayback(id);
+
+        string parameters = request.QueryString.Value?.TrimStart('?') ?? "";
+        
+        await aquastreamsplayback.play(parameters);
+
+    });
+
+aquastreamsplayback.MapGet("/playback/{id}/setvol",
+    async (string id, HttpRequest request) =>
+    {
+        var aquastreamsplayback = new AquastreamsPlayback(id);
+
+        string parameters = request.QueryString.Value?.TrimStart('?') ?? "";
+
+        await aquastreamsplayback.setvol(parameters);
+
+    });
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 Console.WriteLine(@"
  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀

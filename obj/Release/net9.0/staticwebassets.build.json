@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "3LTd32hHl7p2oKNjxObTgajQkmNKwUA5aa/G9oji17A=",
+  "Hash": "GpLaqm0yT5Sx4yR4I4qazp1zJBnn6LmCiIkW6Kr3bMI=",
   "Source": "IceburgV2",
   "BasePath": "_content/IceburgV2",
   "Mode": "Default",
@@ -36,6 +36,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\BMDRouter.html"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\2djxyzfsc3-r92ljeed83.gz",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "aquastreamsplayback#[.{fingerprint=r92ljeed83}]?.html.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\aquastreamsplayback.html",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "w13kes0586",
+      "Integrity": "dEqWFD5usy9I6EhWRBtzD0aWxktDkp4B49eD3ECIUNU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\aquastreamsplayback.html"
     },
     {
       "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\43vggdfqxg-j2qtzv7hx6.gz",
@@ -582,6 +603,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\ajafs4.html"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\aquastreamsplayback.html",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "aquastreamsplayback#[.{fingerprint}]?.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "r92ljeed83",
+      "Integrity": "vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\aquastreamsplayback.html"
     },
     {
       "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\bmd40panle.html",
@@ -2236,6 +2278,304 @@
         {
           "Name": "integrity",
           "Value": "sha256-o+72zM+kV59bIm9ex8ykq+uxfjf1gMtyPIyNQ9CSIOE="
+        }
+      ]
+    },
+    {
+      "Route": "aquastreamsplayback.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\2djxyzfsc3-r92ljeed83.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000421940928"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2369"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"dEqWFD5usy9I6EhWRBtzD0aWxktDkp4B49eD3ECIUNU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 12 Oct 2026 02:10:08 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk="
+        }
+      ]
+    },
+    {
+      "Route": "aquastreamsplayback.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\aquastreamsplayback.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "8700"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 12 Oct 2026 02:10:08 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk="
+        }
+      ]
+    },
+    {
+      "Route": "aquastreamsplayback.html.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\2djxyzfsc3-r92ljeed83.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2369"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"dEqWFD5usy9I6EhWRBtzD0aWxktDkp4B49eD3ECIUNU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 12 Oct 2026 02:10:08 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-dEqWFD5usy9I6EhWRBtzD0aWxktDkp4B49eD3ECIUNU="
+        }
+      ]
+    },
+    {
+      "Route": "aquastreamsplayback.r92ljeed83.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\2djxyzfsc3-r92ljeed83.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000421940928"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2369"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"dEqWFD5usy9I6EhWRBtzD0aWxktDkp4B49eD3ECIUNU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 12 Oct 2026 02:10:08 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "r92ljeed83"
+        },
+        {
+          "Name": "label",
+          "Value": "aquastreamsplayback.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk="
+        }
+      ]
+    },
+    {
+      "Route": "aquastreamsplayback.r92ljeed83.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\aquastreamsplayback.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "8700"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 12 Oct 2026 02:10:08 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "r92ljeed83"
+        },
+        {
+          "Name": "label",
+          "Value": "aquastreamsplayback.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk="
+        }
+      ]
+    },
+    {
+      "Route": "aquastreamsplayback.r92ljeed83.html.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\compressed\\2djxyzfsc3-r92ljeed83.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2369"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"dEqWFD5usy9I6EhWRBtzD0aWxktDkp4B49eD3ECIUNU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 12 Oct 2026 02:10:08 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "r92ljeed83"
+        },
+        {
+          "Name": "label",
+          "Value": "aquastreamsplayback.html.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-dEqWFD5usy9I6EhWRBtzD0aWxktDkp4B49eD3ECIUNU="
         }
       ]
     },

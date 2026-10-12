@@ -1873,6 +1873,304 @@
       ]
     },
     {
+      "Route": "aquastreamsplayback.html",
+      "AssetFile": "aquastreamsplayback.html.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000421940928"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2369"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"dEqWFD5usy9I6EhWRBtzD0aWxktDkp4B49eD3ECIUNU=\""
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 12 Oct 2026 02:10:08 GMT"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk="
+        }
+      ]
+    },
+    {
+      "Route": "aquastreamsplayback.html",
+      "AssetFile": "aquastreamsplayback.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "8700"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 12 Oct 2026 02:10:08 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk="
+        }
+      ]
+    },
+    {
+      "Route": "aquastreamsplayback.html.gz",
+      "AssetFile": "aquastreamsplayback.html.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2369"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"dEqWFD5usy9I6EhWRBtzD0aWxktDkp4B49eD3ECIUNU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 12 Oct 2026 02:10:08 GMT"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-dEqWFD5usy9I6EhWRBtzD0aWxktDkp4B49eD3ECIUNU="
+        }
+      ]
+    },
+    {
+      "Route": "aquastreamsplayback.r92ljeed83.html",
+      "AssetFile": "aquastreamsplayback.html.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000421940928"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2369"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"dEqWFD5usy9I6EhWRBtzD0aWxktDkp4B49eD3ECIUNU=\""
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 12 Oct 2026 02:10:08 GMT"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "r92ljeed83"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk="
+        },
+        {
+          "Name": "label",
+          "Value": "aquastreamsplayback.html"
+        }
+      ]
+    },
+    {
+      "Route": "aquastreamsplayback.r92ljeed83.html",
+      "AssetFile": "aquastreamsplayback.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "8700"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 12 Oct 2026 02:10:08 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "r92ljeed83"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-vwmraa5SCQoLjiy7XTJMchZT43io4O8l4b0WzgZESHk="
+        },
+        {
+          "Name": "label",
+          "Value": "aquastreamsplayback.html"
+        }
+      ]
+    },
+    {
+      "Route": "aquastreamsplayback.r92ljeed83.html.gz",
+      "AssetFile": "aquastreamsplayback.html.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2369"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"dEqWFD5usy9I6EhWRBtzD0aWxktDkp4B49eD3ECIUNU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 12 Oct 2026 02:10:08 GMT"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "r92ljeed83"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-dEqWFD5usy9I6EhWRBtzD0aWxktDkp4B49eD3ECIUNU="
+        },
+        {
+          "Name": "label",
+          "Value": "aquastreamsplayback.html.gz"
+        }
+      ]
+    },
+    {
       "Route": "bmd40panle.html",
       "AssetFile": "bmd40panle.html.gz",
       "Selectors": [

@@ -76,10 +76,7 @@ public sealed class MagewellDecoder
         return null;
     }
 
-    private async Task<JsonDocument> RequestAsync(
-        string method,
-        IReadOnlyDictionary<string, string?>? parameters = null,
-        CancellationToken cancellationToken = default)
+    private async Task<JsonDocument> RequestAsync(string method,IReadOnlyDictionary<string, string?>? parameters = null,CancellationToken cancellationToken = default)
     {
         var query = new List<string> { "method=" + Uri.EscapeDataString(method) };
         if (parameters != null)
@@ -125,10 +122,7 @@ public sealed class MagewellDecoder
         status.ValueKind == JsonValueKind.Number &&
         status.TryGetInt32(out int code) && code == 0;
 
-    private async Task<JsonDocument> AuthenticatedRequestAsync(
-        string method,
-        IReadOnlyDictionary<string, string?>? parameters = null,
-        CancellationToken cancellationToken = default)
+    private async Task<JsonDocument> AuthenticatedRequestAsync(string method,IReadOnlyDictionary<string, string?>? parameters = null,CancellationToken cancellationToken = default)
     {
         await EnsureLoginAsync(cancellationToken);
         return await RequestAsync(method, parameters, cancellationToken);
@@ -138,21 +132,7 @@ public sealed class MagewellDecoder
         root.ValueKind == JsonValueKind.Object && root.TryGetProperty(name, out var p)
             ? p.Clone() : null;
 
-    private static object? Value(JsonElement? element)
-    {
-        if (element == null) return null;
-        var e = element.Value;
-        return e.ValueKind switch
-        {
-            JsonValueKind.String => e.GetString(),
-            JsonValueKind.Number when e.TryGetInt64(out var l) => l,
-            JsonValueKind.Number when e.TryGetDouble(out var d) => d,
-            JsonValueKind.True => true,
-            JsonValueKind.False => false,
-            JsonValueKind.Null or JsonValueKind.Undefined => null,
-            _ => e.Clone()
-        };
-    }
+
     public async Task<bool> Getdevicestatus(CancellationToken ct = default)
     {
         try
@@ -243,8 +223,7 @@ public sealed class MagewellDecoder
         };
     }
 
-    public async Task<object> SwitchSourceAsync(string sourceType, string sourceName,
-        CancellationToken ct = default)
+    public async Task<object> SwitchSourceAsync(string sourceType, string sourceName, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(sourceName))
             return new { ok = false, message = "A source name is required." };
