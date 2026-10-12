@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "yeHOviUuZjp/p1br0pt0NHm/PsmCvmQJLPRpKLidafo=",
+  "Hash": "/Y3iReaXGRchcBIxX3Cw4jGerz8VByW3Q7j3HjbWv/A=",
   "Source": "IceburgV2",
   "BasePath": "_content/IceburgV2",
   "Mode": "Default",
@@ -752,6 +752,27 @@
       "OriginalItemSpec": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\bmd40panle.html"
     },
     {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\publish\\ua9ndx3txc-dic3une7g5.br",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\publish\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "magewell-decoder#[.{fingerprint=dic3une7g5}]?.html.br",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\magewell-decoder.html",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "br",
+      "Fingerprint": "ep5gr7qm14",
+      "Integrity": "4hfcyf4w2kI/tfkZU90vb8tREOpOhLWYrEi6Przz2QE=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\magewell-decoder.html"
+    },
+    {
       "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\publish\\ud07xljrv0-r02ndpx42s.br",
       "SourceId": "IceburgV2",
       "SourceType": "Discovered",
@@ -855,6 +876,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\bmd40panle.html"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\ua9ndx3txc-dic3une7g5.gz",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "magewell-decoder#[.{fingerprint=dic3une7g5}]?.html.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\magewell-decoder.html",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "wdd3vsei07",
+      "Integrity": "fMqJabZx0eb1jkKmbHE8MxdozIoy50yuUdGpWXPdnhw=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\magewell-decoder.html"
     },
     {
       "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\ud07xljrv0-r02ndpx42s.gz",
@@ -1233,6 +1275,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\login.html"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\magewell-decoder.html",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "magewell-decoder#[.{fingerprint}]?.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "dic3une7g5",
+      "Integrity": "FZwywWXb05k3qNZiy1ZFHbqVF2bA3XJYDs0hhv4mbLg=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\magewell-decoder.html"
     },
     {
       "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\og9905.html",
@@ -8228,6 +8291,520 @@
         {
           "Name": "integrity",
           "Value": "sha256-ksm6JuhmshOuZnmaoLbWPZLmSlSgP4iL5d1+vCbu9ww="
+        }
+      ]
+    },
+    {
+      "Route": "magewell-decoder.dic3une7g5.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\publish\\ua9ndx3txc-dic3une7g5.br",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "br",
+          "Quality": "0.000385653683"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2592"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"4hfcyf4w2kI/tfkZU90vb8tREOpOhLWYrEi6Przz2QE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 11 Oct 2026 19:02:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"FZwywWXb05k3qNZiy1ZFHbqVF2bA3XJYDs0hhv4mbLg=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "dic3une7g5"
+        },
+        {
+          "Name": "label",
+          "Value": "magewell-decoder.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-FZwywWXb05k3qNZiy1ZFHbqVF2bA3XJYDs0hhv4mbLg="
+        }
+      ]
+    },
+    {
+      "Route": "magewell-decoder.dic3une7g5.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\ua9ndx3txc-dic3une7g5.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000312207306"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3202"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"fMqJabZx0eb1jkKmbHE8MxdozIoy50yuUdGpWXPdnhw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 11 Oct 2026 19:02:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"FZwywWXb05k3qNZiy1ZFHbqVF2bA3XJYDs0hhv4mbLg=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "dic3une7g5"
+        },
+        {
+          "Name": "label",
+          "Value": "magewell-decoder.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-FZwywWXb05k3qNZiy1ZFHbqVF2bA3XJYDs0hhv4mbLg="
+        }
+      ]
+    },
+    {
+      "Route": "magewell-decoder.dic3une7g5.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\magewell-decoder.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "13165"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"FZwywWXb05k3qNZiy1ZFHbqVF2bA3XJYDs0hhv4mbLg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 11 Oct 2026 19:02:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "dic3une7g5"
+        },
+        {
+          "Name": "label",
+          "Value": "magewell-decoder.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-FZwywWXb05k3qNZiy1ZFHbqVF2bA3XJYDs0hhv4mbLg="
+        }
+      ]
+    },
+    {
+      "Route": "magewell-decoder.dic3une7g5.html.br",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\publish\\ua9ndx3txc-dic3une7g5.br",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2592"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"4hfcyf4w2kI/tfkZU90vb8tREOpOhLWYrEi6Przz2QE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 11 Oct 2026 19:02:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "dic3une7g5"
+        },
+        {
+          "Name": "label",
+          "Value": "magewell-decoder.html.br"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-4hfcyf4w2kI/tfkZU90vb8tREOpOhLWYrEi6Przz2QE="
+        }
+      ]
+    },
+    {
+      "Route": "magewell-decoder.dic3une7g5.html.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\ua9ndx3txc-dic3une7g5.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3202"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"fMqJabZx0eb1jkKmbHE8MxdozIoy50yuUdGpWXPdnhw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 11 Oct 2026 19:02:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "dic3une7g5"
+        },
+        {
+          "Name": "label",
+          "Value": "magewell-decoder.html.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-fMqJabZx0eb1jkKmbHE8MxdozIoy50yuUdGpWXPdnhw="
+        }
+      ]
+    },
+    {
+      "Route": "magewell-decoder.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\publish\\ua9ndx3txc-dic3une7g5.br",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "br",
+          "Quality": "0.000385653683"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2592"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"4hfcyf4w2kI/tfkZU90vb8tREOpOhLWYrEi6Przz2QE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 11 Oct 2026 19:02:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"FZwywWXb05k3qNZiy1ZFHbqVF2bA3XJYDs0hhv4mbLg=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-FZwywWXb05k3qNZiy1ZFHbqVF2bA3XJYDs0hhv4mbLg="
+        }
+      ]
+    },
+    {
+      "Route": "magewell-decoder.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\ua9ndx3txc-dic3une7g5.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000312207306"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3202"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"fMqJabZx0eb1jkKmbHE8MxdozIoy50yuUdGpWXPdnhw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 11 Oct 2026 19:02:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"FZwywWXb05k3qNZiy1ZFHbqVF2bA3XJYDs0hhv4mbLg=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-FZwywWXb05k3qNZiy1ZFHbqVF2bA3XJYDs0hhv4mbLg="
+        }
+      ]
+    },
+    {
+      "Route": "magewell-decoder.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\magewell-decoder.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "13165"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"FZwywWXb05k3qNZiy1ZFHbqVF2bA3XJYDs0hhv4mbLg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 11 Oct 2026 19:02:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-FZwywWXb05k3qNZiy1ZFHbqVF2bA3XJYDs0hhv4mbLg="
+        }
+      ]
+    },
+    {
+      "Route": "magewell-decoder.html.br",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\publish\\ua9ndx3txc-dic3une7g5.br",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2592"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"4hfcyf4w2kI/tfkZU90vb8tREOpOhLWYrEi6Przz2QE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 11 Oct 2026 19:02:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-4hfcyf4w2kI/tfkZU90vb8tREOpOhLWYrEi6Przz2QE="
+        }
+      ]
+    },
+    {
+      "Route": "magewell-decoder.html.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\ua9ndx3txc-dic3une7g5.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3202"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"fMqJabZx0eb1jkKmbHE8MxdozIoy50yuUdGpWXPdnhw=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 11 Oct 2026 19:02:59 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-fMqJabZx0eb1jkKmbHE8MxdozIoy50yuUdGpWXPdnhw="
         }
       ]
     },

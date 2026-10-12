@@ -168,6 +168,18 @@
       <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-IC1nvfEsVP99MqdO9jKMgDZJpz/53Dcrb87k8ApaWZA="}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"23137"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022IC1nvfEsVP99MqdO9jKMgDZJpz/53Dcrb87k8ApaWZA=\u0022"},{"Name":"Last-Modified","Value":"Wed, 23 Sep 2026 16:05:31 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/IceburgV2/magewell-decoder.dic3une7g5.html">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\magewell-decoder.html'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"dic3une7g5"},{"Name":"integrity","Value":"sha256-FZwywWXb05k3qNZiy1ZFHbqVF2bA3XJYDs0hhv4mbLg="},{"Name":"label","Value":"_content/IceburgV2/magewell-decoder.html"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"13165"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022FZwywWXb05k3qNZiy1ZFHbqVF2bA3XJYDs0hhv4mbLg=\u0022"},{"Name":"Last-Modified","Value":"Sun, 11 Oct 2026 19:02:59 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/IceburgV2/magewell-decoder.html">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\magewell-decoder.html'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-FZwywWXb05k3qNZiy1ZFHbqVF2bA3XJYDs0hhv4mbLg="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"13165"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022FZwywWXb05k3qNZiy1ZFHbqVF2bA3XJYDs0hhv4mbLg=\u0022"},{"Name":"Last-Modified","Value":"Sun, 11 Oct 2026 19:02:59 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/IceburgV2/og9905.html">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\og9905.html'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>

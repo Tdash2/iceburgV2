@@ -12,7 +12,7 @@ public sealed class OG9905MPx
         AutomaticDecompression = DecompressionMethods.All
     })
     {
-        Timeout = TimeSpan.FromSeconds(3)
+        Timeout = TimeSpan.FromSeconds(1)
     };
 
     private static readonly Dictionary<string, OG9905ParameterDefinition> Definitions = BuildDefinitions();

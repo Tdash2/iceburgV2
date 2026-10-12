@@ -1,0 +1,455 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Decoder Control</title>
+    <script src="header.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #232323;
+            color: white;
+            margin: 0;
+        }
+
+        h1 {
+            margin-top: 0;
+            margin-bottom: 5px;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        .section {
+            background: #373737;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            background: #2d2d2d;
+            padding: 14px;
+            margin-bottom: 20px;
+            overflow-wrap: anywhere;
+        }
+
+        .current {
+            color: #4caf50;
+            font-weight: bold;
+            font-size: 18px;
+            overflow-wrap: anywhere;
+        }
+
+        .source-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+            align-items: stretch;
+        }
+
+        .source-card {
+            background: #2a2a2a;
+            padding: 14px;
+            border-radius: 10px;
+            /* Stack card contents vertically */
+            display: flex;
+            flex-direction: column;
+            /* Allow cards in the same grid row to stretch equally */
+            height: 100%;
+            min-width: 0;
+        }
+
+        .source-name {
+            font-weight: bold;
+            margin-bottom: 10px;
+            overflow-wrap: anywhere;
+        }
+
+        .source-meta {
+            font-size: 12px;
+            color: #bbb;
+            margin-bottom: 12px;
+            overflow-wrap: anywhere;
+        }
+
+        button {
+            width: 100%;
+            border: 0;
+            border-radius: 4px;
+            padding: 10px;
+            cursor: pointer;
+            background: #2196f3;
+            color: white;
+            font-size: 14px;
+        }
+
+            button:hover {
+                background: #42a5f5;
+            }
+
+        /* Keep each source selection button at the bottom */
+        .source-card button {
+            margin-top: auto;
+        }
+
+        button:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            background: #2a2a2a;
+            color: white;
+            border: 1px solid #444;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .empty {
+            color: #999;
+            font-style: italic;
+        }
+
+        #device-ip {
+            overflow-wrap: anywhere;
+            margin-top: 0;
+        }
+
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+
+            .section {
+                padding: 15px;
+            }
+
+            .source-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 id="device-name">Decoder Control</h1>
+        <p id="device-ip"></p>
+
+        <div id="message" class="message" hidden></div>
+
+        <div class="section">
+            <h2>Current Source</h2>
+            <div id="current-source" class="empty">Loading...</div>
+        </div>
+
+        <div class="section">
+            <h2>Output Format</h2>
+
+            <select id="video-mode-select"
+                    aria-label="Output format">
+            </select>
+
+            <button id="apply-video-mode">
+                Apply Output Format
+            </button>
+        </div>
+
+        <div class="section">
+            <h2>Saved Sources</h2>
+            <div id="saved-sources" class="empty">Loading...</div>
+        </div>
+
+        <div class="section">
+            <h2>NDI Sources</h2>
+            <div id="ndi-sources" class="empty">Loading...</div>
+        </div>
+    </div>
+    <script>
+        /*
+         * Supply the device ID as ?id=DEVICE_ID,
+         * matching the PHP page.
+         */
+
+        const params = new URLSearchParams(location.search);
+        const deviceId = params.get('id');
+
+        const api =
+            '/api/decoding/magewell/' +
+            encodeURIComponent(deviceId || '');
+
+        let state = null;
+
+        const $ = id => document.getElementById(id);
+
+        function esc(value) {
+            return String(value ?? '').replace(/[&<>"']/g, char => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            })[char]);
+        }
+
+        function showMessage(text, ok = true) {
+            const message = $('message');
+
+            message.hidden = false;
+            message.textContent = text;
+            message.style.borderLeft =
+                '4px solid ' + (ok ? '#4caf50' : '#f44336');
+        }
+
+        async function request(url, body) {
+            const response = await fetch(url, {
+                method: body ? 'POST' : 'GET',
+                headers: body
+                    ? { 'Content-Type': 'application/json' }
+                    : {},
+                body: body ? JSON.stringify(body) : undefined
+            });
+
+            let data;
+
+            try {
+                data = await response.json();
+            } catch {
+                throw new Error('Invalid response from Iceburg API');
+            }
+
+            if (!response.ok) {
+                throw new Error(
+                    data.detail ||
+                    data.title ||
+                    'Request failed'
+                );
+            }
+
+            return data;
+        }
+
+        function renderSources(target, sources, type) {
+            const element = $(target);
+
+            if (!Array.isArray(sources) || !sources.length) {
+                element.className = 'empty';
+                element.textContent =
+                    type === 'ndi'
+                        ? 'No NDI sources found.'
+                        : 'No saved sources found.';
+                return;
+            }
+
+            element.className = 'source-grid';
+
+            element.innerHTML = sources.map(source => {
+                const name = type === 'ndi'
+                    ? (source['ndi-name'] || '')
+                    : (source.name || '');
+
+                const meta = type === 'ndi'
+                    ? (source['ip-addr'] || '')
+                    : (source.url || '');
+
+                const buttonLabel = type === 'ndi'
+                    ? 'Select NDI Source'
+                    : 'Select Saved Source';
+
+                return `
+                        <div class="source-card">
+                            <div class="source-name">
+                                ${esc(name)}
+                            </div>
+
+                            <div class="source-meta">
+                                ${esc(meta)}
+                            </div>
+
+                            <button
+                                type="button"
+                                data-type="${esc(type)}"
+                                data-name="${esc(name)}">
+                                ${buttonLabel}
+                            </button>
+                        </div>
+                    `;
+            }).join('');
+
+            element.querySelectorAll('.source-card button')
+                .forEach(button => {
+                    button.addEventListener('click', async () => {
+                        button.disabled = true;
+
+                        try {
+                            const result = await request(
+                                api + '/source',
+                                {
+                                    sourceType: button.dataset.type,
+                                    sourceName: button.dataset.name
+                                }
+                            );
+
+                            showMessage(
+                                result.message,
+                                !!result.ok
+                            );
+
+                            await load();
+                        } catch (error) {
+                            showMessage(error.message, false);
+                        } finally {
+                            button.disabled = false;
+                        }
+                    });
+                });
+        }
+
+        function renderModes(modes) {
+            const select = $('video-mode-select');
+
+            select.innerHTML = '';
+
+            (modes || []).forEach((mode, index) => {
+                const option = document.createElement('option');
+
+                option.value = String(index);
+
+                option.textContent =
+                    `${mode.width}x${mode.height} @ ` +
+                    `${(Number(mode['field-rate'] || 0) / 100).toFixed(2)} ` +
+                    `${mode.interlaced ? 'i' : 'p'}`;
+
+                if (mode['curr-mode']) {
+                    option.selected = true;
+                }
+
+                select.appendChild(option);
+            });
+
+            select.dataset.modes = JSON.stringify(modes || []);
+        }
+
+        async function load() {
+            if (!deviceId) {
+                showMessage('Missing device id (?id=...).', false);
+                return;
+            }
+
+            try {
+                state = await request(api);
+
+                $('device-name').textContent =
+                    state.device?.name || 'Decoder Control';
+
+                document.title =
+                    'Decoder Control ' +
+                    (state.device?.name || '');
+
+                $('device-ip').textContent =
+                    state.device?.ip || '';
+
+                const current = state.currentSource || {};
+
+                $('current-source').className =
+                    current.name ? 'current' : 'empty';
+
+                $('current-source').textContent =
+                    current.name
+                        ? `${current.name} (${current.type || 'Saved'})`
+                        : 'No active source.';
+
+                renderModes(state.videoModes);
+
+                renderSources(
+                    'ndi-sources',
+                    state.ndiSources,
+                    'ndi'
+                );
+
+                renderSources(
+                    'saved-sources',
+                    state.savedSources,
+                    'saved'
+                );
+
+                if (
+                    state.errors &&
+                    Object.keys(state.errors).length
+                ) {
+                    showMessage(
+                        'Some decoder information could not be loaded: ' +
+                        Object.keys(state.errors).join(', '),
+                        false
+                    );
+                }
+            } catch (error) {
+                showMessage(error.message, false);
+            }
+        }
+
+        $('apply-video-mode').addEventListener(
+            'click',
+            async () => {
+                const button = $('apply-video-mode');
+                button.disabled = true;
+
+                try {
+                    const modes = JSON.parse(
+                        $('video-mode-select').dataset.modes || '[]'
+                    );
+
+                    const mode = modes[
+                        Number($('video-mode-select').value)
+                    ];
+
+                    if (!mode) {
+                        throw new Error('No output format selected.');
+                    }
+
+                    const result = await request(
+                        api + '/video-mode',
+                        {
+                            width: Number(mode.width),
+                            height: Number(mode.height),
+                            fieldRate: Number(mode['field-rate']),
+                            aspectRatio: Number(
+                                mode['aspect-ratio'] || 1.777777
+                            ),
+                            interlaced: !!mode.interlaced
+                        }
+                    );
+
+                    showMessage(
+                        result.message,
+                        !!result.ok
+                    );
+
+                    await load();
+                } catch (error) {
+                    showMessage(error.message, false);
+                } finally {
+                    button.disabled = false;
+                }
+            }
+        );
+
+        load();
+    </script>
+</body>
+</html>

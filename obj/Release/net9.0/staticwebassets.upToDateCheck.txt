@@ -16,6 +16,7 @@ C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\admin\users.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\favacon.ico
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\login.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\bmd40panle.html
+C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\magewell-decoder.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\uploadross\index.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\x32.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\admin\devices.html
@@ -34,6 +35,7 @@ wwwroot\header.js
 wwwroot\Iceburg Log.png
 wwwroot\index.html
 wwwroot\login.html
+wwwroot\magewell-decoder.html
 wwwroot\og9905.html
 wwwroot\routertally.html
 wwwroot\servertoservertally.html

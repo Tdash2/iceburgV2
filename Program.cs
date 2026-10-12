@@ -25,6 +25,7 @@ using System.Threading;
 using System.Reflection;
 using Iceburg.Interfaces.BMD.Panle40;
 using Iceburg.Monitor.BMD.smartscope;
+using Iceburg.Conversion.Magewell.Decoder;
 
 bool debug = false;
 
@@ -73,9 +74,7 @@ builder.Services.AddHttpsRedirection(options =>
 
 
 
-builder.Services.AddAuthentication(
-    CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie(options =>
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
     {
         options.Cookie.Name = "IceburgAuthv2";
 
@@ -1318,6 +1317,12 @@ app.MapGet("/api/devices/type/", (HttpContext httpContext) =>
             name = "BMD Smart Scope",
             group = "Video",
             page = "BMD-SmartScope.html"
+        },
+        ["10"] = new
+        {
+            name = "Magewell Proconvert Decoder",
+            group = "Video",
+            page = "magewell-decoder.html"
         }
     };
 
@@ -2046,22 +2051,13 @@ bndrouterpnale40.MapGet("/bmd/40panle/{id}/setvideohub/{ip}",
 //BMD Smartscope
 var smarscopeapi = app.MapGroup("/api/monitors").RequireAuthorization();
 
-smarscopeapi.MapGet("/bmd/{id}/getinfo", (string id) =>
-            new BMD_SmartScope().GetInfo(id));
+smarscopeapi.MapGet("/bmd/{id}/getinfo", (string id) => new BMD_SmartScope().GetInfo(id));
 
-smarscopeapi.MapGet("/bmd/{id}/getstate", (string id) =>
-    new BMD_SmartScope().GetState(id));
+smarscopeapi.MapGet("/bmd/{id}/getstate", (string id) => new BMD_SmartScope().GetState(id));
 
-smarscopeapi.MapGet("/bmd/{id}/set/{monitor}/{param}/{value}",
-    (string id, string monitor, string param, string value) =>
-        new BMD_SmartScope().Set(id, monitor, param, value));
+smarscopeapi.MapGet("/bmd/{id}/set/{monitor}/{param}/{value}",(string id, string monitor, string param, string value) => new BMD_SmartScope().Set(id, monitor, param, value));
 
-        
-
-
-
-smarscopeapi.MapPost("/bmd/{id}/set",
-    async (string id, HttpRequest request) =>
+smarscopeapi.MapPost("/bmd/{id}/set",async (string id, HttpRequest request) =>
     {
         var form = await request.ReadFormAsync();
         string monitor = form["monitor"].ToString();
@@ -2070,9 +2066,55 @@ smarscopeapi.MapPost("/bmd/{id}/set",
         return await new BMD_SmartScope().Set(id, monitor, param, value);
     });
 
+// Magewell Decoder
+var decoder = app.MapGroup("/api/decoding").RequireAuthorization();
+
+decoder.MapGet("/magewell/{id}", async (string id, HttpRequest request) =>
+{
+    var magewell = new MagewellDecoder(id);
+    return await magewell.GetStateAsync();
+});
+
+decoder.MapPost("/magewell/{id}/source", async (
+    string id,
+    HttpRequest request,
+    SwitchSourceRequest body) =>
+{
+    var magewell = new MagewellDecoder(id);
+    return await magewell.SwitchSourceAsync(
+        body.SourceType,
+        body.SourceName);
+});
+
+decoder.MapPost("/magewell/{id}/video-mode", async (
+    string id,
+    HttpRequest request,
+    VideoModeRequest body) =>
+{
+    var magewell = new MagewellDecoder(id);
+    return await magewell.SetVideoModeAsync(
+        body.Width,
+        body.Height,
+        body.FieldRate,
+        body.AspectRatio,
+        body.Interlaced);
+});
+
+decoder.MapPost("/magewell/{id}/hdmi-output", async (
+    string id,
+    HttpRequest request,
+    HdmiOutputRequest body) =>
+{
+    var magewell = new MagewellDecoder(id);
+    return await magewell.SetHdmiOutputAsync(body.Enabled);
+});
+
+
+
+
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 Console.WriteLine(@"
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+ ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡾⠋⡏⢻⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⠟⠁⠀⡇⠀⠹⣆⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⠏⠀⠀⢸⠁⠀⠀⠸⣷⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -2700,3 +2742,16 @@ public class DeviceType
     public string? TallyPage { get; set; }
     public bool IsAudioSorce { get; set; }
 }
+
+public sealed record SwitchSourceRequest(
+    string SourceType,
+    string SourceName);
+
+public sealed record VideoModeRequest(
+    int Width,
+    int Height,
+    int FieldRate,
+    double AspectRatio,
+    bool Interlaced);
+
+public sealed record HdmiOutputRequest(bool Enabled);

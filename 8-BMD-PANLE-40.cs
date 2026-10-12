@@ -13,7 +13,7 @@ public class BMD_Panle40
 {
     private const int PanelPort = 9991;
     private const int VideohubPort = 9990;
-    private const int TimeoutMs = 5000;
+    private const int TimeoutMs = 2000;
 
     public async Task<string> getinfo(string id)
     {

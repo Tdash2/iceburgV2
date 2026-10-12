@@ -9,6 +9,7 @@ using Iceburg.Mixer.X32;
 using Iceburg.Conversion.Cobalt.OG9905;
 using Iceburg.Interfaces.BMD.Panle40;
 using Iceburg.Monitor.BMD.smartscope;
+using Iceburg.Conversion.Magewell.Decoder;
 
 namespace Iceburg.Devices.Status;
 public class DeviceStatus
@@ -313,6 +314,30 @@ public class DeviceStatus
                 else
                 {
                     return "error";
+                }
+            }
+            catch
+            {
+                return "error";
+            }
+        }
+        if (device.Type == "10")
+        {
+            try
+            {
+                var fs2 = new MagewellDecoder(id);
+
+                bool result = await fs2.Getdevicestatus();
+
+                
+                if (result)
+                {
+
+                    return "connected";
+                }
+                else
+                {
+                    return "error " ;
                 }
             }
             catch

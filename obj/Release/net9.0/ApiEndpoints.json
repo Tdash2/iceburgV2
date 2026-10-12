@@ -808,6 +808,117 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_75",
+    "RelativePath": "api/decoding/magewell/{id}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_78",
+    "RelativePath": "api/decoding/magewell/{id}/hdmi-output",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "HdmiOutputRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_76",
+    "RelativePath": "api/decoding/magewell/{id}/source",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "SwitchSourceRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
+    "Method": "\u003C\u003CMain\u003E$\u003Eb__0_77",
+    "RelativePath": "api/decoding/magewell/{id}/video-mode",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "body",
+        "Type": "VideoModeRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Program\u002B\u003C\u003Ec",
     "Method": "\u003C\u003CMain\u003E$\u003Eb__0_20",
     "RelativePath": "api/device/getdevices/",
     "HttpMethod": "GET",
