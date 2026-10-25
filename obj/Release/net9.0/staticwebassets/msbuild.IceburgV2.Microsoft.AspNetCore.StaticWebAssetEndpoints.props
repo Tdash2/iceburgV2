@@ -1,5 +1,17 @@
 ﻿<Project>
   <ItemGroup>
+    <StaticWebAssetEndpoint Include="_content/IceburgV2/admin/debug.7bc8ag05io.html">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\admin\debug.html'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"7bc8ag05io"},{"Name":"integrity","Value":"sha256-rUVmG/Q4gyLNsuu2N1/MNIL3t7rjihWFYjuANU/sLIw="},{"Name":"label","Value":"_content/IceburgV2/admin/debug.html"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"11634"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022rUVmG/Q4gyLNsuu2N1/MNIL3t7rjihWFYjuANU/sLIw=\u0022"},{"Name":"Last-Modified","Value":"Sun, 25 Oct 2026 18:43:52 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
+    <StaticWebAssetEndpoint Include="_content/IceburgV2/admin/debug.html">
+      <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\admin\debug.html'))</AssetFile>
+      <Selectors><![CDATA[[]]]></Selectors>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-rUVmG/Q4gyLNsuu2N1/MNIL3t7rjihWFYjuANU/sLIw="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"11634"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022rUVmG/Q4gyLNsuu2N1/MNIL3t7rjihWFYjuANU/sLIw=\u0022"},{"Name":"Last-Modified","Value":"Sun, 25 Oct 2026 18:43:52 GMT"}]]]></ResponseHeaders>
+    </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/IceburgV2/admin/devices.html">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\admin\devices.html'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
@@ -304,13 +316,13 @@
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\tallygrid.html'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"d07dv56x5s"},{"Name":"integrity","Value":"sha256-vbf\u002BXlubwbc5Az3Z7y2awMXo/oGgdVHhWhYY4yTP34o="},{"Name":"label","Value":"_content/IceburgV2/tallygrid.html"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"77939"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022vbf\u002BXlubwbc5Az3Z7y2awMXo/oGgdVHhWhYY4yTP34o=\u0022"},{"Name":"Last-Modified","Value":"Sun, 25 Oct 2026 17:32:13 GMT"}]]]></ResponseHeaders>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"77939"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022vbf\u002BXlubwbc5Az3Z7y2awMXo/oGgdVHhWhYY4yTP34o=\u0022"},{"Name":"Last-Modified","Value":"Sun, 25 Oct 2026 17:49:43 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/IceburgV2/tallygrid.html">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\tallygrid.html'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-vbf\u002BXlubwbc5Az3Z7y2awMXo/oGgdVHhWhYY4yTP34o="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"77939"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022vbf\u002BXlubwbc5Az3Z7y2awMXo/oGgdVHhWhYY4yTP34o=\u0022"},{"Name":"Last-Modified","Value":"Sun, 25 Oct 2026 17:32:13 GMT"}]]]></ResponseHeaders>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"77939"},{"Name":"Content-Type","Value":"text/html"},{"Name":"ETag","Value":"\u0022vbf\u002BXlubwbc5Az3Z7y2awMXo/oGgdVHhWhYY4yTP34o=\u0022"},{"Name":"Last-Modified","Value":"Sun, 25 Oct 2026 17:49:43 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/IceburgV2/test.html">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\test.html'))</AssetFile>

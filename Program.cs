@@ -196,6 +196,8 @@ var app = builder.Build();
 // ============================================================
 // HTTPS REDIRECT
 // ============================================================
+string debugid = ""; // Empty = show all; e.g. "/tally"
+
 app.Use(async (context, next) =>
 {
     bool isTallyApi =
@@ -212,7 +214,6 @@ app.Use(async (context, next) =>
             context.Request.QueryString;
 
         context.Response.Redirect(httpsUrl);
-
         return;
     }
 
@@ -225,12 +226,23 @@ app.Use(async (context, next) =>
 
         stopwatch.Stop();
 
-        Console.WriteLine(
-        
-            $"{context.Request.Method} " +
-            $"{context.Request.Path}" +
-            $"{context.Request.QueryString} - " +
-            $"{stopwatch.Elapsed.TotalMilliseconds:F2}ms");
+        string url =
+            context.Request.Path +
+            context.Request.QueryString;
+
+        // Empty ID matches everything; otherwise filter by URL.
+        if (string.IsNullOrWhiteSpace(debugid) ||
+            url.Contains(debugid, StringComparison.OrdinalIgnoreCase))
+        {
+            Console.WriteLine(
+                $"{context.Request.Method} " +
+                $"{url} - " +
+                $"{stopwatch.Elapsed.TotalMilliseconds:F2}ms");
+
+            TerminalOutputHub.Broadcast($"{context.Request.Method} " +
+                $"{url} - " +
+                $"{stopwatch.Elapsed.TotalMilliseconds:F2}ms");
+        }
     }
     else
     {
@@ -1084,6 +1096,11 @@ app.MapGet("/api/nav", (HttpContext httpContext) =>
                     {
                         Label = "Devices",
                         Url = "/admin/devices.html"
+                    },
+                    new NavItem
+                    {
+                        Label = "Shell",
+                        Url = "/admin/debug.html"
                     }
                 }
             }
@@ -2236,6 +2253,101 @@ testgen.MapPost("/iceburg/{id}/mute", async (string id) =>
 });
 
 
+app.MapGet("/api/terminal/stream", async (
+    HttpContext context) =>
+{
+    if (!IsAdmin(context))
+    {
+        context.Response.StatusCode =
+            StatusCodes.Status403Forbidden;
+        return;
+    }
+
+    context.Response.Headers.ContentType =
+        "text/event-stream";
+    context.Response.Headers.CacheControl =
+        "no-cache";
+    context.Response.Headers["X-Accel-Buffering"] =
+        "no";
+
+    var reader = TerminalOutputHub.Subscribe(out var clientId);
+
+    try
+    {
+        await foreach (
+            var message in reader.ReadAllAsync(
+                context.RequestAborted))
+        {
+            var data = JsonSerializer.Serialize(message);
+
+            await context.Response.WriteAsync(
+                $"data: {data}\n\n",
+                context.RequestAborted);
+
+            await context.Response.Body.FlushAsync(
+                context.RequestAborted);
+        }
+    }
+    catch (OperationCanceledException)
+    {
+        // Browser disconnected.
+    }
+    finally
+    {
+        TerminalOutputHub.Unsubscribe(clientId);
+    }
+})
+.RequireAuthorization();
+
+
+app.MapPost("/api/terminal/execute", (
+    HttpContext context,
+    JsonElement body) =>
+{
+    if (!IsAdmin(context))
+        return Results.Forbid();
+
+    if (!body.TryGetProperty("command", out var value) ||
+        value.ValueKind != JsonValueKind.String)
+    {
+        return Results.BadRequest(new
+        {
+            error = "Command is required."
+        });
+    }
+
+    var input = value.GetString() ?? "";
+
+    if (input.Length > 300)
+        return Results.BadRequest(new
+        {
+            error = "Command is too long."
+        });
+
+    var output = new List<string>();
+
+    try
+    {
+        RunIceburgCommand(
+            input,
+            line => output.Add(line),
+            fromWeb: true);
+
+        return Results.Ok(new
+        {
+            output = string.Join("\n", output)
+        });
+    }
+    catch (Exception)
+    {
+        return Results.Json(
+            new { error = "Command failed." },
+            statusCode: 500);
+    }
+})
+.RequireAuthorization();
+
+
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 Console.WriteLine(@"
  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -2362,343 +2474,376 @@ if (Database.GetUser("localadmin") == null)
        "Created initial Iceburg Local admin account.");
 }
 
+
+void RunIceburgCommand(string input,Action<string> write,bool fromWeb)
+{
+    var parts = SplitCommandLine(input);
+
+    if (parts.Count == 0)
+        return;
+
+    var command = parts[0].ToLowerInvariant();
+
+    switch (command)
+    {
+        case "help":
+
+            write("Commands:");
+            write(
+                "    help");
+            write(
+                "    device list");
+            write(
+                "    device add (Name) (IP) (Type)");
+            write(
+                "    device remove (ID)");
+            write(
+                "    user list");
+            write(
+                "    user add (Username) (password) (role)");
+            write(
+                "    user edit (User ID) (New Username) (New password) (role \"Admin\" \"User\")");
+            write(
+                "    user remove (ID)");
+            write(
+                "    exit");
+
+            break;
+
+
+        case "device":
+
+            if (parts.Count > 1)
+            {
+                if (parts[1] == "add")
+                {
+                    write(
+                        "Device: add");
+
+                    if (parts.Count != 5)
+                    {
+                        write(
+                            "device add (Name) (IP) (Type)");
+                    }
+                    else
+                    {
+                        string Name = parts[2];
+                        string IP = parts[3];
+                        string type = parts[4];
+
+                        Device device =
+                            Database.AddDevice(
+                                Name,
+                                type,
+                                IP);
+
+                        write(
+                            $"Added New Device. Device ID: {device.Id}");
+                    }
+                }
+
+                if (parts[1] == "list")
+                {
+                    write(
+                        $"{"Name",-25} {"IP",-15} {"ID",-20}");
+
+                    write(
+                        new string('-', 65));
+
+                    foreach (
+                        var device
+                        in Database.Devices)
+                    {
+                        write(
+                            $"{device.Name,-25} " +
+                            $"{device.IpAddress,-15} " +
+                            $"{device.Id,-20}");
+                    }
+                }
+
+                if (parts[1] == "remove")
+                {
+                    if (parts.Count != 3)
+                    {
+                        write(
+                            "device remove (ID)");
+                    }
+                    else
+                    {
+                        string ID = parts[2];
+
+                        Device deviceToRemove =
+                            Database.GetDevice(ID);
+
+                        if (deviceToRemove != null)
+                        {
+                            Database.RemoveDevice(ID);
+
+                            write(
+                                $"Removed Device {ID}");
+                        }
+                        else
+                        {
+                            write(
+                                "Device Not found");
+                        }
+                    }
+                }
+            }
+            else
+            {
+                write(
+                    "device list");
+
+                write(
+                    "device add (Name) (IP) (Type)");
+
+                write(
+                    "device remove (ID)");
+            }
+
+            break;
+
+
+        case "user":
+
+            if (parts.Count > 1)
+            {
+                if (parts[1] == "add")
+                {
+                    if (parts.Count != 5)
+                    {
+                        write(
+                            "user add (Username) (password) (role \"Admin\" \"User\")");
+                    }
+                    else
+                    {
+                        string username = parts[2];
+                        string password = parts[3];
+                        string role = parts[4];
+
+                        if (!(role == "Admin" ||
+                              role == "User"))
+                        {
+                            write(
+                                "Unknown Role");
+
+                            break;
+                        }
+
+                        if (Database.GetUser(username) != null)
+                        {
+                            write(
+                                "Username is already used");
+
+                            break;
+                        }
+
+                        User user =
+                            Database.AddUser(
+                                username,
+                                password,
+                                role);
+
+                        write(
+                            $"Added New User. User ID: {user.Id}");
+                    }
+                }
+
+                if (parts[1] == "edit")
+                {
+                    if (parts.Count != 6)
+                    {
+                        write(
+                            "user edit (User ID) (New Username) (New password) (role \"Admin\" \"User\")");
+                    }
+                    else
+                    {
+                        string userid = parts[2];
+                        string username = parts[3];
+                        string password = parts[4];
+                        string role = parts[5];
+
+                        if (!(role == "Admin" ||
+                              role == "User"))
+                        {
+                            write(
+                                "Unknown Role");
+
+                            break;
+                        }
+
+                        if (Database.GetUserById(userid) == null)
+                        {
+                            write(
+                                "Username not found");
+
+                            break;
+                        }
+
+                        User user =
+                            Database.EditUser(
+                                userid,
+                                username,
+                                password,
+                                role);
+
+                        write(
+                            $"Edited User. Username: {user.Username} User Role: {user.Role}");
+                    }
+                }
+
+                if (parts[1] == "list")
+                {
+                    write(
+                        $"{"Name",-25} {"Role",-15} {"ID",-20}");
+
+                    write(
+                        new string('-', 65));
+
+                    foreach (
+                        var device
+                        in Database.Users)
+                    {
+                        write(
+                            $"{device.Username,-25} " +
+                            $"{device.Role,-15} " +
+                            $"{device.Id,-20}");
+                    }
+                }
+
+                if (parts[1] == "remove")
+                {
+                    if (parts.Count != 3)
+                    {
+                        write(
+                            "User remove (ID)");
+                    }
+                    else
+                    {
+                        string ID = parts[2];
+
+                        User deviceToRemove =
+                            Database.GetUserById(ID);
+
+                        if (deviceToRemove != null)
+                        {
+                            Database.RemoveUser(ID);
+
+                            write(
+                                $"Removed User {ID}");
+                        }
+                        else
+                        {
+                            write(
+                                "User Not found");
+                        }
+                    }
+                }
+            }
+            else
+            {
+                write(
+                    "user list");
+
+                write(
+                    "user add (Username) (password) (role)");
+
+                write(
+                    "user remove (ID)");
+
+                write(
+                    "user edit (User ID) (New Username) (New password) (role \"Admin\" \"User\")");
+            }
+
+            break;
+
+
+        case "exit":
+            if (fromWeb)
+            {
+                write("The server cannot be stopped from the web terminal.");
+            }
+            else
+            {
+                write("Stopping Iceburg...");
+                Environment.Exit(0);
+            }
+
+            break;
+
+
+        case "debug":
+
+            if (parts.Count > 1)
+            {
+                if (parts[1] == "on")
+                {
+                    debug = true;
+                    debugid = "";
+                }
+
+
+
+                if (parts[1] == "off")
+                {
+                    debug = false;
+                    debugid = "";
+                }
+            }
+            if (parts.Count > 2)
+            {
+                if (parts[1] == "device")
+                {
+                    debug = true;
+                    debugid = parts[2];
+
+                }
+            }
+
+            break;
+
+
+        case "":
+            break;
+
+
+        default:
+
+            write(
+                $"Unknown command: {input}");
+
+            break;
+    }
+}
+
+
+
 _ = Task.Run(async () =>
 {
     while (true)
     {
         Console.Write("ICEBURG> ");
 
-        var input =
-            await Console.In.ReadLineAsync();
+        var input = await Console.In.ReadLineAsync();
 
         if (input == null)
             break;
 
-        var parts =
-            SplitCommandLine(input);
-
-        if (parts.Count == 0)
-            continue;
-
-        var command =
-            parts[0].ToLowerInvariant();
-
-        switch (command)
+        try
         {
-            case "help":
-
-                Console.WriteLine("Commands:");
-                Console.WriteLine(
-                    "    help");
-                Console.WriteLine(
-                    "    device list");
-                Console.WriteLine(
-                    "    device add (Name) (IP) (Type)");
-                Console.WriteLine(
-                    "    device remove (ID)");
-                Console.WriteLine(
-                    "    user list");
-                Console.WriteLine(
-                    "    user add (Username) (password) (role)");
-                Console.WriteLine(
-                    "    user edit (User ID) (New Username) (New password) (role \"Admin\" \"User\")");
-                Console.WriteLine(
-                    "    user remove (ID)");
-                Console.WriteLine(
-                    "    exit");
-
-                break;
-
-
-            case "device":
-
-                if (parts.Count > 1)
-                {
-                    if (parts[1] == "add")
-                    {
-                        Console.WriteLine(
-                            "Device: add");
-
-                        if (parts.Count != 5)
-                        {
-                            Console.WriteLine(
-                                "device add (Name) (IP) (Type)");
-                        }
-                        else
-                        {
-                            string Name = parts[2];
-                            string IP = parts[3];
-                            string type = parts[4];
-
-                            Device device =
-                                Database.AddDevice(
-                                    Name,
-                                    type,
-                                    IP);
-
-                            Console.WriteLine(
-                                $"Added New Device. Device ID: {device.Id}");
-                        }
-                    }
-
-                    if (parts[1] == "list")
-                    {
-                        Console.WriteLine(
-                            $"{"Name",-25} {"IP",-15} {"ID",-20}");
-
-                        Console.WriteLine(
-                            new string('-', 65));
-
-                        foreach (
-                            var device
-                            in Database.Devices)
-                        {
-                            Console.WriteLine(
-                                $"{device.Name,-25} " +
-                                $"{device.IpAddress,-15} " +
-                                $"{device.Id,-20}");
-                        }
-                    }
-
-                    if (parts[1] == "remove")
-                    {
-                        if (parts.Count != 3)
-                        {
-                            Console.WriteLine(
-                                "device remove (ID)");
-                        }
-                        else
-                        {
-                            string ID = parts[2];
-
-                            Device deviceToRemove =
-                                Database.GetDevice(ID);
-
-                            if (deviceToRemove != null)
-                            {
-                                Database.RemoveDevice(ID);
-
-                                Console.WriteLine(
-                                    $"Removed Device {ID}");
-                            }
-                            else
-                            {
-                                Console.WriteLine(
-                                    "Device Not found");
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    Console.WriteLine(
-                        "device list");
-
-                    Console.WriteLine(
-                        "device add (Name) (IP) (Type)");
-
-                    Console.WriteLine(
-                        "device remove (ID)");
-                }
-
-                break;
-
-
-            case "user":
-
-                if (parts.Count > 1)
-                {
-                    if (parts[1] == "add")
-                    {
-                        if (parts.Count != 5)
-                        {
-                            Console.WriteLine(
-                                "user add (Username) (password) (role \"Admin\" \"User\")");
-                        }
-                        else
-                        {
-                            string username = parts[2];
-                            string password = parts[3];
-                            string role = parts[4];
-
-                            if (!(role == "Admin" ||
-                                  role == "User"))
-                            {
-                                Console.WriteLine(
-                                    "Unknown Role");
-
-                                break;
-                            }
-
-                            if (Database.GetUser(username) != null)
-                            {
-                                Console.WriteLine(
-                                    "Username is already used");
-
-                                break;
-                            }
-
-                            User user =
-                                Database.AddUser(
-                                    username,
-                                    password,
-                                    role);
-
-                            Console.WriteLine(
-                                $"Added New User. User ID: {user.Id}");
-                        }
-                    }
-
-                    if (parts[1] == "edit")
-                    {
-                        if (parts.Count != 6)
-                        {
-                            Console.WriteLine(
-                                "user edit (User ID) (New Username) (New password) (role \"Admin\" \"User\")");
-                        }
-                        else
-                        {
-                            string userid = parts[2];
-                            string username = parts[3];
-                            string password = parts[4];
-                            string role = parts[5];
-
-                            if (!(role == "Admin" ||
-                                  role == "User"))
-                            {
-                                Console.WriteLine(
-                                    "Unknown Role");
-
-                                break;
-                            }
-
-                            if (Database.GetUserById(userid) == null)
-                            {
-                                Console.WriteLine(
-                                    "Username not found");
-
-                                break;
-                            }
-
-                            User user =
-                                Database.EditUser(
-                                    userid,
-                                    username,
-                                    password,
-                                    role);
-
-                            Console.WriteLine(
-                                $"Edited User. Username: {user.Username} User Role: {user.Role}");
-                        }
-                    }
-
-                    if (parts[1] == "list")
-                    {
-                        Console.WriteLine(
-                            $"{"Name",-25} {"Role",-15} {"ID",-20}");
-
-                        Console.WriteLine(
-                            new string('-', 65));
-
-                        foreach (
-                            var device
-                            in Database.Users)
-                        {
-                            Console.WriteLine(
-                                $"{device.Username,-25} " +
-                                $"{device.Role,-15} " +
-                                $"{device.Id,-20}");
-                        }
-                    }
-
-                    if (parts[1] == "remove")
-                    {
-                        if (parts.Count != 3)
-                        {
-                            Console.WriteLine(
-                                "User remove (ID)");
-                        }
-                        else
-                        {
-                            string ID = parts[2];
-
-                            User deviceToRemove =
-                                Database.GetUserById(ID);
-
-                            if (deviceToRemove != null)
-                            {
-                                Database.RemoveUser(ID);
-
-                                Console.WriteLine(
-                                    $"Removed User {ID}");
-                            }
-                            else
-                            {
-                                Console.WriteLine(
-                                    "User Not found");
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    Console.WriteLine(
-                        "user list");
-
-                    Console.WriteLine(
-                        "user add (Username) (password) (role)");
-
-                    Console.WriteLine(
-                        "user remove (ID)");
-
-                    Console.WriteLine(
-                        "user edit (User ID) (New Username) (New password) (role \"Admin\" \"User\")");
-                }
-
-                break;
-
-
-            case "exit":
-
-                Console.WriteLine(
-                    "Stopping Iceburg...");
-
-                Environment.Exit(0);
-
-                break;
-
-
-            case "debug":
-
-                if (parts.Count > 1)
-                {
-                    if (parts[1] == "on")
-                    {
-                        debug = true;
-                    }
-
-                    if (parts[1] == "off")
-                    {
-                        debug = false;
-                    }
-                }
-
-                break;
-
-
-            case "":
-                break;
-
-
-            default:
-
-                Console.WriteLine(
-                    $"Unknown command: {input}");
-
-                break;
+            RunIceburgCommand(
+                input,
+                Console.WriteLine,
+                fromWeb: false);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Command failed: {ex.Message}");
         }
     }
 });
+
 
 app.Run();
 

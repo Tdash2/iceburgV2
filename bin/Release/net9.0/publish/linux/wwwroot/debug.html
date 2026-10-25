@@ -1,0 +1,428 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="header.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ICEBURG Terminal</title>
+
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #232323;
+            --panel: #1a1a1a;
+            --border: #26344300;
+            --green: #ffffff;
+            --text: #ffffff;
+            --muted: #ffffff;
+            --red: #ff8585;
+            --blue: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            font: 14px/1.5 Consolas, "Courier New", monospace;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 22px;
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand {
+            color: var(--green);
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .status {
+            margin-left: auto;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        main {
+            width: min(1100px, 100%);
+            padding: 20px;
+            margin: 0 auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        button {
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: #24282d;
+            color: var(--text);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font: inherit;
+        }
+
+            button:hover:not(:disabled) {
+                border-color: var(--green);
+            }
+
+            button:disabled {
+                opacity: 0.5;
+                cursor: wait;
+            }
+
+        #terminal {
+            flex: 1;
+            min-height: 360px;
+            max-height: 70vh;
+            overflow: auto;
+            background: #1a1a1a;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 18px;
+        }
+
+        .line {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            margin-bottom: 9px;
+        }
+
+        .prompt,
+        .welcome {
+            color: var(--green);
+        }
+
+        .error {
+            color: var(--red);
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .server-message {
+            color: var(--blue);
+        }
+
+        form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+            padding: 12px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+            form label {
+                color: var(--green);
+                white-space: nowrap;
+            }
+
+        input {
+            flex: 1;
+            min-width: 0;
+            border: 0;
+            outline: none;
+            background: transparent;
+            color: var(--text);
+            font: inherit;
+        }
+
+            input:focus-visible {
+                outline: 1px solid var(--green);
+            }
+
+        footer {
+            padding: 12px 22px;
+            border-top: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+            main {
+                padding: 10px;
+            }
+
+            #terminal {
+                padding: 12px;
+                max-height: 65vh;
+            }
+
+            header {
+                padding: 12px;
+            }
+
+            form {
+                gap: 6px;
+                padding: 8px;
+            }
+
+                form label {
+                    font-size: 12px;
+                }
+
+            button {
+                padding: 7px 9px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main>
+        <div class="toolbar">
+            <span class="muted">Iceburg server console</span>
+            <span style="flex: 1"></span>
+            <button type="button" id="clear">Clear</button>
+        </div>
+
+        <section id="terminal"
+                 role="log"
+                 aria-live="polite"
+                 aria-label="Terminal output">
+
+        </section>
+
+        <form id="commandForm" autocomplete="off">
+            <label for="command">ICEBURG&gt;</label>
+
+            <input id="command"
+                   name="command"
+                   type="text"
+                   autocomplete="off"
+                   autocapitalize="off"
+                   spellcheck="false"
+                   placeholder="Enter a command..."
+                   autofocus>
+
+            <button type="submit" id="run">Run</button>
+        </form>
+    </main>
+
+
+    <script>
+        (() => {
+            "use strict";
+
+            const terminal = document.getElementById("terminal");
+            const form = document.getElementById("commandForm");
+            const input = document.getElementById("command");
+            const runButton = document.getElementById("run");
+            const clearButton = document.getElementById("clear");
+            const status = document.getElementById("status");
+
+            const history = [];
+            let historyIndex = 0;
+            let busy = false;
+            let sessionExpired = false;
+
+            // Add a line without interpreting server output as HTML.
+            function line(text, className = "") {
+                const div = document.createElement("div");
+
+                div.className = "line " + className;
+                div.textContent = String(text);
+
+                terminal.appendChild(div);
+                terminal.scrollTop = terminal.scrollHeight;
+            }
+
+            // Clear visible output.
+            clearButton.addEventListener("click", () => {
+                terminal.replaceChildren();
+                input.focus();
+            });
+
+            // Navigate previously entered commands.
+            input.addEventListener("keydown", event => {
+                if (event.key === "ArrowUp") {
+                    event.preventDefault();
+
+                    if (history.length > 0) {
+                        historyIndex = Math.max(
+                            0,
+                            historyIndex - 1
+                        );
+
+                        input.value = history[historyIndex] || "";
+                    }
+                }
+
+                if (event.key === "ArrowDown") {
+                    event.preventDefault();
+
+                    historyIndex = Math.min(
+                        history.length,
+                        historyIndex + 1
+                    );
+
+                    input.value = history[historyIndex] || "";
+                }
+            });
+
+            // Execute commands through the shared C# command handler.
+            form.addEventListener("submit", async event => {
+                event.preventDefault();
+
+                if (busy || sessionExpired) {
+                    return;
+                }
+
+                const command = input.value.trim();
+
+                if (!command) {
+                    return;
+                }
+
+                input.value = "";
+
+                history.push(command);
+                historyIndex = history.length;
+
+                line("ICEBURG> " + command, "prompt");
+
+                // Clear only affects the browser display.
+                if (command.toLowerCase() === "clear") {
+                    terminal.replaceChildren();
+                    return;
+                }
+
+                busy = true;
+                runButton.disabled = true;
+             
+
+                try {
+                    const response = await fetch(
+                        "/api/terminal/execute",
+                        {
+                            method: "POST",
+                            credentials: "same-origin",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                command: command
+                            })
+                        }
+                    );
+
+                    const data = await response.json().catch(
+                        () => ({})
+                    );
+
+                    if (response.status === 401) {
+                        sessionExpired = true;
+                       
+
+                        line(
+                            "Your session has expired. Please sign in again.",
+                            "error"
+                        );
+
+                        return;
+                    }
+
+                    if (response.status === 403) {
+
+
+
+                        line(
+                            "Administrator permissions are required.",
+                            "error"
+                        );
+
+                        return;
+                    }
+
+                    if (!response.ok) {
+                        line(
+                            data.error ||
+                            `Command failed (HTTP ${response.status}).`,
+                            "error"
+                        );
+
+                       
+                        return;
+                    }
+
+                    // Preserve the command handler's output formatting.
+                    if (data.output) {
+                        line(data.output);
+                    }
+
+                   
+                } catch (error) {
+                  
+
+                    line(
+                        "Could not reach the Iceburg server.",
+                        "error"
+                    );
+                } finally {
+                    busy = false;
+                    runButton.disabled = false;
+
+                    if (!sessionExpired) {
+                        input.focus();
+                    }
+                }
+            });
+
+            // Receive messages pushed by any server-side Iceburg code.
+            const eventStream = new EventSource(
+                "/api/terminal/stream"
+            );
+
+            eventStream.onopen = () => {
+                
+            };
+
+            eventStream.onmessage = event => {
+                try {
+                    const message = JSON.parse(event.data);
+
+                    line(message, "server-message");
+                } catch {
+                    line(event.data, "server-message");
+                }
+            };
+
+            eventStream.onerror = () => {
+               
+            };
+
+            // Release the connection when this page is unloaded.
+            window.addEventListener("pagehide", () => {
+                eventStream.close();
+            });
+
+            input.focus();
+        })();
+    </script>
+</body>
+</html>

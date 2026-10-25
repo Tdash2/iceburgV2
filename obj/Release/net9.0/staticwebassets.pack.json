@@ -17,6 +17,10 @@
       "PackagePath": "staticwebassets\\IceburgTestGenerator.html"
     },
     {
+      "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\admin\\debug.html",
+      "PackagePath": "staticwebassets\\admin\\debug.html"
+    },
+    {
       "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\admin\\devices.html",
       "PackagePath": "staticwebassets\\admin\\devices.html"
     },

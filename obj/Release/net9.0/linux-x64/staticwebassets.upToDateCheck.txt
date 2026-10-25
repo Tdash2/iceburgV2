@@ -13,6 +13,7 @@ C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\favicon.ico
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\ajafs4.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\tally.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\index.html
+C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\admin\debug.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\BMD-SmartScope.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\tallygrid.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\depends\bootstrap.min.css
@@ -27,6 +28,7 @@ C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\x32.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\admin\devices.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\depends\jquery.min.js
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\test.html
+wwwroot\admin\debug.html
 wwwroot\admin\devices.html
 wwwroot\admin\users.html
 wwwroot\ajafs2.html
