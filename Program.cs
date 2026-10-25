@@ -27,6 +27,7 @@ using Iceburg.Interfaces.BMD.Panle40;
 using Iceburg.Monitor.BMD.smartscope;
 using Iceburg.Conversion.Magewell.Decoder;
 using Iceburg.Mixer.Aquastreams.Playback;
+using Iceburg.Conversion.Iceburg.Testgen;
 
 bool debug = false;
 
@@ -1330,6 +1331,12 @@ app.MapGet("/api/devices/type/", (HttpContext httpContext) =>
             name = "Aquastreams Playback",
             group = "Audio",
             page = "aquastreamsplayback.html"
+        },
+        ["12"] = new
+        {
+            name = "Iceburg Test Generator",
+            group = "Video",
+            page = "IceburgTestGenerator.html"
         }
     };
 
@@ -2133,8 +2140,7 @@ aquastreamsplayback.MapGet("/playback/{id}/toggleplayback", async (string id) =>
 
 });
 
-aquastreamsplayback.MapGet("/playback/{id}/play",
-    async (string id, HttpRequest request) =>
+aquastreamsplayback.MapGet("/playback/{id}/play", async (string id, HttpRequest request) =>
     {
         var aquastreamsplayback = new AquastreamsPlayback(id);
 
@@ -2144,8 +2150,7 @@ aquastreamsplayback.MapGet("/playback/{id}/play",
 
     });
 
-aquastreamsplayback.MapGet("/playback/{id}/setvol",
-    async (string id, HttpRequest request) =>
+aquastreamsplayback.MapGet("/playback/{id}/setvol",async (string id, HttpRequest request) =>
     {
         var aquastreamsplayback = new AquastreamsPlayback(id);
 
@@ -2154,6 +2159,83 @@ aquastreamsplayback.MapGet("/playback/{id}/setvol",
         await aquastreamsplayback.setvol(parameters);
 
     });
+
+
+var testgen = app.MapGroup("/api/testgen").RequireAuthorization();
+//Icebug Testgen
+testgen.MapGet("/iceburg/{id}/image", async (string id) =>
+{
+    var Iceburg = new Testgen(id);
+
+    byte[] image = await Iceburg.GetImage();
+
+    return Results.File(image, "image/jpeg");
+});
+
+testgen.MapGet("/iceburg/{id}/set_webui", async (string id) =>
+{
+    var Iceburg = new Testgen(id);
+
+    byte[] image = await Iceburg.GetImage();
+
+    return "";
+});
+
+testgen.MapGet("/iceburg/{id}/state", async (string id) =>
+{
+    var device = new Testgen(id);
+    return Results.Content(
+        await device.GetState(),
+        "application/json");
+});
+
+testgen.MapPost("/iceburg/{id}/update", async (
+    string id, HttpRequest request) =>
+{
+    var form = await request.ReadFormAsync();
+
+    var device = new Testgen(id);
+    await device.Update(
+        form["text1"].ToString(),
+        form["text2"].ToString());
+
+    return Results.Ok();
+});
+
+testgen.MapPost("/iceburg/{id}/mode", async (
+    string id, HttpRequest request) =>
+{
+    var form = await request.ReadFormAsync();
+
+    var device = new Testgen(id);
+    await device.SetMode(form["mode"].ToString());
+
+    return Results.Ok();
+});
+
+testgen.MapPost("/iceburg/{id}/set_webui", async (
+    string id, HttpRequest request) =>
+{
+    var form = await request.ReadFormAsync();
+
+    bool show = bool.TryParse(
+        form["show"].ToString(), out var value) && value;
+
+    var device = new Testgen(id);
+    await device.SetWebUi(show);
+
+    return Results.Ok();
+});
+
+testgen.MapPost("/iceburg/{id}/mute", async (string id) =>
+{
+    var device = new Testgen(id);
+    await device.ToggleMute();
+
+    return Results.Ok();
+});
+
+
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 Console.WriteLine(@"
  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀

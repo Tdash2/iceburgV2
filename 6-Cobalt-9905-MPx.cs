@@ -23,7 +23,8 @@ public sealed class OG9905MPx
         [1] = "Video 1 Processing",
         [2] = "Video 2 Processing",
         [3] = "Video 3 Processing",
-        [4] = "Video 4 Processing"
+        [4] = "Video 4 Processing",
+        [5] = "Input Select"
     };
 
     private static readonly Dictionary<int, string> AudioGroups = new()
@@ -40,7 +41,12 @@ public sealed class OG9905MPx
                 "ProcAmp",
                 "Red Channel",
                 "Green Channel",
-                "Blue Channel");
+                "Blue Channel",
+                "Path 1 Input",
+                "Path 2 Input",
+                "Path 3 Input",
+                "Path 4 Input"
+        );
 
     private static readonly Dictionary<int, Dictionary<int, string>> AudioSubgroups = BuildSubgroups(
         
@@ -48,7 +54,11 @@ public sealed class OG9905MPx
                 "Channel Map 1-4",
                 "Channel Map 5-8",
                 "Channel Map 9-12",
-                "Channel Map 13-16");
+                "Channel Map 13-16",
+                "Path 1 Input",
+                "Path 2 Input",
+                "Path 3 Input",
+                "Path 4 Input");
 
     private readonly string _id;
     private readonly Device _device;
@@ -377,6 +387,63 @@ public sealed class OG9905MPx
         Add("6159", OG9905ParameterType.Slider, 1, 5, true, min: 0.0, max: 200);
         Add("6162", OG9905ParameterType.Slider, 1, 5, true, min: 0.125, max: 8.0);
 
+        Add("5634", OG9905ParameterType.Dropdown, 5, 6, true, buttonOptions: new[]
+{
+            (0, "SDI IN 1","SDI IN 1"),
+            (1, "SDI IN 2","SDI IN 2"),
+            (2, "SDI IN 3", "SDI IN 3"),
+            (3, "SDI IN 4", "SDI IN 4"),
+            (4, "SDI IN 5", "SDI IN 5"),
+            (5, "SDI IN 6", "SDI IN 6"),
+            (20, "Fiber IN 1", "Fiber IN 1"),
+            (21, "Fiber IN 2", "Fiber IN 2"),
+            (22, "Fiber IN 3", "Fiber IN 3"   ),
+            (23, "Fiber IN 4", "Fiber IN 4"   ),
+
+         });
+        Add("5635", OG9905ParameterType.Dropdown, 5, 7, true, buttonOptions: new[]
+{
+            (0, "SDI IN 1","SDI IN 1"),
+            (1, "SDI IN 2","SDI IN 2"),
+            (2, "SDI IN 3", "SDI IN 3"),
+            (3, "SDI IN 4", "SDI IN 4"),
+            (4, "SDI IN 5", "SDI IN 5"),
+            (5, "SDI IN 6", "SDI IN 6"),
+            (20, "Fiber IN 1", "Fiber IN 1"),
+            (21, "Fiber IN 2", "Fiber IN 2"),
+            (22, "Fiber IN 3", "Fiber IN 3"   ),
+            (23, "Fiber IN 4", "Fiber IN 4"   ),
+
+         });
+        Add("5636", OG9905ParameterType.Dropdown, 5, 8, true, buttonOptions: new[]
+{
+            (0, "SDI IN 1","SDI IN 1"),
+            (1, "SDI IN 2","SDI IN 2"),
+            (2, "SDI IN 3", "SDI IN 3"),
+            (3, "SDI IN 4", "SDI IN 4"),
+            (4, "SDI IN 5", "SDI IN 5"),
+            (5, "SDI IN 6", "SDI IN 6"),
+            (20, "Fiber IN 1", "Fiber IN 1"),
+            (21, "Fiber IN 2", "Fiber IN 2"),
+            (22, "Fiber IN 3", "Fiber IN 3"   ),
+            (23, "Fiber IN 4", "Fiber IN 4"   ),
+
+         });
+        Add("5637", OG9905ParameterType.Dropdown, 5, 9, true, buttonOptions: new[]
+{
+            (0, "SDI IN 1","SDI IN 1"),
+            (1, "SDI IN 2","SDI IN 2"),
+            (2, "SDI IN 3", "SDI IN 3"),
+            (3, "SDI IN 4", "SDI IN 4"),
+            (4, "SDI IN 5", "SDI IN 5"),
+            (5, "SDI IN 6", "SDI IN 6"),
+            (20, "Fiber IN 1", "Fiber IN 1"),
+            (21, "Fiber IN 2", "Fiber IN 2"),
+            (22, "Fiber IN 3", "Fiber IN 3"   ),
+            (23, "Fiber IN 4", "Fiber IN 4"   ),
+
+         });
+
         return d;
     }
     private static bool IsVideoParameter(string paramId)
@@ -393,7 +460,7 @@ public sealed class OG9905MPx
         return paramId == "4864" || paramId == "6404" || paramId == "6018"  || paramId == "6147" || paramId == "6148" || paramId == "6149" || paramId == "6150" || paramId == "6146"||
 paramId == "6154" || paramId == "6157" || paramId == "6160" || paramId == "6153"
 || paramId == "6155" || paramId == "6158" || paramId == "6161"
-|| paramId == "6156" || paramId == "6159" || paramId == "6162";
+|| paramId == "6156" || paramId == "6159" || paramId == "6162" || paramId == "5634" || paramId == "5635" || paramId == "5636" || paramId == "5637";
     }
     private static List<(int Value, string Text)> BuildAudioRoutingOptions()
     {
@@ -457,20 +524,25 @@ paramId == "6154" || paramId == "6157" || paramId == "6160" || paramId == "6153"
     // SUBGROUPS
     // ============================================================
 
-    private static Dictionary<int, Dictionary<int, string>> BuildSubgroups(string s1, string s2, string s3, string s4, string s5)
+    private static Dictionary<int, Dictionary<int, string>> BuildSubgroups(string s1, string s2, string s3, string s4, string s5, string s6, string s7, string s8, string s9)
     {
         var result = new Dictionary<int, Dictionary<int, string>>();
 
-        for (int group = 1; group <= 4; group++)
+        for (int group = 0; group <= 8; group++)
         {
             result[group] = new Dictionary<int, string>
             {
-                [0] = "",
+                [0] = "Path Select",
                 [1] = s1,
                 [2] = s2,
                 [3] = s3,
                 [4] = s4,
-                [5] = s5
+                [5] = s5,
+                [6] = s6,
+                [7] = s7,
+                [8] = s8,
+                [9] = s9
+
             };
         }
         return result;
@@ -1259,6 +1331,38 @@ paramId == "6154" || paramId == "6157" || paramId == "6160" || paramId == "6153"
             return true;
         }
 
+
+
+
+
+        if (oid == 5634)
+        {
+            name =
+                $"Path 1 Input Sorce";
+
+            return true;
+        }
+        if (oid == 5635)
+        {
+            name =
+                $"Path 2 Input Sorce";
+
+            return true;
+        }
+        if (oid == 5636)
+        {
+            name =
+                $"Path 3 Input Sorce";
+
+            return true;
+        }
+        if (oid == 5637)
+        {
+            name =
+                $"Path 4 Input Sorce";
+
+            return true;
+        }
 
 
 

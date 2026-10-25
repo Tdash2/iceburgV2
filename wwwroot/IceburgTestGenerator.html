@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html>
+<title>Test Signal Generator Output 1</title>
+<link rel='stylesheet' href='/depends/bootstrap.min.css'>
+<script src='/depends/jquery.min.js'></script>
+<script src='/depends/bootstrap.min.js'></script>
+<style>
+    body {
+        background-color: #232323;
+        color: #FFF;
+    }
+</style></head>
+<body>
+    <script src="header.js"></script>
+
+    <body style="font-family:sans-serif;">
+
+
+        <div class='container'>
+            <div class='py-5 text-center'><h2>Test Signal Generator Output 1</h2></div>
+
+            <div class='form-group'>
+                <label>First Line Text</label>
+                <input class='form-control' id="text1" size="40">
+            </div>
+
+            <div class='form-group'>
+                <label>Second Line Text</h3></label>
+                <input class='form-control' id="text2" size="40">
+            </div>
+
+            <div class='form-group'>
+                <label>Output Format</label>
+                <select class='form-control' id="mode" onchange="setMode()">
+                    <option value="1080p">1920x1080 @ 59.94p</option>
+                    <option value="1080i">1080x1080 @ 59.94i</option>
+                    <option value="720p">1280x720 @ 59.94p</option>
+                </select>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input"
+                       type="checkbox"
+                       id="showweb"
+                       onchange="setWebUI()">
+
+                <label class="form-check-label">
+                    Show WEB UI address on output
+                </label>
+            </div>
+
+            <div class='form-group'>
+                <label>Preview</label>
+                <img id="prev" class="form-control" src="/preview.jpg?t=1779764323151" width="640" style="
+    height: 100%;
+">
+            </div>
+
+            <script>
+                const params = new URLSearchParams(window.location.search);
+                const id = params.get("id");
+
+
+
+                function setWebUI() {
+                    const fd = new FormData();
+                    fd.append("show", showweb.checked);
+
+                    fetch("/api/testgen/iceburg/" + id + "/set_webui", {
+                        method: "POST",
+                        body: fd
+                    });
+                }
+                function setMode() {
+                    const fd = new FormData();
+                    fd.append("mode", mode.value);
+
+                    fetch("/api/testgen/iceburg/" + id + "/mode", {
+                        method: "POST",
+                        body: fd
+                    });
+                }
+
+                async function refresh() {
+                    const r = await fetch("/api/testgen/iceburg/" + id + "/state");
+                    const s = await r.json();
+
+                    // only update if user is NOT typing
+                    if (document.activeElement !== text1) text1.value = s.text1;
+                    if (document.activeElement !== text2) text2.value = s.text2;
+
+                    showweb.checked = s.show_web_ui;
+                    mode.value = s.output_mode;
+                }
+
+
+
+                function update() {
+                    const fd = new FormData();
+                    fd.append("text1", text1.value);
+                    fd.append("text2", text2.value);
+                    fetch("/api/testgen/iceburg/" + id + "/update", { method: "POST", body: fd });
+
+                }
+
+                function updateSpeed() {
+                    const fd = new FormData();
+                    fd.append("speed", speed.value);
+                    fetch("/api/testgen/iceburg/" + id + "/speed", { method: "POST", body: fd });
+                }
+
+                function toggleMute() {
+                    fetch("/api/testgen/iceburg/" + id + "/mute", { method: "POST" });
+                }
+
+                text1.oninput = update;
+                text2.oninput = update;
+
+
+                setInterval(() => {
+                    document.getElementById("prev").src =
+                        "/api/testgen/iceburg/" + id + "/image?t=" + Date.now();
+                }, 300); // 5 fps preview
+
+
+                refresh();
+                setInterval(refresh, 1000);
+            </script>
+    </body>
+</html>

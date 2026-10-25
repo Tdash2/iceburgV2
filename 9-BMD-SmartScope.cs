@@ -108,7 +108,7 @@ public sealed class BMD_SmartScope
             using NetworkStream stream = client.GetStream();
             await stream.WriteAsync(Encoding.ASCII.GetBytes(command), cts.Token);
             await stream.FlushAsync(cts.Token);
-            await Task.Delay(100, cts.Token);
+            await Task.Delay(200, cts.Token);
             return Json(new { ok = true, cmd = command });
         }
         catch (Exception ex)
@@ -131,7 +131,7 @@ public sealed class BMD_SmartScope
             using NetworkStream stream = client.GetStream();
             await stream.WriteAsync(Encoding.ASCII.GetBytes(command), cts.Token);
             await stream.FlushAsync(cts.Token);
-            await Task.Delay(100, cts.Token);
+            await Task.Delay(200, cts.Token);
             return Json(new { ok = true, cmd = command });
         }
         catch (Exception ex)

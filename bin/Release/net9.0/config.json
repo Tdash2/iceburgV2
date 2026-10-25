@@ -110,7 +110,7 @@
       "Type": "7",
       "IpAddress": "47.225.212.98",
       "AudioSorce": "",
-      "LastSeen": "10/11/2026 9:27:34 PM",
+      "LastSeen": "10/25/2026 12:36:44 PM",
       "Username": "",
       "Password": ""
     },
@@ -149,6 +149,16 @@
       "Name": "aquastreams playback",
       "Type": "11",
       "IpAddress": "10.7.0.56",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "13c5205f-5aaf-4cf0-bd3b-c8374be14c94",
+      "Name": "Testget",
+      "Type": "12",
+      "IpAddress": "10.176.71.55:8100",
       "AudioSorce": "",
       "LastSeen": "",
       "Username": "",
