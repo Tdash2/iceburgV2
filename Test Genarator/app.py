@@ -67,6 +67,7 @@ frame_read = None
 DEFAULT_STATE = {
     "text1": "Test Signal Generator",
     "text2": "Version 2.0",
+    "timezone": "CST",
     "muted": False,
     "box_x": 100,
     "box_y": 600,
@@ -352,7 +353,7 @@ def graphics_loop():
         draw_centered_box(
             draw,
             200,
-            time.strftime("%H:%M:%S"),
+            time.strftime("%H:%M:%S")+ " "+ box["timezone"],
             font_big,
             WIDTH,
             10
@@ -477,6 +478,7 @@ def update():
     with state_lock:
         state["text1"] = request.form.get("text1", "")
         state["text2"] = request.form.get("text2", "")
+        state["timezone"] = request.form.get("timezone", "")
         save_state(state)
     return ("", 204)
 
@@ -544,6 +546,9 @@ HTML = """
 
 <div class='container'><div class='py-5 text-center'><h2>Test Signal Generator """+ name +"""</h2></div>
 
+<div class='form-group'><label>Timezone</label>
+<input class='form-control' id="timezone" size="40"></div>
+
 <div class='form-group'><label>First Line Text</label>
 <input class='form-control' id="text1" size="40"></div>
 
@@ -601,6 +606,7 @@ async function refresh(){
     // only update if user is NOT typing
     if (document.activeElement !== text1) text1.value = s.text1;
     if (document.activeElement !== text2) text2.value = s.text2;
+    if (document.activeElement !== timezone) timezone.value = s.timezone;
 
     showweb.checked = s.show_web_ui;
     mode.value = s.output_mode;
@@ -612,6 +618,7 @@ function update(){
     const fd = new FormData();
     fd.append("text1", text1.value);
     fd.append("text2", text2.value);
+    fd.append("timezone", timezone.value);
     fetch("/update",{method:"POST",body:fd});
     
 }
@@ -628,7 +635,7 @@ function toggleMute(){
 
 text1.oninput = update;
 text2.oninput = update;
-
+timezone.oninput = update;
 
 setInterval(() => {
     document.getElementById("prev").src =

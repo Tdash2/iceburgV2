@@ -28,6 +28,7 @@ using Iceburg.Monitor.BMD.smartscope;
 using Iceburg.Conversion.Magewell.Decoder;
 using Iceburg.Mixer.Aquastreams.Playback;
 using Iceburg.Conversion.Iceburg.Testgen;
+using Microsoft.AspNetCore.Http.Features;
 
 bool debug = false;
 
@@ -74,7 +75,17 @@ builder.Services.AddHttpsRedirection(options =>
     options.HttpsPort = 443;
 });
 
+const long maxUploadSize = 25L * 1024 * 1024 * 1024; // 25 GiB
 
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = maxUploadSize;
+});
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = maxUploadSize;
+});
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
     {
@@ -1099,7 +1110,7 @@ app.MapGet("/api/nav", (HttpContext httpContext) =>
                     },
                     new NavItem
                     {
-                        Label = "Shell",
+                        Label = "Server Shell",
                         Url = "/admin/debug.html"
                     }
                 }
@@ -1354,6 +1365,12 @@ app.MapGet("/api/devices/type/", (HttpContext httpContext) =>
             name = "Iceburg Test Generator",
             group = "Video",
             page = "IceburgTestGenerator.html"
+        },
+        ["13"] = new
+        {
+            name = "Black Magic Hyperdeck",
+            group = "Video",
+            page = "hyperdeck.html"
         }
     };
 
@@ -2137,7 +2154,7 @@ var aquastreamsplayback = app.MapGroup("/api/aquastreams").RequireAuthorization(
 
 aquastreamsplayback.MapGet("/playback/{id}", async (string id) =>
 {
-    Console.WriteLine("Playback endpoint reached!");
+    
 
     var aquastreamsplayback = new AquastreamsPlayback(id);
     return await aquastreamsplayback.GetButtons();
@@ -2214,7 +2231,8 @@ testgen.MapPost("/iceburg/{id}/update", async (
     var device = new Testgen(id);
     await device.Update(
         form["text1"].ToString(),
-        form["text2"].ToString());
+        form["text2"].ToString(),
+        form["timezone"].ToString());
 
     return Results.Ok();
 });
@@ -2252,6 +2270,14 @@ testgen.MapPost("/iceburg/{id}/mute", async (string id) =>
     return Results.Ok();
 });
 
+
+//hyperdeck
+
+
+var playback = app.MapGroup("/api/playback")
+    .RequireAuthorization();
+
+playback.MapHyperdeckEndpoints();
 
 app.MapGet("/api/terminal/stream", async (
     HttpContext context) =>

@@ -21,6 +21,11 @@
             <div class='py-5 text-center'><h2>Test Signal Generator Output 1</h2></div>
 
             <div class='form-group'>
+                <label>Timezone</label>
+                <input class='form-control' id="timezone" size="40">
+            </div>
+
+            <div class='form-group'>
                 <label>First Line Text</label>
                 <input class='form-control' id="text1" size="40">
             </div>
@@ -89,6 +94,7 @@
                     // only update if user is NOT typing
                     if (document.activeElement !== text1) text1.value = s.text1;
                     if (document.activeElement !== text2) text2.value = s.text2;
+                    if (document.activeElement !== timezone) timezone.value = s.timezone;
 
                     showweb.checked = s.show_web_ui;
                     mode.value = s.output_mode;
@@ -100,6 +106,7 @@
                     const fd = new FormData();
                     fd.append("text1", text1.value);
                     fd.append("text2", text2.value);
+                    fd.append("timezone", timezone.value);
                     fetch("/api/testgen/iceburg/" + id + "/update", { method: "POST", body: fd });
 
                 }
@@ -114,8 +121,10 @@
                     fetch("/api/testgen/iceburg/" + id + "/mute", { method: "POST" });
                 }
 
+
                 text1.oninput = update;
                 text2.oninput = update;
+                timezone.oninput = update;
 
 
                 setInterval(() => {
@@ -127,5 +136,5 @@
                 refresh();
                 setInterval(refresh, 1000);
             </script>
-    </body>
+</body>
 </html>

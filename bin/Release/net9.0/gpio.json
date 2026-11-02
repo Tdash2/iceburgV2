@@ -499,7 +499,7 @@
           "Port": 5,
           "Name": "Input 5",
           "Nickname": "Input 5",
-          "Status": false
+          "Status": true
         },
         {
           "InputId": "df3450c8d1f541faab4a346bf3a5fc2a",
@@ -534,7 +534,7 @@
       "DeviceId": "bf7769e0-ca72-4c6d-8c18-d11afe5a8d15",
       "Name": "hex-3 40x40",
       "Nickname": "hex-3 40x40",
-      "IpAddress": "10.176.73.40",
+      "IpAddress": "10.176.72.40",
       "Inputs": [],
       "Outputs": [],
       "Routes": [],

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "m0YeSuScGbgqCcS/SoPnUc+96tdNrF85xZQFwUu6pHY=",
+  "Hash": "iZqkS9lemuqXObQUeLdLmRG2QPYkFVkj/eUGCS/oA/s=",
   "Source": "IceburgV2",
   "BasePath": "_content/IceburgV2",
   "Mode": "Default",
@@ -456,6 +456,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\admin\\users.html"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\nhmwjyi2ju-t6otdrrbqb.gz",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "hyperdeck#[.{fingerprint=t6otdrrbqb}]?.html.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\hyperdeck.html",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "t4cvto2m0h",
+      "Integrity": "LYw4eJvOROVpTQ6L3V55nvz9WV2a1HAonuQJJygBAjc=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\hyperdeck.html"
     },
     {
       "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\okobdvbsjo-ru0oetttc5.gz",
@@ -939,6 +960,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\admin\\users.html"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\publish\\nhmwjyi2ju-t6otdrrbqb.br",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\publish\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "hyperdeck#[.{fingerprint=t6otdrrbqb}]?.html.br",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\hyperdeck.html",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "br",
+      "Fingerprint": "wpvlbvrmw7",
+      "Integrity": "1IoPaOj89BY9TyBoCYGP+kHw7uGH5VeThoBanVUmW/A=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\hyperdeck.html"
     },
     {
       "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\publish\\okobdvbsjo-ru0oetttc5.br",
@@ -1632,6 +1674,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\header.js"
+    },
+    {
+      "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\hyperdeck.html",
+      "SourceId": "IceburgV2",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\",
+      "BasePath": "_content/IceburgV2",
+      "RelativePath": "hyperdeck#[.{fingerprint}]?.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "t6otdrrbqb",
+      "Integrity": "tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\hyperdeck.html"
     },
     {
       "Identity": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\Iceburg Log.png",
@@ -10706,6 +10769,520 @@
         {
           "Name": "integrity",
           "Value": "sha256-b2eWuzYFoydCMrcIFeXbkwA6dOpKNuXV0FZg3eR3yoU="
+        }
+      ]
+    },
+    {
+      "Route": "hyperdeck.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\nhmwjyi2ju-t6otdrrbqb.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000169894665"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5885"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"LYw4eJvOROVpTQ6L3V55nvz9WV2a1HAonuQJJygBAjc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 Oct 2026 21:00:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08="
+        }
+      ]
+    },
+    {
+      "Route": "hyperdeck.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\publish\\nhmwjyi2ju-t6otdrrbqb.br",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "br",
+          "Quality": "0.000202061022"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4948"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"1IoPaOj89BY9TyBoCYGP+kHw7uGH5VeThoBanVUmW/A=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 Oct 2026 21:00:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08="
+        }
+      ]
+    },
+    {
+      "Route": "hyperdeck.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\hyperdeck.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "24722"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 Oct 2026 21:00:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08="
+        }
+      ]
+    },
+    {
+      "Route": "hyperdeck.html.br",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\publish\\nhmwjyi2ju-t6otdrrbqb.br",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4948"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"1IoPaOj89BY9TyBoCYGP+kHw7uGH5VeThoBanVUmW/A=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 Oct 2026 21:00:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-1IoPaOj89BY9TyBoCYGP+kHw7uGH5VeThoBanVUmW/A="
+        }
+      ]
+    },
+    {
+      "Route": "hyperdeck.html.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\nhmwjyi2ju-t6otdrrbqb.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5885"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"LYw4eJvOROVpTQ6L3V55nvz9WV2a1HAonuQJJygBAjc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 Oct 2026 21:00:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-LYw4eJvOROVpTQ6L3V55nvz9WV2a1HAonuQJJygBAjc="
+        }
+      ]
+    },
+    {
+      "Route": "hyperdeck.t6otdrrbqb.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\nhmwjyi2ju-t6otdrrbqb.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000169894665"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5885"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"LYw4eJvOROVpTQ6L3V55nvz9WV2a1HAonuQJJygBAjc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 Oct 2026 21:00:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "t6otdrrbqb"
+        },
+        {
+          "Name": "label",
+          "Value": "hyperdeck.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08="
+        }
+      ]
+    },
+    {
+      "Route": "hyperdeck.t6otdrrbqb.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\publish\\nhmwjyi2ju-t6otdrrbqb.br",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "br",
+          "Quality": "0.000202061022"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4948"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"1IoPaOj89BY9TyBoCYGP+kHw7uGH5VeThoBanVUmW/A=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 Oct 2026 21:00:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "t6otdrrbqb"
+        },
+        {
+          "Name": "label",
+          "Value": "hyperdeck.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08="
+        }
+      ]
+    },
+    {
+      "Route": "hyperdeck.t6otdrrbqb.html",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\hyperdeck.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "24722"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 Oct 2026 21:00:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "t6otdrrbqb"
+        },
+        {
+          "Name": "label",
+          "Value": "hyperdeck.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08="
+        }
+      ]
+    },
+    {
+      "Route": "hyperdeck.t6otdrrbqb.html.br",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\publish\\nhmwjyi2ju-t6otdrrbqb.br",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4948"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"1IoPaOj89BY9TyBoCYGP+kHw7uGH5VeThoBanVUmW/A=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 Oct 2026 21:00:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "br"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "t6otdrrbqb"
+        },
+        {
+          "Name": "label",
+          "Value": "hyperdeck.html.br"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-1IoPaOj89BY9TyBoCYGP+kHw7uGH5VeThoBanVUmW/A="
+        }
+      ]
+    },
+    {
+      "Route": "hyperdeck.t6otdrrbqb.html.gz",
+      "AssetFile": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\obj\\Release\\net9.0\\linux-x64\\compressed\\nhmwjyi2ju-t6otdrrbqb.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5885"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"LYw4eJvOROVpTQ6L3V55nvz9WV2a1HAonuQJJygBAjc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 Oct 2026 21:00:45 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "t6otdrrbqb"
+        },
+        {
+          "Name": "label",
+          "Value": "hyperdeck.html.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-LYw4eJvOROVpTQ6L3V55nvz9WV2a1HAonuQJJygBAjc="
         }
       ]
     },

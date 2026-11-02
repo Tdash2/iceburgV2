@@ -69,11 +69,12 @@ public sealed class Testgen
         return await response.Content.ReadAsStringAsync();
     }
 
-    public async Task Update(string text1, string text2)
+    public async Task Update(string text1, string text2 , string timezone)
     {
         using var content = new MultipartFormDataContent();
         content.Add(new StringContent(text1), "text1");
         content.Add(new StringContent(text2), "text2");
+        content.Add(new StringContent(timezone), "timezone");
 
         using var response = await _http.PostAsync(
             $"http://{_device.IpAddress}/update", content);
@@ -134,7 +135,7 @@ public sealed class Testgen
             {
                 throw new InvalidOperationException("Invalid JSON response from testgen.", ex);
             }
-            Console.WriteLine(doc.ToString);
+            
             // Check that the response contains a valid "modes" array
             if (Property(doc.RootElement, "text1") is JsonElement arr &&
                 arr.ValueKind == JsonValueKind.String &&

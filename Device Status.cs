@@ -12,6 +12,8 @@ using Iceburg.Monitor.BMD.smartscope;
 using Iceburg.Conversion.Magewell.Decoder;
 using Iceburg.Mixer.Aquastreams.Playback;
 using Iceburg.Conversion.Iceburg.Testgen;
+using Iceburg.Router.BMD;
+using System.Text.RegularExpressions;
 
 namespace Iceburg.Devices.Status;
 public class DeviceStatus
@@ -394,6 +396,26 @@ public class DeviceStatus
             {
                 return "error";
             }
+        }
+        if (device.Type == "13")
+        {
+
+            Device? device2 = Database.Database.GetDevice(id);
+            var hyperdeck = new Hyperdeck(device2.IpAddress);
+            bool status = await hyperdeck.status();
+            if (status)
+            {
+                return "connected";
+
+            }
+            else
+            {
+                return "error";
+            }
+
+               
+           
+
         }
         else
         {

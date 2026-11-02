@@ -77,6 +77,10 @@
       "PackagePath": "staticwebassets\\header.js"
     },
     {
+      "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\hyperdeck.html",
+      "PackagePath": "staticwebassets\\hyperdeck.html"
+    },
+    {
       "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\index.html",
       "PackagePath": "staticwebassets\\index.html"
     },

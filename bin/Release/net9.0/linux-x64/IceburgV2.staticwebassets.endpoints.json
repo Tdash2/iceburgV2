@@ -5449,6 +5449,304 @@
       ]
     },
     {
+      "Route": "hyperdeck.html",
+      "AssetFile": "hyperdeck.html.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000169894665"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5885"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"LYw4eJvOROVpTQ6L3V55nvz9WV2a1HAonuQJJygBAjc=\""
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 Oct 2026 21:00:45 GMT"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08="
+        }
+      ]
+    },
+    {
+      "Route": "hyperdeck.html",
+      "AssetFile": "hyperdeck.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "24722"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 Oct 2026 21:00:45 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08="
+        }
+      ]
+    },
+    {
+      "Route": "hyperdeck.html.gz",
+      "AssetFile": "hyperdeck.html.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5885"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"LYw4eJvOROVpTQ6L3V55nvz9WV2a1HAonuQJJygBAjc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 Oct 2026 21:00:45 GMT"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-LYw4eJvOROVpTQ6L3V55nvz9WV2a1HAonuQJJygBAjc="
+        }
+      ]
+    },
+    {
+      "Route": "hyperdeck.t6otdrrbqb.html",
+      "AssetFile": "hyperdeck.html.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000169894665"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5885"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"LYw4eJvOROVpTQ6L3V55nvz9WV2a1HAonuQJJygBAjc=\""
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 Oct 2026 21:00:45 GMT"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "t6otdrrbqb"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08="
+        },
+        {
+          "Name": "label",
+          "Value": "hyperdeck.html"
+        }
+      ]
+    },
+    {
+      "Route": "hyperdeck.t6otdrrbqb.html",
+      "AssetFile": "hyperdeck.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "24722"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 Oct 2026 21:00:45 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "t6otdrrbqb"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-tQjbwxdTxPVMy2UWtt+KPN4+6siyEqp/6HwB4WyyV08="
+        },
+        {
+          "Name": "label",
+          "Value": "hyperdeck.html"
+        }
+      ]
+    },
+    {
+      "Route": "hyperdeck.t6otdrrbqb.html.gz",
+      "AssetFile": "hyperdeck.html.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5885"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"LYw4eJvOROVpTQ6L3V55nvz9WV2a1HAonuQJJygBAjc=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 Oct 2026 21:00:45 GMT"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "t6otdrrbqb"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-LYw4eJvOROVpTQ6L3V55nvz9WV2a1HAonuQJJygBAjc="
+        },
+        {
+          "Name": "label",
+          "Value": "hyperdeck.html.gz"
+        }
+      ]
+    },
+    {
       "Route": "index.aftefe1v4o.html",
       "AssetFile": "index.html.gz",
       "Selectors": [
