@@ -18,10 +18,12 @@ C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\BMD-SmartScope.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\tallygrid.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\depends\bootstrap.min.css
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\dashboard.html
+C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\admin\routerpanels.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\admin\users.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\hyperdeck.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\favacon.ico
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\login.html
+C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\panle.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\bmd40panle.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\magewell-decoder.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\uploadross\index.html
@@ -31,6 +33,7 @@ C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\depends\jquery.min.js
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\test.html
 wwwroot\admin\debug.html
 wwwroot\admin\devices.html
+wwwroot\admin\routerpanels.html
 wwwroot\admin\users.html
 wwwroot\ajafs2.html
 wwwroot\ajafs4.html
@@ -53,6 +56,7 @@ wwwroot\index.html
 wwwroot\login.html
 wwwroot\magewell-decoder.html
 wwwroot\og9905.html
+wwwroot\panle.html
 wwwroot\routertally.html
 wwwroot\servertoservertally.html
 wwwroot\tally.html

@@ -185,7 +185,7 @@ public class BMD_Router
             DateTime lastData = DateTime.UtcNow;
 
             // Read the initial Videohub status dump
-            while ((DateTime.UtcNow - start).TotalMilliseconds < 2500)
+            while ((DateTime.UtcNow - start).TotalMilliseconds < 500)
             {
                 if (stream.DataAvailable)
                 {

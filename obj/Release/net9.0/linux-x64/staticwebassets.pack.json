@@ -25,6 +25,10 @@
       "PackagePath": "staticwebassets\\admin\\devices.html"
     },
     {
+      "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\admin\\routerpanels.html",
+      "PackagePath": "staticwebassets\\admin\\routerpanels.html"
+    },
+    {
       "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\admin\\users.html",
       "PackagePath": "staticwebassets\\admin\\users.html"
     },
@@ -95,6 +99,10 @@
     {
       "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\og9905.html",
       "PackagePath": "staticwebassets\\og9905.html"
+    },
+    {
+      "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\panle.html",
+      "PackagePath": "staticwebassets\\panle.html"
     },
     {
       "Id": "C:\\Users\\tj\\Desktop\\Github Repos\\IceburgV2\\wwwroot\\routertally.html",

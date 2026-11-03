@@ -4,7 +4,7 @@
       "DeviceId": "0",
       "Name": "Tally 1",
       "Nickname": "Tally1",
-      "IpAddress": "10.8.0.214",
+      "IpAddress": "10.176.71.40",
       "Inputs": [
         {
           "InputId": "1fee65dd81644044ace5b41a3faf6a49",
@@ -86,343 +86,7 @@
           "Status": false
         }
       ],
-      "Routes": [
-        {
-          "SourceDeviceId": "6e95ed60-30b8-4d6e-a0fe-49f36ae8411b",
-          "OutputId": "ca87e34e30f54649ba8a66376487b9c1",
-          "InputIds": [
-            "1492af3e0a7143eebb64f97f75dffee0"
-          ]
-        },
-        {
-          "SourceDeviceId": "6e95ed60-30b8-4d6e-a0fe-49f36ae8411b",
-          "OutputId": "e7cf439c32c143afa2ebde60c793f3b9",
-          "InputIds": [
-            "199e64dce43a44f28aba8c238ee259b4"
-          ]
-        },
-        {
-          "SourceDeviceId": "6e95ed60-30b8-4d6e-a0fe-49f36ae8411b",
-          "OutputId": "8286b0fe19ea4e07b2b22d28b0f5875c",
-          "InputIds": [
-            "fe2f55146e0f484c918ea69c0c943057"
-          ]
-        },
-        {
-          "SourceDeviceId": "6e95ed60-30b8-4d6e-a0fe-49f36ae8411b",
-          "OutputId": "d886b85df6e24ce8802503ba7d3e5beb",
-          "InputIds": [
-            "7d24b54a4504400aa23e1f1dfe5b892e"
-          ]
-        },
-        {
-          "SourceDeviceId": "6e95ed60-30b8-4d6e-a0fe-49f36ae8411b",
-          "OutputId": "a1c2f97d9d56403d9bcb4bb43137dce5",
-          "InputIds": [
-            "c9f537125b934885809a6636795b1f3d"
-          ]
-        },
-        {
-          "SourceDeviceId": "6e95ed60-30b8-4d6e-a0fe-49f36ae8411b",
-          "OutputId": "7bc51c58401c453e97a50e4b78578d91",
-          "InputIds": [
-            "088f8c67bc244d49a6b2d9ca2e793bf6"
-          ]
-        },
-        {
-          "SourceDeviceId": "6e95ed60-30b8-4d6e-a0fe-49f36ae8411b",
-          "OutputId": "97701426db7f43efa0d85b73eafd6782",
-          "InputIds": [
-            "a417c6d7bfc0441da4bda0b68d99bed1"
-          ]
-        },
-        {
-          "SourceDeviceId": "6e95ed60-30b8-4d6e-a0fe-49f36ae8411b",
-          "OutputId": "23da1d7120cf4a3596ecc7a9c81d62d1",
-          "InputIds": [
-            "c9480dfbbd834985b5b8af54a5cfb139"
-          ]
-        }
-      ],
-      "RemoteTallySource": null
-    },
-    {
-      "DeviceId": "6e95ed60-30b8-4d6e-a0fe-49f36ae8411b",
-      "Name": "Black Maigc 16x16 Router",
-      "Nickname": "16x16",
-      "IpAddress": "10.7.0.224",
-      "Inputs": [
-        {
-          "InputId": "c9f537125b934885809a6636795b1f3d",
-          "Port": 1,
-          "Name": "Router Out 1",
-          "Nickname": "Input 1",
-          "Status": false
-        },
-        {
-          "InputId": "1492af3e0a7143eebb64f97f75dffee0",
-          "Port": 2,
-          "Name": "Router Out 2",
-          "Nickname": "Input 2",
-          "Status": false
-        },
-        {
-          "InputId": "199e64dce43a44f28aba8c238ee259b4",
-          "Port": 3,
-          "Name": "Router Out 3",
-          "Nickname": "Input 3",
-          "Status": false
-        },
-        {
-          "InputId": "fe2f55146e0f484c918ea69c0c943057",
-          "Port": 4,
-          "Name": "Router Out 4",
-          "Nickname": "Input 4",
-          "Status": false
-        },
-        {
-          "InputId": "7d24b54a4504400aa23e1f1dfe5b892e",
-          "Port": 5,
-          "Name": "Router Out 5",
-          "Nickname": "Input 5",
-          "Status": false
-        },
-        {
-          "InputId": "088f8c67bc244d49a6b2d9ca2e793bf6",
-          "Port": 6,
-          "Name": "Router Out 6",
-          "Nickname": "Input 6",
-          "Status": false
-        },
-        {
-          "InputId": "a417c6d7bfc0441da4bda0b68d99bed1",
-          "Port": 7,
-          "Name": "Router Out 7",
-          "Nickname": "Input 7",
-          "Status": false
-        },
-        {
-          "InputId": "c9480dfbbd834985b5b8af54a5cfb139",
-          "Port": 8,
-          "Name": "Router Out 8",
-          "Nickname": "Input 8",
-          "Status": false
-        },
-        {
-          "InputId": "3cee0d1453da471980e31a49e17a889b",
-          "Port": 9,
-          "Name": "Router Out 9",
-          "Nickname": "Input 9",
-          "Status": false
-        },
-        {
-          "InputId": "79e9be7160f84954983571bd6bb4e90c",
-          "Port": 10,
-          "Name": "Router Out 10",
-          "Nickname": "Input 10",
-          "Status": false
-        },
-        {
-          "InputId": "84e033d42a474d959dacec90618f43c1",
-          "Port": 11,
-          "Name": "Router Out 11",
-          "Nickname": "Input 11",
-          "Status": false
-        },
-        {
-          "InputId": "057a69a101604a32ba095ddbfde66c74",
-          "Port": 12,
-          "Name": "Router Out 12",
-          "Nickname": "Input 12",
-          "Status": false
-        },
-        {
-          "InputId": "f1981561cb1c45b6a40f68327e342d90",
-          "Port": 13,
-          "Name": "Router Out 13",
-          "Nickname": "Input 13",
-          "Status": false
-        },
-        {
-          "InputId": "896ae9f6597d4045a296f183f32d4789",
-          "Port": 14,
-          "Name": "Router Out 14",
-          "Nickname": "Input 14",
-          "Status": false
-        },
-        {
-          "InputId": "6943f5ead9b447229b7a172740d36735",
-          "Port": 15,
-          "Name": "Router Out 15",
-          "Nickname": "Input 15",
-          "Status": false
-        },
-        {
-          "InputId": "a766e4e8351246e59bb7879f7e8d6427",
-          "Port": 16,
-          "Name": "Router Out 16",
-          "Nickname": "Input 16",
-          "Status": false
-        }
-      ],
-      "Outputs": [
-        {
-          "OutputId": "33d323b059d4443abb27db0f445f7e54",
-          "Port": 1,
-          "Name": "Router in 1",
-          "Nickname": "Output 1",
-          "Status": false
-        },
-        {
-          "OutputId": "cda1c873785342ce842ac572b51d96c9",
-          "Port": 2,
-          "Name": "Router in 2",
-          "Nickname": "Output 2",
-          "Status": false
-        },
-        {
-          "OutputId": "e9fc63094f794d629a8a64a46c57f690",
-          "Port": 3,
-          "Name": "Router in 3",
-          "Nickname": "Output 3",
-          "Status": false
-        },
-        {
-          "OutputId": "26d052bcd3b846d0a9886b61509cc643",
-          "Port": 4,
-          "Name": "Router in 4",
-          "Nickname": "Output 4",
-          "Status": false
-        },
-        {
-          "OutputId": "45ce16177d664c35906594c3b6e6ad4d",
-          "Port": 5,
-          "Name": "Router in 5",
-          "Nickname": "Output 5",
-          "Status": false
-        },
-        {
-          "OutputId": "a019cd512eef41f0a7fbdd6e51b9552b",
-          "Port": 6,
-          "Name": "Router in 6",
-          "Nickname": "Output 6",
-          "Status": false
-        },
-        {
-          "OutputId": "6d9dc5db322940548f4deceb16570785",
-          "Port": 7,
-          "Name": "Router in 7",
-          "Nickname": "Output 7",
-          "Status": false
-        },
-        {
-          "OutputId": "2a429b51f3ec40b29880d3825bb7f271",
-          "Port": 8,
-          "Name": "Router in 8",
-          "Nickname": "Output 8",
-          "Status": false
-        },
-        {
-          "OutputId": "16ee56d445794ed191474e6205223449",
-          "Port": 9,
-          "Name": "Router in 9",
-          "Nickname": "Output 9",
-          "Status": false
-        },
-        {
-          "OutputId": "ccf61fa82e5b43fbb70e314ad73bb5fb",
-          "Port": 10,
-          "Name": "Router in 10",
-          "Nickname": "Output 10",
-          "Status": false
-        },
-        {
-          "OutputId": "9103c9ce8cf64bc6b3e2d92437638914",
-          "Port": 11,
-          "Name": "Router in 11",
-          "Nickname": "Output 11",
-          "Status": false
-        },
-        {
-          "OutputId": "a83a310c515f4627bdabf9f655db0dd8",
-          "Port": 12,
-          "Name": "Router in 12",
-          "Nickname": "Output 12",
-          "Status": false
-        },
-        {
-          "OutputId": "4c494a80437d497b8d86ec550668a4ef",
-          "Port": 13,
-          "Name": "Router in 13",
-          "Nickname": "Output 13",
-          "Status": false
-        },
-        {
-          "OutputId": "55ae52596e714e14b42c336a52847d9a",
-          "Port": 14,
-          "Name": "Router in 14",
-          "Nickname": "Output 14",
-          "Status": false
-        },
-        {
-          "OutputId": "cf6c53c7183c414788fd2745202be0c2",
-          "Port": 15,
-          "Name": "Router in 15",
-          "Nickname": "Output 15",
-          "Status": false
-        },
-        {
-          "OutputId": "352d27944a75499db88c8247fbd25b0d",
-          "Port": 16,
-          "Name": "Router in 16",
-          "Nickname": "Output 16",
-          "Status": false
-        }
-      ],
-      "Routes": [
-        {
-          "SourceDeviceId": "63b83fda-e2da-4cf8-ae7d-9a40d919ce3f",
-          "OutputId": "45ce16177d664c35906594c3b6e6ad4d",
-          "InputIds": [
-            "efd756ade2cf462a8956ee17eb3df170"
-          ]
-        },
-        {
-          "SourceDeviceId": "63b83fda-e2da-4cf8-ae7d-9a40d919ce3f",
-          "OutputId": "6d9dc5db322940548f4deceb16570785",
-          "InputIds": [
-            "efd756ade2cf462a8956ee17eb3df170"
-          ]
-        },
-        {
-          "SourceDeviceId": "63b83fda-e2da-4cf8-ae7d-9a40d919ce3f",
-          "OutputId": "16ee56d445794ed191474e6205223449",
-          "InputIds": [
-            "efd756ade2cf462a8956ee17eb3df170"
-          ]
-        },
-        {
-          "SourceDeviceId": "63b83fda-e2da-4cf8-ae7d-9a40d919ce3f",
-          "OutputId": "e9fc63094f794d629a8a64a46c57f690",
-          "InputIds": [
-            "efd756ade2cf462a8956ee17eb3df170"
-          ]
-        },
-        {
-          "SourceDeviceId": "63b83fda-e2da-4cf8-ae7d-9a40d919ce3f",
-          "OutputId": "33d323b059d4443abb27db0f445f7e54",
-          "InputIds": [
-            "efd756ade2cf462a8956ee17eb3df170"
-          ]
-        },
-        {
-          "SourceDeviceId": "0",
-          "OutputId": "33d323b059d4443abb27db0f445f7e54",
-          "InputIds": [
-            "1fee65dd81644044ace5b41a3faf6a49"
-          ]
-        }
-      ],
+      "Routes": [],
       "RemoteTallySource": null
     },
     {
@@ -446,16 +110,6 @@
           "Status": false
         }
       ],
-      "Outputs": [],
-      "Routes": [],
-      "RemoteTallySource": null
-    },
-    {
-      "DeviceId": "8ce27400-51c1-4780-bd5b-9231f2cefcd5",
-      "Name": "Test device",
-      "Nickname": "Test device",
-      "IpAddress": "10.8.0.214",
-      "Inputs": [],
       "Outputs": [],
       "Routes": [],
       "RemoteTallySource": null
@@ -499,7 +153,7 @@
           "Port": 5,
           "Name": "Input 5",
           "Nickname": "Input 5",
-          "Status": true
+          "Status": false
         },
         {
           "InputId": "df3450c8d1f541faab4a346bf3a5fc2a",
@@ -531,16 +185,6 @@
       }
     },
     {
-      "DeviceId": "bf7769e0-ca72-4c6d-8c18-d11afe5a8d15",
-      "Name": "hex-3 40x40",
-      "Nickname": "hex-3 40x40",
-      "IpAddress": "10.176.72.40",
-      "Inputs": [],
-      "Outputs": [],
-      "Routes": [],
-      "RemoteTallySource": null
-    },
-    {
       "DeviceId": "5ba6d3f0-4f29-411f-83af-4353bf2f9485",
       "Name": "Smart Scope",
       "Nickname": "Smart Scope",
@@ -562,6 +206,26 @@
           "Status": false
         }
       ],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "9d5c2af8-f4ec-4b40-b3df-114897ee9d53",
+      "Name": "hex-1 router",
+      "Nickname": "hex-1 router",
+      "IpAddress": "10.176.71.40",
+      "Inputs": [],
+      "Outputs": [],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "8c59a117-867e-4da3-b735-1b215f7e1bc1",
+      "Name": "desk router",
+      "Nickname": "desk router",
+      "IpAddress": "192.168.127.18",
+      "Inputs": [],
+      "Outputs": [],
       "Routes": [],
       "RemoteTallySource": null
     }

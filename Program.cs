@@ -33,7 +33,7 @@ using Microsoft.AspNetCore.Http.Features;
 bool debug = false;
 
 
-
+var routerPanelsFile = Path.Combine(AppContext.BaseDirectory, "routerpanles.json");
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.AddFilter("Microsoft.AspNetCore.Hosting.Diagnostics", LogLevel.Warning);
 builder.Logging.AddFilter("Microsoft", LogLevel.Warning);
@@ -88,117 +88,117 @@ builder.WebHost.ConfigureKestrel(options =>
 });
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+{
+    options.Cookie.Name = "IceburgAuthv2";
+
+    // JavaScript cannot read the authentication cookie.
+    options.Cookie.HttpOnly = true;
+
+    // Helps protect against CSRF.
+    options.Cookie.SameSite = SameSiteMode.Strict;
+
+    // Automatically uses Secure when HTTPS is used.
+    options.Cookie.SecurePolicy =
+        CookieSecurePolicy.SameAsRequest;
+
+    // Fixed 30 minute session.
+    options.ExpireTimeSpan =
+        TimeSpan.FromMinutes(120);
+
+    options.SlidingExpiration = false;
+
+    options.LoginPath = "/login.html";
+
+    options.AccessDeniedPath = "/access-denied";
+
+
+    // --------------------------------------------------------
+    // UNAUTHENTICATED REQUEST
+    // --------------------------------------------------------
+
+    options.Events.OnRedirectToLogin = context =>
     {
-        options.Cookie.Name = "IceburgAuthv2";
-
-        // JavaScript cannot read the authentication cookie.
-        options.Cookie.HttpOnly = true;
-
-        // Helps protect against CSRF.
-        options.Cookie.SameSite = SameSiteMode.Strict;
-
-        // Automatically uses Secure when HTTPS is used.
-        options.Cookie.SecurePolicy =
-            CookieSecurePolicy.SameAsRequest;
-
-        // Fixed 30 minute session.
-        options.ExpireTimeSpan =
-            TimeSpan.FromMinutes(120);
-
-        options.SlidingExpiration = false;
-
-        options.LoginPath = "/login.html";
-
-        options.AccessDeniedPath = "/access-denied";
-
-
-        // --------------------------------------------------------
-        // UNAUTHENTICATED REQUEST
-        // --------------------------------------------------------
-
-        options.Events.OnRedirectToLogin = context =>
+        // API requests get 401 instead of an HTML redirect.
+        if (context.Request.Path.StartsWithSegments("/api"))
         {
-            // API requests get 401 instead of an HTML redirect.
-            if (context.Request.Path.StartsWithSegments("/api"))
-            {
-                context.Response.StatusCode = 401;
-
-                return Task.CompletedTask;
-            }
-
-            // Preserve the exact page the user was trying
-            // to access.
-            var returnUrl =
-                context.Request.PathBase +
-                context.Request.Path +
-                context.Request.QueryString;
-
-            var encodedReturnUrl =
-                Uri.EscapeDataString(returnUrl);
-
-            context.Response.Redirect(
-                $"/login.html?returnUrl={encodedReturnUrl}");
+            context.Response.StatusCode = 401;
 
             return Task.CompletedTask;
-        };
+        }
+
+        // Preserve the exact page the user was trying
+        // to access.
+        var returnUrl =
+            context.Request.PathBase +
+            context.Request.Path +
+            context.Request.QueryString;
+
+        var encodedReturnUrl =
+            Uri.EscapeDataString(returnUrl);
+
+        context.Response.Redirect(
+            $"/login.html?returnUrl={encodedReturnUrl}");
+
+        return Task.CompletedTask;
+    };
 
 
-        // --------------------------------------------------------
-        // FORBIDDEN REQUEST
-        // --------------------------------------------------------
+    // --------------------------------------------------------
+    // FORBIDDEN REQUEST
+    // --------------------------------------------------------
 
-        options.Events.OnRedirectToAccessDenied = context =>
+    options.Events.OnRedirectToAccessDenied = context =>
+    {
+        // API requests get 403.
+        if (context.Request.Path.StartsWithSegments("/api"))
         {
-            // API requests get 403.
-            if (context.Request.Path.StartsWithSegments("/api"))
-            {
-                context.Response.StatusCode = 403;
-
-                return Task.CompletedTask;
-            }
-
-            context.Response.Redirect("/access-denied");
+            context.Response.StatusCode = 403;
 
             return Task.CompletedTask;
-        };
+        }
+
+        context.Response.Redirect("/access-denied");
+
+        return Task.CompletedTask;
+    };
 
 
-        // --------------------------------------------------------
-        // COOKIE VALIDATION
-        // --------------------------------------------------------
+    // --------------------------------------------------------
+    // COOKIE VALIDATION
+    // --------------------------------------------------------
 
-        options.Events.OnValidatePrincipal = context =>
+    options.Events.OnValidatePrincipal = context =>
+    {
+        // Get the user ID stored in the cookie.
+        string? userId =
+            context.Principal?
+                .FindFirst(ClaimTypes.NameIdentifier)?
+                .Value;
+
+        // No user ID = invalid authentication cookie.
+        if (string.IsNullOrWhiteSpace(userId))
         {
-            // Get the user ID stored in the cookie.
-            string? userId =
-                context.Principal?
-                    .FindFirst(ClaimTypes.NameIdentifier)?
-                    .Value;
+            context.RejectPrincipal();
 
-            // No user ID = invalid authentication cookie.
-            if (string.IsNullOrWhiteSpace(userId))
-            {
-                context.RejectPrincipal();
-
-                return Task.CompletedTask;
-            }
-
-            // Look up the CURRENT user from config.json.
-            User? user = Database.GetUserById(userId);
-
-            // User no longer exists.
-            if (user == null)
-            {
-                context.RejectPrincipal();
-
-                return context.HttpContext.SignOutAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme);
-            }
-
-            // User still exists.
             return Task.CompletedTask;
-        };
-    });
+        }
+
+        // Look up the CURRENT user from config.json.
+        User? user = Database.GetUserById(userId);
+
+        // User no longer exists.
+        if (user == null)
+        {
+            context.RejectPrincipal();
+
+            return context.HttpContext.SignOutAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme);
+        }
+
+        // User still exists.
+        return Task.CompletedTask;
+    };
+});
 
 builder.Services.AddAuthorization();
 var app = builder.Build();
@@ -276,7 +276,7 @@ app.Use(async (context, next) =>
 
         if (debug)
         {
-            Console.WriteLine("Auto Login IP: "+remoteIp);
+            Console.WriteLine("Auto Login IP: " + remoteIp);
         }
 
         if (remoteIp != null)
@@ -342,7 +342,7 @@ app.UseAuthorization();
 // ============================================================
 // PROTECTED HTML PAGES
 // ============================================================
-var protectedPages =new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+var protectedPages = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {
         "/admin.html",
         "/dashboard.html",
@@ -406,274 +406,274 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 var loginChallenges = new ConcurrentDictionary<string, LoginChallenge>();
 
-app.MapPost("/api/login/challenge",(LoginChallengeRequest request) =>
+app.MapPost("/api/login/challenge", (LoginChallengeRequest request) =>
+{
+    if (string.IsNullOrWhiteSpace(request.Username))
     {
-        if (string.IsNullOrWhiteSpace(request.Username))
+        return Results.BadRequest(new
         {
-            return Results.BadRequest(new
-            {
-                error = "Username is required."
-            });
-        }
-
-        var username =
-            request.Username.Trim();
-
-        var user =
-            Database.GetUser(username);
-
-        if (user == null)
-        {
-            return Results.Unauthorized();
-        }
-
-
-        // --------------------------------------------------------
-        // Get stored salt.
-        // --------------------------------------------------------
-
-        var passwordSalt =
-            user.PasswordSalt;
-
-        if (string.IsNullOrWhiteSpace(passwordSalt))
-        {
-            return Results.Unauthorized();
-        }
-
-        byte[] salt;
-
-        try
-        {
-            salt =
-                Convert.FromBase64String(
-                    passwordSalt);
-        }
-        catch
-        {
-            return Results.Unauthorized();
-        }
-
-
-        // --------------------------------------------------------
-        // Generate random one-time challenge.
-        // --------------------------------------------------------
-
-        var challenge =
-            RandomNumberGenerator.GetBytes(32);
-
-        var challengeId =
-            Convert.ToBase64String(
-                RandomNumberGenerator.GetBytes(32));
-
-        var storedChallenge =
-            new LoginChallenge
-            {
-                Username = user.Username,
-
-                Challenge = challenge,
-
-                ExpiresAt =
-                    DateTime.UtcNow.AddMinutes(2)
-            };
-
-        loginChallenges[challengeId] =
-            storedChallenge;
-
-
-        // --------------------------------------------------------
-        // Return salt and challenge to browser.
-        // --------------------------------------------------------
-
-        return Results.Ok(new
-        {
-            challengeId,
-
-            salt =
-                Convert.ToBase64String(salt),
-
-            challenge =
-                Convert.ToBase64String(challenge)
+            error = "Username is required."
         });
-    });
+    }
 
-app.MapPost("/api/login",async (LoginRequest request,HttpContext httpContext) =>
+    var username =
+        request.Username.Trim();
+
+    var user =
+        Database.GetUser(username);
+
+    if (user == null)
     {
-        // --------------------------------------------------------
-        // Validate request.
-        // --------------------------------------------------------
+        return Results.Unauthorized();
+    }
 
-        if (string.IsNullOrWhiteSpace(request.Username))
+
+    // --------------------------------------------------------
+    // Get stored salt.
+    // --------------------------------------------------------
+
+    var passwordSalt =
+        user.PasswordSalt;
+
+    if (string.IsNullOrWhiteSpace(passwordSalt))
+    {
+        return Results.Unauthorized();
+    }
+
+    byte[] salt;
+
+    try
+    {
+        salt =
+            Convert.FromBase64String(
+                passwordSalt);
+    }
+    catch
+    {
+        return Results.Unauthorized();
+    }
+
+
+    // --------------------------------------------------------
+    // Generate random one-time challenge.
+    // --------------------------------------------------------
+
+    var challenge =
+        RandomNumberGenerator.GetBytes(32);
+
+    var challengeId =
+        Convert.ToBase64String(
+            RandomNumberGenerator.GetBytes(32));
+
+    var storedChallenge =
+        new LoginChallenge
         {
-            return Results.BadRequest(new
-            {
-                error = "Username is required."
-            });
-        }
+            Username = user.Username,
 
-        if (string.IsNullOrWhiteSpace(request.ChallengeId))
+            Challenge = challenge,
+
+            ExpiresAt =
+                DateTime.UtcNow.AddMinutes(2)
+        };
+
+    loginChallenges[challengeId] =
+        storedChallenge;
+
+
+    // --------------------------------------------------------
+    // Return salt and challenge to browser.
+    // --------------------------------------------------------
+
+    return Results.Ok(new
+    {
+        challengeId,
+
+        salt =
+            Convert.ToBase64String(salt),
+
+        challenge =
+            Convert.ToBase64String(challenge)
+    });
+});
+
+app.MapPost("/api/login", async (LoginRequest request, HttpContext httpContext) =>
+{
+    // --------------------------------------------------------
+    // Validate request.
+    // --------------------------------------------------------
+
+    if (string.IsNullOrWhiteSpace(request.Username))
+    {
+        return Results.BadRequest(new
         {
-            return Results.BadRequest(new
-            {
-                error = "ChallengeId is required."
-            });
-        }
+            error = "Username is required."
+        });
+    }
 
-        if (string.IsNullOrWhiteSpace(request.Proof))
+    if (string.IsNullOrWhiteSpace(request.ChallengeId))
+    {
+        return Results.BadRequest(new
         {
-            return Results.BadRequest(new
-            {
-                error = "Proof is required."
-            });
-        }
+            error = "ChallengeId is required."
+        });
+    }
 
-        var username =
-            request.Username.Trim();
-
-        var challengeId =
-            request.ChallengeId.Trim();
-
-
-
-        var user2 = Database.GetUser(username);
-
-        if (user2 == null)
+    if (string.IsNullOrWhiteSpace(request.Proof))
+    {
+        return Results.BadRequest(new
         {
-            return Results.Unauthorized();
-        }
+            error = "Proof is required."
+        });
+    }
 
-        // Accounts with AutoLoginIps are not allowed to use
-        // username/password authentication.
-        if (user2.AutoLoginIps != null && user2.AutoLoginIps.Count > 0)
+    var username =
+        request.Username.Trim();
+
+    var challengeId =
+        request.ChallengeId.Trim();
+
+
+
+    var user2 = Database.GetUser(username);
+
+    if (user2 == null)
+    {
+        return Results.Unauthorized();
+    }
+
+    // Accounts with AutoLoginIps are not allowed to use
+    // username/password authentication.
+    if (user2.AutoLoginIps != null && user2.AutoLoginIps.Count > 0)
+    {
+        return Results.Unauthorized();
+    }
+
+    // Continue with your existing password verification...
+
+
+    // --------------------------------------------------------
+    // Retrieve and REMOVE challenge.
+    // --------------------------------------------------------
+
+    if (!loginChallenges.TryRemove(
+            challengeId,
+            out var loginChallenge))
+    {
+        return Results.Unauthorized();
+    }
+
+
+    // --------------------------------------------------------
+    // Check expiration.
+    // --------------------------------------------------------
+
+    if (loginChallenge.ExpiresAt <
+        DateTime.UtcNow)
+    {
+        return Results.Unauthorized();
+    }
+
+
+    // --------------------------------------------------------
+    // Make sure challenge belongs to username.
+    // --------------------------------------------------------
+
+    if (!string.Equals(
+            loginChallenge.Username,
+            username,
+            StringComparison.OrdinalIgnoreCase))
+    {
+        return Results.Unauthorized();
+    }
+
+
+    // --------------------------------------------------------
+    // Find user.
+    // --------------------------------------------------------
+
+    var user =
+        Database.GetUser(username);
+
+    if (user == null)
+    {
+        return Results.Unauthorized();
+    }
+
+
+    // --------------------------------------------------------
+    // Get stored password verifier.
+    // --------------------------------------------------------
+
+    if (string.IsNullOrWhiteSpace(
+            user.PasswordHash))
+    {
+        return Results.Unauthorized();
+    }
+
+    byte[] storedVerifier;
+    byte[] suppliedProof;
+
+    try
+    {
+        storedVerifier =
+            Convert.FromBase64String(
+                user.PasswordHash);
+
+        suppliedProof =
+            Convert.FromBase64String(
+                request.Proof);
+    }
+    catch
+    {
+        return Results.Unauthorized();
+    }
+
+
+    // --------------------------------------------------------
+    // Calculate expected proof.
+    //
+    // HMAC-SHA256(
+    //     storedVerifier,
+    //     challenge
+    // )
+    // --------------------------------------------------------
+
+    byte[] expectedProof;
+
+    using (var hmac =
+        new HMACSHA256(storedVerifier))
+    {
+        expectedProof =
+            hmac.ComputeHash(
+                loginChallenge.Challenge);
+    }
+
+
+    // --------------------------------------------------------
+    // Constant-time comparison.
+    // --------------------------------------------------------
+
+    if (suppliedProof.Length !=
+        expectedProof.Length)
+    {
+        return Results.Unauthorized();
+    }
+
+    if (!CryptographicOperations.FixedTimeEquals(
+            suppliedProof,
+            expectedProof))
+    {
+        return Results.Unauthorized();
+    }
+
+
+    // --------------------------------------------------------
+    // Authentication succeeded.
+    // --------------------------------------------------------
+
+    var claims =
+        new List<Claim>
         {
-            return Results.Unauthorized();
-        }
-
-        // Continue with your existing password verification...
-
-
-        // --------------------------------------------------------
-        // Retrieve and REMOVE challenge.
-        // --------------------------------------------------------
-
-        if (!loginChallenges.TryRemove(
-                challengeId,
-                out var loginChallenge))
-        {
-            return Results.Unauthorized();
-        }
-
-
-        // --------------------------------------------------------
-        // Check expiration.
-        // --------------------------------------------------------
-
-        if (loginChallenge.ExpiresAt <
-            DateTime.UtcNow)
-        {
-            return Results.Unauthorized();
-        }
-
-
-        // --------------------------------------------------------
-        // Make sure challenge belongs to username.
-        // --------------------------------------------------------
-
-        if (!string.Equals(
-                loginChallenge.Username,
-                username,
-                StringComparison.OrdinalIgnoreCase))
-        {
-            return Results.Unauthorized();
-        }
-
-
-        // --------------------------------------------------------
-        // Find user.
-        // --------------------------------------------------------
-
-        var user =
-            Database.GetUser(username);
-
-        if (user == null)
-        {
-            return Results.Unauthorized();
-        }
-
-
-        // --------------------------------------------------------
-        // Get stored password verifier.
-        // --------------------------------------------------------
-
-        if (string.IsNullOrWhiteSpace(
-                user.PasswordHash))
-        {
-            return Results.Unauthorized();
-        }
-
-        byte[] storedVerifier;
-        byte[] suppliedProof;
-
-        try
-        {
-            storedVerifier =
-                Convert.FromBase64String(
-                    user.PasswordHash);
-
-            suppliedProof =
-                Convert.FromBase64String(
-                    request.Proof);
-        }
-        catch
-        {
-            return Results.Unauthorized();
-        }
-
-
-        // --------------------------------------------------------
-        // Calculate expected proof.
-        //
-        // HMAC-SHA256(
-        //     storedVerifier,
-        //     challenge
-        // )
-        // --------------------------------------------------------
-
-        byte[] expectedProof;
-
-        using (var hmac =
-            new HMACSHA256(storedVerifier))
-        {
-            expectedProof =
-                hmac.ComputeHash(
-                    loginChallenge.Challenge);
-        }
-
-
-        // --------------------------------------------------------
-        // Constant-time comparison.
-        // --------------------------------------------------------
-
-        if (suppliedProof.Length !=
-            expectedProof.Length)
-        {
-            return Results.Unauthorized();
-        }
-
-        if (!CryptographicOperations.FixedTimeEquals(
-                suppliedProof,
-                expectedProof))
-        {
-            return Results.Unauthorized();
-        }
-
-
-        // --------------------------------------------------------
-        // Authentication succeeded.
-        // --------------------------------------------------------
-
-        var claims =
-            new List<Claim>
-            {
             new Claim(
                 ClaimTypes.NameIdentifier,
                 user.Id),
@@ -685,91 +685,91 @@ app.MapPost("/api/login",async (LoginRequest request,HttpContext httpContext) =>
             new Claim(
                 ClaimTypes.Role,
                 user.Role)
-            };
+        };
 
-        var identity =
-            new ClaimsIdentity(
-                claims,
-                CookieAuthenticationDefaults
-                    .AuthenticationScheme);
-
-        var principal =
-            new ClaimsPrincipal(identity);
-
-
-        // --------------------------------------------------------
-        // CREATE AUTH COOKIE
-        // --------------------------------------------------------
-
-        await httpContext.SignInAsync(
-            CookieAuthenticationDefaults
-                .AuthenticationScheme,
-            principal);
-
-
-        // --------------------------------------------------------
-        // Determine redirect destination.
-        // --------------------------------------------------------
-
-        var returnUrl =
-            GetSafeReturnUrl(
-                request.ReturnUrl);
-
-        string redirect;
-
-
-        // --------------------------------------------------------
-        // ADMIN
-        // --------------------------------------------------------
-
-        if (user.Role.Equals(
-                "Admin",
-                StringComparison.OrdinalIgnoreCase))
-        {
-            redirect =
-                returnUrl ??
-                "/dashboard.html";
-        }
-
-
-        // --------------------------------------------------------
-        // USER
-        // --------------------------------------------------------
-
-        else
-        {
-            if (!string.IsNullOrWhiteSpace(returnUrl) &&
-                !IsAdminPage(returnUrl))
-            {
-                redirect =
-                    returnUrl;
-            }
-            else
-            {
-                redirect =
-                    "/dashboard.html";
-            }
-        }
-
-
-        return Results.Ok(new
-        {
-            success = true,
-            redirect
-        });
-    });
-
-app.MapGet("/api/logout",async (HttpContext httpContext) =>
-    {
-        await httpContext.SignOutAsync(
+    var identity =
+        new ClaimsIdentity(
+            claims,
             CookieAuthenticationDefaults
                 .AuthenticationScheme);
 
-        return Results.Ok(new
+    var principal =
+        new ClaimsPrincipal(identity);
+
+
+    // --------------------------------------------------------
+    // CREATE AUTH COOKIE
+    // --------------------------------------------------------
+
+    await httpContext.SignInAsync(
+        CookieAuthenticationDefaults
+            .AuthenticationScheme,
+        principal);
+
+
+    // --------------------------------------------------------
+    // Determine redirect destination.
+    // --------------------------------------------------------
+
+    var returnUrl =
+        GetSafeReturnUrl(
+            request.ReturnUrl);
+
+    string redirect;
+
+
+    // --------------------------------------------------------
+    // ADMIN
+    // --------------------------------------------------------
+
+    if (user.Role.Equals(
+            "Admin",
+            StringComparison.OrdinalIgnoreCase))
+    {
+        redirect =
+            returnUrl ??
+            "/dashboard.html";
+    }
+
+
+    // --------------------------------------------------------
+    // USER
+    // --------------------------------------------------------
+
+    else
+    {
+        if (!string.IsNullOrWhiteSpace(returnUrl) &&
+            !IsAdminPage(returnUrl))
         {
-            success = true
-        });
+            redirect =
+                returnUrl;
+        }
+        else
+        {
+            redirect =
+                "/dashboard.html";
+        }
+    }
+
+
+    return Results.Ok(new
+    {
+        success = true,
+        redirect
     });
+});
+
+app.MapGet("/api/logout", async (HttpContext httpContext) =>
+{
+    await httpContext.SignOutAsync(
+        CookieAuthenticationDefaults
+            .AuthenticationScheme);
+
+    return Results.Ok(new
+    {
+        success = true
+    });
+});
 
 app.MapPost("/api/logout", async (HttpContext httpContext) =>
 {
@@ -804,131 +804,131 @@ static bool IsAdmin(HttpContext context)
                StringComparison.OrdinalIgnoreCase);
 }
 
-app.MapPut("/api/users/{id}",(string id,HttpContext httpContext,UserUpdateRequest request) =>
-    {
-        // --------------------------------------------------------
-        // Admin only
-        // --------------------------------------------------------
+app.MapPut("/api/users/{id}", (string id, HttpContext httpContext, UserUpdateRequest request) =>
+{
+    // --------------------------------------------------------
+    // Admin only
+    // --------------------------------------------------------
 
-        if (!IsAdmin(httpContext))
+    if (!IsAdmin(httpContext))
+    {
+        return Results.Forbid();
+    }
+
+
+    // --------------------------------------------------------
+    // Make sure the user exists
+    // --------------------------------------------------------
+
+    User? existingUser = Database.GetUserById(id);
+
+    if (existingUser == null)
+    {
+        return Results.NotFound(new
         {
-            return Results.Forbid();
+            error = "User not found."
+        });
+    }
+
+
+    // --------------------------------------------------------
+    // Validate username
+    // --------------------------------------------------------
+
+    if (string.IsNullOrWhiteSpace(request.Username))
+    {
+        return Results.BadRequest(new
+        {
+            error = "Username is required."
+        });
+    }
+
+
+    // --------------------------------------------------------
+    // Normalize role
+    //
+    // Only Admin or User are allowed.
+    // --------------------------------------------------------
+
+    string role =
+        string.Equals(
+            request.Role,
+            "Admin",
+            StringComparison.OrdinalIgnoreCase)
+            ? "Admin"
+            : "User";
+
+
+    // --------------------------------------------------------
+    // Change password only if a new password was supplied
+    // --------------------------------------------------------
+
+    bool hasNewPassword =
+        !string.IsNullOrWhiteSpace(request.PasswordHash) &&
+        !string.IsNullOrWhiteSpace(request.PasswordSalt);
+
+    if (hasNewPassword)
+    {
+        // Validate the password material first.
+        if (!Database.IsValidPasswordMaterial(
+                request.PasswordSalt,
+                request.PasswordHash))
+        {
+            return Results.BadRequest(new
+            {
+                error = "Invalid password."
+            });
         }
 
 
-        // --------------------------------------------------------
-        // Make sure the user exists
-        // --------------------------------------------------------
+        // Change the password.
+        bool passwordChanged =
+            Database.ChangePassword(
+                id,
+                request.PasswordSalt,
+                request.PasswordHash);
 
-        User? existingUser = Database.GetUserById(id);
-
-        if (existingUser == null)
+        if (!passwordChanged)
         {
             return Results.NotFound(new
             {
                 error = "User not found."
             });
         }
+    }
 
 
-        // --------------------------------------------------------
-        // Validate username
-        // --------------------------------------------------------
+    // --------------------------------------------------------
+    // Update username, role and Auto Login IPs
+    // --------------------------------------------------------
 
-        if (string.IsNullOrWhiteSpace(request.Username))
+    User? updated = Database.UpdateUser(
+        id,
+        request.Username,
+        role,
+        request.AutoLoginIps ?? new List<string>());
+
+
+    // --------------------------------------------------------
+    // Handle update failure
+    // --------------------------------------------------------
+
+    if (updated == null)
+    {
+        return Results.Conflict(new
         {
-            return Results.BadRequest(new
-            {
-                error = "Username is required."
-            });
-        }
+            error =
+                "Username already exists or user was not found."
+        });
+    }
 
 
-        // --------------------------------------------------------
-        // Normalize role
-        //
-        // Only Admin or User are allowed.
-        // --------------------------------------------------------
+    // --------------------------------------------------------
+    // Return updated user
+    // --------------------------------------------------------
 
-        string role =
-            string.Equals(
-                request.Role,
-                "Admin",
-                StringComparison.OrdinalIgnoreCase)
-                ? "Admin"
-                : "User";
-
-
-        // --------------------------------------------------------
-        // Change password only if a new password was supplied
-        // --------------------------------------------------------
-
-        bool hasNewPassword =
-            !string.IsNullOrWhiteSpace(request.PasswordHash) &&
-            !string.IsNullOrWhiteSpace(request.PasswordSalt);
-
-        if (hasNewPassword)
-        {
-            // Validate the password material first.
-            if (!Database.IsValidPasswordMaterial(
-                    request.PasswordSalt,
-                    request.PasswordHash))
-            {
-                return Results.BadRequest(new
-                {
-                    error = "Invalid password."
-                });
-            }
-
-
-            // Change the password.
-            bool passwordChanged =
-                Database.ChangePassword(
-                    id,
-                    request.PasswordSalt,
-                    request.PasswordHash);
-
-            if (!passwordChanged)
-            {
-                return Results.NotFound(new
-                {
-                    error = "User not found."
-                });
-            }
-        }
-
-
-        // --------------------------------------------------------
-        // Update username, role and Auto Login IPs
-        // --------------------------------------------------------
-
-        User? updated = Database.UpdateUser(
-            id,
-            request.Username,
-            role,
-            request.AutoLoginIps ?? new List<string>());
-
-
-        // --------------------------------------------------------
-        // Handle update failure
-        // --------------------------------------------------------
-
-        if (updated == null)
-        {
-            return Results.Conflict(new
-            {
-                error =
-                    "Username already exists or user was not found."
-            });
-        }
-
-
-        // --------------------------------------------------------
-        // Return updated user
-        // --------------------------------------------------------
-
-        return Results.Ok(updated);
-    })
+    return Results.Ok(updated);
+})
 .RequireAuthorization();
 
 app.MapGet("/api/users", (HttpContext httpContext) =>
@@ -940,7 +940,7 @@ app.MapGet("/api/users", (HttpContext httpContext) =>
 })
 .RequireAuthorization();
 
-app.MapPost("/api/users", (HttpContext httpContext,UserCreateRequest request) =>
+app.MapPost("/api/users", (HttpContext httpContext, UserCreateRequest request) =>
 {
     if (!IsAdmin(httpContext))
         return Results.Forbid();
@@ -988,67 +988,67 @@ app.MapPost("/api/users", (HttpContext httpContext,UserCreateRequest request) =>
 })
 .RequireAuthorization();
 
-app.MapDelete("/api/users/{id}", (string id,HttpContext httpContext) =>
+app.MapDelete("/api/users/{id}", (string id, HttpContext httpContext) =>
 {
-if (!IsAdmin(httpContext))
-return Results.Forbid();
+    if (!IsAdmin(httpContext))
+        return Results.Forbid();
 
-string? currentUserId =
-    httpContext.User
-        .FindFirst(ClaimTypes.NameIdentifier)
-        ?.Value;
+    string? currentUserId =
+        httpContext.User
+            .FindFirst(ClaimTypes.NameIdentifier)
+            ?.Value;
 
-if (string.Equals(
-        currentUserId,
-        id,
-        StringComparison.OrdinalIgnoreCase))
-{
-return Results.BadRequest(new
-{
-error = "You cannot delete your own account."
-});
-}
+    if (string.Equals(
+            currentUserId,
+            id,
+            StringComparison.OrdinalIgnoreCase))
+    {
+        return Results.BadRequest(new
+        {
+            error = "You cannot delete your own account."
+        });
+    }
 
-if (!Database.RemoveUser(id))
-{
-return Results.NotFound(new
-{
-error = "User not found."
-});
-}
+    if (!Database.RemoveUser(id))
+    {
+        return Results.NotFound(new
+        {
+            error = "User not found."
+        });
+    }
 
-return Results.Ok(new
-{
-success = true
-});
+    return Results.Ok(new
+    {
+        success = true
+    });
 })
 .RequireAuthorization();
 
 //Current User
-app.MapGet("/api/me",(HttpContext httpContext) =>
+app.MapGet("/api/me", (HttpContext httpContext) =>
+{
+    if (httpContext.User.Identity?.IsAuthenticated != true)
     {
-        if (httpContext.User.Identity?.IsAuthenticated != true)
-        {
-            return Results.Unauthorized();
-        }
+        return Results.Unauthorized();
+    }
 
-        return Results.Ok(new
-        {
-            id =
-                httpContext.User
-                    .FindFirst(
-                        ClaimTypes.NameIdentifier)
-                    ?.Value,
+    return Results.Ok(new
+    {
+        id =
+            httpContext.User
+                .FindFirst(
+                    ClaimTypes.NameIdentifier)
+                ?.Value,
 
-            username =
-                httpContext.User.Identity?.Name,
-            verson = "Iceburg V" + ProgramVerson,
+        username =
+            httpContext.User.Identity?.Name,
+        verson = "Iceburg V" + ProgramVerson,
 
-            role = httpContext.User.FindFirst(ClaimTypes.Role)?.Value
-        });
-    })
+        role = httpContext.User.FindFirst(ClaimTypes.Role)?.Value
+    });
+})
 .RequireAuthorization();
-app.MapGet("/api/nav", (HttpContext httpContext) =>
+ app.MapGet("/api/nav", async (HttpContext httpContext) =>
 {
     bool isadminuser = IsAdmin(httpContext);
 
@@ -1085,8 +1085,30 @@ app.MapGet("/api/nav", (HttpContext httpContext) =>
                 }
             }
         }
+
     };
 
+    var panels = await GetRouterPanels();
+
+    var settings = new NavItem
+    {
+        Label = "Panles",
+        Children = new List<NavItem>
+    {
+       
+    }
+    };
+
+    foreach (var panel in panels)
+    {
+        settings.Children.Add(new NavItem
+        {
+            Label = panel.Name ?? "Router Panel",
+            Url = $"/panle.html?id={Uri.EscapeDataString(panel.Id ?? "")}"
+        });
+    }
+
+    navigation.Add(settings);
 
     // Only show Settings to Admin users
     if (isadminuser)
@@ -1108,6 +1130,12 @@ app.MapGet("/api/nav", (HttpContext httpContext) =>
                         Label = "Devices",
                         Url = "/admin/devices.html"
                     },
+                     new NavItem
+                    {
+                        Label = "Panles",
+                        Url = "/admin/routerpanels.html"
+                    }, 
+                     
                     new NavItem
                     {
                         Label = "Server Shell",
@@ -1119,34 +1147,36 @@ app.MapGet("/api/nav", (HttpContext httpContext) =>
     }
 
 
+
+
     return Results.Ok(navigation);
 })
 .RequireAuthorization();
 
-app.MapGet("/access-denied",() =>
-    {
-        return Results.Json(
-            new
-            {
-                error = "Access denied."
-            },
-            statusCode: 403);
-    });
+app.MapGet("/access-denied", () =>
+{
+    return Results.Json(
+        new
+        {
+            error = "Access denied."
+        },
+        statusCode: 403);
+});
 
-var deviceApi =app.MapGroup("/api/device").RequireAuthorization();
+var deviceApi = app.MapGroup("/api/device").RequireAuthorization();
 
-deviceApi.MapGet("/getdevices/",() =>
-    {
-        return Iceburg.Database.Database.Devices;
-    });
+deviceApi.MapGet("/getdevices/", () =>
+{
+    return Iceburg.Database.Database.Devices;
+});
 
-deviceApi.MapGet("/getdevicestatus/{id}",async (string id) =>
-    {
-        var devicetest =
-            new DeviceStatus();
+deviceApi.MapGet("/getdevicestatus/{id}", async (string id) =>
+{
+    var devicetest =
+        new DeviceStatus();
 
-        return await devicetest.Getstatus(id);
-    });
+    return await devicetest.Getstatus(id);
+});
 
 app.MapGet("/api/devices", (HttpContext httpContext) =>
 {
@@ -1157,7 +1187,7 @@ app.MapGet("/api/devices", (HttpContext httpContext) =>
 })
 .RequireAuthorization();
 
-app.MapPost("/api/devices", (Device device,HttpContext httpContext) =>
+app.MapPost("/api/devices", (Device device, HttpContext httpContext) =>
 {
     if (!IsAdmin(httpContext))
         return Results.Forbid();
@@ -1262,7 +1292,7 @@ app.MapPut("/api/devices/{id}", (string id, Device device, HttpContext httpConte
 })
 .RequireAuthorization();
 
-app.MapDelete("/api/devices/{id}", (string id,HttpContext httpContext) =>
+app.MapDelete("/api/devices/{id}", (string id, HttpContext httpContext) =>
 {
     if (!IsAdmin(httpContext))
         return Results.Forbid();
@@ -1281,6 +1311,31 @@ app.MapDelete("/api/devices/{id}", (string id,HttpContext httpContext) =>
     });
 })
 .RequireAuthorization();
+  async Task<List<RouterPanelInfo>> GetRouterPanels()
+{
+    if (!File.Exists(routerPanelsFile))
+        return new List<RouterPanelInfo>();
+
+    using var document = JsonDocument.Parse(
+        await File.ReadAllTextAsync(routerPanelsFile));
+
+    if (!document.RootElement.TryGetProperty("panels", out var panels) ||
+        panels.ValueKind != JsonValueKind.Array)
+        return new List<RouterPanelInfo>();
+
+    return panels.EnumerateArray()
+        .Select(panel => new RouterPanelInfo
+        {
+            Id = panel.TryGetProperty("id", out var id)
+                ? id.GetString()
+                : null,
+
+            Name = panel.TryGetProperty("name", out var name)
+                ? name.GetString()
+                : null
+        })
+        .ToList();
+}
 
 app.MapGet("/api/devices/type/", (HttpContext httpContext) =>
 {
@@ -1379,65 +1434,271 @@ app.MapGet("/api/devices/type/", (HttpContext httpContext) =>
 .RequireAuthorization();
 
 //BMD Router
+// ============================================================
+// VIRTUAL ROUTER PANEL LAYOUT STORAGE + ROUTE ACTIONS
+// ============================================================
+var routerPanelsApi = app.MapGroup("/api/routerpanels").RequireAuthorization();
+
+
+routerPanelsApi.MapGet("/", async () =>
+{
+    if (!File.Exists(routerPanelsFile))
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(routerPanelsFile)!);
+        await File.WriteAllTextAsync(routerPanelsFile,
+            """{"version":1,"panels":[{"id":"panel-default","name":"Router Panel 1","width":1000,"height":600,"buttons":[] }]}""");
+    }
+
+    return Results.File(routerPanelsFile, "application/json");
+});
+
+routerPanelsApi.MapPost("/", async (HttpRequest request) =>
+{
+    try
+    {
+        using var document = await JsonDocument.ParseAsync(request.Body);
+        var root = document.RootElement;
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty("panels", out var panels) ||
+            panels.ValueKind != JsonValueKind.Array)
+            return Results.BadRequest(new { error = "A panels array is required." });
+
+        if (panels.GetArrayLength() > 100)
+            return Results.BadRequest(new { error = "A maximum of 100 panels is supported." });
+
+        var normalized = JsonSerializer.Serialize(root, new JsonSerializerOptions { WriteIndented = true });
+        Directory.CreateDirectory(Path.GetDirectoryName(routerPanelsFile)!);
+        var temporaryFile = routerPanelsFile + ".tmp";
+        await File.WriteAllTextAsync(temporaryFile, normalized);
+        File.Move(temporaryFile, routerPanelsFile, true);
+        return Results.Ok(new { success = true });
+    }
+    catch (JsonException)
+    {
+        return Results.BadRequest(new { error = "The panel configuration is not valid JSON." });
+    }
+});
+
+// Read route indexes from JSON as integers or numeric strings. Videohub indexes
+// are zero-based, so input/output 0 are valid values.
+static bool TryReadRouteIndex(JsonElement element, string propertyName, out int value)
+{
+    value = 0;
+    if (element.ValueKind != JsonValueKind.Object)
+        return false;
+
+    foreach (var property in element.EnumerateObject())
+    {
+        if (!string.Equals(property.Name, propertyName, StringComparison.OrdinalIgnoreCase))
+            continue;
+
+        if (property.Value.ValueKind == JsonValueKind.Number)
+            return property.Value.TryGetInt32(out value) && value >= 0;
+
+        if (property.Value.ValueKind == JsonValueKind.String &&
+            int.TryParse(property.Value.GetString(), out value))
+            return value >= 0;
+
+        return false;
+    }
+
+    return false;
+}
+
+static string? TryReadRouteDeviceId(JsonElement element)
+{
+    if (element.ValueKind != JsonValueKind.Object)
+        return null;
+
+    foreach (var property in element.EnumerateObject())
+    {
+        if (string.Equals(property.Name, "deviceId", StringComparison.OrdinalIgnoreCase) &&
+            property.Value.ValueKind == JsonValueKind.String)
+            return property.Value.GetString();
+    }
+
+    return null;
+}
+
+static (bool Success, string? Error, JsonElement? Payload) ParseRouterCommandResult(string raw)
+{
+    try
+    {
+        using var parsed = JsonDocument.Parse(raw);
+        var root = parsed.RootElement;
+        if (root.ValueKind != JsonValueKind.Object)
+            return (false, "Videohub returned an unexpected response.", null);
+
+        if (root.TryGetProperty("success", out var success) && success.ValueKind == JsonValueKind.True)
+            return (true, null, root.Clone());
+
+        var error = root.TryGetProperty("error", out var errorValue)
+            ? errorValue.GetString()
+            : "Videohub did not confirm the route.";
+        return (false, error, root.Clone());
+    }
+    catch (JsonException)
+    {
+        return (false, string.IsNullOrWhiteSpace(raw) ? "Videohub returned an empty response." : raw, null);
+    }
+}
+
+// A virtual-panel button routes one Videohub input to one output.
+routerPanelsApi.MapPost("/route", async (HttpRequest request) =>
+{
+    try
+    {
+        using var document = await JsonDocument.ParseAsync(request.Body);
+        var root = document.RootElement;
+        var deviceId = TryReadRouteDeviceId(root);
+        if (string.IsNullOrWhiteSpace(deviceId) ||
+            !TryReadRouteIndex(root, "input", out var input) ||
+            !TryReadRouteIndex(root, "output", out var output))
+            return Results.BadRequest(new { success = false, error = "A Videohub deviceId and non-negative integer input/output indexes are required." });
+
+        var router = new BMD_Router();
+        var raw = await router.setroute(deviceId, input.ToString(), output.ToString());
+        var parsed = ParseRouterCommandResult(raw);
+        if (!parsed.Success)
+            return Results.Json(new { success = false, error = parsed.Error, deviceId, input, output, routerResponse = parsed.Payload }, statusCode: StatusCodes.Status502BadGateway);
+
+        return Results.Ok(new { success = true, deviceId, input, output, routerResponse = parsed.Payload });
+    }
+    catch (JsonException)
+    {
+        return Results.BadRequest(new { success = false, error = "Invalid route request JSON." });
+    }
+});
+
+// Execute { routes: [{ deviceId, input, output }, ...] } in order.
+// Validate the entire batch before sending any commands; indexes are zero-based.
+routerPanelsApi.MapPost("/routes", async (HttpRequest request) =>
+{
+    try
+    {
+        using var document = await JsonDocument.ParseAsync(request.Body);
+        var root = document.RootElement;
+        if (root.ValueKind != JsonValueKind.Object ||
+            !root.TryGetProperty("routes", out var routes) ||
+            routes.ValueKind != JsonValueKind.Array || routes.GetArrayLength() == 0)
+            return Results.BadRequest(new { success = false, error = "Request body must contain a non-empty routes array." });
+
+        if (routes.GetArrayLength() > 100)
+            return Results.BadRequest(new { success = false, error = "A maximum of 100 routes is supported per button." });
+
+        var validatedRoutes = new List<(string DeviceId, int Input, int Output)>();
+        var routeNumber = 0;
+        foreach (var route in routes.EnumerateArray())
+        {
+            routeNumber++;
+            var deviceId = TryReadRouteDeviceId(route);
+            if (string.IsNullOrWhiteSpace(deviceId) ||
+                !TryReadRouteIndex(route, "input", out var input) ||
+                !TryReadRouteIndex(route, "output", out var output))
+                return Results.BadRequest(new { success = false, error = $"Route {routeNumber} requires deviceId and non-negative integer input/output indexes." });
+
+            validatedRoutes.Add((deviceId, input, output));
+        }
+
+        var router = new BMD_Router();
+        var results = new List<object>();
+        for (var index = 0; index < validatedRoutes.Count; index++)
+        {
+            var route = validatedRoutes[index];
+            var raw = await router.setroute(route.DeviceId, route.Input.ToString(), route.Output.ToString());
+            var parsed = ParseRouterCommandResult(raw);
+
+            if (!parsed.Success)
+            {
+                return Results.Json(new
+                {
+                    success = false,
+                    completed = results.Count,
+                    total = validatedRoutes.Count,
+                    failedRoute = index + 1,
+                    results,
+                    error = $"Route {index + 1} failed on router {route.DeviceId}: {parsed.Error}",
+                    routerResponse = parsed.Payload
+                }, statusCode: StatusCodes.Status502BadGateway);
+            }
+
+            results.Add(new
+            {
+                deviceId = route.DeviceId,
+                input = route.Input,
+                output = route.Output,
+                success = true,
+                routerResponse = parsed.Payload
+            });
+        }
+
+        return Results.Ok(new { success = true, completed = results.Count, total = validatedRoutes.Count, results });
+    }
+    catch (JsonException)
+    {
+        return Results.BadRequest(new { success = false, error = "Invalid multi-route request JSON." });
+    }
+});
+
 var routerApi = app.MapGroup("/api/router").RequireAuthorization();
 
-routerApi.MapGet("/bmd/{id}/getinfo",async (string id) =>
-    {
-        var bmdRouter =
-            new BMD_Router();
+routerApi.MapGet("/bmd/{id}/getinfo", async (string id) =>
+{
+    var bmdRouter =
+        new BMD_Router();
 
-        return await bmdRouter.getinfo(id);
-    });
+    return await bmdRouter.getinfo(id);
+});
 
-routerApi.MapGet("/bmd/{id}/getnames",(string id) =>
-    {
-        var bmdRouter =
-            new BMD_Router();
+routerApi.MapGet("/bmd/{id}/getnames", (string id) =>
+{
+    var bmdRouter =
+        new BMD_Router();
 
-        return bmdRouter.getnames(id);
-    });
+    return bmdRouter.getnames(id);
+});
 
-routerApi.MapGet("/bmd/{id}/getroutes",(string id) =>
-    {
-        var bmdRouter =
-            new BMD_Router();
+routerApi.MapGet("/bmd/{id}/getroutes", (string id) =>
+{
+    var bmdRouter =
+        new BMD_Router();
 
-        return bmdRouter.GetRoutes(id);
-    });
+    return bmdRouter.GetRoutes(id);
+});
 
-routerApi.MapGet("/bmd/{id}/setinputname/{input}/{name}",(string id, string input, string name) =>
-    {
-        var bmdRouter =
-            new BMD_Router();
+routerApi.MapGet("/bmd/{id}/setinputname/{input}/{name}", (string id, string input, string name) =>
+{
+    var bmdRouter =
+        new BMD_Router();
 
-        return bmdRouter.setinputname(
-            id,
-            input,
-            name);
-    });
+    return bmdRouter.setinputname(
+        id,
+        input,
+        name);
+});
 
-routerApi.MapGet("/bmd/{id}/setoutputname/{input}/{name}",(string id, string input,string name) =>
-    {
-        var bmdRouter =
-            new BMD_Router();
+routerApi.MapGet("/bmd/{id}/setoutputname/{input}/{name}", (string id, string input, string name) =>
+{
+    var bmdRouter =
+        new BMD_Router();
 
-        return bmdRouter.setoutputname(
-            id,
-            input,
-            name);
-    });
+    return bmdRouter.setoutputname(
+        id,
+        input,
+        name);
+});
 
-routerApi.MapGet("/bmd/{id}/setroute/{Input}/{Output}",(string id, string Input, string Output) =>
+routerApi.MapGet("/bmd/{id}/setroute/{Input}/{Output}", (string id, string Input, string Output) =>
 
-    {
-        
-        var bmdRouter =new BMD_Router();
-   
-        return bmdRouter.setroute(
-            id,
-            Input,
-            Output);
-    });
+{
+
+    var bmdRouter = new BMD_Router();
+
+    return bmdRouter.setroute(
+        id,
+        Input,
+        Output);
+});
 
 
 // ============================================================
@@ -1448,58 +1709,58 @@ TallyEndpoints.Map(app);
 
 // X32 HTTP API endpoints
 
-var mixerapi =app.MapGroup("/api/mixer").RequireAuthorization();
+var mixerapi = app.MapGroup("/api/mixer").RequireAuthorization();
 
-mixerapi.MapGet("/x32/{id}/getinfo",(string id) =>
+mixerapi.MapGet("/x32/{id}/getinfo", (string id) =>
 {
     var x32 = new X32();
     return x32.getinfo(id);
 });
 
-mixerapi.MapGet("/x32/{id}/getmainmix",(string id) =>
+mixerapi.MapGet("/x32/{id}/getmainmix", (string id) =>
 {
     var x32 = new X32();
     return x32.getmainmix(id);
 });
 
-mixerapi.MapPost("/x32/{id}/setmainmix",async (HttpRequest request, string id) =>
+mixerapi.MapPost("/x32/{id}/setmainmix", async (HttpRequest request, string id) =>
 {
     var body = await request.ReadFromJsonAsync<X32MainMixRequest>();
-        if (body is null || body.channel < 1 || body.channel > 32)
-            return Results.BadRequest();
-            var x32 = new X32();
-            return Results.Ok(await x32.setmainmix(id,body.channel,body.gain,body.mute,body.name));
+    if (body is null || body.channel < 1 || body.channel > 32)
+        return Results.BadRequest();
+    var x32 = new X32();
+    return Results.Ok(await x32.setmainmix(id, body.channel, body.gain, body.mute, body.name));
 });
 
-mixerapi.MapGet("/x32/{id}/getbus/{bus}",(string id, int bus) =>
+mixerapi.MapGet("/x32/{id}/getbus/{bus}", (string id, int bus) =>
 {
     var x32 = new X32();
     return x32.getbus(id, bus);
 });
 
-mixerapi.MapGet("/x32/{id}/getbusnames",(string id) =>
+mixerapi.MapGet("/x32/{id}/getbusnames", (string id) =>
 {
     var x32 = new X32();
     return x32.getbusnames(id);
 });
 
-mixerapi.MapPost("/x32/{id}/setbus",async (HttpRequest request, string id) =>
+mixerapi.MapPost("/x32/{id}/setbus", async (HttpRequest request, string id) =>
 {
     var body = await request.ReadFromJsonAsync<X32BusRequest>();
 
     if (body is null ||
         body.channel < 1 || body.channel > 32 ||
         body.bus < 1 || body.bus > 16)
-    return Results.BadRequest();
+        return Results.BadRequest();
     var x32 = new X32();
-    return Results.Ok(await x32.setbus(id,body.channel,body.bus,body.gain,body.mute,body.name));
+    return Results.Ok(await x32.setbus(id, body.channel, body.bus, body.gain, body.mute, body.name));
 });
 
-mixerapi.MapGet("/x32/{id}/getallnames",(string id) =>
-    {
-        var x32 = new X32();
-        return x32.getallnames(id);
-    });
+mixerapi.MapGet("/x32/{id}/getallnames", (string id) =>
+{
+    var x32 = new X32();
+    return x32.getallnames(id);
+});
 
 //FS4-fs2 api
 var FS4api = app.MapGroup("/api/Conversion").RequireAuthorization();
@@ -1689,9 +1950,9 @@ FS4api.MapGet("/ajafs4/{id}/GetMadiSorce/", (string id) =>
 
 
 
-    }));
+        }));
     }
-        
+
 
 });
 
@@ -1846,7 +2107,7 @@ FS2api.MapGet("/ajafs2/{id}/setparam/{paramId}/{value}", async (string id, strin
 {
     try
     {
-        var fs2= new AJAFS2(id);
+        var fs2 = new AJAFS2(id);
 
         return Results.Json(
             await fs2.SetParamAsync(
@@ -2103,16 +2364,16 @@ smarscopeapi.MapGet("/bmd/{id}/getinfo", (string id) => new BMD_SmartScope().Get
 
 smarscopeapi.MapGet("/bmd/{id}/getstate", (string id) => new BMD_SmartScope().GetState(id));
 
-smarscopeapi.MapGet("/bmd/{id}/set/{monitor}/{param}/{value}",(string id, string monitor, string param, string value) => new BMD_SmartScope().Set(id, monitor, param, value));
+smarscopeapi.MapGet("/bmd/{id}/set/{monitor}/{param}/{value}", (string id, string monitor, string param, string value) => new BMD_SmartScope().Set(id, monitor, param, value));
 
-smarscopeapi.MapPost("/bmd/{id}/set",async (string id, HttpRequest request) =>
-    {
-        var form = await request.ReadFormAsync();
-        string monitor = form["monitor"].ToString();
-        string param = form["param"].ToString();
-        string value = form["value"].ToString();
-        return await new BMD_SmartScope().Set(id, monitor, param, value);
-    });
+smarscopeapi.MapPost("/bmd/{id}/set", async (string id, HttpRequest request) =>
+{
+    var form = await request.ReadFormAsync();
+    string monitor = form["monitor"].ToString();
+    string param = form["param"].ToString();
+    string value = form["value"].ToString();
+    return await new BMD_SmartScope().Set(id, monitor, param, value);
+});
 
 // Magewell Decoder
 var decoder = app.MapGroup("/api/decoding").RequireAuthorization();
@@ -2123,7 +2384,7 @@ decoder.MapGet("/magewell/{id}", async (string id, HttpRequest request) =>
     return await magewell.GetStateAsync();
 });
 
-decoder.MapPost("/magewell/{id}/source", async (string id,HttpRequest request,SwitchSourceRequest body) =>
+decoder.MapPost("/magewell/{id}/source", async (string id, HttpRequest request, SwitchSourceRequest body) =>
 {
     var magewell = new MagewellDecoder(id);
     return await magewell.SwitchSourceAsync(
@@ -2131,7 +2392,7 @@ decoder.MapPost("/magewell/{id}/source", async (string id,HttpRequest request,Sw
         body.SourceName);
 });
 
-decoder.MapPost("/magewell/{id}/video-mode", async (string id,HttpRequest request,VideoModeRequest body) =>
+decoder.MapPost("/magewell/{id}/video-mode", async (string id, HttpRequest request, VideoModeRequest body) =>
 {
     var magewell = new MagewellDecoder(id);
     return await magewell.SetVideoModeAsync(
@@ -2142,7 +2403,7 @@ decoder.MapPost("/magewell/{id}/video-mode", async (string id,HttpRequest reques
         body.Interlaced);
 });
 
-decoder.MapPost("/magewell/{id}/hdmi-output", async (string id,HttpRequest request,HdmiOutputRequest body) =>
+decoder.MapPost("/magewell/{id}/hdmi-output", async (string id, HttpRequest request, HdmiOutputRequest body) =>
 {
     var magewell = new MagewellDecoder(id);
     return await magewell.SetHdmiOutputAsync(body.Enabled);
@@ -2154,7 +2415,7 @@ var aquastreamsplayback = app.MapGroup("/api/aquastreams").RequireAuthorization(
 
 aquastreamsplayback.MapGet("/playback/{id}", async (string id) =>
 {
-    
+
 
     var aquastreamsplayback = new AquastreamsPlayback(id);
     return await aquastreamsplayback.GetButtons();
@@ -2170,29 +2431,29 @@ aquastreamsplayback.MapGet("/playback/{id}/toggleplayback", async (string id) =>
 {
     var aquastreamsplayback = new AquastreamsPlayback(id);
     await aquastreamsplayback.toggleplayback();
-  
+
 
 });
 
 aquastreamsplayback.MapGet("/playback/{id}/play", async (string id, HttpRequest request) =>
-    {
-        var aquastreamsplayback = new AquastreamsPlayback(id);
+{
+    var aquastreamsplayback = new AquastreamsPlayback(id);
 
-        string parameters = request.QueryString.Value?.TrimStart('?') ?? "";
-        
-        await aquastreamsplayback.play(parameters);
+    string parameters = request.QueryString.Value?.TrimStart('?') ?? "";
 
-    });
+    await aquastreamsplayback.play(parameters);
 
-aquastreamsplayback.MapGet("/playback/{id}/setvol",async (string id, HttpRequest request) =>
-    {
-        var aquastreamsplayback = new AquastreamsPlayback(id);
+});
 
-        string parameters = request.QueryString.Value?.TrimStart('?') ?? "";
+aquastreamsplayback.MapGet("/playback/{id}/setvol", async (string id, HttpRequest request) =>
+{
+    var aquastreamsplayback = new AquastreamsPlayback(id);
 
-        await aquastreamsplayback.setvol(parameters);
+    string parameters = request.QueryString.Value?.TrimStart('?') ?? "";
 
-    });
+    await aquastreamsplayback.setvol(parameters);
+
+});
 
 
 var testgen = app.MapGroup("/api/testgen").RequireAuthorization();
@@ -2501,7 +2762,7 @@ if (Database.GetUser("localadmin") == null)
 }
 
 
-void RunIceburgCommand(string input,Action<string> write,bool fromWeb)
+void RunIceburgCommand(string input, Action<string> write, bool fromWeb)
 {
     var parts = SplitCommandLine(input);
 
@@ -2873,8 +3134,8 @@ _ = Task.Run(async () =>
 
 app.Run();
 
- static object? JsonElementToObject(
-    JsonElement value)
+static object? JsonElementToObject(
+   JsonElement value)
 {
     return value.ValueKind switch
     {
@@ -2960,7 +3221,7 @@ static bool IsAdminPage(string returnUrl)
             StringComparison.OrdinalIgnoreCase);
 }
 public record LoginChallengeRequest(string? Username);
-public record LoginRequest(string? Username,string? ChallengeId,string? Proof,string? ReturnUrl);
+public record LoginRequest(string? Username, string? ChallengeId, string? Proof, string? ReturnUrl);
 public sealed class LoginChallenge
 {
     public string Username { get; set; } = "";
@@ -3050,3 +3311,8 @@ public sealed record VideoModeRequest(
     bool Interlaced);
 
 public sealed record HdmiOutputRequest(bool Enabled);
+public class RouterPanelInfo
+{
+    public string? Id { get; set; }
+    public string? Name { get; set; }
+}

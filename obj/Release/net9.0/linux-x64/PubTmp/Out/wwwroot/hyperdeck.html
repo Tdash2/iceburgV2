@@ -2,19 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="header.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>HyperDeck Clip Browser</title>
     <style>
         body {
-            background: #1b1b1b;
+            background: #232323;
             color: #eee;
             font-family: Arial,Helvetica,sans-serif;
             margin: 20px
         }
 
         h2 {
-            margin: 0 0 15px 0
+            margin: 0px 0 15px 0;
         }
+
+
+
 
         #toolbar {
             display: flex;
@@ -218,52 +222,55 @@
     </style>
 </head>
 <body>
-    <h2 id="pageTitle">HyperDeck Clip Browser</h2>
-    <div id="status"></div>
-    <div id="dropZone">Drag video files here or click To Upload Files</div>
-    <div id="uploadStatus"></div>
-    <div id="toolbar">
-        <input type="text" id="search" placeholder="Search clips...">
-        <button onclick="openPrintTable()">Print Clip List</button>
-        <button onclick="exportTDC1000()">Export TDC-1000</button>
-        <button id="recordBtn" style="background:#c00000" onclick="recordDeck()">Record</button>
-        <button id="stopBtn">Stop</button>
-        <span id="timecodeDisplay" style="font-family:monospace;font-size:18px;min-width:130px">TC: --:--:--:--</span>
-        <input type="file" id="fileInput" multiple>
-    </div>
-    <div id="tableContainer">
-        <table id="clipTable">
-            <thead><tr><th width="60">ID</th><th>Name</th><th width="170">Codec</th><th width="120">Format</th><th width="120">Duration</th><th width="90">REG #</th></tr></thead>
-            <tbody></tbody>
-        </table>
-    </div>
-    <div id="footer">↑ / ↓: Move &nbsp;&nbsp; Enter: Cue Clip &nbsp;&nbsp; Double Click: Cue &nbsp;&nbsp; S: Stop &nbsp;&nbsp; P: Play &nbsp;&nbsp; CTRL+DEL: Delete</div>
+    <div class="container" style="padding: 20px;">
 
-    <div id="deleteWarning" class="delete-warning-overlay">
-        <div class="delete-warning-box">
-            <h1>WARNING!</h1><p id="deleteWarningText"></p>
-            <button id="confirmDeleteBtn" class="delete-btn">Delete</button>
-            <button id="cancelDeleteBtn" class="cancel-btn">Cancel</button>
+
+        <h2 id="pageTitle">HyperDeck Clip Browser</h2>
+        <div id="status"></div>
+        <div id="dropZone">Drag video files here or click To Upload Files</div>
+        <div id="uploadStatus"></div>
+        <div id="toolbar">
+            <input type="text" id="search" placeholder="Search clips...">
+            <button onclick="openPrintTable()">Print Clip List</button>
+            <button onclick="exportTDC1000()">Export TDC-1000</button>
+            <button id="recordBtn" style="background:#c00000" onclick="recordDeck()">Record</button>
+            <button id="stopBtn">Stop</button>
+            <span id="timecodeDisplay" style="font-family:monospace;font-size:18px;min-width:130px">TC: --:--:--:--</span>
+            <input type="file" id="fileInput" multiple>
+        </div>
+        <div id="tableContainer">
+            <table id="clipTable">
+                <thead><tr><th width="60">ID</th><th>Name</th><th width="170">Codec</th><th width="120">Format</th><th width="120">Duration</th><th width="90">REG #</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div id="footer">↑ / ↓: Move &nbsp;&nbsp; Enter: Cue Clip &nbsp;&nbsp; Double Click: Cue &nbsp;&nbsp; S: Stop &nbsp;&nbsp; P: Play &nbsp;&nbsp; CTRL+DEL: Delete</div>
+
+        <div id="deleteWarning" class="delete-warning-overlay">
+            <div class="delete-warning-box">
+                <h1>WARNING!</h1><p id="deleteWarningText"></p>
+                <button id="confirmDeleteBtn" class="delete-btn">Delete</button>
+                <button id="cancelDeleteBtn" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+
+        <div id="renameDialog" class="delete-warning-overlay">
+            <div class="delete-warning-box" style="background:#2c2c2c;border-color:#0a84ff">
+                <h1>Rename Clip</h1><p>Enter a name for this clip before uploading.</p>
+                <input type="text" id="renameInput" style="width:90%;padding:10px;font-size:18px;margin:15px 0">
+                <br><button id="renameOkBtn" class="delete-btn">Upload</button>
+                <button id="renameCancelBtn" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+
+        <div id="deckDialog" class="delete-warning-overlay">
+            <div class="delete-warning-box" style="background:#2c2c2c;border-color:#0a84ff">
+                <h1>Select Output</h1><p>Select HyperDeck output:</p>
+                <div style="margin:20px"><button class="deck-btn" data-deck="A">A</button><button class="deck-btn" data-deck="B">B</button><button class="deck-btn" data-deck="C">C</button><button class="deck-btn" data-deck="D">D</button></div>
+                <button id="deckCancelBtn" class="cancel-btn">Cancel</button>
+            </div>
         </div>
     </div>
-
-    <div id="renameDialog" class="delete-warning-overlay">
-        <div class="delete-warning-box" style="background:#2c2c2c;border-color:#0a84ff">
-            <h1>Rename Clip</h1><p>Enter a name for this clip before uploading.</p>
-            <input type="text" id="renameInput" style="width:90%;padding:10px;font-size:18px;margin:15px 0">
-            <br><button id="renameOkBtn" class="delete-btn">Upload</button>
-            <button id="renameCancelBtn" class="cancel-btn">Cancel</button>
-        </div>
-    </div>
-
-    <div id="deckDialog" class="delete-warning-overlay">
-        <div class="delete-warning-box" style="background:#2c2c2c;border-color:#0a84ff">
-            <h1>Select Output</h1><p>Select HyperDeck output:</p>
-            <div style="margin:20px"><button class="deck-btn" data-deck="A">A</button><button class="deck-btn" data-deck="B">B</button><button class="deck-btn" data-deck="C">C</button><button class="deck-btn" data-deck="D">D</button></div>
-            <button id="deckCancelBtn" class="cancel-btn">Cancel</button>
-        </div>
-    </div>
-
     <script>
         (() => {
             // Host the HTML at the route/page used by your application. The `id` query

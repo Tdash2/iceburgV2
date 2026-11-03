@@ -71,3 +71,5 @@ C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\compressed\jbr6thv
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\compressed\ha5htrdd3g-7bc8ag05io.gz
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\compressed\nhmwjyi2ju-21966qtmy8.gz
 C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\compressed\9g1sxy532n-z6t7g15x5g.gz
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\compressed\qgc4m6wh6g-ujhoafylvh.gz
+C:\Users\tj\Desktop\Github Repos\IceburgV2\obj\Release\net9.0\compressed\l23ybshutr-nmllhf9cea.gz

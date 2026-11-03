@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Router Panel | Iceburg</title>
+    <script src="header.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #232323;
+            color: #232323;
+            font: 14px Arial, sans-serif;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 16px 22px;
+            background: #1b1e22;
+            border-bottom: 1px solid #363c43;
+        }
+
+            .header h1 {
+                font-size: 20px;
+                margin: 0;
+                flex: 1;
+            }
+
+        .status {
+            color: #a5adb6;
+            font-size: 12px;
+        }
+
+        .banner {
+            margin: 15px 20px;
+            padding: 13px;
+            background: #172b3b;
+            border: 1px solid #3979a8;
+            border-radius: 7px;
+        }
+
+            .banner small {
+                display: block;
+                margin-top: 5px;
+                color: #a9c8df;
+            }
+
+        .workspace {
+            padding: 20px;
+            overflow: auto;
+        }
+
+        .canvas {
+            position: relative;
+            
+            
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .panel-button {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 5px;
+           border: 2px solid #444;
+            border-radius: 6px;
+            color: white;
+            font-weight: 700;
+            white-space: pre-wrap;
+            word-break: break-word;
+            cursor: pointer;
+            user-select: none;
+        }
+
+            .panel-button.current-destination {
+                border: 3px solid #65d6a2 !important;
+              
+            }
+            .panel-button:active {
+                filter: brightness(1.25);
+            }
+
+            .panel-button.disabled {
+                opacity: .22;
+                filter: grayscale(1);
+                cursor: not-allowed;
+            }
+
+            .panel-button.current-source {
+                outline: 3px solid #65d6a2;
+            }
+
+        .loading {
+            padding: 50px;
+            text-align: center;
+            color: #a5adb6;
+        }
+
+        @media(max-width: 700px) {
+            .header {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+
+
+    <main class="workspace">
+        <div id="loading" class="loading">Loading router panel...</div>
+        <div id="canvas" class="canvas" style="display:none"></div>
+    </main>
+
+    <script>
+const $ = id => document.getElementById(id);
+
+let data = null;
+let activePanel = null;
+
+let devices = [];
+let activeDestinationRouter = null;
+let activeDestinationOutput = null;
+
+let liveRoutes = {};
+let labelCache = {};
+let polling = false;
+
+const panelId =
+    new URLSearchParams(location.search).get("id");
+
+function status(message) {
+   
+}
+
+function deviceId(d) {
+    return String(d?.Id ?? d?.id ?? d?.ID ?? "");
+}
+
+function deviceName(id) {
+    const d = devices.find(x => deviceId(x) === String(id));
+
+    return d?.Name || d?.name || id || "Unknown router";
+}
+
+function escapeHtml(v) {
+    return String(v ?? "").replace(
+        /[&<>"']/g,
+        c => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        })[c]
+    );
+}
+
+async function readJsonResponse(r) {
+    const t = await r.text();
+
+    try {
+        return JSON.parse(t);
+    } catch {
+        return { error: t || `HTTP ${r.status}` };
+    }
+}
+
+async function loadPanel() {
+    try {
+        if (!panelId) {
+            throw Error("No panel ID supplied.");
+        }
+
+        const r = await fetch("/api/routerpanels/", {
+            cache: "no-store"
+        });
+
+        if (!r.ok) throw Error(`HTTP ${r.status}`);
+
+        data = await r.json();
+
+        activePanel = data.panels?.find(
+            p => p.id === panelId
+        );
+
+        if (!activePanel) {
+            throw Error("Router panel not found.");
+        }
+
+       
+        $("loading").style.display = "none";
+
+        $("canvas").style.display = "block";
+        $("canvas").style.width = activePanel.width + "px";
+        $("canvas").style.height = activePanel.height + "px";
+
+        await loadDevices();
+        await loadNames();
+        render();
+
+        status("Panel loaded");
+
+        pollLoop();
+
+    } catch (e) {
+        $("loading").textContent = e.message;
+        status("Unable to load panel");
+    }
+        }
+function getRouterLabel(deviceId, type, index) {
+    const names = labelCache[String(deviceId)] || {};
+
+    const labels = type === "input"
+        ? names.input_labels
+        : names.output_labels;
+
+    if (labels && labels[index] !== undefined) {
+        return labels[index];
+    }
+
+    return `${type === "input" ? "Input" : "Output"} ${index}`;
+}
+
+async function loadDevices() {
+    try {
+        const r = await fetch("/api/device/getdevices/", {
+            cache: "no-store"
+        });
+
+        if (!r.ok) throw Error("Device list unavailable");
+
+        const payload = await r.json();
+
+        devices = Array.isArray(payload)
+            ? payload
+            : payload.devices || [];
+
+    } catch {
+        devices = [];
+    }
+}
+
+function usedRouterIds() {
+    const ids = new Set();
+
+    activePanel.buttons.forEach(b => {
+        if (b.deviceId) ids.add(String(b.deviceId));
+
+        (b.routes || []).forEach(r => {
+            if (r.deviceId) ids.add(String(r.deviceId));
+        });
+    });
+
+    return [...ids];
+}
+
+        function getLiveRouteText(deviceId, output) {
+            const routerRoutes = liveRoutes[deviceId];
+
+            if (routerRoutes === undefined) {
+                return "Checking router…";
+            }
+
+            if (routerRoutes === null) {
+                return "Router offline";
+            }
+
+            const input = routerRoutes[Number(output)];
+
+            if (input === undefined || input === null) {
+                return "Unrouted";
+            }
+
+            const inputLabels = labelCache[deviceId]?.input_labels || {};
+            const inputName = inputLabels[input] ?? inputLabels[String(input)];
+
+            return inputName
+                ? `Current: ${inputName}`
+                : `Current: Input ${input}`;
+        }
+      
+       
+
+        
+        async function pollLoop() {
+            await pollRouterRoutes();
+            setTimeout(pollLoop, 2000);
+        }
+
+        function render() {
+            const canvas = $("canvas");
+
+            if (!canvas) {
+                console.error("Canvas element not found");
+                return;
+            }
+
+            if (!activePanel) {
+                console.error("No active panel");
+                return;
+            }
+
+            if (!Array.isArray(activePanel.buttons)) {
+                console.error("Panel buttons is not an array:", activePanel);
+                return;
+            }
+
+            console.log("Rendering buttons:", activePanel.buttons);
+
+            canvas.innerHTML = "";
+
+            activePanel.buttons.forEach(b => {
+
+                const el = document.createElement("div");
+
+                el.className = "panel-button";
+                el.dataset.id = b.id;
+                el.classList.toggle(
+                    "current-destination",
+                    b.type === "destination" &&
+                    String(b.deviceId) === String(activeDestinationRouter) &&
+                    Number(b.output) === Number(activeDestinationOutput)
+                );
+                Object.assign(el.style, {
+                    left: Number(b.x || 0) + "px",
+                    top: Number(b.y || 0) + "px",
+                    width: Number(b.width || 100) + "px",
+                    height: Number(b.height || 50) + "px",
+                    background: b.color || "#2c2c2c",
+                    color: b.textColor || "#ffffff"
+                });
+
+                el.textContent = b.label || "Button";
+
+                const disabled =
+                    b.type === "source" &&
+                    activeDestinationRouter &&
+                    String(b.deviceId) !== String(activeDestinationRouter);
+
+                el.classList.toggle("disabled", !!disabled);
+
+                if (
+                    b.type === "source" &&
+                    String(activeDestinationRouter) === String(b.deviceId) &&
+                    activeDestinationOutput !== null
+                ) {
+                    const current =
+                        liveRoutes[b.deviceId]?.[activeDestinationOutput];
+
+                    el.classList.toggle(
+                        "current-source",
+                        Number(current) === Number(b.input)
+                    );
+                }
+
+                el.addEventListener("click", () => {
+                    if (!disabled) {
+                        executePanelButton(b, el);
+                    }
+                });
+
+                canvas.appendChild(el);
+            });
+
+            console.log(
+                "Buttons actually rendered:",
+                canvas.children.length
+            );
+
+        }
+
+function updateRouterBanner() {
+    if (!activeDestinationRouter) {
+       
+
+        return;
+    }
+
+    const state = liveRoutes[activeDestinationRouter];
+
+    const connection =
+        state === undefined
+            ? "Checking connection..."
+            : state === null
+                ? "OFFLINE"
+                : "Connected";
+
+    $("routerBanner").innerHTML =
+        `Active destination router: ${escapeHtml(deviceName(activeDestinationRouter))}` +
+        `<small>${connection} · Output ${escapeHtml(activeDestinationOutput)}</small>`;
+}
+
+async function executePanelButton(b, el) {
+    const type = b.type || "route";
+
+    if (type === "destination") {
+        if (!b.deviceId || !Number.isInteger(Number(b.output))) {
+            status("Destination button is not configured.");
+            return;
+        }
+
+        activeDestinationRouter = String(b.deviceId);
+        activeDestinationOutput = Number(b.output);
+
+        render();
+
+        status(
+            `Destination selected: Output ${b.output} on ${deviceName(b.deviceId)}`
+        );
+
+        return;
+    }
+
+    if (type === "source") {
+        if (
+            !activeDestinationRouter ||
+            activeDestinationOutput === null
+        ) {
+            status("Select a destination first.");
+            return;
+        }
+
+        if (String(b.deviceId) !== activeDestinationRouter) {
+            status("This source belongs to another router.");
+            return;
+        }
+
+      
+
+        try {
+            await executeSingleRoute(
+                b.deviceId,
+                Number(b.input),
+                activeDestinationOutput
+            );
+
+        } catch (e) {
+            status("Route failed: " + e.message);
+        }
+
+        return;
+    }
+
+    const routes = Array.isArray(b.routes) ? b.routes : [];
+
+    if (!routes.length) {
+        status("No routes configured.");
+        return;
+    }
+
+    if (!confirm(
+        `Execute ${routes.length} routes across the configured Videohubs?`
+    )) return;
+
+    try {
+        el.style.opacity = ".5";
+
+        const r = await fetch("/api/routerpanels/routes", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ routes })
+        });
+
+        const result = await readJsonResponse(r);
+
+        if (!r.ok || result.success === false) {
+            throw Error(result.error || `HTTP ${r.status}`);
+        }
+
+        status(
+            `Completed ${result.completed ?? routes.length} of ${routes.length} routes.`
+        );
+
+    } catch (e) {
+        status("Multi-route failed: " + e.message);
+
+    } finally {
+        el.style.opacity = "1";
+    }
+}
+
+async function executeSingleRoute(deviceId, input, output) {
+    const r = await fetch("/api/routerpanels/route", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            deviceId,
+            input,
+            output
+        })
+    });
+
+    const result = await readJsonResponse(r);
+
+    if (!r.ok || result.success === false || result.error) {
+        throw Error(result.error || `HTTP ${r.status}`);
+    }
+
+    status("Route command sent successfully.");
+
+    await pollRouterRoutes();
+}
+
+        async function loadNames() {
+            await Promise.all(
+                usedRouterIds().map(async id => {
+                    try {
+                        const r = await fetch(
+                            `/api/router/bmd/${encodeURIComponent(id)}/getnames`,
+                            { cache: "no-store" }
+                        );
+
+                        const j = await readJsonResponse(r);
+
+                        labelCache[id] = j.error ? {} : j;
+
+                    } catch (e) {
+                        console.error("Unable to load router names:", id, e);
+                        labelCache[id] = {};
+                    }
+                })
+            );
+        }
+
+        async function pollRouterRoutes() {
+            if (polling || !activePanel) return;
+
+            polling = true;
+
+            try {
+                const ids = usedRouterIds();
+
+                const results = await Promise.all(
+                    ids.map(async id => {
+                        try {
+                            const r = await fetch(
+                                `/api/router/bmd/${encodeURIComponent(id)}/getroutes`,
+                                { cache: "no-store" }
+                            );
+
+                            const j = await readJsonResponse(r);
+
+                            if (!r.ok || j.error) throw Error();
+
+                            return [id, j.routes || {}];
+
+                        } catch {
+                            return [id, null];
+                        }
+                    })
+                );
+
+                results.forEach(([id, routes]) => {
+                    liveRoutes[id] = routes;
+                });
+
+                render();
+
+            } finally {
+                polling = false;
+            }
+        }
+
+loadPanel();
+    </script>
+
+</body>
+</html>
