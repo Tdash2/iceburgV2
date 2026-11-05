@@ -2648,543 +2648,358 @@ namespace Iceburg.Database
 // ENDPOINTS
 // ====================================================================
 
+
+
 namespace Iceburg.Database
 {
     public static class TallyEndpoints
     {
         public static void Map(
-            WebApplication app)
+            WebApplication app,
+            Func<EndpointFilterInvocationContext, EndpointFilterDelegate, ValueTask<object?>> requireAllowedDevice,
+            Func<HttpContext, bool> isAdmin,
+            Func<HttpContext, string, bool> canAccessDevice)
         {
-            var gpioApi =
-                app.MapGroup(
-                    "/api/gpio")
-                   .RequireAuthorization();
+            // ========================================================
+            // ROUTE GROUPS
+            // ========================================================
 
+            var gpioApi = app.MapGroup("/api/gpio")
+                .RequireAuthorization();
+
+            var deviceApi = gpioApi.MapGroup("")
+                .AddEndpointFilter(requireAllowedDevice);
 
             // ========================================================
             // DEVICES
             // ========================================================
 
-            gpioApi.MapGet(
-                "/devices",
-                () =>
-                    Results.Ok(
-                        TallyDatabase.GetDevices()));
+            gpioApi.MapGet("/devices", (HttpContext context) =>
+            {
+                var devices = TallyDatabase.GetDevices();
 
+                if (isAdmin(context))
+                    return Results.Ok(devices);
 
-            gpioApi.MapGet(
-                "/{deviceId}",
-                (string deviceId) =>
-                {
-                    var d =
-                        TallyDatabase.GetDevice(
-                            deviceId);
+                var allowedDevices = devices
+                    .Where(d =>
+                        canAccessDevice(context, d.DeviceId))
+                    .ToList();
 
-                    return d == null
-                        ? Results.NotFound(
-                            new
-                            {
-                                error =
-                                    "GPIO device not found or device Type is not \"1\", \"2\", or \"7\"."
-                            })
-                        : Results.Ok(d);
-                });
+                return Results.Ok(allowedDevices);
+            });
 
+            deviceApi.MapGet("/{id}", (string id) =>
+            {
+                var d = TallyDatabase.GetDevice(id);
+
+                return d == null
+                    ? Results.NotFound(new
+                    {
+                        error = "GPIO device not found or device Type is not \"1\", \"2\", or \"7\"."
+                    })
+                    : Results.Ok(d);
+            });
 
             // ========================================================
             // INPUTS
             // ========================================================
 
-            gpioApi.MapGet(
-                "/{deviceId}/inputs",
-                (string deviceId) =>
-                {
-                    var d =
-                        TallyDatabase.GetDevice(
-                            deviceId);
+            deviceApi.MapGet("/{id}/inputs", (string id) =>
+            {
+                var d = TallyDatabase.GetDevice(id);
 
-                    return d == null
-                        ? Results.NotFound(
-                            new
-                            {
-                                error =
-                                    "GPIO device not found or device Type is not \"1\", \"2\", or \"7\"."
-                            })
-                        : Results.Ok(d.Inputs);
-                });
+                return d == null
+                    ? Results.NotFound(new
+                    {
+                        error = "GPIO device not found."
+                    })
+                    : Results.Ok(d.Inputs);
+            });
 
-
-            gpioApi.MapPost(
-                "/{deviceId}/inputs",
-                (
-                    string deviceId,
-                    GpioInputRequest r) =>
+            deviceApi.MapPost("/{id}/inputs",
+                (string id, GpioInputRequest r) =>
                 {
                     if (r.Port < 1)
-                    {
-                        return Results.BadRequest(
-                            new
-                            {
-                                error =
-                                    "Port must be greater than zero."
-                            });
-                    }
+                        return Results.BadRequest(new
+                        {
+                            error = "Port must be greater than zero."
+                        });
 
-                    var x =
-                        TallyDatabase.AddInput(
-                            deviceId,
-                            r.Port,
-                            r.Name,
-                            r.Nickname);
+                    var x = TallyDatabase.AddInput(
+                        id, r.Port, r.Name, r.Nickname);
 
                     return x == null
-                        ? Results.NotFound(
-                            new
-                            {
-                                error =
-                                    "GPIO device not found or device Type is not \"1\", \"2\", or \"7\"."
-                            })
+                        ? Results.NotFound(new { error = "GPIO device not found." })
                         : Results.Ok(x);
                 });
 
-
-            gpioApi.MapPut(
-                "/{deviceId}/inputs/{inputId}",
-                (
-                    string deviceId,
-                    string inputId,
-                    GpioInputRequest r) =>
+            deviceApi.MapPut("/{id}/inputs/{inputId}",
+                (string id, string inputId, GpioInputRequest r) =>
                 {
                     if (r.Port < 1)
-                    {
-                        return Results.BadRequest(
-                            new
-                            {
-                                error =
-                                    "Port must be greater than zero."
-                            });
-                    }
+                        return Results.BadRequest(new
+                        {
+                            error = "Port must be greater than zero."
+                        });
 
-                    var x =
-                        TallyDatabase.EditInput(
-                            deviceId,
-                            inputId,
-                            r.Port,
-                            r.Name,
-                            r.Nickname);
+                    var x = TallyDatabase.EditInput(
+                        id, inputId, r.Port, r.Name, r.Nickname);
 
                     return x == null
-                        ? Results.NotFound(
-                            new
-                            {
-                                error =
-                                    "GPIO input or device not found."
-                            })
+                        ? Results.NotFound(new { error = "GPIO input or device not found." })
                         : Results.Ok(x);
                 });
 
-
-            gpioApi.MapDelete(
-                "/{deviceId}/inputs/{inputId}",
-                (
-                    string deviceId,
-                    string inputId) =>
+            deviceApi.MapDelete("/{id}/inputs/{inputId}",
+                (string id, string inputId) =>
                 {
-                    return
-                        TallyDatabase.RemoveInput(
-                            deviceId,
-                            inputId)
-                        ? Results.Ok(
-                            new
-                            {
-                                success = true
-                            })
-                        : Results.NotFound(
-                            new
-                            {
-                                error =
-                                    "GPIO input or device not found."
-                            });
+                    return TallyDatabase.RemoveInput(id, inputId)
+                        ? Results.Ok(new { success = true })
+                        : Results.NotFound(new { error = "GPIO input or device not found." });
                 });
 
-
-            gpioApi.MapPut(
-                "/{deviceId}/inputs/{inputId}/status",
-                (
-                    string deviceId,
-                    string inputId,
-                    GpioStatusRequest r) =>
+            deviceApi.MapPut("/{id}/inputs/{inputId}/status",
+                (string id, string inputId, GpioStatusRequest r) =>
                 {
-                    var changed =
-                        TallyDatabase.SetInputStatus(
-                            deviceId,
-                            inputId,
-                            r.Status);
+                    var changed = TallyDatabase.SetInputStatus(
+                        id, inputId, r.Status);
 
                     return changed == null
-                        ? Results.NotFound(
-                            new
-                            {
-                                error =
-                                    "GPIO input or device not found."
-                            })
+                        ? Results.NotFound(new { error = "GPIO input or device not found." })
                         : Results.Ok(changed);
                 });
-
 
             // ========================================================
             // OUTPUTS
             // ========================================================
 
-            gpioApi.MapGet(
-                "/{deviceId}/outputs",
-                (string deviceId) =>
-                {
-                    var d =
-                        TallyDatabase.GetDevice(
-                            deviceId);
+            deviceApi.MapGet("/{id}/outputs", (string id) =>
+            {
+                var d = TallyDatabase.GetDevice(id);
 
-                    return d == null
-                        ? Results.NotFound(
-                            new
-                            {
-                                error =
-                                    "GPIO device not found or device Type is not \"1\", \"2\", or \"7\"."
-                            })
-                        : Results.Ok(d.Outputs);
-                });
+                return d == null
+                    ? Results.NotFound(new { error = "GPIO device not found." })
+                    : Results.Ok(d.Outputs);
+            });
 
-
-            gpioApi.MapPost(
-                "/{deviceId}/outputs",
-                (
-                    string deviceId,
-                    GpioOutputRequest r) =>
+            deviceApi.MapPost("/{id}/outputs",
+                (string id, GpioOutputRequest r) =>
                 {
                     if (r.Port < 1)
-                    {
-                        return Results.BadRequest(
-                            new
-                            {
-                                error =
-                                    "Port must be greater than zero."
-                            });
-                    }
+                        return Results.BadRequest(new
+                        {
+                            error = "Port must be greater than zero."
+                        });
 
-                    var x =
-                        TallyDatabase.AddOutput(
-                            deviceId,
-                            r.Port,
-                            r.Name,
-                            r.Nickname);
+                    var x = TallyDatabase.AddOutput(
+                        id, r.Port, r.Name, r.Nickname);
 
                     return x == null
-                        ? Results.NotFound(
-                            new
-                            {
-                                error =
-                                    "GPIO device not found or device Type is not \"1\", \"2\", or \"7\"."
-                            })
-                        : Results.Ok(x);
-                });
-            // Delete one specific source-device route from an output.
-            //
-            // Example:
-            //
-            // DELETE /api/gpio/3/routes/output123/source/6470251a-fbab-4e58-881f-b38b8938508f
-            //
-            // This removes:
-            //
-            //     source device -> destination output
-            //
-            // without affecting any other source devices using
-            // the same destination output.
-            gpioApi.MapDelete(
-                "/{deviceId}/routes/{outputId}/source/{sourceDeviceId}",
-                (
-                    string deviceId,
-                    string outputId,
-                    string sourceDeviceId) =>
-                {
-                    return
-                        TallyDatabase.RemoveSourceRoute(
-                            deviceId,
-                            outputId,
-                            sourceDeviceId)
-                        ? Results.Ok(
-                            new
-                            {
-                                success = true
-                            })
-                        : Results.NotFound(
-                            new
-                            {
-                                error =
-                                    "GPIO source route, output, or device not found."
-                            });
-                });
-
-            gpioApi.MapPut(
-                "/{deviceId}/outputs/{outputId}",
-                (
-                    string deviceId,
-                    string outputId,
-                    GpioOutputRequest r) =>
-                {
-                    if (r.Port < 1)
-                    {
-                        return Results.BadRequest(
-                            new
-                            {
-                                error =
-                                    "Port must be greater than zero."
-                            });
-                    }
-
-                    var x =
-                        TallyDatabase.EditOutput(
-                            deviceId,
-                            outputId,
-                            r.Port,
-                            r.Name,
-                            r.Nickname);
-
-                    return x == null
-                        ? Results.NotFound(
-                            new
-                            {
-                                error =
-                                    "GPIO output or device not found."
-                            })
+                        ? Results.NotFound(new { error = "GPIO device not found." })
                         : Results.Ok(x);
                 });
 
-
-            gpioApi.MapDelete(
-                "/{deviceId}/outputs/{outputId}",
-                (
-                    string deviceId,
-                    string outputId) =>
+            deviceApi.MapPut("/{id}/outputs/{outputId}",
+                (string id, string outputId, GpioOutputRequest r) =>
                 {
-                    return
-                        TallyDatabase.RemoveOutput(
-                            deviceId,
-                            outputId)
-                        ? Results.Ok(
-                            new
-                            {
-                                success = true
-                            })
-                        : Results.NotFound(
-                            new
-                            {
-                                error =
-                                    "GPIO output or device not found."
-                            });
+                    if (r.Port < 1)
+                        return Results.BadRequest(new
+                        {
+                            error = "Port must be greater than zero."
+                        });
+
+                    var x = TallyDatabase.EditOutput(
+                        id, outputId, r.Port, r.Name, r.Nickname);
+
+                    return x == null
+                        ? Results.NotFound(new { error = "GPIO output or device not found." })
+                        : Results.Ok(x);
                 });
 
+            deviceApi.MapDelete("/{id}/outputs/{outputId}",
+                (string id, string outputId) =>
+                {
+                    return TallyDatabase.RemoveOutput(id, outputId)
+                        ? Results.Ok(new { success = true })
+                        : Results.NotFound(new { error = "GPIO output or device not found." });
+                });
 
             // ========================================================
             // ROUTES
             // ========================================================
 
-            // Get routes for one destination device.
-            gpioApi.MapGet(
-                "/{deviceId}/routes",
-                (string deviceId) =>
-                {
-                    var r =
-                        TallyDatabase.GetRoutes(
-                            deviceId);
+            deviceApi.MapGet("/{id}/routes", (string id) =>
+            {
+                return Results.Ok(TallyDatabase.GetRoutes(id));
+            });
 
-                    return Results.Ok(r);
+            // Global routes are admin-only.
+            gpioApi.MapGet("/routes/all", (HttpContext context) =>
+            {
+               
+
+                return Results.Ok(TallyDatabase.GetAllRoutes());
+            });
+
+            // Remove one specific source-device route.
+            deviceApi.MapDelete(
+                "/{id}/routes/{outputId}/source/{sourceDeviceId}",
+                (HttpContext context,
+                 string id,
+                 string outputId,
+                 string sourceDeviceId) =>
+                {
+                    if (!isAdmin(context) &&
+                        !canAccessDevice(context, sourceDeviceId))
+                    {
+                        return Results.Forbid();
+                    }
+
+                    return TallyDatabase.RemoveSourceRoute(
+                        id, outputId, sourceDeviceId)
+                        ? Results.Ok(new { success = true })
+                        : Results.NotFound(new
+                        {
+                            error = "GPIO source route, output, or device not found."
+                        });
                 });
 
-
-            // Get every route in the GPIO system.
-            gpioApi.MapGet(
-                "/routes/all",
-                () =>
-                    Results.Ok(
-                        TallyDatabase.GetAllRoutes()));
-
-
             // Create/update a route.
-            //
-            // Example:
-            //
-            // PUT /api/gpio/DEVICE-B/routes/OUTPUT-1
-            //
-            // {
-            //     "sourceDeviceId": "DEVICE-A",
-            //     "inputIds": ["INPUT-1"]
-            // }
-            //
-            gpioApi.MapPut(
-                "/{deviceId}/routes/{outputId}",
-                (
-                    string deviceId,
-                    string outputId,
-                    GpioRouteRequest r) =>
+            deviceApi.MapPut(
+                "/{id}/routes/{outputId}",
+                (HttpContext context,
+                 string id,
+                 string outputId,
+                 GpioRouteRequest r) =>
                 {
                     if (r == null)
-                    {
-                        return Results.BadRequest(
-                            new
-                            {
-                                error =
-                                    "Route request is required."
-                            });
-                    }
+                        return Results.BadRequest(new
+                        {
+                            error = "Route request is required."
+                        });
 
-                    if (string.IsNullOrWhiteSpace(
-                            r.SourceDeviceId))
-                    {
-                        return Results.BadRequest(
-                            new
-                            {
-                                error =
-                                    "SourceDeviceId is required."
-                            });
-                    }
+                    if (string.IsNullOrWhiteSpace(r.SourceDeviceId))
+                        return Results.BadRequest(new
+                        {
+                            error = "SourceDeviceId is required."
+                        });
 
-                    if (r.InputIds == null ||
-                        r.InputIds.Count == 0)
+                    if (r.InputIds == null || r.InputIds.Count == 0)
+                        return Results.BadRequest(new
+                        {
+                            error = "At least one input is required."
+                        });
+
+                    // The user must have permission for BOTH devices.
+                    if (!isAdmin(context) &&
+                        !canAccessDevice(context, r.SourceDeviceId))
                     {
-                        return Results.BadRequest(
-                            new
-                            {
-                                error =
-                                    "At least one input is required."
-                            });
+                        return Results.Forbid();
                     }
 
                     try
                     {
-                        var x =
-                            TallyDatabase.SetRoute(
-                                deviceId,
-                                outputId,
-                                r.SourceDeviceId,
-                                r.InputIds);
+                        var x = TallyDatabase.SetRoute(
+                            id,
+                            outputId,
+                            r.SourceDeviceId,
+                            r.InputIds);
 
                         return x == null
-                            ? Results.NotFound(
-                                new
-                                {
-                                    error =
-                                        "GPIO output, source device, or input not found."
-                                })
+                            ? Results.NotFound(new
+                            {
+                                error = "GPIO output, source device, or input not found."
+                            })
                             : Results.Ok(x);
                     }
                     catch (ArgumentException ex)
                     {
-                        return Results.BadRequest(
-                            new
-                            {
-                                error =
-                                    ex.Message
-                            });
+                        return Results.BadRequest(new { error = ex.Message });
                     }
                 });
 
-
-            // Delete all routes from an output.
-            gpioApi.MapDelete(
-                "/{deviceId}/routes/{outputId}",
-                (
-                    string deviceId,
-                    string outputId) =>
+            // Delete all routes going to one output.
+            deviceApi.MapDelete(
+                "/{id}/routes/{outputId}",
+                (HttpContext context, string id, string outputId) =>
                 {
-                    return
-                        TallyDatabase.RemoveRoute(
-                            deviceId,
-                            outputId)
-                        ? Results.Ok(
-                            new
-                            {
-                                success = true
-                            })
-                        : Results.NotFound(
-                            new
-                            {
-                                error =
-                                    "GPIO route, output, or device not found."
-                            });
-                });
+                    // Check all source devices before deleting their routes.
+                    if (!isAdmin(context))
+                    {
+                        var routes = TallyDatabase.GetRoutes(id)
+                            .Where(r => string.Equals(
+                                r.OutputId,
+                                outputId,
+                                StringComparison.OrdinalIgnoreCase));
 
+                        if (routes.Any(r =>
+                            !canAccessDevice(context, r.SourceDeviceId)))
+                        {
+                            return Results.Forbid();
+                        }
+                    }
+
+                    return TallyDatabase.RemoveRoute(id, outputId)
+                        ? Results.Ok(new { success = true })
+                        : Results.NotFound(new
+                        {
+                            error = "GPIO route, output, or device not found."
+                        });
+                });
 
             // ========================================================
             // REMOTE TALLY SOURCE
             // ========================================================
 
-            gpioApi.MapGet(
-                "/{deviceId}/remote-tally-source",
-                (string deviceId) =>
+            deviceApi.MapGet(
+                "/{id}/remote-tally-source",
+                (string id) =>
                 {
-                    var device =
-                        TallyDatabase.GetDevice(deviceId);
+                    var device = TallyDatabase.GetDevice(id);
 
                     if (device == null)
-                    {
                         return Results.NotFound(new
                         {
                             error = "GPIO device not found."
                         });
-                    }
 
                     return Results.Ok(device.RemoteTallySource);
                 });
 
-            gpioApi.MapPut(
-        "/{deviceId}/remote-tally-source",
-        (
-            string deviceId,
-            RemoteTallySourceRequest request) =>
-        {
-            if (request == null)
-            {
-                return Results.BadRequest(new
+            deviceApi.MapPut(
+                "/{id}/remote-tally-source",
+                (string id, RemoteTallySourceRequest request) =>
                 {
-                    error = "Request is required."
+                    if (request == null)
+                        return Results.BadRequest(new
+                        {
+                            error = "Request is required."
+                        });
+
+                    if (string.IsNullOrWhiteSpace(request.RemoteTallyId))
+                        return Results.BadRequest(new
+                        {
+                            error = "RemoteTallyId is required."
+                        });
+
+                    var device = TallyDatabase.SetRemoteTallySource(
+                        id, request.RemoteTallyId);
+
+                    if (device == null)
+                        return Results.NotFound(new
+                        {
+                            error = "Device not found or is not a type 7 device."
+                        });
+
+                    return Results.Ok(device);
                 });
-            }
 
-
-
-            if (string.IsNullOrWhiteSpace(
-                    request.RemoteTallyId))
-            {
-                return Results.BadRequest(new
+            deviceApi.MapDelete(
+                "/{id}/remote-tally-source",
+                (string id) =>
                 {
-                    error =
-                        "RemoteTallyId is required."
-                });
-            }
-
-            var device =
-                TallyDatabase.SetRemoteTallySource(
-                    deviceId,
-
-                    request.RemoteTallyId);
-
-            if (device == null)
-            {
-                return Results.NotFound(new
-                {
-                    error =
-                        "Device not found or is not a type 7 device."
-                });
-            }
-
-            return Results.Ok(device);
-        });
-
-            gpioApi.MapDelete(
-                "/{deviceId}/remote-tally-source",
-                (string deviceId) =>
-                {
-                    return TallyDatabase.ClearRemoteTallySource(deviceId)
+                    return TallyDatabase.ClearRemoteTallySource(id)
                         ? Results.Ok(new { success = true })
                         : Results.NotFound(new
                         {
@@ -3201,303 +3016,278 @@ namespace Iceburg.Database
                 (string? id, string? ip) =>
                     TallyLegacy.GetTallyStatus(id, ip));
 
-
             app.MapGet(
-            "/tally/getumd.php",
-            (string? id) =>
-                TallyLegacy.GetUmd(id));
-
+                "/tally/getumd.php",
+                (string? id) =>
+                    TallyLegacy.GetUmd(id));
 
             app.MapGet(
                 "/tally/settallystatus.php",
-                (
-                    string? id, string? ip,
-                    HttpRequest request) =>
-                    TallyLegacy.SetTallyStatus(
-                        id, ip,
-                        request.Query));
-
+                (string? id, string? ip, HttpRequest request) =>
+                    TallyLegacy.SetTallyStatus(id, ip, request.Query));
         }
     }
 
-
-    // =================================================================
-    // LEGACY API
-    // =================================================================
-
-
-
-    public static class TallyLegacy
-    {
-        /*
-         * Legacy API channel mapping
-         *
-         * ch1 -> first input
-         * ch2 -> second input
-         * ...
-         * ch8 -> eighth input
-         *
-         * The same ordering is used by gettallystatus.php and getumd.php.
-         */
-
-
-
-        public static IResult GetTallyStatus(
-            string? id,
-            string? ip)
-        {
-            if (!string.IsNullOrWhiteSpace(id))
-            {
-                Database.UpdateDevicePresence(id, ip);
-            }
-
-            var d = FindDevice(id);
-
-            if (d == null)
-            {
-                return Results.Json(new
-                {
-                    inputs = new Dictionary<string, bool>(),
-                    outputs = new Dictionary<string, bool>()
-                });
-            }
-
-            var inputs = OrderedInputs(d);
-            var outputs = OrderedOutputs(d);
-
-            return Results.Json(new
-            {
-                inputs = inputs.ToDictionary(
-                    x => x.Port.ToString(),
-                    x => x.Status),
-
-                outputs = outputs.ToDictionary(
-                    x => x.Port.ToString(),
-                    x => x.Status)
-            });
-        }
-
-        public static IResult GetUmd(string? id)
-        {
-            var d = FindDevice(id);
-
-            if (d == null)
-            {
-                return Results.Json(new
-                {
-                    inputs = new Dictionary<string, string>(),
-                    outputs = new Dictionary<string, string>()
-                });
-            }
-
-            var inputs = OrderedInputs(d);
-            var outputs = OrderedOutputs(d);
-
-            return Results.Json(new
-            {
-                inputs = inputs.ToDictionary(
-                    x => x.Port.ToString(),
-                    x => x.Nickname ?? ""),
-
-                outputs = outputs.ToDictionary(
-                    x => x.Port.ToString(),
-                    x => x.Nickname ?? "")
-            });
-        }
-
-
-        public static IResult SetTallyStatus(
-      string? id, string ip,
-      IQueryCollection query)
-        {
-            var d = FindDevice(id);
-
-            if (d == null)
-            {
-                return Results.NotFound(new
-                {
-                    error = "GPIO device not found."
-                });
-            }
-            if (!string.IsNullOrWhiteSpace(id))
-            {
-                Database.UpdateDevicePresence(id, ip);
-            }
-
-            var inputs = OrderedInputs(d);
-
-            foreach (var item in query)
-            {
-                if (!item.Key.StartsWith(
-                        "ch",
-                        StringComparison.OrdinalIgnoreCase))
-                {
-                    continue;
-                }
-
-                if (!int.TryParse(item.Key[2..], out var channel))
-                    continue;
-
-                var input = inputs.FirstOrDefault(
-                    x => x.Port == channel);
-
-                if (input == null)
-                    continue;
-
-                if (!TryParseStatus(
-                        item.Value.ToString(),
-                        out var status))
-                {
-                    continue;
-                }
-
-                if (string.IsNullOrWhiteSpace(input.InputId))
-                    continue;
-
-                TallyDatabase.SetInputStatus(
-                    d.DeviceId,
-                    input.InputId,
-                    status);
-            }
-
-            return Results.Ok(new
-            {
-                success = true
-            });
-        }
-
-
-        private static GpioDevice? FindDevice(string? id)
-        {
-            if (string.IsNullOrWhiteSpace(id))
-                return null;
-
-            return TallyDatabase
-                .GetDevices()
-                .FirstOrDefault(d =>
-                    string.Equals(
-                        d.DeviceId,
-                        id,
-                        StringComparison.OrdinalIgnoreCase));
-        }
-
-
-        /*
-         * Sort by Port so the legacy API has a deterministic
-         * channel order.
-         *
-         * For example:
-         *
-         * Port 21 -> channel 1
-         * Port 22 -> channel 2
-         * ...
-         */
-        private static List<GpioInput> OrderedInputs(
-            GpioDevice device)
-        {
-            return device.Inputs
-                .OrderBy(x => x.Port)
-                .ToList();
-        }
-
-
-        private static List<GpioOutput> OrderedOutputs(
-            GpioDevice device)
-        {
-            return device.Outputs
-                .OrderBy(x => x.Port)
-                .ToList();
-        }
-
-
-        private static bool TryParseStatus(
-            string value,
-            out bool status)
-        {
-            value = value.Trim();
-
-            if (value == "1" ||
-                value.Equals("true", StringComparison.OrdinalIgnoreCase) ||
-                value.Equals("on", StringComparison.OrdinalIgnoreCase))
-            {
-                status = true;
-                return true;
-            }
-
-            if (value == "0" ||
-                value.Equals("false", StringComparison.OrdinalIgnoreCase) ||
-                value.Equals("off", StringComparison.OrdinalIgnoreCase))
-            {
-                status = false;
-                return true;
-            }
-
-            status = false;
-            return false;
-        }
-
-
-        private static Dictionary<string, bool> EmptyBoolChannels()
-        {
-            return Enumerable.Range(1, 8)
-                .ToDictionary(
-                    x => x.ToString(),
-                    _ => false);
-        }
-
-
-        private static Dictionary<string, string> EmptyStringChannels()
-        {
-            return Enumerable.Range(1, 8)
-                .ToDictionary(
-            x => x.ToString(),
-                    _ => "");
-        }
-    }
-
-
-
-    // =================================================================
+    // ================================================================
     // REQUEST MODELS
-    // =================================================================
+    // ================================================================
 
-    public record GpioInputRequest(
-        int Port,
-        string Name,
-        string Nickname);
+    public class GpioInputRequest
+    {
+        public int Port { get; set; }
+        public string? Name { get; set; }
+        public string? Nickname { get; set; }
+    }
 
+    public class GpioOutputRequest
+    {
+        public int Port { get; set; }
+        public string? Name { get; set; }
+        public string? Nickname { get; set; }
+    }
 
-    public record GpioOutputRequest(
-        int Port,
-        string Name,
-        string Nickname);
+    public class GpioStatusRequest
+    {
+        public bool Status { get; set; }
+    }
 
+    public class GpioRouteRequest
+    {
+        public string? SourceDeviceId { get; set; }
+        public List<string>? InputIds { get; set; }
+    }
 
-    public record GpioStatusRequest(
-        bool Status);
-
-
-    public record RemoteTallySourceRequest(
-        string IpAddress,
-        int Port,
-        string RemoteTallyId);
-
-
-    /// <summary>
-    /// Cross-device routing request.
-    ///
-    /// SourceDeviceId:
-    ///     Device containing the source input(s).
-    ///
-    /// InputIds:
-    ///     One or more inputs belonging to SourceDeviceId.
-    ///
-    /// The destination device and output are supplied
-    /// in the URL.
-    /// </summary>
-    public record GpioRouteRequest(
-        string SourceDeviceId,
-        List<string> InputIds);
-
+    public class RemoteTallySourceRequest
+    {
+        public string? RemoteTallyId { get; set; }
+    }
 }
 
+
+public static class TallyLegacy
+{
+    /*
+     * Legacy API channel mapping
+     *
+     * ch1 -> first input
+     * ch2 -> second input
+     * ...
+     * ch8 -> eighth input
+     *
+     * The same ordering is used by gettallystatus.php and getumd.php.
+     */
+
+
+
+    public static IResult GetTallyStatus(
+        string? id,
+        string? ip)
+    {
+        if (!string.IsNullOrWhiteSpace(id))
+        {
+            Database.UpdateDevicePresence(id, ip);
+        }
+
+        var d = FindDevice(id);
+
+        if (d == null)
+        {
+            return Results.Json(new
+            {
+                inputs = new Dictionary<string, bool>(),
+                outputs = new Dictionary<string, bool>()
+            });
+        }
+
+        var inputs = OrderedInputs(d);
+        var outputs = OrderedOutputs(d);
+
+        return Results.Json(new
+        {
+            inputs = inputs.ToDictionary(
+                x => x.Port.ToString(),
+                x => x.Status),
+
+            outputs = outputs.ToDictionary(
+                x => x.Port.ToString(),
+                x => x.Status)
+        });
+    }
+
+    public static IResult GetUmd(string? id)
+    {
+        var d = FindDevice(id);
+
+        if (d == null)
+        {
+            return Results.Json(new
+            {
+                inputs = new Dictionary<string, string>(),
+                outputs = new Dictionary<string, string>()
+            });
+        }
+
+        var inputs = OrderedInputs(d);
+        var outputs = OrderedOutputs(d);
+
+        return Results.Json(new
+        {
+            inputs = inputs.ToDictionary(
+                x => x.Port.ToString(),
+                x => x.Nickname ?? ""),
+
+            outputs = outputs.ToDictionary(
+                x => x.Port.ToString(),
+                x => x.Nickname ?? "")
+        });
+    }
+
+
+    public static IResult SetTallyStatus(
+  string? id, string ip,
+  IQueryCollection query)
+    {
+        var d = FindDevice(id);
+
+        if (d == null)
+        {
+            return Results.NotFound(new
+            {
+                error = "GPIO device not found."
+            });
+        }
+        if (!string.IsNullOrWhiteSpace(id))
+        {
+            Database.UpdateDevicePresence(id, ip);
+        }
+
+        var inputs = OrderedInputs(d);
+
+        foreach (var item in query)
+        {
+            if (!item.Key.StartsWith(
+                    "ch",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            if (!int.TryParse(item.Key[2..], out var channel))
+                continue;
+
+            var input = inputs.FirstOrDefault(
+                x => x.Port == channel);
+
+            if (input == null)
+                continue;
+
+            if (!TryParseStatus(
+                    item.Value.ToString(),
+                    out var status))
+            {
+                continue;
+            }
+
+            if (string.IsNullOrWhiteSpace(input.InputId))
+                continue;
+
+            TallyDatabase.SetInputStatus(
+                d.DeviceId,
+                input.InputId,
+                status);
+        }
+
+        return Results.Ok(new
+        {
+            success = true
+        });
+    }
+
+
+    private static GpioDevice? FindDevice(string? id)
+    {
+        if (string.IsNullOrWhiteSpace(id))
+            return null;
+
+        return TallyDatabase
+            .GetDevices()
+            .FirstOrDefault(d =>
+                string.Equals(
+                    d.DeviceId,
+                    id,
+                    StringComparison.OrdinalIgnoreCase));
+    }
+
+
+    /*
+     * Sort by Port so the legacy API has a deterministic
+     * channel order.
+     *
+     * For example:
+     *
+     * Port 21 -> channel 1
+     * Port 22 -> channel 2
+     * ...
+     */
+    private static List<GpioInput> OrderedInputs(
+        GpioDevice device)
+    {
+        return device.Inputs
+            .OrderBy(x => x.Port)
+            .ToList();
+    }
+
+
+    private static List<GpioOutput> OrderedOutputs(
+        GpioDevice device)
+    {
+        return device.Outputs
+            .OrderBy(x => x.Port)
+            .ToList();
+    }
+
+
+    private static bool TryParseStatus(
+        string value,
+        out bool status)
+    {
+        value = value.Trim();
+
+        if (value == "1" ||
+            value.Equals("true", StringComparison.OrdinalIgnoreCase) ||
+            value.Equals("on", StringComparison.OrdinalIgnoreCase))
+        {
+            status = true;
+            return true;
+        }
+
+        if (value == "0" ||
+            value.Equals("false", StringComparison.OrdinalIgnoreCase) ||
+            value.Equals("off", StringComparison.OrdinalIgnoreCase))
+        {
+            status = false;
+            return true;
+        }
+
+        status = false;
+        return false;
+    }
+
+
+    private static Dictionary<string, bool> EmptyBoolChannels()
+    {
+        return Enumerable.Range(1, 8)
+            .ToDictionary(
+                x => x.ToString(),
+                _ => false);
+    }
+
+
+    private static Dictionary<string, string> EmptyStringChannels()
+    {
+        return Enumerable.Range(1, 8)
+            .ToDictionary(
+        x => x.ToString(),
+                _ => "");
+    }
+}

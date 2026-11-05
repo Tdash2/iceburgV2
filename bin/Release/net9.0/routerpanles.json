@@ -3,10 +3,836 @@
   "panels": [
     {
       "id": "pmw0270pu3uw33",
+      "name": "TX Routing",
+      "width": 1080,
+      "height": 480,
+      "buttons": [
+        {
+          "id": "pmw0z7d3hyb8u0",
+          "type": "route",
+          "label": "TX Routing",
+          "x": 20,
+          "y": 20,
+          "width": 1040,
+          "height": 40,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": []
+        },
+        {
+          "id": "pmw0zzgfht333u",
+          "type": "source",
+          "label": "CCU 1",
+          "x": 20,
+          "y": 80,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "9d5c2af8-f4ec-4b40-b3df-114897ee9d53",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw102ee6ybkks",
+          "type": "destination",
+          "label": "TX 1",
+          "x": 600,
+          "y": 80,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "9d5c2af8-f4ec-4b40-b3df-114897ee9d53",
+          "input": 0,
+          "output": 5,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11kdg1yjlto",
+          "type": "source",
+          "label": "CCU 2",
+          "x": 180,
+          "y": 80,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "9d5c2af8-f4ec-4b40-b3df-114897ee9d53",
+          "input": 2,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11kei75hhhc",
+          "type": "source",
+          "label": "CCU 3",
+          "x": 340,
+          "y": 80,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11kfqtzdzj2",
+          "type": "source",
+          "label": "CCU 4",
+          "x": 20,
+          "y": 160,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11kgzf9s97w",
+          "type": "source",
+          "label": "CCU 5",
+          "x": 180,
+          "y": 160,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11ki8901196",
+          "type": "source",
+          "label": "CCU 6",
+          "x": 340,
+          "y": 160,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11kl4koi2py",
+          "type": "source",
+          "label": "Video IO 9",
+          "x": 20,
+          "y": 240,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11n9qea801w",
+          "type": "source",
+          "label": "Video IO 10",
+          "x": 180,
+          "y": 240,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11nak20fx1h",
+          "type": "source",
+          "label": "Video IO 11",
+          "x": 340,
+          "y": 240,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11nbyrrmdl2",
+          "type": "source",
+          "label": "Video IO 12",
+          "x": 20,
+          "y": 320,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11nfok3mgyx",
+          "type": "source",
+          "label": "Video IO 13",
+          "x": 180,
+          "y": 320,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11ngpkdkxog",
+          "type": "source",
+          "label": "Video IO 14",
+          "x": 340,
+          "y": 320,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11o75mfvxhj",
+          "type": "source",
+          "label": "Decoder 1",
+          "x": 20,
+          "y": 400,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11oeik6cegn",
+          "type": "source",
+          "label": "Decoder 2",
+          "x": 180,
+          "y": 400,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11on73em1me",
+          "type": "source",
+          "label": "MV 140",
+          "x": 340,
+          "y": 400,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11vztxpp6ph",
+          "type": "destination",
+          "label": "TX 2",
+          "x": 760,
+          "y": 80,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11w0zqitbyu",
+          "type": "destination",
+          "label": "TX 3",
+          "x": 920,
+          "y": 80,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11w21uaf3t6",
+          "type": "destination",
+          "label": "TX 4",
+          "x": 600,
+          "y": 160,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11w3ach3kx5",
+          "type": "destination",
+          "label": "TX 5",
+          "x": 760,
+          "y": 160,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11w477vqh70",
+          "type": "destination",
+          "label": "TX 6",
+          "x": 920,
+          "y": 160,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11w6qc7d1zj",
+          "type": "destination",
+          "label": "TX 7",
+          "x": 600,
+          "y": 240,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11w8k5h03ms",
+          "type": "destination",
+          "label": "TX 8",
+          "x": 760,
+          "y": 240,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11wa5at4jj4",
+          "type": "destination",
+          "label": "TX 9",
+          "x": 920,
+          "y": 240,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11wbdzo9c0h",
+          "type": "destination",
+          "label": "TX 10",
+          "x": 760,
+          "y": 320,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11xdnqur45u",
+          "type": "route",
+          "label": "ALL TX TO BARS",
+          "x": 600,
+          "y": 400,
+          "width": 140,
+          "height": 60,
+          "color": "#e60000",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw11xj3p5gtor",
+          "type": "route",
+          "label": "TX 1-6 TO CCU",
+          "x": 920,
+          "y": 400,
+          "width": 140,
+          "height": 60,
+          "color": "#ff0000",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw2yblmtn64tl",
+          "type": "navigation",
+          "label": "New Route",
+          "x": 560,
+          "y": 320,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "9d5c2af8-f4ec-4b40-b3df-114897ee9d53",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "9d5c2af8-f4ec-4b40-b3df-114897ee9d53",
+              "input": 0,
+              "output": 0
+            }
+          ],
+          "targetPanelId": "pmw10wpa4fqs70"
+        }
+      ],
+      "scale": 1
+    },
+    {
+      "id": "pmw10wpa4fqs70",
       "name": "Router Panel 2",
       "width": 1000,
       "height": 600,
-      "buttons": []
+      "buttons": [
+        {
+          "id": "pmw10wsidcdist",
+          "type": "navigation",
+          "label": "New Route",
+          "x": 20,
+          "y": 20,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ],
+          "targetPanelId": "pmw0270pu3uw33"
+        },
+        {
+          "id": "pmw2cy6un62z64",
+          "type": "source",
+          "label": "CCU 1",
+          "x": 40,
+          "y": 100,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw2cy6un9mylt",
+          "type": "source",
+          "label": "CCU 2",
+          "x": 200,
+          "y": 100,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw2cy6unes7wf",
+          "type": "source",
+          "label": "CCU 3",
+          "x": 360,
+          "y": 100,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw2cy6uni66vu",
+          "type": "source",
+          "label": "CCU 4",
+          "x": 40,
+          "y": 180,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw2cy6untn62x",
+          "type": "source",
+          "label": "CCU 5",
+          "x": 200,
+          "y": 180,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw2cy6unb325w",
+          "type": "source",
+          "label": "CCU 6",
+          "x": 360,
+          "y": 180,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw2cy6uncuoat",
+          "type": "source",
+          "label": "Video IO 9",
+          "x": 40,
+          "y": 260,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw2cy6un59ig3",
+          "type": "source",
+          "label": "Video IO 10",
+          "x": 200,
+          "y": 260,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        },
+        {
+          "id": "pmw2cy6ungknc5",
+          "type": "source",
+          "label": "Video IO 11",
+          "x": 360,
+          "y": 260,
+          "width": 140,
+          "height": 60,
+          "color": "#2c2c2c",
+          "textColor": "#ffffff",
+          "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+          "input": 0,
+          "output": 0,
+          "routes": [
+            {
+              "deviceId": "b0313d43-a1d4-4b78-8264-f37b5794a2c9",
+              "input": 0,
+              "output": 0
+            }
+          ]
+        }
+      ],
+      "scale": 1
     }
   ]
 }

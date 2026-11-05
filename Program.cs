@@ -31,7 +31,7 @@ using Iceburg.Conversion.Iceburg.Testgen;
 using Microsoft.AspNetCore.Http.Features;
 
 bool debug = false;
-
+bool debuglogin = false;
 
 var routerPanelsFile = Path.Combine(AppContext.BaseDirectory, "routerpanles.json");
 var builder = WebApplication.CreateBuilder(args);
@@ -274,8 +274,9 @@ app.Use(async (context, next) =>
         var remoteIp =
             context.Connection.RemoteIpAddress;
 
-        if (debug)
+        if (debuglogin)
         {
+            TerminalOutputHub.Broadcast("Auto Login IP: " + remoteIp);
             Console.WriteLine("Auto Login IP: " + remoteIp);
         }
 
@@ -804,6 +805,39 @@ static bool IsAdmin(HttpContext context)
                StringComparison.OrdinalIgnoreCase);
 }
 
+static string? GetCurrentUserId(HttpContext context)
+{
+    return context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+}
+
+static bool CanAccessDevice(HttpContext context, string deviceId)
+{
+    // Admins retain full access.
+    if (IsAdmin(context))
+        return true;
+
+    var userId = GetCurrentUserId(context);
+    return !string.IsNullOrWhiteSpace(userId) &&
+           Database.IsDeviceAllowedForUser(userId, deviceId);
+}
+
+ static async ValueTask<object?> RequireAllowedDevice(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
+{
+    if (IsAdmin(context.HttpContext))
+        return await next(context);
+
+    // Device-specific groups below all use {id} in their route.
+    var deviceId = context.HttpContext.Request.RouteValues["id"]?.ToString();
+
+    if (string.IsNullOrWhiteSpace(deviceId) ||
+        !CanAccessDevice(context.HttpContext, deviceId))
+    {
+        return Results.Forbid();
+    }
+
+    return await next(context);
+}
+
 app.MapPut("/api/users/{id}", (string id, HttpContext httpContext, UserUpdateRequest request) =>
 {
     // --------------------------------------------------------
@@ -906,7 +940,9 @@ app.MapPut("/api/users/{id}", (string id, HttpContext httpContext, UserUpdateReq
         id,
         request.Username,
         role,
-        request.AutoLoginIps ?? new List<string>());
+        request.AutoLoginIps ?? new List<string>(),
+        request.NavOptions,
+        request.AllowedDevices);
 
 
     // --------------------------------------------------------
@@ -946,28 +982,14 @@ app.MapPost("/api/users", (HttpContext httpContext, UserCreateRequest request) =
         return Results.Forbid();
 
     if (string.IsNullOrWhiteSpace(request.Username))
-        return Results.BadRequest(new
-        {
-            error = "Username is required."
-        });
+        return Results.BadRequest(new { error = "Username is required." });
 
-    if (!Database.IsValidPasswordMaterial(
-            request.PasswordSalt,
-            request.PasswordHash))
-    {
-        return Results.BadRequest(new
-        {
-            error = "Invalid password."
-        });
-    }
+    if (!Database.IsValidPasswordMaterial(request.PasswordSalt, request.PasswordHash))
+        return Results.BadRequest(new { error = "Invalid password." });
 
-    string role =
-        string.Equals(
-            request.Role,
-            "Admin",
-            StringComparison.OrdinalIgnoreCase)
-            ? "Admin"
-            : "User";
+    string role = string.Equals(request.Role, "Admin", StringComparison.OrdinalIgnoreCase)
+        ? "Admin"
+        : "User";
 
     User? user = Database.AddUserWithPasswordHash(
         request.Username,
@@ -977,14 +999,21 @@ app.MapPost("/api/users", (HttpContext httpContext, UserCreateRequest request) =
         request.AutoLoginIps ?? new List<string>());
 
     if (user == null)
+        return Results.Conflict(new { error = "A user with that username already exists." });
+
+    // Persist the optional custom navigation and device permissions after creation.
+    if (!Database.UpdateUserNavigationAndDevices(
+            user.Id,
+            request.NavOptions,
+            request.AllowedDevices))
     {
-        return Results.Conflict(new
-        {
-            error = "A user with that username already exists."
-        });
+        Database.RemoveUser(user.Id);
+        return Results.Problem(
+            "The user could not be created because their navigation/device settings could not be saved.",
+            statusCode: StatusCodes.Status500InternalServerError);
     }
 
-    return Results.Ok(user);
+    return Results.Ok(Database.GetUserById(user.Id));
 })
 .RequireAuthorization();
 
@@ -1048,13 +1077,47 @@ app.MapGet("/api/me", (HttpContext httpContext) =>
     });
 })
 .RequireAuthorization();
- app.MapGet("/api/nav", async (HttpContext httpContext) =>
+app.MapGet("/api/nav", async (HttpContext httpContext) =>
 {
-    bool isadminuser = IsAdmin(httpContext);
+    var userId = GetCurrentUserId(httpContext);
+    var user = string.IsNullOrWhiteSpace(userId)
+        ? null
+        : Database.GetUserById(userId);
 
-    var navigation = new List<NavItem>
+    if (user == null)
+        return Results.Unauthorized();
+
+    var navigation = new List<NavItem>();
+    string iconlink = "/dashboard.html";
+    // If this user has configured custom navigation, use it.
+    // Otherwise retain the existing default Tally and Panels navigation.
+    if (user.NavOptions != null && user.NavOptions.Count > 0)
     {
-        new NavItem
+        iconlink = "";
+        foreach (var option in user.NavOptions)
+        {
+            if (option == null ||
+                string.IsNullOrWhiteSpace(option.Text) ||
+                string.IsNullOrWhiteSpace(option.Location))
+                continue;
+
+            var customLocation = option.Location.Trim();
+            if (!customLocation.StartsWith("/", StringComparison.Ordinal) ||
+                customLocation.StartsWith("//", StringComparison.Ordinal) ||
+                customLocation.StartsWith("/\\", StringComparison.Ordinal))
+                continue;
+
+            navigation.Add(new NavItem
+            {
+                Label = option.Text.Trim(),
+                Url = customLocation
+            });
+        }
+    }
+    else
+    {
+        iconlink = "/dashboard.html";
+        navigation.Add(new NavItem
         {
             Label = "Tally",
             Children = new List<NavItem>
@@ -1064,7 +1127,6 @@ app.MapGet("/api/me", (HttpContext httpContext) =>
                     Label = "Tally Grid",
                     Url = "/tallygrid.html"
                 },
-
                 new NavItem
                 {
                     Label = "Program Tally Hardware",
@@ -1075,7 +1137,6 @@ app.MapGet("/api/me", (HttpContext httpContext) =>
                             Label = "Iceburg Tally 8x8",
                             Url = "/upload8x8/"
                         },
-
                         new NavItem
                         {
                             Label = "Iceburg Tally Ross",
@@ -1084,72 +1145,48 @@ app.MapGet("/api/me", (HttpContext httpContext) =>
                     }
                 }
             }
+        });
+
+        var panels = await GetRouterPanels();
+        var settings = new NavItem
+        {
+            Label = "Panels",
+            Children = new List<NavItem>()
+        };
+
+        foreach (var panel in panels)
+        {
+            settings.Children.Add(new NavItem
+            {
+                Label = panel.Name ?? "Router Panel",
+                Url = $"/panle.html?id={Uri.EscapeDataString(panel.Id ?? "")}"
+            });
         }
 
-    };
-
-    var panels = await GetRouterPanels();
-
-    var settings = new NavItem
-    {
-        Label = "Panles",
-        Children = new List<NavItem>
-    {
-       
+        navigation.Add(settings);
     }
-    };
 
-    foreach (var panel in panels)
+    // Keep the administration menu exclusive to admins.
+    if (IsAdmin(httpContext))
     {
-        settings.Children.Add(new NavItem
+        navigation.Add(new NavItem
         {
-            Label = panel.Name ?? "Router Panel",
-            Url = $"/panle.html?id={Uri.EscapeDataString(panel.Id ?? "")}"
+            Label = "Settings",
+            Children = new List<NavItem>
+            {
+                new NavItem { Label = "Users", Url = "/admin/users.html" },
+                new NavItem { Label = "Devices", Url = "/admin/devices.html" },
+                new NavItem { Label = "Panels", Url = "/admin/routerpanels.html" },
+                new NavItem { Label = "Server Shell", Url = "/admin/debug.html" }
+            }
         });
     }
 
-    navigation.Add(settings);
-
-    // Only show Settings to Admin users
-    if (isadminuser)
+    return Results.Ok(new
     {
-        navigation.Add(
-            new NavItem
-            {
-                Label = "Settings",
-                Children = new List<NavItem>
-                {
-                    new NavItem
-                    {
-                        Label = "Users",
-                        Url = "/admin/users.html"
-                    },
-
-                    new NavItem
-                    {
-                        Label = "Devices",
-                        Url = "/admin/devices.html"
-                    },
-                     new NavItem
-                    {
-                        Label = "Panles",
-                        Url = "/admin/routerpanels.html"
-                    }, 
-                     
-                    new NavItem
-                    {
-                        Label = "Server Shell",
-                        Url = "/admin/debug.html"
-                    }
-                }
-            }
-        );
-    }
-
-
-
-
-    return Results.Ok(navigation);
+        navigation = navigation,
+        iconlink = iconlink
+    });
 })
 .RequireAuthorization();
 
@@ -1165,18 +1202,49 @@ app.MapGet("/access-denied", () =>
 
 var deviceApi = app.MapGroup("/api/device").RequireAuthorization();
 
-deviceApi.MapGet("/getdevices/", () =>
+deviceApi.MapGet("/getdevices/", (HttpContext context) =>
 {
-    return Iceburg.Database.Database.Devices;
+    var devices = Database.GetDevices()
+        .Where(device => CanAccessDevice(context, device.Id))
+        .Select(device => new
+        {
+            device.Id,
+            device.Name,
+            device.Type,
+            device.IpAddress,
+            device.AudioSorce,
+            device.LastSeen
+        })
+        .ToList();
+
+    return Results.Ok(devices);
 });
 
-deviceApi.MapGet("/getdevicestatus/{id}", async (string id) =>
+// Admin-only device selector used by the Managed Users page.
+deviceApi.MapGet("/getdevice", (HttpContext context) =>
 {
-    var devicetest =
-        new DeviceStatus();
+    if (!IsAdmin(context))
+        return Results.Forbid();
 
-    return await devicetest.Getstatus(id);
+    return Results.Ok(Database.GetDevices().Select(device => new
+    {
+        device.Id,
+        device.Name,
+        device.Type
+    }).ToList());
 });
+
+app.MapGet("/api/device/getdevicestatus/{id}", async (
+    string id,
+    HttpContext context) =>
+{
+    if (!CanAccessDevice(context, id))
+        return Results.Forbid();
+
+    var devicetest = new DeviceStatus();
+    return Results.Ok(await devicetest.Getstatus(id));
+})
+.RequireAuthorization();
 
 app.MapGet("/api/devices", (HttpContext httpContext) =>
 {
@@ -1311,7 +1379,7 @@ app.MapDelete("/api/devices/{id}", (string id, HttpContext httpContext) =>
     });
 })
 .RequireAuthorization();
-  async Task<List<RouterPanelInfo>> GetRouterPanels()
+async Task<List<RouterPanelInfo>> GetRouterPanels()
 {
     if (!File.Exists(routerPanelsFile))
         return new List<RouterPanelInfo>();
@@ -1439,7 +1507,6 @@ app.MapGet("/api/devices/type/", (HttpContext httpContext) =>
 // ============================================================
 var routerPanelsApi = app.MapGroup("/api/routerpanels").RequireAuthorization();
 
-
 routerPanelsApi.MapGet("/", async () =>
 {
     if (!File.Exists(routerPanelsFile))
@@ -1544,7 +1611,7 @@ static (bool Success, string? Error, JsonElement? Payload) ParseRouterCommandRes
 }
 
 // A virtual-panel button routes one Videohub input to one output.
-routerPanelsApi.MapPost("/route", async (HttpRequest request) =>
+routerPanelsApi.MapPost("/route", async (HttpRequest request, HttpContext context) =>
 {
     try
     {
@@ -1555,6 +1622,9 @@ routerPanelsApi.MapPost("/route", async (HttpRequest request) =>
             !TryReadRouteIndex(root, "input", out var input) ||
             !TryReadRouteIndex(root, "output", out var output))
             return Results.BadRequest(new { success = false, error = "A Videohub deviceId and non-negative integer input/output indexes are required." });
+
+        if (!CanAccessDevice(context, deviceId))
+            return Results.Forbid();
 
         var router = new BMD_Router();
         var raw = await router.setroute(deviceId, input.ToString(), output.ToString());
@@ -1572,7 +1642,7 @@ routerPanelsApi.MapPost("/route", async (HttpRequest request) =>
 
 // Execute { routes: [{ deviceId, input, output }, ...] } in order.
 // Validate the entire batch before sending any commands; indexes are zero-based.
-routerPanelsApi.MapPost("/routes", async (HttpRequest request) =>
+routerPanelsApi.MapPost("/routes", async (HttpRequest request, HttpContext context) =>
 {
     try
     {
@@ -1599,6 +1669,10 @@ routerPanelsApi.MapPost("/routes", async (HttpRequest request) =>
 
             validatedRoutes.Add((deviceId, input, output));
         }
+
+        // Authorize every target before executing any part of the batch.
+        if (validatedRoutes.Any(route => !CanAccessDevice(context, route.DeviceId)))
+            return Results.Forbid();
 
         var router = new BMD_Router();
         var results = new List<object>();
@@ -1640,7 +1714,7 @@ routerPanelsApi.MapPost("/routes", async (HttpRequest request) =>
     }
 });
 
-var routerApi = app.MapGroup("/api/router").RequireAuthorization();
+var routerApi = app.MapGroup("/api/router").RequireAuthorization().AddEndpointFilter(RequireAllowedDevice);
 
 routerApi.MapGet("/bmd/{id}/getinfo", async (string id) =>
 {
@@ -1705,11 +1779,15 @@ routerApi.MapGet("/bmd/{id}/setroute/{Input}/{Output}", (string id, string Input
 // TALLY / GPIO API
 // ============================================================
 
-TallyEndpoints.Map(app);
+TallyEndpoints.Map(
+    app,
+    RequireAllowedDevice,
+    IsAdmin,
+    CanAccessDevice);
 
 // X32 HTTP API endpoints
 
-var mixerapi = app.MapGroup("/api/mixer").RequireAuthorization();
+var mixerapi = app.MapGroup("/api/mixer").RequireAuthorization().AddEndpointFilter(RequireAllowedDevice);
 
 mixerapi.MapGet("/x32/{id}/getinfo", (string id) =>
 {
@@ -1763,7 +1841,7 @@ mixerapi.MapGet("/x32/{id}/getallnames", (string id) =>
 });
 
 //FS4-fs2 api
-var FS4api = app.MapGroup("/api/Conversion").RequireAuthorization();
+var FS4api = app.MapGroup("/api/Conversion").RequireAuthorization().AddEndpointFilter(RequireAllowedDevice);
 FS4api.MapGet("/ajafs4/{id}/info", (string id) =>
 {
     try
@@ -1957,7 +2035,7 @@ FS4api.MapGet("/ajafs4/{id}/GetMadiSorce/", (string id) =>
 });
 
 //FS4-fs2 api
-var FS2api = app.MapGroup("/api/Conversion").RequireAuthorization();
+var FS2api = app.MapGroup("/api/Conversion").RequireAuthorization().AddEndpointFilter(RequireAllowedDevice);
 FS2api.MapGet("/ajafs2/{id}/info", (string id) =>
 {
     try
@@ -2128,7 +2206,7 @@ FS2api.MapGet("/ajafs2/{id}/setparam/{paramId}/{value}", async (string id, strin
 });
 
 //og9905 api
-var og9905api = app.MapGroup("/api/Conversion").RequireAuthorization();
+var og9905api = app.MapGroup("/api/Conversion").RequireAuthorization().AddEndpointFilter(RequireAllowedDevice);
 og9905api.MapGet("/OG9905MPx/{id}/info", (string id) =>
 {
     try
@@ -2322,7 +2400,7 @@ og9905api.MapGet("/OG9905MPx/{id}/GetMadiSorce/", (string id) =>
 });
 
 
-var bndrouterpnale40 = app.MapGroup("/api/control").RequireAuthorization();
+var bndrouterpnale40 = app.MapGroup("/api/control").RequireAuthorization().AddEndpointFilter(RequireAllowedDevice);
 //BMD 40 Butotn Panle
 bndrouterpnale40.MapGet("/bmd/40panle/{id}/getinfo", (string id) =>
 {
@@ -2358,7 +2436,7 @@ bndrouterpnale40.MapGet("/bmd/40panle/{id}/setvideohub/{ip}",
 
 
 //BMD Smartscope
-var smarscopeapi = app.MapGroup("/api/monitors").RequireAuthorization();
+var smarscopeapi = app.MapGroup("/api/monitors").RequireAuthorization().AddEndpointFilter(RequireAllowedDevice);
 
 smarscopeapi.MapGet("/bmd/{id}/getinfo", (string id) => new BMD_SmartScope().GetInfo(id));
 
@@ -2376,7 +2454,7 @@ smarscopeapi.MapPost("/bmd/{id}/set", async (string id, HttpRequest request) =>
 });
 
 // Magewell Decoder
-var decoder = app.MapGroup("/api/decoding").RequireAuthorization();
+var decoder = app.MapGroup("/api/decoding").RequireAuthorization().AddEndpointFilter(RequireAllowedDevice);
 
 decoder.MapGet("/magewell/{id}", async (string id, HttpRequest request) =>
 {
@@ -2411,7 +2489,7 @@ decoder.MapPost("/magewell/{id}/hdmi-output", async (string id, HttpRequest requ
 
 //Aquastreams Playback
 
-var aquastreamsplayback = app.MapGroup("/api/aquastreams").RequireAuthorization();
+var aquastreamsplayback = app.MapGroup("/api/aquastreams").RequireAuthorization().AddEndpointFilter(RequireAllowedDevice);
 
 aquastreamsplayback.MapGet("/playback/{id}", async (string id) =>
 {
@@ -2456,7 +2534,7 @@ aquastreamsplayback.MapGet("/playback/{id}/setvol", async (string id, HttpReques
 });
 
 
-var testgen = app.MapGroup("/api/testgen").RequireAuthorization();
+var testgen = app.MapGroup("/api/testgen").RequireAuthorization().AddEndpointFilter(RequireAllowedDevice);
 //Icebug Testgen
 testgen.MapGet("/iceburg/{id}/image", async (string id) =>
 {
@@ -2536,7 +2614,8 @@ testgen.MapPost("/iceburg/{id}/mute", async (string id) =>
 
 
 var playback = app.MapGroup("/api/playback")
-    .RequireAuthorization();
+    .RequireAuthorization()
+    .AddEndpointFilter(RequireAllowedDevice);
 
 playback.MapHyperdeckEndpoints();
 
@@ -3069,13 +3148,17 @@ void RunIceburgCommand(string input, Action<string> write, bool fromWeb)
                     debug = true;
                     debugid = "";
                 }
-
+                if (parts[1] == "login")
+                {
+                    debuglogin = true;
+                }
 
 
                 if (parts[1] == "off")
                 {
                     debug = false;
                     debugid = "";
+                    debuglogin = false;
                 }
             }
             if (parts.Count > 2)
@@ -3260,28 +3343,26 @@ public class NavItem
 public class UserCreateRequest
 {
     public string Username { get; set; } = "";
-
     public string PasswordSalt { get; set; } = "";
-
     public string PasswordHash { get; set; } = "";
-
     public string Role { get; set; } = "User";
-
     public List<string>? AutoLoginIps { get; set; }
+
+    public List<Iceburg.Database.NavigationOption>? NavOptions { get; set; }
+    public List<string>? AllowedDevices { get; set; }
 }
 
 
 public class UserUpdateRequest
 {
     public string Username { get; set; } = "";
-
     public string? PasswordSalt { get; set; }
-
     public string? PasswordHash { get; set; }
-
     public string Role { get; set; } = "User";
-
     public List<string>? AutoLoginIps { get; set; }
+
+    public List<Iceburg.Database.NavigationOption>? NavOptions { get; set; }
+    public List<string>? AllowedDevices { get; set; }
 }
 
 public class DeviceTypeGroup

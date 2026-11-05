@@ -48,8 +48,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>nmllhf9cea</Fingerprint>
-      <Integrity>vz1L+pUzUlVU7oeh0WLxUFaJTWR/1zbk0GN90kb72uI=</Integrity>
+      <Fingerprint>ubppvn2mum</Fingerprint>
+      <Integrity>eiePlfdQliZnkOBN/9bXIVGNZ9s7Ccqjoj28BEZ597k=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\admin\routerpanels.html'))</OriginalItemSpec>
@@ -462,8 +462,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>ujhoafylvh</Fingerprint>
-      <Integrity>2rSf7RDNe7pQW9Xq9xsUb02CfEoXCx4KbzxCK9nVIV4=</Integrity>
+      <Fingerprint>9hpw4jfxk9</Fingerprint>
+      <Integrity>/Sg4zSdv4shVlv1venwIfCsgYpfDwcCrlPfF5orW/PQ=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\panle.html'))</OriginalItemSpec>

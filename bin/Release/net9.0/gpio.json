@@ -91,7 +91,7 @@
     },
     {
       "DeviceId": "63b83fda-e2da-4cf8-ae7d-9a40d919ce3f",
-      "Name": "Tally 2",
+      "Name": "Tally 2 route",
       "Nickname": "test Tally",
       "IpAddress": "1.1.1.1",
       "Inputs": [
@@ -188,7 +188,7 @@
       "DeviceId": "5ba6d3f0-4f29-411f-83af-4353bf2f9485",
       "Name": "Smart Scope",
       "Nickname": "Smart Scope",
-      "IpAddress": "10.176.73.44",
+      "IpAddress": "10.176.71.44",
       "Inputs": [],
       "Outputs": [
         {
@@ -221,7 +221,7 @@
     },
     {
       "DeviceId": "8c59a117-867e-4da3-b735-1b215f7e1bc1",
-      "Name": "desk router",
+      "Name": "desk",
       "Nickname": "desk router",
       "IpAddress": "192.168.127.18",
       "Inputs": [],

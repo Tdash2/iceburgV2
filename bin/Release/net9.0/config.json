@@ -12,7 +12,9 @@
       "PasswordSalt": "gLQ05wqfs32CDMtxKGDyrAXk5witOPMjEAnRlyXISlg=",
       "PasswordHash": "mMenU/729bHchMpmNmCyfTpcN\u002BPWEEnvYa/hLwfJ44k=",
       "Role": "Admin",
-      "AutoLoginIps": []
+      "AutoLoginIps": [],
+      "NavOptions": [],
+      "AllowedDevices": []
     },
     {
       "Id": "998ccd6a-e1f3-4ee9-95de-46f7172d1061",
@@ -20,7 +22,30 @@
       "PasswordSalt": "NTmujXZ5nHrN2ZnOIJTjsGfCOwz5zDcNL4pD/dgzGxA=",
       "PasswordHash": "Wwyz13G0CzXiGEpIXw6oZ6nv35Ave0tVsN8U5NDtgGs=",
       "Role": "Admin",
-      "AutoLoginIps": []
+      "AutoLoginIps": [],
+      "NavOptions": [],
+      "AllowedDevices": []
+    },
+    {
+      "Id": "24994a35-7254-454a-8799-55e0657e52cb",
+      "Username": "user",
+      "PasswordSalt": "04hQWewfne1ahaF3\u002BoYXTo2Sd\u002B31UTlgb6qu9SlDevg=",
+      "PasswordHash": "seUixpco02EzjFDhYN4qvGAOTM\u002BgQ1cfMPJVLb3PgUY=",
+      "Role": "User",
+      "AutoLoginIps": [],
+      "NavOptions": [
+        {
+          "Text": "Tally Grid",
+          "Location": "/tallygrid.html"
+        },
+        {
+          "Text": "TX Routing",
+          "Location": "/panle.html?id=pmw0270pu3uw33"
+        }
+      ],
+      "AllowedDevices": [
+        "0"
+      ]
     }
   ],
   "Devices": [
@@ -30,7 +55,7 @@
       "Type": "2",
       "IpAddress": "10.176.71.40",
       "AudioSorce": "",
-      "LastSeen": "",
+      "LastSeen": "11/4/2026 7:55:53 PM",
       "Username": "",
       "Password": ""
     },
@@ -48,7 +73,7 @@
       "Id": "1448adf3-9cb2-4cfb-be2e-d3dbd5971fd6",
       "Name": "HEX-3 X32",
       "Type": "3",
-      "IpAddress": "10.176.71.32",
+      "IpAddress": "10.176.73.32",
       "AudioSorce": "",
       "LastSeen": "",
       "Username": "",
@@ -66,7 +91,7 @@
     },
     {
       "Id": "63b83fda-e2da-4cf8-ae7d-9a40d919ce3f",
-      "Name": "Tally 2",
+      "Name": "Tally 2 route",
       "Type": "2",
       "IpAddress": "1.1.1.1",
       "AudioSorce": "",
@@ -90,7 +115,7 @@
       "Type": "7",
       "IpAddress": "47.225.212.98",
       "AudioSorce": "",
-      "LastSeen": "11/2/2026 8:19:19 PM",
+      "LastSeen": "11/4/2026 9:14:22 PM",
       "Username": "",
       "Password": ""
     },
@@ -98,7 +123,7 @@
       "Id": "5ba6d3f0-4f29-411f-83af-4353bf2f9485",
       "Name": "Smart Scope",
       "Type": "9",
-      "IpAddress": "10.176.73.44",
+      "IpAddress": "10.176.71.44",
       "AudioSorce": "",
       "LastSeen": "",
       "Username": "",
@@ -108,7 +133,7 @@
       "Id": "67ce9484-47bf-4468-ab75-76fe0d01cece",
       "Name": "aquastreams playback",
       "Type": "11",
-      "IpAddress": "10.7.0.56",
+      "IpAddress": "10.176.71.33",
       "AudioSorce": "",
       "LastSeen": "",
       "Username": "",
@@ -146,7 +171,7 @@
     },
     {
       "Id": "8c59a117-867e-4da3-b735-1b215f7e1bc1",
-      "Name": "desk router",
+      "Name": "desk",
       "Type": "1",
       "IpAddress": "192.168.127.18",
       "AudioSorce": "",

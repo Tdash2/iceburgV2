@@ -463,6 +463,8 @@ namespace Iceburg.Database
             foreach (var user in _data.Users)
             {
                 user.AutoLoginIps ??= new List<string>();
+                user.NavOptions ??= new List<NavigationOption>();
+                user.AllowedDevices ??= new List<string>();
             }
         }
 
@@ -623,7 +625,7 @@ namespace Iceburg.Database
                     PasswordHash =
                         Convert.ToBase64String(hash),
                     Role = role,
-                    AutoLoginIps= autoLoginIP
+                    AutoLoginIps = autoLoginIP
 
                 };
 
@@ -659,7 +661,9 @@ namespace Iceburg.Database
             string id,
             string username,
             string role,
-            List<string>? autoLoginIps = null)
+            List<string>? autoLoginIps = null,
+            List<NavigationOption>? navOptions = null,
+            List<string>? allowedDevices = null)
         {
             if (string.IsNullOrWhiteSpace(id))
                 return null;
@@ -718,6 +722,33 @@ namespace Iceburg.Database
                         .ToList()
                     ?? new List<string>();
 
+                // Update custom navigation only when supplied.
+                if (navOptions != null)
+                {
+                    user.NavOptions = navOptions
+                        .Where(option =>
+                            option != null &&
+                            !string.IsNullOrWhiteSpace(option.Text) &&
+                            !string.IsNullOrWhiteSpace(option.Location))
+                        .Select(option => new NavigationOption
+                        {
+                            Text = option.Text.Trim(),
+                            Location = option.Location.Trim()
+                        })
+                        .ToList();
+                }
+
+                // Update allowed device IDs only when supplied.
+                if (allowedDevices != null)
+                {
+                    user.AllowedDevices = allowedDevices
+                        .Where(deviceId =>
+                            !string.IsNullOrWhiteSpace(deviceId))
+                        .Select(deviceId => deviceId.Trim())
+                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                        .ToList();
+                }
+
                 // Save everything in one operation.
                 SaveInternal();
 
@@ -727,6 +758,82 @@ namespace Iceburg.Database
         }
 
 
+        /// <summary>
+        /// Updates a user's custom navigation options and allowed device IDs.
+        /// Pass an empty list to clear either setting.
+        /// </summary>
+        public static bool UpdateUserNavigationAndDevices(
+            string id,
+            List<NavigationOption>? navOptions,
+            List<string>? allowedDevices)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+                return false;
+
+            lock (_lock)
+            {
+                ReloadInternal();
+
+                User? user = _data.Users.FirstOrDefault(u => u.Id == id);
+                if (user == null)
+                    return false;
+
+                if (navOptions != null)
+                {
+                    user.NavOptions = navOptions
+                        .Where(option =>
+                            option != null &&
+                            !string.IsNullOrWhiteSpace(option.Text) &&
+                            !string.IsNullOrWhiteSpace(option.Location))
+                        .Select(option => new NavigationOption
+                        {
+                            Text = option.Text.Trim(),
+                            Location = option.Location.Trim()
+                        })
+                        .ToList();
+                }
+
+                if (allowedDevices != null)
+                {
+                    user.AllowedDevices = allowedDevices
+                        .Where(deviceId => !string.IsNullOrWhiteSpace(deviceId))
+                        .Select(deviceId => deviceId.Trim())
+                        .Distinct(StringComparer.OrdinalIgnoreCase)
+                        .ToList();
+                }
+
+                SaveInternal();
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Checks whether a user is explicitly allowed to access a device.
+        /// An empty AllowedDevices list means the user has no device access.
+        /// </summary>
+        public static bool IsDeviceAllowedForUser(
+            string userId,
+            string deviceId)
+        {
+            if (string.IsNullOrWhiteSpace(userId) ||
+                string.IsNullOrWhiteSpace(deviceId))
+                return false;
+
+            lock (_lock)
+            {
+                ReloadInternal();
+
+                User? user = _data.Users.FirstOrDefault(u => u.Id == userId);
+                if (user == null)
+                    return false;
+
+                return user.AllowedDevices?.Any(id =>
+                    string.Equals(
+                        id,
+                        deviceId,
+                        StringComparison.OrdinalIgnoreCase)) == true;
+            }
+        }
 
         // ============================================================
         // USERS - EDIT
@@ -1504,6 +1611,17 @@ namespace Iceburg.Database
 
                 AutoLoginIps =
                     user.AutoLoginIps?.ToList()
+                    ?? new List<string>(),
+
+                NavOptions = user.NavOptions?
+                    .Select(option => new NavigationOption
+                    {
+                        Text = option.Text,
+                        Location = option.Location
+                    })
+                    .ToList() ?? new List<NavigationOption>(),
+
+                AllowedDevices = user.AllowedDevices?.ToList()
                     ?? new List<string>()
             };
         }
@@ -1523,6 +1641,17 @@ namespace Iceburg.Database
 
                 AutoLoginIps =
                     user.AutoLoginIps?.ToList()
+                    ?? new List<string>(),
+
+                NavOptions = user.NavOptions?
+                    .Select(option => new NavigationOption
+                    {
+                        Text = option.Text,
+                        Location = option.Location
+                    })
+                    .ToList() ?? new List<NavigationOption>(),
+
+                AllowedDevices = user.AllowedDevices?.ToList()
                     ?? new List<string>()
             };
         }
@@ -1593,7 +1722,7 @@ namespace Iceburg.Database
         public string ApplicationName { get; set; }
             = "Iceburg";
 
-   
+
 
         public AppSettings Settings { get; set; }
             = new();
@@ -1645,7 +1774,28 @@ namespace Iceburg.Database
         public string Role { get; set; }
             = "User";
         public List<string> AutoLoginIps { get; set; }
-       = new();
+            = new();
+
+        /// <summary>
+        /// User-specific navigation links shown in the application navbar.
+        /// </summary>
+        public List<NavigationOption> NavOptions { get; set; }
+            = new();
+
+        /// <summary>
+        /// Device IDs this user is allowed to access.
+        /// </summary>
+        public List<string> AllowedDevices { get; set; }
+            = new();
+    }
+
+    /// <summary>
+    /// A custom navigation item for a user's navbar.
+    /// </summary>
+    public class NavigationOption
+    {
+        public string Text { get; set; } = "";
+        public string Location { get; set; } = "";
     }
 
     // ================================================================

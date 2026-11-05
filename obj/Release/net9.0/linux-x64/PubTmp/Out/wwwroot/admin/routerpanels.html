@@ -554,7 +554,16 @@
                         <label for="snapToGrid">Snap to grid</label>
                         <input type="checkbox" id="snapToGrid" checked>
                     </div>
-
+                    <div class="toolbar-item">
+                        <label for="canvasScale">Canvas scale</label>
+                        <select id="canvasScale">
+                            <option value="0.5">50%</option>
+                            <option value="0.75">75%</option>
+                            <option value="1" selected>100%</option>
+                            <option value="1.25">125%</option>
+                            <option value="1.5">150%</option>
+                        </select>
+                    </div>
                 </div>
 
 
@@ -581,6 +590,7 @@
                             <option value="source">Source button</option>
                             <option value="destination">Destination button</option>
                             <option value="route">Salvo</option>
+                            <option value="navigation">Navigation Button</option>
                         </select>
                     </div>
                     <div class="two">
@@ -610,6 +620,13 @@
                             <div class="field" id="outputField">
                                 <label for="routeOutput">Destination output</label><select id="routeOutput"></select>
                             </div>
+
+                        </div>
+                    </div>
+                    <div id="navigationFields" class="hidden">
+                        <div class="field">
+                            <label for="navigationPanel">Destination Panel</label>
+                            <select id="navigationPanel"></select>
                         </div>
                     </div>
                     <div id="multiRouteFields" class="hidden">
@@ -618,7 +635,7 @@
                                 <label>Routes to execute</label><button type="button" id="addMultiRoute" class="primary">+ Add Route</button>
                             </div>
                             <div id="multiRouteEditor" class="route-editor"></div>
-                            linear-gradient(#4a4a4a 1px, transparent 1px), linear-gradient(90deg, #4a4a4a 1px, transparent 1px)
+
                         </div>
                     </div>
                     <div class="two">
@@ -668,10 +685,25 @@
         const clamp = (n, min, max) => Math.max(min, Math.min(max, Number(n) || 0));
         function ensurePanel() {
             if (!data.panels.length) {
-                let p = { id: uid(), name: "Router Panel 1", width: 1000, height: 600, buttons: [] };
+                let p = {
+                    id: uid(),
+                    name: "Router Panel 1",
+                    width: 1000,
+                    height: 600,
+                    scale: 1,
+                    buttons: []
+                };
+
                 data.panels.push(p);
                 activePanelId = p.id;
             }
+
+            // Give older panels a default scale.
+            data.panels.forEach(p => {
+                if (p.scale === undefined || p.scale === null) {
+                    p.scale = 1;
+                }
+            });
         }
         function safeText(v) {
             return String(v ?? "");
@@ -836,6 +868,7 @@
             $("panelSelect").value = activePanelId;
             $("canvasWidth").value = p.width;
             $("canvasHeight").value = p.height;
+            $("canvasScale").value = String(p.scale || 1);
             $("canvasWidth").disabled = runMode;
             $("canvasHeight").disabled = runMode;
             $("canvas").style.width = p.width + "px";
@@ -904,6 +937,16 @@
                 }
                 cAppend(el);
             });
+            $("canvasScale").onchange = (e) => {
+                const p = panel();
+                if (!p) return;
+
+                p.scale = Number(e.target.value) || 1;
+
+                markChanged();
+
+                status(`Panel scale set to ${p.scale * 100}%.`);
+            };
             $("canvas").onclick = () => {
                 if (!runMode) {
                     selectedButtonId = null;
@@ -921,6 +964,9 @@
             $("mode").textContent = runMode ? "Edit Layout" : "Run Panel";
             $("mode").classList.toggle("run", !runMode);
             $("mode").classList.toggle("primary", runMode);
+            $("navigationPanel").onchange = (e) => {
+                updateButton("targetPanelId", e.target.value);
+            };
             if (b) {
                 $("buttonLabel").value = b.label || "";
                 $("buttonType").value = b.type || "route";
@@ -934,16 +980,50 @@
                 populateRouteSelectors(b);
                 renderMultiRouteEditor(b);
                 updateTypeFields(b);
+                populateNavigationPanels(b);
                 $("routeStatus").textContent = "";
                 $("routeStatus").className = "route-status";
             }
         }
         function updateTypeFields(b) {
             const type = b.type || "route";
-            $("singleRouteFields").classList.toggle("hidden", type === "route");
-            $("multiRouteFields").classList.toggle("hidden", type !== "route");
-            $("inputField").classList.toggle("hidden", type === "destination");
-            $("outputField").classList.toggle("hidden", type === "source");
+
+            $("singleRouteFields").classList.toggle(
+                "hidden",
+                type === "route" || type === "navigation"
+            );
+
+            $("multiRouteFields").classList.toggle(
+                "hidden",
+                type !== "route"
+            );
+
+            $("navigationFields").classList.toggle(
+                "hidden",
+                type !== "navigation"
+            );
+
+            $("inputField").classList.toggle(
+                "hidden",
+                type === "destination"
+            );
+
+            $("outputField").classList.toggle(
+                "hidden",
+                type === "source"
+            );
+        }
+        function populateNavigationPanels(b) {
+            const select = $("navigationPanel");
+
+            select.innerHTML = "";
+
+            data.panels.forEach(p => {
+                const option = new Option(p.name, p.id);
+                select.add(option);
+            });
+
+            select.value = b.targetPanelId || "";
         }
         function renderMultiRouteEditor(b) {
             const host = $("multiRouteEditor");
@@ -1155,7 +1235,9 @@
                     const id = deviceId(d);
                     $("routeDevice").add(new Option(`${deviceNameValue(d)} (BMD Router)`, id));
                 });
-                await refreshUsedRouterNames();
+                void refreshUsedRouterNames().then(() => {
+                    render();
+                });
                 status(`Loaded ${devices.length} Videohub device(s).`);
             } catch (e) {
                 $("routeDevice").innerHTML = '<option value="">Could not load devices</option>';
@@ -1224,6 +1306,7 @@
                 name: "Router Panel " + (data.panels.length + 1),
                 width: 1000,
                 height: 600,
+                scale: 1,
                 buttons: [],
             };
             data.panels.push(p);
@@ -1582,9 +1665,15 @@
                 if (!Array.isArray(data.panels)) data = { version: 1, panels: [] };
                 ensurePanel();
                 activePanelId = data.panels[0].id;
-                await loadDevices();
                 render();
+
                 autoSaveEnabled = true;
+
+                void loadDevices().then(() => {
+                    render();
+                    pollRouterRoutes();
+                });
+
                 pollLoop();
                 status("Loaded panels · auto-save enabled");
             } catch (e) {

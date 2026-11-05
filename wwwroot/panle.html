@@ -16,6 +16,7 @@
             background: #232323;
             color: #232323;
             font: 14px Arial, sans-serif;
+            overflow:clip;
         }
 
         .header {
@@ -53,14 +54,16 @@
             }
 
         .workspace {
-            padding: 20px;
-            overflow: auto;
+            
+            overflow: clip;
+            
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .canvas {
             position: relative;
-            
-            
             overflow: hidden;
             margin: 0 auto;
         }
@@ -72,7 +75,7 @@
             justify-content: center;
             text-align: center;
             padding: 5px;
-           border: 2px solid #444;
+            border: 2px solid #444;
             border-radius: 6px;
             color: white;
             font-weight: 700;
@@ -84,8 +87,8 @@
 
             .panel-button.current-destination {
                 border: 3px solid #65d6a2 !important;
-              
             }
+
             .panel-button:active {
                 filter: brightness(1.25);
             }
@@ -122,151 +125,180 @@
 
     <main class="workspace">
         <div id="loading" class="loading">Loading router panel...</div>
-        <div id="canvas" class="canvas" style="display:none"></div>
+        <div id="canvasStage" class="canvas-stage" style="display:none"><div id="canvas" class="canvas"></div></div>
     </main>
 
     <script>
-const $ = id => document.getElementById(id);
+        const $ = id => document.getElementById(id);
 
-let data = null;
-let activePanel = null;
+        let data = null;
+        let activePanel = null;
 
-let devices = [];
-let activeDestinationRouter = null;
-let activeDestinationOutput = null;
+        let devices = [];
+        let activeDestinationRouter = null;
+        let activeDestinationOutput = null;
 
-let liveRoutes = {};
-let labelCache = {};
-let polling = false;
+        let liveRoutes = {};
+        let labelCache = {};
+        let polling = false; 
 
-const panelId =
-    new URLSearchParams(location.search).get("id");
+        let routePollTimer = null;
 
-function status(message) {
-   
-}
+        const panelId =
+            new URLSearchParams(location.search).get("id");
 
-function deviceId(d) {
-    return String(d?.Id ?? d?.id ?? d?.ID ?? "");
-}
+        function status(message) {
 
-function deviceName(id) {
-    const d = devices.find(x => deviceId(x) === String(id));
-
-    return d?.Name || d?.name || id || "Unknown router";
-}
-
-function escapeHtml(v) {
-    return String(v ?? "").replace(
-        /[&<>"']/g,
-        c => ({
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': "&quot;",
-            "'": "&#39;"
-        })[c]
-    );
-}
-
-async function readJsonResponse(r) {
-    const t = await r.text();
-
-    try {
-        return JSON.parse(t);
-    } catch {
-        return { error: t || `HTTP ${r.status}` };
-    }
-}
-
-async function loadPanel() {
-    try {
-        if (!panelId) {
-            throw Error("No panel ID supplied.");
         }
 
-        const r = await fetch("/api/routerpanels/", {
-            cache: "no-store"
-        });
-
-        if (!r.ok) throw Error(`HTTP ${r.status}`);
-
-        data = await r.json();
-
-        activePanel = data.panels?.find(
-            p => p.id === panelId
-        );
-
-        if (!activePanel) {
-            throw Error("Router panel not found.");
+        function deviceId(d) {
+            return String(d?.Id ?? d?.id ?? d?.ID ?? "");
         }
 
-       
-        $("loading").style.display = "none";
+        function deviceName(id) {
+            const d = devices.find(x => deviceId(x) === String(id));
 
-        $("canvas").style.display = "block";
-        $("canvas").style.width = activePanel.width + "px";
-        $("canvas").style.height = activePanel.height + "px";
-
-        await loadDevices();
-        await loadNames();
-        render();
-
-        status("Panel loaded");
-
-        pollLoop();
-
-    } catch (e) {
-        $("loading").textContent = e.message;
-        status("Unable to load panel");
-    }
+            return d?.Name || d?.name || id || "Unknown router";
         }
-function getRouterLabel(deviceId, type, index) {
-    const names = labelCache[String(deviceId)] || {};
 
-    const labels = type === "input"
-        ? names.input_labels
-        : names.output_labels;
+        function escapeHtml(v) {
+            return String(v ?? "").replace(
+                /[&<>"']/g,
+                c => ({
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    '"': "&quot;",
+                    "'": "&#39;"
+                })[c]
+            );
+        }
 
-    if (labels && labels[index] !== undefined) {
-        return labels[index];
-    }
+        async function readJsonResponse(r) {
+            const t = await r.text();
 
-    return `${type === "input" ? "Input" : "Output"} ${index}`;
-}
+            try {
+                return JSON.parse(t);
+            } catch {
+                return { error: t || `HTTP ${r.status}` };
+            }
+        }
 
-async function loadDevices() {
-    try {
-        const r = await fetch("/api/device/getdevices/", {
-            cache: "no-store"
-        });
+        function applyPanelScale() {
+            const canvas = $("canvas");
+            const stage = $("canvasStage");
+            const p = activePanel;
 
-        if (!r.ok) throw Error("Device list unavailable");
+            if (!canvas || !stage || !p) return;
 
-        const payload = await r.json();
+            const scale = Number(p.scale) || 1;
 
-        devices = Array.isArray(payload)
-            ? payload
-            : payload.devices || [];
+            canvas.style.width = `${p.width}px`;
+            canvas.style.height = `${p.height}px`;
 
-    } catch {
-        devices = [];
-    }
-}
+            canvas.style.transform = `scale(${scale})`;
+            canvas.style.transformOrigin = "top left";
 
-function usedRouterIds() {
-    const ids = new Set();
+            stage.style.width = `${p.width * scale}px`;
+            stage.style.height = `${p.height * scale}px`;
+        }
 
-    activePanel.buttons.forEach(b => {
-        if (b.deviceId) ids.add(String(b.deviceId));
+        function showPanel(nextPanelId) {
+            const next = data?.panels?.find(p => p.id === nextPanelId);
+            if (!next) {
+                status("The destination panel could not be found.");
+                return;
+            }
+            activePanel = next;
+            activeDestinationRouter = null;
+            activeDestinationOutput = null;
+            liveRoutes = {};
+            const url = new URL(location.href);
+            url.searchParams.set("id", next.id);
+            history.replaceState({}, "", url);
+            render();
+            // Router metadata and live state are deliberately loaded after the panel is visible.
+            void loadNames();
+            void pollRouterRoutes();
+        }
 
-        (b.routes || []).forEach(r => {
-            if (r.deviceId) ids.add(String(r.deviceId));
-        });
-    });
+        async function loadPanel() {
+            try {
+                if (!panelId) throw Error("No panel ID supplied.");
+                const r = await fetch("/api/routerpanels/", { cache: "no-store" });
+                if (!r.ok) throw Error(`HTTP ${r.status}`);
+                data = await r.json();
+                activePanel = data.panels?.find(p => p.id === panelId);
+                if (!activePanel) throw Error("Router panel not found.");
 
-    return [...ids];
-}
+                $("loading").style.display = "none";
+                $("canvasStage").style.display = "block";
+                render();
+                applyPanelScale();
+
+                // Do not block first paint on slow device/name endpoints.
+                void (async () => {
+                    await loadDevices();
+                    await loadNames();
+                    render();
+                    void pollRouterRoutes();
+                })();
+
+                window.addEventListener("resize", applyPanelScale);
+                status("Panel loaded");
+                pollLoop();
+            } catch (e) {
+                $("loading").textContent = e.message;
+                status("Unable to load panel");
+            }
+        }
+
+        function getRouterLabel(deviceId, type, index) {
+            const names = labelCache[String(deviceId)] || {};
+
+            const labels = type === "input"
+                ? names.input_labels
+                : names.output_labels;
+
+            if (labels && labels[index] !== undefined) {
+                return labels[index];
+            }
+
+            return `${type === "input" ? "Input" : "Output"} ${index}`;
+        }
+
+        async function loadDevices() {
+            try {
+                const r = await fetch("/api/device/getdevices/", {
+                    cache: "no-store"
+                });
+
+                if (!r.ok) throw Error("Device list unavailable");
+
+                const payload = await r.json();
+
+                devices = Array.isArray(payload)
+                    ? payload
+                    : payload.devices || [];
+
+            } catch {
+                devices = [];
+            }
+        }
+
+        function usedRouterIds() {
+            const ids = new Set();
+
+            activePanel.buttons.forEach(b => {
+                if (b.deviceId) ids.add(String(b.deviceId));
+
+                (b.routes || []).forEach(r => {
+                    if (r.deviceId) ids.add(String(r.deviceId));
+                });
+            });
+
+            return [...ids];
+        }
 
         function getLiveRouteText(deviceId, output) {
             const routerRoutes = liveRoutes[deviceId];
@@ -292,13 +324,13 @@ function usedRouterIds() {
                 ? `Current: ${inputName}`
                 : `Current: Input ${input}`;
         }
-      
-       
 
-        
+
+
+
         async function pollLoop() {
             await pollRouterRoutes();
-            setTimeout(pollLoop, 2000);
+            routePollTimer = setTimeout(pollLoop, 2000);
         }
 
         function render() {
@@ -322,6 +354,7 @@ function usedRouterIds() {
             console.log("Rendering buttons:", activePanel.buttons);
 
             canvas.innerHTML = "";
+            applyPanelScale();
 
             activePanel.buttons.forEach(b => {
 
@@ -383,141 +416,150 @@ function usedRouterIds() {
 
         }
 
-function updateRouterBanner() {
-    if (!activeDestinationRouter) {
-       
+        function updateRouterBanner() {
+            if (!activeDestinationRouter) {
 
-        return;
-    }
 
-    const state = liveRoutes[activeDestinationRouter];
+                return;
+            }
 
-    const connection =
-        state === undefined
-            ? "Checking connection..."
-            : state === null
-                ? "OFFLINE"
-                : "Connected";
+            const state = liveRoutes[activeDestinationRouter];
 
-    $("routerBanner").innerHTML =
-        `Active destination router: ${escapeHtml(deviceName(activeDestinationRouter))}` +
-        `<small>${connection} · Output ${escapeHtml(activeDestinationOutput)}</small>`;
-}
+            const connection =
+                state === undefined
+                    ? "Checking connection..."
+                    : state === null
+                        ? "OFFLINE"
+                        : "Connected";
 
-async function executePanelButton(b, el) {
-    const type = b.type || "route";
-
-    if (type === "destination") {
-        if (!b.deviceId || !Number.isInteger(Number(b.output))) {
-            status("Destination button is not configured.");
-            return;
+            $("routerBanner").innerHTML =
+                `Active destination router: ${escapeHtml(deviceName(activeDestinationRouter))}` +
+                `<small>${connection} · Output ${escapeHtml(activeDestinationOutput)}</small>`;
         }
 
-        activeDestinationRouter = String(b.deviceId);
-        activeDestinationOutput = Number(b.output);
+        async function executePanelButton(b, el) {
+            const type = b.type || "route";
 
-        render();
+            if (type === "navigation" || type === "navigation".toLowerCase()) {
+                const targetId = String(b.targetPanelId || b.panelId || "");
+                if (!targetId) {
+                    status("This navigation button has no destination panel configured.");
+                    return;
+                }
+                showPanel(targetId);
+                status("Opened panel: " + (data.panels.find(p => p.id === targetId)?.name || targetId));
+                return;
+            }
 
-        status(
-            `Destination selected: Output ${b.output} on ${deviceName(b.deviceId)}`
-        );
+            if (type === "destination") {
+                if (!b.deviceId || !Number.isInteger(Number(b.output))) {
+                    status("Destination button is not configured.");
+                    return;
+                }
 
-        return;
-    }
+                activeDestinationRouter = String(b.deviceId);
+                activeDestinationOutput = Number(b.output);
 
-    if (type === "source") {
-        if (
-            !activeDestinationRouter ||
-            activeDestinationOutput === null
-        ) {
-            status("Select a destination first.");
-            return;
+                render();
+
+                status(
+                    `Destination selected: Output ${b.output} on ${deviceName(b.deviceId)}`
+                );
+
+                return;
+            }
+
+            if (type === "source") {
+                if (
+                    !activeDestinationRouter ||
+                    activeDestinationOutput === null
+                ) {
+                    status("Select a destination first.");
+                    return;
+                }
+
+                if (String(b.deviceId) !== activeDestinationRouter) {
+                    status("This source belongs to another router.");
+                    return;
+                }
+
+
+
+                try {
+                    await executeSingleRoute(
+                        b.deviceId,
+                        Number(b.input),
+                        activeDestinationOutput
+                    );
+
+                } catch (e) {
+                    status("Route failed: " + e.message);
+                }
+
+                return;
+            }
+
+            const routes = Array.isArray(b.routes) ? b.routes : [];
+
+            if (!routes.length) {
+                status("No routes configured.");
+                return;
+            }
+
+            
+
+            try {
+                el.style.opacity = ".5";
+
+                const r = await fetch("/api/routerpanels/routes", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ routes })
+                });
+
+                const result = await readJsonResponse(r);
+
+                if (!r.ok || result.success === false) {
+                    throw Error(result.error || `HTTP ${r.status}`);
+                }
+
+                status(
+                    `Completed ${result.completed ?? routes.length} of ${routes.length} routes.`
+                );
+
+            } catch (e) {
+                status("Multi-route failed: " + e.message);
+
+            } finally {
+                el.style.opacity = "1";
+            }
         }
 
-        if (String(b.deviceId) !== activeDestinationRouter) {
-            status("This source belongs to another router.");
-            return;
+        async function executeSingleRoute(deviceId, input, output) {
+            const r = await fetch("/api/routerpanels/route", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    deviceId,
+                    input,
+                    output
+                })
+            });
+
+            const result = await readJsonResponse(r);
+
+            if (!r.ok || result.success === false || result.error) {
+                throw Error(result.error || `HTTP ${r.status}`);
+            }
+
+            status("Route command sent successfully.");
+
+            await pollRouterRoutes();
         }
-
-      
-
-        try {
-            await executeSingleRoute(
-                b.deviceId,
-                Number(b.input),
-                activeDestinationOutput
-            );
-
-        } catch (e) {
-            status("Route failed: " + e.message);
-        }
-
-        return;
-    }
-
-    const routes = Array.isArray(b.routes) ? b.routes : [];
-
-    if (!routes.length) {
-        status("No routes configured.");
-        return;
-    }
-
-    if (!confirm(
-        `Execute ${routes.length} routes across the configured Videohubs?`
-    )) return;
-
-    try {
-        el.style.opacity = ".5";
-
-        const r = await fetch("/api/routerpanels/routes", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ routes })
-        });
-
-        const result = await readJsonResponse(r);
-
-        if (!r.ok || result.success === false) {
-            throw Error(result.error || `HTTP ${r.status}`);
-        }
-
-        status(
-            `Completed ${result.completed ?? routes.length} of ${routes.length} routes.`
-        );
-
-    } catch (e) {
-        status("Multi-route failed: " + e.message);
-
-    } finally {
-        el.style.opacity = "1";
-    }
-}
-
-async function executeSingleRoute(deviceId, input, output) {
-    const r = await fetch("/api/routerpanels/route", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            deviceId,
-            input,
-            output
-        })
-    });
-
-    const result = await readJsonResponse(r);
-
-    if (!r.ok || result.success === false || result.error) {
-        throw Error(result.error || `HTTP ${r.status}`);
-    }
-
-    status("Route command sent successfully.");
-
-    await pollRouterRoutes();
-}
 
         async function loadNames() {
             await Promise.all(
@@ -579,7 +621,8 @@ async function executeSingleRoute(deviceId, input, output) {
             }
         }
 
-loadPanel();
+       
+        loadPanel();
     </script>
 
 </body>
