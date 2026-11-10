@@ -1,0 +1,2225 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Virtual Router Panels | Iceburg</title>
+    <script src="/header.js"></script>
+    <style>
+
+
+        :root {
+            --bg: #232323;
+            --panel: #1B1B1B;
+            --panel2: #24282d;
+            --line: #363c43;
+            --text: #f2f4f6;
+            --muted: #a5adb6;
+            --blue: #399cff;
+            --green: #42b983;
+            --red: #d66b72;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font: 14px Arial, sans-serif;
+        }
+
+        /* MAIN PAGE */
+        .shell {
+            width: 100%;
+            max-width: 1550px;
+            height: 100vh;
+            height: 92dvh;
+            margin: 0 auto;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* HEADER */
+        .top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+            margin-bottom: 16px;
+        }
+
+            .top h1 {
+                font-size: 24px;
+                margin: 0 auto 0 0;
+            }
+
+        .btn,
+        button {
+            background: #30363d;
+            color: white;
+            border: 1px solid #48515b;
+            border-radius: 6px;
+            padding: 9px 12px;
+            cursor: pointer;
+           
+        }
+
+        .primary {
+            background: #1676ce;
+            border-color: #2589e4;
+        }
+
+        .danger {
+            background: #71383b;
+            border-color: #965257;
+        }
+
+        .run {
+            background: #176b49;
+            border-color: #25966a;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        select,
+        input {
+            background: #111;
+            color: white;
+            border: 1px solid #414951;
+            border-radius: 5px;
+            padding: 9px;
+            min-width: 0;
+        }
+
+        .panel-select {
+            min-width: 190px;
+        }
+
+        .status {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* MAIN TWO-COLUMN LAYOUT */
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 310px;
+            gap: 16px;
+            flex: 1;
+            min-height: 0;
+            align-items: stretch;
+            overflow: hidden;
+        }
+
+            .layout > section {
+                display: flex;
+                flex-direction: column;
+                min-width: 0;
+                min-height: 0;
+                overflow: hidden;
+            }
+
+
+        /* TOOLBAR */
+        .toolbar {
+            background: var(--panel);
+          
+            padding: 12px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+            flex-shrink: 0;
+        }
+
+        /* Every toolbar control uses the same vertical layout */
+        .toolbar-item {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-end;
+        }
+
+            /* All labels have exactly the same height */
+            .toolbar-item label,
+            .toolbar-label-spacer {
+                display: block;
+                height: 19px;
+                line-height: 19px;
+                margin-bottom: 5px;
+                white-space: nowrap;
+            }
+
+        /* Add Button reserves the same label space */
+        .toolbar-label-spacer {
+            width: 1px;
+        }
+
+        /* Controls share the same bottom alignment */
+        .toolbar-item input,
+        .toolbar-item select,
+        .toolbar-item button {
+            height: 36px;
+            margin: 0;
+        }
+
+        /* Checkbox alignment */
+        .toolbar-check {
+            align-items: center;
+        }
+
+            .toolbar-check input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+                margin: 9px 0;
+                align-self: center;
+            }
+
+
+        .snap-options {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hint {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* WORKSPACE */
+        .workspace {
+            background: var(--panel);
+            border: 1px solid var(--line);
+           
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* CANVAS SCROLLING CONTAINER */
+        .canvas-wrap {
+            padding: 18px;
+            flex: 1;
+            min-height: 0;
+            width: 100%;
+            overflow: auto;
+            overscroll-behavior: contain;
+        }
+
+        /* ACTUAL DESIGN CANVAS */
+        .canvas {
+            position: relative;
+            width: 1000px;
+            height: 600px;
+            flex-shrink: 0;
+            background-color: #232323;
+            background-image: linear-gradient(#4a4a4a 1px, transparent 1px), linear-gradient(90deg, #4a4a4a 1px, transparent 1px);
+            background-size: 20px 20px;
+            border: 1px solid #59616b;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        /* PANEL BUTTONS */
+        .panel-button {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 5px;
+            border: 2px solid #e7e7e7;
+            border-radius: 6px;
+            color: white;
+            font-weight: 700;
+            cursor: grab;
+            user-select: none;
+            overflow: hidden;
+            white-space: pre-wrap;
+            word-break: break-word;
+            background: #2c2c2c;
+        }
+
+            .panel-button .resize-handle {
+                position: absolute;
+                width: 12px;
+                height: 12px;
+                background: #ffd166;
+                border: 1px solid #111;
+                border-radius: 3px;
+                right: 0;
+                bottom: 0;
+                cursor: nwse-resize;
+                display: none;
+            }
+
+            .panel-button.selected .resize-handle {
+                display: block;
+            }
+
+            .panel-button.selected {
+                outline: 2px solid #ffd166;
+                outline-offset: 2px;
+                z-index: 5;
+            }
+
+            .panel-button.disabled {
+                opacity: 0.22;
+                filter: grayscale(1);
+                cursor: not-allowed !important;
+                border-style: dashed;
+            }
+
+            .panel-button .live-route {
+                display: block;
+                font-size: 11px;
+                font-weight: 400;
+                opacity: 0.9;
+                margin-top: 4px;
+            }
+
+            .panel-button.current-source {
+                outline: 3px solid #65d6a2;
+                outline-offset: 1px;
+            }
+
+            .panel-button:active {
+                cursor: grabbing;
+            }
+
+        /* INSPECTOR */
+        .inspector {
+            background: var(--panel);
+       
+            padding: 15px;
+            position: relative;
+            height: 100%;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            overscroll-behavior: contain;
+        }
+
+            .inspector h2 {
+                font-size: 17px;
+                margin: 0 0 14px;
+            }
+
+        /* INSPECTOR FIELDS */
+        .field {
+            margin-bottom: 12px;
+        }
+
+            .field input,
+            .field select {
+                width: 100%;
+            }
+
+        .two {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .empty {
+            color: var(--muted);
+            padding: 24px;
+            text-align: center;
+        }
+
+        /* ROUTE EDITOR */
+        .route-editor {
+            display: grid;
+            gap: 9px;
+        }
+
+        .route-row {
+            display: grid;
+            gap: 6px;
+            align-items: end;
+            padding: 9px;
+            background: #373737;
+            
+        }
+
+            .route-row label {
+                display: block;
+                font-size: 11px;
+                color: var(--muted);
+                margin-bottom: 4px;
+            }
+
+            .route-row select {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .route-row button {
+                padding: 7px 9px;
+            }
+
+        .route-editor-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        /* STATUS AND NOTICES */
+        .mode-note {
+            padding: 9px 11px;
+            border-radius: 6px;
+            background: #252b31;
+            color: #c6d0d9;
+            margin-bottom: 12px;
+            flex-shrink: 0;
+        }
+
+        .route-status {
+            font-size: 12px;
+            margin-top: 8px;
+            min-height: 18px;
+        }
+
+            .route-status.ok {
+                color: #65d6a2;
+            }
+
+            .route-status.err {
+                color: #ff9298;
+            }
+
+        .router-banner {
+            padding: 12px 15px;
+            border: 1px solid #3979a8;
+            background: #172b3b;
+            border-radius: 7px;
+            margin: 0 0 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+            .router-banner small {
+                display: block;
+                color: #a9c8df;
+                font-weight: 400;
+                margin-top: 4px;
+            }
+
+        .type-chip {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #d6e8f7;
+            margin-bottom: 4px;
+        }
+
+        .route-list {
+            width: 100%;
+            min-height: 150px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid var(--line);
+            margin: 16px 0;
+        }
+
+        /* SMALLER SCREENS */
+        @media (max-width: 950px) {
+            .shell {
+                padding: 10px;
+            }
+
+            .layout {
+                grid-template-columns: minmax(0, 1fr);
+                grid-template-rows: minmax(250px, 1fr) minmax(180px, 0.7fr);
+                gap: 10px;
+            }
+
+            .inspector {
+                width: 100%;
+                height: 100%;
+            }
+
+            .canvas-wrap {
+                padding: 10px;
+            }
+
+            .toolbar {
+                gap: 8px;
+            }
+        }
+
+        /* VERY SMALL SCREENS */
+        @media (max-width: 550px) {
+            .top {
+                gap: 6px;
+            }
+
+                .top h1 {
+                    width: 100%;
+                    font-size: 20px;
+                    margin-bottom: 5px;
+                }
+
+                .top button,
+                .top select {
+                    font-size: 12px;
+                    padding: 7px;
+                }
+
+            .layout {
+                grid-template-rows: minmax(220px, 1fr) minmax(180px, 0.8fr);
+            }
+
+            .two {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <div class="top">
+            <h1>Virtual Router Panels</h1>
+            <select id="panelSelect" class="panel-select" aria-label="Select panel"></select><button id="newPanel">+ New Panel</button><button id="renamePanel">
+                Rename
+            </button><button id="deletePanel" class="danger">
+                Delete Panel
+            </button><button id="save" class="primary">Save Now</button><button id="mode" class="run">
+                Run Panel
+            </button><span id="status" class="status">Loading…</span>
+        </div>
+        <div class="layout">
+            <section>
+                <div class="toolbar" id="designToolbar">
+
+                    <div class="toolbar-item">
+                        <span class="toolbar-label-spacer"></span>
+                        <button id="addButton" class="primary">+ Add Button</button>
+                    </div>
+
+                    <div class="toolbar-item">
+                        <label for="gridSize">Grid size</label>
+                        <select id="gridSize">
+                            <option value="5">5px</option>
+                            <option value="10">10px</option>
+                            <option value="20" selected>20px</option>
+                            <option value="40">40px</option>
+                            <option value="50">50px</option>
+                        </select>
+                    </div>
+
+                    <div class="toolbar-item">
+                        <label for="canvasWidth">Panel width (px)</label>
+                        <input id="canvasWidth" type="number" min="300" max="3000" value="1000" />
+                    </div>
+
+                    <div class="toolbar-item">
+                        <label for="canvasHeight">Panel height (px)</label>
+                        <input id="canvasHeight" type="number" min="200" max="2000" value="600" />
+                    </div>
+
+                    <div class="toolbar-item toolbar-check">
+                        <label for="snapToGrid">Snap to grid</label>
+                        <input type="checkbox" id="snapToGrid" checked>
+                    </div>
+                    <div class="toolbar-item">
+                        <label for="canvasScale">Canvas scale</label>
+                        <select id="canvasScale">
+                            <option value="0.5">50%</option>
+                            <option value="0.75">75%</option>
+                            <option value="1" selected>100%</option>
+                            <option value="1.25">125%</option>
+                            <option value="1.5">150%</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="mode-note hidden" id="runNote">
+                    Run mode is active. Select a destination to establish the active router, then select a source on
+                    that router. All-in-one buttons can route across multiple routers.
+                </div>
+                <div id="routerBanner" class="router-banner hidden">
+                    No destination selected<small>Select a destination button to show the active Videohub.</small>
+                </div>
+                <div class="workspace">
+                    <div class="canvas-wrap"><div id="canvas" class="canvas"></div></div>
+                </div>
+            </section>
+            <aside class="inspector">
+                <h2>Button properties</h2>
+                <div id="noSelection" class="empty">Select a button or add a new one.</div>
+                <div id="properties" hidden>
+                    <div class="field">
+                        <label for="buttonLabel">Button label</label><input id="buttonLabel" type="text" />
+                    </div>
+                    <div class="field">
+                        <label for="buttonType">Button type</label><select id="buttonType">
+                            <option value="source">Source button</option>
+                            <option value="destination">Destination button</option>
+                            <option value="route">Salvo</option>
+                            <option value="navigation">Navigation Button</option>
+                        </select>
+                    </div>
+                    <div class="two">
+                        <div class="field">
+                            <label for="buttonX">X position</label><input id="buttonX" type="number" min="0" />
+                        </div>
+                        <div class="field">
+                            <label for="buttonY">Y position</label><input id="buttonY" type="number" min="0" />
+                        </div>
+                        <div class="field">
+                            <label for="buttonW">Width</label><input id="buttonW" type="number" min="20" />
+                        </div>
+                        <div class="field">
+                            <label for="buttonH">Height</label><input id="buttonH" type="number" min="20" />
+                        </div>
+                    </div>
+                    <div id="singleRouteFields">
+                        <div class="field">
+                            <label for="routeDevice">Associated Videohub</label><select id="routeDevice">
+                                <option value="">Loading devices…</option>
+                            </select>
+                        </div>
+                        <div class="two">
+                            <div class="field" id="inputField">
+                                <label for="routeInput">Source input</label><select id="routeInput"></select>
+                            </div>
+                            <div class="field" id="outputField">
+                                <label for="routeOutput">Destination output</label><select id="routeOutput"></select>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div id="navigationFields" class="hidden">
+                        <div class="field">
+                            <label for="navigationPanel">Destination Panel</label>
+                            <select id="navigationPanel"></select>
+                        </div>
+                    </div>
+                    <div id="multiRouteFields" class="hidden">
+                        <div class="field">
+                            <div class="route-editor-head">
+                                <label>Routes to execute</label><button type="button" id="addMultiRoute" class="primary">+ Add Route</button>
+                            </div>
+                            <div id="multiRouteEditor" class="route-editor"></div>
+
+                        </div>
+                    </div>
+                    <div class="two">
+                        <div class="field">
+                            <label for="buttonColor">Button color</label><input id="buttonColor" type="color" value="#285c83" />
+                        </div>
+                        <div class="field">
+                            <label for="buttonTextColor">Text color</label><input id="buttonTextColor" type="color" value="#ffffff" />
+                        </div>
+                    </div>
+                    <div class="route-status" id="routeStatus"></div>
+                    <button id="deleteButton" class="danger">Delete Button</button>
+                </div>
+                <hr />
+               
+            </aside>
+        </div>
+    </div>
+    <script>
+        const $ = (id) => document.getElementById(id);
+
+        let data = { version: 1, panels: [] },
+            activePanelId = null,
+            selectedButtonId = null,
+            selectedButtonIds = new Set(),
+            selectionAnchorId = null,
+            drag = null,
+            runMode = false,
+            devices = [],
+            labelCache = {},
+            activeDestinationRouter = null,
+            activeDestinationOutput = null,
+            selectedSource = null,
+            liveRoutes = {},
+            polling = false,
+            autoSaveTimer = null,
+            saveInFlight = false,
+            saveAgain = false,
+            autoSaveEnabled = false;
+
+        let copiedButtons = [];
+        let resize = null;
+
+        const status = (s) => ($("status").textContent = s);
+
+        function markChanged() {
+            if (!autoSaveEnabled) return;
+            clearTimeout(autoSaveTimer);
+            status("Unsaved changes…");
+            autoSaveTimer = setTimeout(savePanels, 700);
+        }
+
+        const uid = () =>
+            "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+        const panel = () => data.panels.find((p) => p.id === activePanelId);
+
+        const button = () =>
+            panel()?.buttons.find((b) => b.id === selectedButtonId);
+
+        const clamp = (n, min, max) =>
+            Math.max(min, Math.min(max, Number(n) || 0));
+
+        function ensurePanel() {
+            if (!data.panels.length) {
+                const p = {
+                    id: uid(),
+                    name: "Router Panel 1",
+                    width: 1000,
+                    height: 600,
+                    scale: 1,
+                    buttons: []
+                };
+
+                data.panels.push(p);
+                activePanelId = p.id;
+            }
+
+            data.panels.forEach((p) => {
+                if (p.scale === undefined || p.scale === null) {
+                    p.scale = 1;
+                }
+            });
+        }
+
+        function safeText(v) {
+            return String(v ?? "");
+        }
+
+        function snap(value) {
+            if (!$("snapToGrid").checked) return value;
+
+            const grid = Number($("gridSize").value) || 20;
+            return Math.round(value / grid) * grid;
+        }
+
+        function getSelectedButtons() {
+            const p = panel();
+            if (!p) return [];
+
+            return p.buttons.filter((b) => selectedButtonIds.has(b.id));
+        }
+
+        function setSelection(ids, anchorId = null) {
+            const p = panel();
+            if (!p) return;
+
+            const validIds = new Set(
+                p.buttons
+                    .filter((b) => ids.has(b.id))
+                    .map((b) => b.id)
+            );
+
+            selectedButtonIds = validIds;
+            selectedButtonId = [...validIds].pop() || null;
+            selectionAnchorId = anchorId || selectedButtonId;
+        }
+
+        function selectButton(id, event = {}) {
+            const p = panel();
+            if (!p) return;
+
+            const exists = p.buttons.some((b) => b.id === id);
+            if (!exists) return;
+
+            const toggle = event.ctrlKey || event.metaKey;
+            const range = event.shiftKey;
+
+            if (range && selectionAnchorId) {
+                const anchorIndex = p.buttons.findIndex(
+                    (b) => b.id === selectionAnchorId
+                );
+                const clickedIndex = p.buttons.findIndex(
+                    (b) => b.id === id
+                );
+
+                if (anchorIndex !== -1 && clickedIndex !== -1) {
+                    const start = Math.min(anchorIndex, clickedIndex);
+                    const end = Math.max(anchorIndex, clickedIndex);
+
+                    const ids = new Set(
+                        p.buttons
+                            .slice(start, end + 1)
+                            .map((b) => b.id)
+                    );
+
+                    if (toggle) {
+                        selectedButtonIds.forEach((selectedId) => {
+                            ids.add(selectedId);
+                        });
+                    }
+
+                    setSelection(ids, selectionAnchorId);
+                    return;
+                }
+            }
+
+            if (toggle) {
+                const ids = new Set(selectedButtonIds);
+
+                if (ids.has(id)) {
+                    ids.delete(id);
+                } else {
+                    ids.add(id);
+                }
+
+                setSelection(ids, id);
+                return;
+            }
+
+            setSelection(new Set([id]), id);
+        }
+
+        function clearSelection() {
+            selectedButtonIds.clear();
+            selectedButtonId = null;
+            selectionAnchorId = null;
+            drag = null;
+        }
+
+        function findAvailablePosition(p, width, height) {
+            const grid = $("snapToGrid").checked
+                ? Number($("gridSize").value) || 20
+                : 10;
+
+            for (let y = 20; y <= p.height - height; y += grid) {
+                for (let x = 20; x <= p.width - width; x += grid) {
+                    const overlaps = p.buttons.some((b) =>
+                        x < b.x + b.width &&
+                        x + width > b.x &&
+                        y < b.y + b.height &&
+                        y + height > b.y
+                    );
+
+                    if (!overlaps) return { x, y };
+                }
+            }
+
+            return { x: 0, y: 0 };
+        }
+
+        function copySelectedButton() {
+            const selected = getSelectedButtons();
+
+            if (!selected.length) return;
+
+            copiedButtons = JSON.parse(JSON.stringify(selected));
+
+            status(
+                copiedButtons.length === 1
+                    ? "Button copied."
+                    : `${copiedButtons.length} buttons copied.`
+            );
+        }
+
+        function pasteButton() {
+            const p = panel();
+
+            if (!copiedButtons.length || !p) return;
+
+            const copies = JSON.parse(JSON.stringify(copiedButtons));
+
+            const minX = Math.min(...copies.map((b) => b.x));
+            const minY = Math.min(...copies.map((b) => b.y));
+            const maxX = Math.max(...copies.map((b) => b.x + b.width));
+            const maxY = Math.max(...copies.map((b) => b.y + b.height));
+
+            let offsetX = 20;
+            let offsetY = 20;
+
+            if (maxX - minX + offsetX > p.width) {
+                offsetX = p.width - maxX + minX;
+            }
+
+            if (maxY - minY + offsetY > p.height) {
+                offsetY = p.height - maxY + minY;
+            }
+
+            if (minX + offsetX < 0) offsetX = -minX;
+            if (minY + offsetY < 0) offsetY = -minY;
+
+            const newIds = new Set();
+
+            copies.forEach((b) => {
+                b.id = uid();
+                b.x = clamp(b.x + offsetX, 0, p.width - b.width);
+                b.y = clamp(b.y + offsetY, 0, p.height - b.height);
+
+                p.buttons.push(b);
+                newIds.add(b.id);
+            });
+
+            setSelection(newIds, [...newIds][0]);
+
+            markChanged();
+            render();
+
+            status(
+                copies.length === 1
+                    ? "Button pasted."
+                    : `${copies.length} buttons pasted.`
+            );
+        }
+
+        function deleteSelectedButtons() {
+            const p = panel();
+            if (!p || !selectedButtonIds.size) return;
+
+            const count = selectedButtonIds.size;
+
+            p.buttons = p.buttons.filter(
+                (b) => !selectedButtonIds.has(b.id)
+            );
+
+            clearSelection();
+
+            markChanged();
+            render();
+
+            refreshUsedRouterNames();
+            pollRouterRoutes();
+
+            status(
+                count === 1
+                    ? "Button deleted."
+                    : `${count} buttons deleted.`
+            );
+        }
+
+        document.addEventListener("keydown", function (e) {
+            if (e.key !== "Delete" && e.key !== "Backspace") return;
+
+            if (
+                e.target.matches("input, textarea, select") ||
+                e.target.isContentEditable
+            ) return;
+
+            if (runMode || !selectedButtonIds.size) return;
+
+            e.preventDefault();
+            deleteSelectedButtons();
+        });
+
+        function startResize(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const b = button();
+            if (!b) return;
+
+            resize = {
+                id: b.id,
+                startX: e.clientX,
+                startY: e.clientY,
+                width: b.width,
+                height: b.height
+            };
+
+            document.addEventListener("pointermove", resizeMove);
+            document.addEventListener("pointerup", stopResize, { once: true });
+        }
+
+        function resizeMove(e) {
+            if (!resize) return;
+
+            const p = panel();
+            const b = p?.buttons.find((x) => x.id === resize.id);
+
+            if (!b) return;
+
+            const scale =
+                $("canvas").getBoundingClientRect().width / p.width;
+
+            b.width = clamp(
+                snap(resize.width + (e.clientX - resize.startX) / scale),
+                20,
+                p.width - b.x
+            );
+
+            b.height = clamp(
+                snap(resize.height + (e.clientY - resize.startY) / scale),
+                20,
+                p.height - b.y
+            );
+
+            markChanged();
+            render();
+        }
+
+        function stopResize() {
+            resize = null;
+            document.removeEventListener("pointermove", resizeMove);
+            markChanged();
+        }
+
+        function render() {
+            ensurePanel();
+
+            const p = panel();
+
+            $("panelSelect").innerHTML = "";
+
+            data.panels.forEach((x) => {
+                const o = document.createElement("option");
+                o.value = x.id;
+                o.textContent = x.name;
+                $("panelSelect").append(o);
+            });
+
+            $("panelSelect").value = activePanelId;
+            $("canvasWidth").value = p.width;
+            $("canvasHeight").value = p.height;
+            $("canvasScale").value = String(p.scale || 1);
+
+            $("canvasWidth").disabled = runMode;
+            $("canvasHeight").disabled = runMode;
+
+            $("canvas").style.width = p.width + "px";
+            $("canvas").style.height = p.height + "px";
+            $("canvas").innerHTML = "";
+
+            p.buttons.forEach((b) => {
+                const el = document.createElement("div");
+
+                el.className =
+                    "panel-button" +
+                    (selectedButtonIds.has(b.id) && !runMode ? " selected" : "");
+
+                el.dataset.id = b.id;
+
+                Object.assign(el.style, {
+                    left: b.x + "px",
+                    top: b.y + "px",
+                    width: b.width + "px",
+                    height: b.height + "px",
+                    background: b.color || "#2c2c2c",
+                    color: b.textColor || "#fff"
+                });
+
+                el.textContent = b.label || "Button";
+                el.title = runMode
+                    ? buttonDescription(b)
+                    : "Select to edit";
+
+                el.dataset.type = b.type || "route";
+
+                const handle = document.createElement("div");
+                handle.className = "resize-handle";
+                handle.addEventListener("pointerdown", (e) => {
+                    if (selectedButtonIds.size > 1) {
+                        selectButton(b.id);
+                        render();
+                    }
+                    startResize(e);
+                });
+
+                el.appendChild(handle);
+
+                if (runMode) {
+                    const disabled =
+                        (b.type || "route") === "source" &&
+                        activeDestinationRouter &&
+                        b.deviceId !== activeDestinationRouter;
+
+                    el.classList.toggle("disabled", !!disabled);
+                    el.style.cursor = disabled ? "not-allowed" : "pointer";
+
+                    if (
+                        b.type === "source" &&
+                        activeDestinationRouter === b.deviceId &&
+                        activeDestinationOutput !== null
+                    ) {
+                        el.classList.toggle(
+                            "current-source",
+                            Number(liveRoutes[b.deviceId]?.[activeDestinationOutput]) ===
+                            Number(b.input)
+                        );
+                    }
+
+                    el.addEventListener("click", () => {
+                        if (!disabled) executePanelButton(b, el);
+                    });
+                } else {
+                    el.addEventListener("pointerdown", startDrag);
+                }
+
+                $("canvas").append(el);
+            });
+
+            $("canvasScale").onchange = (e) => {
+                const p = panel();
+                if (!p) return;
+
+                p.scale = Number(e.target.value) || 1;
+
+                markChanged();
+                status(`Panel scale set to ${p.scale * 100}%.`);
+            };
+
+            $("canvas").onclick = (e) => {
+                if (!runMode && e.target === $("canvas")) {
+                    clearSelection();
+                    render();
+                }
+            };
+
+            const b = button();
+
+            $("noSelection").hidden = !!b;
+            $("properties").hidden = !b;
+            $("properties").classList.toggle("hidden", runMode);
+            $("designToolbar").classList.toggle("hidden", runMode);
+            $("runNote").classList.toggle("hidden", !runMode);
+            $("routerBanner").classList.toggle("hidden", !runMode);
+
+            updateRouterBanner();
+
+            $("mode").textContent = runMode ? "Edit Layout" : "Run Panel";
+            $("mode").classList.toggle("run", !runMode);
+            $("mode").classList.toggle("primary", runMode);
+
+            $("navigationPanel").onchange = (e) => {
+                updateButton("targetPanelId", e.target.value);
+            };
+
+            if (b) {
+                $("buttonLabel").value = b.label || "";
+                $("buttonType").value = b.type || "route";
+                $("buttonX").value = b.x;
+                $("buttonY").value = b.y;
+                $("buttonW").value = b.width;
+                $("buttonH").value = b.height;
+                $("buttonColor").value = b.color || "#2c2c2c";
+                $("buttonTextColor").value = b.textColor || "#ffffff";
+                $("routeDevice").value = b.deviceId || "";
+
+                populateRouteSelectors(b);
+                renderMultiRouteEditor(b);
+                updateTypeFields(b);
+                populateNavigationPanels(b);
+
+                $("routeStatus").textContent = "";
+                $("routeStatus").className = "route-status";
+            }
+        }
+
+        function updateTypeFields(b) {
+            const type = b.type || "route";
+
+            $("singleRouteFields").classList.toggle(
+                "hidden",
+                type === "route" || type === "navigation"
+            );
+
+            $("multiRouteFields").classList.toggle(
+                "hidden",
+                type !== "route"
+            );
+
+            $("navigationFields").classList.toggle(
+                "hidden",
+                type !== "navigation"
+            );
+
+            $("inputField").classList.toggle(
+                "hidden",
+                type === "destination"
+            );
+
+            $("outputField").classList.toggle(
+                "hidden",
+                type === "source"
+            );
+        }
+
+        function populateNavigationPanels(b) {
+            const select = $("navigationPanel");
+            select.innerHTML = "";
+
+            data.panels.forEach((p) => {
+                const option = new Option(p.name, p.id);
+                select.add(option);
+            });
+
+            select.value = b.targetPanelId || "";
+        }
+
+        function renderMultiRouteEditor(b) {
+            const host = $("multiRouteEditor");
+            host.innerHTML = "";
+
+            if (!Array.isArray(b.routes)) b.routes = [];
+
+            b.routes.forEach((route, index) => {
+                const row = document.createElement("div");
+                row.className = "route-row";
+
+                const routerWrap = document.createElement("div");
+                const inputWrap = document.createElement("div");
+                const outputWrap = document.createElement("div");
+
+                const routerLabel = document.createElement("label");
+                routerLabel.textContent = "Videohub";
+
+                const inputLabel = document.createElement("label");
+                inputLabel.textContent = "Source";
+
+                const outputLabel = document.createElement("label");
+                outputLabel.textContent = "Destination";
+
+                const router = document.createElement("select");
+                const input = document.createElement("select");
+                const output = document.createElement("select");
+
+                devices.forEach((d) => {
+                    const id = deviceId(d);
+                    if (id) router.add(new Option(deviceNameValue(d), id));
+                });
+
+                router.value = route.deviceId || deviceId(devices[0]) || "";
+
+                const names = labelCache[router.value] || {};
+
+                fillSelectElement(input, names.input_labels, route.input ?? 0, "Input");
+                fillSelectElement(output, names.output_labels, route.output ?? 0, "Output");
+
+                router.onchange = async () => {
+                    route.deviceId = router.value;
+                    markChanged();
+
+                    await loadDeviceNames(route.deviceId);
+
+                    const n = labelCache[route.deviceId] || {};
+
+                    fillSelectElement(input, n.input_labels, route.input ?? 0, "Input");
+                    fillSelectElement(output, n.output_labels, route.output ?? 0, "Output");
+                };
+
+                input.onchange = () => {
+                    route.input = Number(input.value);
+                    markChanged();
+                };
+
+                output.onchange = () => {
+                    route.output = Number(output.value);
+                    markChanged();
+                };
+
+                routerWrap.append(routerLabel, router);
+                inputWrap.append(inputLabel, input);
+                outputWrap.append(outputLabel, output);
+
+                const remove = document.createElement("button");
+                remove.type = "button";
+                remove.className = "danger";
+                remove.textContent = "Remove Route";
+                remove.title = "Remove route";
+
+                remove.onclick = () => {
+                    b.routes.splice(index, 1);
+                    markChanged();
+                    renderMultiRouteEditor(b);
+                };
+
+                row.append(routerWrap, inputWrap, outputWrap, remove);
+                host.append(row);
+            });
+        }
+
+        function fillSelectElement(select, labels, current, prefix) {
+            const entries =
+                labels && Object.keys(labels).length
+                    ? Object.entries(labels)
+                    : Array.from(
+                        { length: 40 },
+                        (_, i) => [String(i), `${prefix} ${i}`]
+                    );
+
+            select.innerHTML = "";
+
+            entries
+                .sort((a, b) => Number(a[0]) - Number(b[0]))
+                .forEach(([n, label]) => {
+                    select.add(new Option(`${label}`, n));
+                });
+
+            select.value = String(current);
+
+            if (!select.value && select.options.length) {
+                select.selectedIndex = 0;
+            }
+        }
+
+        function updateRouterBanner() {
+            const d = devices.find(
+                (x) => deviceId(x) === String(activeDestinationRouter)
+            );
+
+            const state = activeDestinationRouter
+                ? liveRoutes[activeDestinationRouter]
+                : undefined;
+
+            const connection =
+                state === undefined
+                    ? "Checking connection…"
+                    : state === null
+                        ? "OFFLINE"
+                        : "Connected";
+
+            $("routerBanner").innerHTML = activeDestinationRouter
+                ? `Active destination router: ${escapeHtml(d?.Name || d?.name || activeDestinationRouter)}<small>${connection} · Output ${escapeHtml(activeDestinationOutput ?? "—")}. Source buttons on other routers are disabled.</small>`
+                : "No destination selected<small>Select a destination button to show the active Videohub.</small>";
+        }
+
+        function escapeHtml(v) {
+            return String(v ?? "").replace(
+                /[&<>"']/g,
+                (c) => ({
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    '"': "&quot;",
+                    "'": "&#39;"
+                })[c]
+            );
+        }
+
+        function buttonDescription(b) {
+            if ((b.type || "route") === "source") {
+                return `Select source ${b.input} on ${deviceName(b.deviceId)}`;
+            }
+
+            if (b.type === "destination") {
+                return `Select destination ${b.output} on ${deviceName(b.deviceId)}`;
+            }
+
+            return `${(b.routes || []).length} routes across configured Videohubs`;
+        }
+
+        function deviceId(d) {
+            return String(d?.Id ?? d?.id ?? d?.ID ?? "");
+        }
+
+        function deviceNameValue(d) {
+            return (
+                d?.Name ||
+                d?.name ||
+                d?.DeviceName ||
+                d?.deviceName ||
+                deviceId(d) ||
+                "Unnamed Videohub"
+            );
+        }
+
+        function isVideohubDevice(d) {
+            const type = String(
+                d?.Type ?? d?.type ?? d?.DeviceType ?? d?.deviceType ?? ""
+            ).trim().toLowerCase();
+
+            const name = String(deviceNameValue(d)).toLowerCase();
+
+            return (
+                type === "1" ||
+                type === "bmd router" ||
+                type === "blackmagic router" ||
+                type === "videohub" ||
+                /blackmagic|bmd|videohub|router/.test(name)
+            );
+        }
+
+        function deviceName(id) {
+            const d = devices.find((x) => deviceId(x) === String(id));
+            return d ? deviceNameValue(d) : id || "Unknown router";
+        }
+
+        function routeDescription(b) {
+            const d = devices.find((x) => deviceId(x) === String(b.deviceId));
+
+            return `${d?.Name || d?.name || "Videohub"}: Input ${b.input ?? "?"} → Output ${b.output ?? "?"}`;
+        }
+
+        function populateRouteSelectors(b) {
+            const names = labelCache[b.deviceId] || {};
+
+            fillSelect("routeInput", names.input_labels, b.input);
+            fillSelect("routeOutput", names.output_labels, b.output);
+        }
+
+        function fillSelect(id, labels, current) {
+            const s = $(id);
+
+            const entries =
+                labels && Object.keys(labels).length
+                    ? Object.entries(labels)
+                    : Array.from(
+                        { length: 40 },
+                        (_, i) => [String(i), `Input/Output ${i}`]
+                    );
+
+            s.innerHTML = "";
+
+            entries
+                .sort((a, b) => Number(a[0]) - Number(b[0]))
+                .forEach(([n, label]) => {
+                    const o = document.createElement("option");
+                    o.value = n;
+                    o.textContent = `${label}`;
+                    s.append(o);
+                });
+
+            if (
+                current !== undefined &&
+                current !== null &&
+                [...s.options].some((o) => o.value === String(current))
+            ) {
+                s.value = String(current);
+            } else if (s.options.length) {
+                s.selectedIndex = 0;
+            }
+        }
+
+        async function readJsonResponse(r) {
+            const t = await r.text();
+
+            try {
+                return JSON.parse(t);
+            } catch {
+                return { error: t || `HTTP ${r.status}` };
+            }
+        }
+
+        function usedRouterIds() {
+            const ids = new Set();
+            const p = panel();
+
+            if (!p) return [];
+
+            (p.buttons || []).forEach((b) => {
+                if (b.deviceId) ids.add(String(b.deviceId));
+
+                (Array.isArray(b.routes) ? b.routes : []).forEach((r) => {
+                    if (r.deviceId) ids.add(String(r.deviceId));
+                });
+            });
+
+            return [...ids];
+        }
+
+        async function loadDeviceNames(id) {
+            if (!id || labelCache[id]) return;
+
+            try {
+                const r = await fetch(
+                    `/api/router/bmd/${encodeURIComponent(id)}/getnames`,
+                    { cache: "no-store" }
+                );
+
+                const j = await readJsonResponse(r);
+                labelCache[id] = j.error ? {} : j;
+
+                const b = button();
+
+                if (b && b.deviceId === id) {
+                    populateRouteSelectors(b);
+                }
+
+                if (
+                    b &&
+                    Array.isArray(b.routes) &&
+                    b.routes.some((route) => route.deviceId === id)
+                ) {
+                    renderMultiRouteEditor(b);
+                }
+            } catch {
+                labelCache[id] = {};
+            }
+        }
+
+        async function refreshUsedRouterNames() {
+            await Promise.all(usedRouterIds().map((id) => loadDeviceNames(id)));
+        }
+
+        async function loadDevices() {
+            try {
+                const r = await fetch("/api/device/getdevices/", {
+                    cache: "no-store"
+                });
+
+                if (!r.ok) throw Error(`HTTP ${r.status}`);
+
+                const payload = await r.json();
+
+                const list = Array.isArray(payload)
+                    ? payload
+                    : Array.isArray(payload?.devices)
+                        ? payload.devices
+                        : [];
+
+                devices = list.filter(
+                    (d) => d && deviceId(d) && isVideohubDevice(d)
+                );
+
+                $("routeDevice").innerHTML = "";
+
+                if (!devices.length) {
+                    $("routeDevice").add(
+                        new Option("No BMD Router devices found (Iceburg type 1)", "")
+                    );
+
+                    status(
+                        `No Videohub devices found. Iceburg returned ${list.length} device(s); BMD Router devices use Type 1.`
+                    );
+
+                    return;
+                }
+
+                devices.forEach((d) => {
+                    const id = deviceId(d);
+
+                    $("routeDevice").add(
+                        new Option(`${deviceNameValue(d)} (BMD Router)`, id)
+                    );
+                });
+
+                void refreshUsedRouterNames().then(() => {
+                    render();
+                });
+
+                status(`Loaded ${devices.length} Videohub device(s).`);
+            } catch (e) {
+                $("routeDevice").innerHTML =
+                    '<option value="">Could not load devices</option>';
+
+                status("Device list unavailable: " + e.message);
+            }
+        }
+
+        function updateButton(key, value) {
+            const b = button();
+            if (!b) return;
+
+            b[key] = value;
+
+            markChanged();
+            render();
+        }
+
+        function startDrag(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const p = panel();
+            if (!p) return;
+
+            const id = e.currentTarget.dataset.id;
+            const b = p.buttons.find((x) => x.id === id);
+
+            if (!b) return;
+
+            selectButton(id, e);
+
+            const selected = getSelectedButtons();
+
+            drag = {
+                startX: e.clientX,
+                startY: e.clientY,
+                scale: $("canvas").getBoundingClientRect().width / p.width,
+                buttons: selected.map((item) => ({
+                    id: item.id,
+                    x: item.x,
+                    y: item.y
+                }))
+            };
+
+            render();
+        }
+
+        $("canvas").addEventListener("pointermove", (e) => {
+            if (!drag || runMode) return;
+
+            const p = panel();
+            if (!p) return;
+
+            const dx = (e.clientX - drag.startX) / drag.scale;
+            const dy = (e.clientY - drag.startY) / drag.scale;
+
+            let moveX = snap(dx);
+            let moveY = snap(dy);
+
+            const draggedButtons = drag.buttons.map((original) => ({
+                original,
+                current: p.buttons.find((b) => b.id === original.id)
+            })).filter((item) => item.current);
+
+            if (!draggedButtons.length) return;
+
+            let minX = Math.min(
+                ...draggedButtons.map(({ original }) => original.x)
+            );
+
+            let minY = Math.min(
+                ...draggedButtons.map(({ original }) => original.y)
+            );
+
+            let maxRight = Math.max(
+                ...draggedButtons.map(({ original, current }) =>
+                    original.x + current.width
+                )
+            );
+
+            let maxBottom = Math.max(
+                ...draggedButtons.map(({ original, current }) =>
+                    original.y + current.height
+                )
+            );
+
+            moveX = clamp(moveX, -minX, p.width - maxRight);
+            moveY = clamp(moveY, -minY, p.height - maxBottom);
+
+            draggedButtons.forEach(({ original, current }) => {
+                current.x = original.x + moveX;
+                current.y = original.y + moveY;
+            });
+
+            markChanged();
+            render();
+        });
+
+        $("canvas").addEventListener("pointerup", () => {
+            if (drag) markChanged();
+            drag = null;
+        });
+
+        $("canvas").addEventListener("pointercancel", () => {
+            if (drag) markChanged();
+            drag = null;
+        });
+
+        $("panelSelect").onchange = async (e) => {
+            activePanelId = e.target.value;
+
+            clearSelection();
+
+            activeDestinationRouter = null;
+            activeDestinationOutput = null;
+            selectedSource = null;
+            liveRoutes = {};
+
+            render();
+
+            await refreshUsedRouterNames();
+            pollRouterRoutes();
+        };
+
+        $("newPanel").onclick = () => {
+            const p = {
+                id: uid(),
+                name: "Router Panel " + (data.panels.length + 1),
+                width: 1000,
+                height: 600,
+                scale: 1,
+                buttons: []
+            };
+
+            data.panels.push(p);
+            activePanelId = p.id;
+
+            clearSelection();
+
+            markChanged();
+            render();
+        };
+
+        $("renamePanel").onclick = () => {
+            const p = panel();
+            const n = prompt("Panel name:", p.name);
+
+            if (n?.trim()) {
+                p.name = n.trim();
+                markChanged();
+                render();
+            }
+        };
+
+        $("deletePanel").onclick = () => {
+            if (data.panels.length === 1) {
+                return alert("You must keep at least one panel.");
+            }
+
+            if (!confirm("Delete this panel and all its buttons?")) return;
+
+            data.panels = data.panels.filter(
+                (p) => p.id !== activePanelId
+            );
+
+            activePanelId = data.panels[0].id;
+
+            clearSelection();
+
+            activeDestinationRouter = null;
+            activeDestinationOutput = null;
+            liveRoutes = {};
+
+            markChanged();
+            render();
+
+            refreshUsedRouterNames();
+            pollRouterRoutes();
+        };
+
+        $("addButton").onclick = () => {
+            const p = panel();
+            const id = deviceId(devices[0]) || "";
+
+            const b = {
+                id: uid(),
+                type: "route",
+                label: "New Route",
+                x: 20,
+                y: 20,
+                width: 140,
+                height: 60,
+                color: "#2c2c2c",
+                textColor: "#ffffff",
+                deviceId: id,
+                input: 0,
+                output: 0,
+                routes: [{ deviceId: id, input: 0, output: 0 }]
+            };
+
+            p.buttons.push(b);
+
+            setSelection(new Set([b.id]), b.id);
+
+            markChanged();
+
+            if (id) loadDeviceNames(id);
+
+            render();
+        };
+
+        $("deleteButton").onclick = () => {
+            deleteSelectedButtons();
+        };
+
+        $("canvasWidth").onchange = (e) => {
+            const p = panel();
+
+            p.width = clamp(e.target.value, 300, 3000);
+
+            p.buttons.forEach((b) => {
+                b.x = clamp(b.x, 0, p.width - b.width);
+            });
+
+            markChanged();
+            render();
+        };
+
+        $("canvasHeight").onchange = (e) => {
+            const p = panel();
+
+            p.height = clamp(e.target.value, 200, 2000);
+
+            p.buttons.forEach((b) => {
+                b.y = clamp(b.y, 0, p.height - b.height);
+            });
+
+            markChanged();
+            render();
+        };
+
+        $("buttonLabel").oninput = (e) => {
+            const b = button();
+
+            if (b) {
+                b.label = e.target.value;
+
+                const el = $("canvas").querySelector(
+                    `[data-id="${b.id}"]`
+                );
+
+                if (el) el.textContent = b.label;
+
+                markChanged();
+            }
+        };
+
+        $("buttonType").onchange = (e) => {
+            const b = button();
+
+            if (b) {
+                b.type = e.target.value;
+
+                if (b.type === "route" && !Array.isArray(b.routes)) {
+                    b.routes = [{
+                        deviceId: b.deviceId || devices[0]?.Id || devices[0]?.id || "",
+                        input: b.input ?? 0,
+                        output: b.output ?? 0
+                    }];
+                }
+
+                updateTypeFields(b);
+                markChanged();
+                render();
+            }
+        };
+
+        $("addMultiRoute").onclick = async () => {
+            const b = button();
+            if (!b) return;
+
+            if (!Array.isArray(b.routes)) b.routes = [];
+
+            const id = deviceId(devices[0]) || "";
+
+            b.routes.push({
+                deviceId: id,
+                input: 0,
+                output: 0
+            });
+
+            if (id) await loadDeviceNames(id);
+
+            markChanged();
+            renderMultiRouteEditor(b);
+
+            $("routeStatus").textContent =
+                `${b.routes.length} routes configured.`;
+
+            $("routeStatus").className = "route-status ok";
+        };
+
+        $("buttonX").onchange = (e) =>
+            updateButton(
+                "x",
+                clamp(e.target.value, 0, panel().width - button().width)
+            );
+
+        $("buttonY").onchange = (e) =>
+            updateButton(
+                "y",
+                clamp(e.target.value, 0, panel().height - button().height)
+            );
+
+        $("buttonW").onchange = (e) =>
+            updateButton(
+                "width",
+                clamp(e.target.value, 20, panel().width - button().x)
+            );
+
+        $("buttonH").onchange = (e) =>
+            updateButton(
+                "height",
+                clamp(e.target.value, 20, panel().height - button().y)
+            );
+
+        $("buttonColor").oninput = (e) =>
+            updateButton("color", e.target.value);
+
+        $("buttonTextColor").oninput = (e) =>
+            updateButton("textColor", e.target.value);
+
+        $("routeDevice").onchange = async (e) => {
+            const b = button();
+            if (!b) return;
+
+            b.deviceId = e.target.value;
+
+            markChanged();
+
+            await loadDeviceNames(b.deviceId);
+
+            populateRouteSelectors(b);
+            pollRouterRoutes();
+        };
+
+        $("routeInput").onchange = (e) => {
+            const b = button();
+
+            if (b) {
+                b.input = Number(e.target.value);
+                markChanged();
+            }
+        };
+
+        $("routeOutput").onchange = (e) => {
+            const b = button();
+
+            if (b) {
+                b.output = Number(e.target.value);
+                markChanged();
+            }
+        };
+
+        async function executePanelButton(b, el) {
+            const type = b.type || "route";
+
+            if (type === "source") {
+                if (!activeDestinationRouter || activeDestinationOutput === null) {
+                    status("Select a destination first.");
+                    return;
+                }
+
+                if (b.deviceId !== activeDestinationRouter) {
+                    status(
+                        `Disabled: ${deviceName(b.deviceId)} is not the active destination router.`
+                    );
+                    return;
+                }
+
+                try {
+                    await executeSingleRoute(
+                        b.deviceId,
+                        Number(b.input),
+                        activeDestinationOutput,
+                        `${b.label} → Output ${activeDestinationOutput} on ${deviceName(b.deviceId)}`
+                    );
+                } catch (err) {
+                    status(`Route failed: ${err.message}`);
+                }
+
+                return;
+            }
+
+            if (type === "destination") {
+                if (!b.deviceId || !Number.isInteger(Number(b.output))) {
+                    status(
+                        "Configure a Videohub and destination output for this button."
+                    );
+                    return;
+                }
+
+                activeDestinationRouter = b.deviceId;
+                activeDestinationOutput = Number(b.output);
+
+                updateRouterBanner();
+                render();
+
+                status(
+                    `Active destination: Output ${b.output} on ${deviceName(b.deviceId)}. Select a source button to route.`
+                );
+
+                return;
+            }
+
+            const routes = Array.isArray(b.routes) ? b.routes : [];
+
+            if (!routes.length) {
+                status("Configure at least one route in this all-in-one button.");
+                return;
+            }
+
+            if (
+                !confirm(
+                    `Execute ${routes.length} routes across the configured Videohubs?`
+                )
+            ) return;
+
+            el.style.opacity = ".55";
+            status(`Executing ${routes.length} routes…`);
+
+            try {
+                const r = await fetch("/api/routerpanels/routes", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ routes })
+                });
+
+                const result = await readJsonResponse(r);
+
+                if (!r.ok || result.success === false) {
+                    throw Error(result.error || `HTTP ${r.status}`);
+                }
+
+                status(
+                    `Completed ${result.completed ?? routes.length} of ${routes.length} routes.`
+                );
+
+                el.style.borderColor = "#65d6a2";
+            } catch (e) {
+                status(`Multi-route failed: ${e.message}`);
+                el.style.borderColor = "#ff9298";
+            } finally {
+                el.style.opacity = "1";
+            }
+        }
+
+        async function executeSingleRoute(
+            deviceId,
+            input,
+            output,
+            description
+        ) {
+            const r = await fetch("/api/routerpanels/route", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ deviceId, input, output })
+            });
+
+            const result = await readJsonResponse(r);
+
+            if (!r.ok || result.success === false || result.error) {
+                throw Error(result.error || `HTTP ${r.status}`);
+            }
+
+            status(`Route command sent: ${description}`);
+        }
+
+        $("mode").onclick = () => {
+            runMode = !runMode;
+
+            clearSelection();
+
+            activeDestinationRouter = null;
+            activeDestinationOutput = null;
+            selectedSource = null;
+
+            render();
+
+            status(runMode ? "Run mode active" : "Layout editing active");
+        };
+
+        async function pollRouterRoutes() {
+            const ids = usedRouterIds();
+
+            if (polling || !ids.length) return;
+
+            polling = true;
+
+            try {
+                const results = await Promise.all(
+                    ids.map(async (id) => {
+                        try {
+                            const r = await fetch(
+                                `/api/router/bmd/${encodeURIComponent(id)}/getroutes`,
+                                { cache: "no-store" }
+                            );
+
+                            const j = await readJsonResponse(r);
+
+                            if (!r.ok || j.error) {
+                                throw Error(j.error || `HTTP ${r.status}`);
+                            }
+
+                            return [id, j.routes || {}];
+                        } catch {
+                            return [id, null];
+                        }
+                    })
+                );
+
+                const currentIds = new Set(ids);
+
+                Object.keys(liveRoutes).forEach((id) => {
+                    if (!currentIds.has(id)) delete liveRoutes[id];
+                });
+
+                results.forEach(([id, routes]) => {
+                    liveRoutes[id] = routes;
+                });
+
+                if (runMode) {
+                    refreshLiveButtonStatus();
+                } else {
+                    updateRouterBanner();
+                }
+            } finally {
+                polling = false;
+            }
+        }
+
+        function refreshLiveButtonStatus() {
+            const p = panel();
+            if (!p) return;
+
+            p.buttons.forEach((b) => {
+                const el = $("canvas").querySelector(
+                    `[data-id="${b.id}"]`
+                );
+
+                if (!el) return;
+
+                if (b.type === "destination") {
+                    const routerState = liveRoutes[b.deviceId];
+                    const input = routerState?.[Number(b.output)];
+
+                    const label =
+                        routerState === undefined
+                            ? "Waiting for router…"
+                            : routerState === null
+                                ? "Router offline"
+                                : input !== undefined && input !== null
+                                    ? (labelCache[b.deviceId]?.input_labels || {})[input] ||
+                                    `Input ${input}`
+                                    : "Unrouted";
+                } else if (
+                    b.type === "source" &&
+                    activeDestinationRouter === b.deviceId &&
+                    activeDestinationOutput !== null
+                ) {
+                    el.classList.toggle(
+                        "current-source",
+                        Number(liveRoutes[b.deviceId]?.[activeDestinationOutput]) ===
+                        Number(b.input)
+                    );
+                }
+            });
+
+            updateRouterBanner();
+        }
+
+        async function pollLoop() {
+            await pollRouterRoutes();
+            setTimeout(pollLoop, 2000);
+        }
+
+        async function savePanels() {
+            if (!autoSaveEnabled) return;
+
+            if (saveInFlight) {
+                saveAgain = true;
+                return;
+            }
+
+            saveInFlight = true;
+            clearTimeout(autoSaveTimer);
+
+            try {
+                const snapshot = JSON.stringify(data);
+
+                const r = await fetch("/api/routerpanels/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: snapshot
+                });
+
+                const j = await readJsonResponse(r);
+
+                if (!r.ok || j.success === false) {
+                    throw Error(j.error || `HTTP ${r.status}`);
+                }
+
+                status(
+                    snapshot === JSON.stringify(data)
+                        ? "Auto-saved to routerpanles.json"
+                        : "Changes queued for saving"
+                );
+            } catch (e) {
+                status("Auto-save failed: " + e.message);
+            } finally {
+                saveInFlight = false;
+
+                if (saveAgain) {
+                    saveAgain = false;
+                    savePanels();
+                }
+            }
+        }
+
+        document.addEventListener("keydown", (e) => {
+            if (
+                e.target.matches("input, select, textarea") ||
+                e.target.isContentEditable
+            ) return;
+
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "c") {
+                e.preventDefault();
+                copySelectedButton();
+            }
+
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "v") {
+                e.preventDefault();
+                pasteButton();
+            }
+        });
+
+        async function load() {
+            try {
+                const r = await fetch("/api/routerpanels/");
+
+                if (!r.ok) throw Error(`HTTP ${r.status}`);
+
+                data = await r.json();
+
+                if (!Array.isArray(data.panels)) {
+                    data = { version: 1, panels: [] };
+                }
+
+                ensurePanel();
+
+                activePanelId = data.panels[0].id;
+
+                render();
+
+                autoSaveEnabled = true;
+
+                void loadDevices().then(() => {
+                    render();
+                    pollRouterRoutes();
+                });
+
+                pollLoop();
+
+                status("Loaded panels · auto-save enabled");
+            } catch (e) {
+                data = { version: 1, panels: [] };
+
+                ensurePanel();
+
+                await loadDevices();
+
+                render();
+
+                autoSaveEnabled = true;
+
+                pollLoop();
+
+                status("Could not load saved panels: " + e.message);
+            }
+        }
+
+        $("save").onclick = () => savePanels();
+
+        load();
+    </script>
+</body>
+</html>

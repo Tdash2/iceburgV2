@@ -1,6 +1,63 @@
 ﻿(function () {
     function initializeHeader() {
 
+        /*
+ * ------------------------------------------------------------
+ * SECONDARY SERVER WARNING
+ * ------------------------------------------------------------
+ */
+
+        let secondaryServerWarningShown = false;
+
+        function showSecondaryServerWarning() {
+
+            if (secondaryServerWarningShown) {
+                return;
+            }
+
+            secondaryServerWarningShown = true;
+
+            const overlay = document.createElement("div");
+
+            overlay.className = "iceburg-server-warning";
+
+            const box = document.createElement("div");
+
+            box.className = "iceburg-server-warning-box";
+
+            const title = document.createElement("div");
+
+            title.className = "iceburg-server-warning-title";
+
+            title.textContent = "SECONDARY SERVER";
+
+            const message = document.createElement("div");
+
+            message.className = "iceburg-server-warning-text";
+
+            message.textContent =
+                "You are currently connected to a secondary Iceburg server. <br> This server Will Be overwirtten ";
+               
+               
+
+            const button = document.createElement("button");
+
+            button.className = "iceburg-server-warning-button";
+
+            button.textContent = "I UNDERSTAND";
+
+            button.addEventListener("click", function () {
+                overlay.remove();
+            });
+
+            box.appendChild(title);
+            box.appendChild(message);
+            box.appendChild(button);
+
+            overlay.appendChild(box);
+
+            document.body.appendChild(overlay);
+        }
         
     const style = document.createElement("style");
 
@@ -230,6 +287,9 @@
             "cursor:pointer;" +
         "}" +
 
+
+        +
+
         ".iceburg-account-item:hover {" +
             "background:#2b2b2b;" +
             "color:white;" +
@@ -241,7 +301,59 @@
 
         ".iceburg-account-logout:hover {" +
             "color:#ff8585;" +
-        "}";
+        "}" +
+            ".iceburg-server-warning {" +
+            "position:fixed;" +
+            "inset:0;" +
+            "background:rgba(0,0,0,0.8);" +
+            "display:flex;" +
+            "align-items:center;" +
+            "justify-content:center;" +
+            "z-index:999999;" +
+            "font-family:Arial,Helvetica,sans-serif;" +
+            "}" +
+
+            ".iceburg-server-warning-box {" +
+            "background:#202020;" +
+            "border:2px solid #e0a000;" +
+            "border-radius:12px;" +
+            "padding:30px;" +
+            "width:90%;" +
+            "max-width:450px;" +
+            "box-sizing:border-box;" +
+            "text-align:center;" +
+            "color:white;" +
+            "box-shadow:0 10px 40px rgba(0,0,0,0.6);" +
+            "}" +
+
+            ".iceburg-server-warning-title {" +
+            "color:#ffbd35;" +
+            "font-size:23px;" +
+            "font-weight:bold;" +
+            "margin-bottom:18px;" +
+            "}" +
+
+            ".iceburg-server-warning-text {" +
+            "font-size:15px;" +
+            "line-height:1.7;" +
+            "color:#ddd;" +
+            "margin-bottom:24px;" +
+            "}" +
+
+            ".iceburg-server-warning-button {" +
+            "background:#e0a000;" +
+            "color:#181818;" +
+            "border:0;" +
+            "border-radius:6px;" +
+            "padding:12px 25px;" +
+            "font-size:14px;" +
+            "font-weight:bold;" +
+            "cursor:pointer;" +
+            "}" +
+
+            ".iceburg-server-warning-button:hover {" +
+            "background:#ffc247;" +
+            "}";
 
     document.head.appendChild(style);
 
@@ -524,12 +636,27 @@
             }
 
 
+
+
             const data = await response.json();
+
+            /*
+             * Check whether this is a secondary server.
+             */
+
+            if (data && data.primaryserver === false) {
+
+                showSecondaryServerWarning();
+
+            }
 
             if (!data || !Array.isArray(data.navigation)) {
                 return;
             }
 
+
+
+            
             const navigation = data.navigation;
 
             // Update the logo destination

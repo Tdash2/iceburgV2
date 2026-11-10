@@ -656,9 +656,12 @@
     </div>
     <script>
         const $ = (id) => document.getElementById(id);
+
         let data = { version: 1, panels: [] },
             activePanelId = null,
             selectedButtonId = null,
+            selectedButtonIds = new Set(),
+            selectionAnchorId = null,
             drag = null,
             runMode = false,
             devices = [],
@@ -672,20 +675,33 @@
             saveInFlight = false,
             saveAgain = false,
             autoSaveEnabled = false;
+
+        let copiedButtons = [];
+        let resize = null;
+
         const status = (s) => ($("status").textContent = s);
+
         function markChanged() {
             if (!autoSaveEnabled) return;
             clearTimeout(autoSaveTimer);
             status("Unsaved changes…");
             autoSaveTimer = setTimeout(savePanels, 700);
         }
-        const uid = () => "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+        const uid = () =>
+            "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
         const panel = () => data.panels.find((p) => p.id === activePanelId);
-        const button = () => panel()?.buttons.find((b) => b.id === selectedButtonId);
-        const clamp = (n, min, max) => Math.max(min, Math.min(max, Number(n) || 0));
+
+        const button = () =>
+            panel()?.buttons.find((b) => b.id === selectedButtonId);
+
+        const clamp = (n, min, max) =>
+            Math.max(min, Math.min(max, Number(n) || 0));
+
         function ensurePanel() {
             if (!data.panels.length) {
-                let p = {
+                const p = {
                     id: uid(),
                     name: "Router Panel 1",
                     width: 1000,
@@ -698,24 +714,106 @@
                 activePanelId = p.id;
             }
 
-            // Give older panels a default scale.
-            data.panels.forEach(p => {
+            data.panels.forEach((p) => {
                 if (p.scale === undefined || p.scale === null) {
                     p.scale = 1;
                 }
             });
         }
+
         function safeText(v) {
             return String(v ?? "");
         }
-        let copiedButton = null;
-        let resize = null;
 
         function snap(value) {
             if (!$("snapToGrid").checked) return value;
 
             const grid = Number($("gridSize").value) || 20;
             return Math.round(value / grid) * grid;
+        }
+
+        function getSelectedButtons() {
+            const p = panel();
+            if (!p) return [];
+
+            return p.buttons.filter((b) => selectedButtonIds.has(b.id));
+        }
+
+        function setSelection(ids, anchorId = null) {
+            const p = panel();
+            if (!p) return;
+
+            const validIds = new Set(
+                p.buttons
+                    .filter((b) => ids.has(b.id))
+                    .map((b) => b.id)
+            );
+
+            selectedButtonIds = validIds;
+            selectedButtonId = [...validIds].pop() || null;
+            selectionAnchorId = anchorId || selectedButtonId;
+        }
+
+        function selectButton(id, event = {}) {
+            const p = panel();
+            if (!p) return;
+
+            const exists = p.buttons.some((b) => b.id === id);
+            if (!exists) return;
+
+            const toggle = event.ctrlKey || event.metaKey;
+            const range = event.shiftKey;
+
+            if (range && selectionAnchorId) {
+                const anchorIndex = p.buttons.findIndex(
+                    (b) => b.id === selectionAnchorId
+                );
+                const clickedIndex = p.buttons.findIndex(
+                    (b) => b.id === id
+                );
+
+                if (anchorIndex !== -1 && clickedIndex !== -1) {
+                    const start = Math.min(anchorIndex, clickedIndex);
+                    const end = Math.max(anchorIndex, clickedIndex);
+
+                    const ids = new Set(
+                        p.buttons
+                            .slice(start, end + 1)
+                            .map((b) => b.id)
+                    );
+
+                    if (toggle) {
+                        selectedButtonIds.forEach((selectedId) => {
+                            ids.add(selectedId);
+                        });
+                    }
+
+                    setSelection(ids, selectionAnchorId);
+                    return;
+                }
+            }
+
+            if (toggle) {
+                const ids = new Set(selectedButtonIds);
+
+                if (ids.has(id)) {
+                    ids.delete(id);
+                } else {
+                    ids.add(id);
+                }
+
+                setSelection(ids, id);
+                return;
+            }
+
+            setSelection(new Set([id]), id);
+        }
+
+        function clearSelection() {
+            selectedButtonIds.clear();
+            selectedButtonId = null;
+            selectionAnchorId = null;
+            drag = null;
         }
 
         function findAvailablePosition(p, width, height) {
@@ -725,7 +823,7 @@
 
             for (let y = 20; y <= p.height - height; y += grid) {
                 for (let x = 20; x <= p.width - width; x += grid) {
-                    const overlaps = p.buttons.some(b =>
+                    const overlaps = p.buttons.some((b) =>
                         x < b.x + b.width &&
                         x + width > b.x &&
                         y < b.y + b.height &&
@@ -736,72 +834,110 @@
                 }
             }
 
-            return {
-                x: 0,
-                y: 0
-            };
+            return { x: 0, y: 0 };
         }
 
         function copySelectedButton() {
-            const b = button();
-            if (!b) return;
+            const selected = getSelectedButtons();
 
-            copiedButton = JSON.parse(JSON.stringify(b));
-            status("Button copied.");
+            if (!selected.length) return;
+
+            copiedButtons = JSON.parse(JSON.stringify(selected));
+
+            status(
+                copiedButtons.length === 1
+                    ? "Button copied."
+                    : `${copiedButtons.length} buttons copied.`
+            );
         }
+
+        function pasteButton() {
+            const p = panel();
+
+            if (!copiedButtons.length || !p) return;
+
+            const copies = JSON.parse(JSON.stringify(copiedButtons));
+
+            const minX = Math.min(...copies.map((b) => b.x));
+            const minY = Math.min(...copies.map((b) => b.y));
+            const maxX = Math.max(...copies.map((b) => b.x + b.width));
+            const maxY = Math.max(...copies.map((b) => b.y + b.height));
+
+            let offsetX = 20;
+            let offsetY = 20;
+
+            if (maxX - minX + offsetX > p.width) {
+                offsetX = p.width - maxX + minX;
+            }
+
+            if (maxY - minY + offsetY > p.height) {
+                offsetY = p.height - maxY + minY;
+            }
+
+            if (minX + offsetX < 0) offsetX = -minX;
+            if (minY + offsetY < 0) offsetY = -minY;
+
+            const newIds = new Set();
+
+            copies.forEach((b) => {
+                b.id = uid();
+                b.x = clamp(b.x + offsetX, 0, p.width - b.width);
+                b.y = clamp(b.y + offsetY, 0, p.height - b.height);
+
+                p.buttons.push(b);
+                newIds.add(b.id);
+            });
+
+            setSelection(newIds, [...newIds][0]);
+
+            markChanged();
+            render();
+
+            status(
+                copies.length === 1
+                    ? "Button pasted."
+                    : `${copies.length} buttons pasted.`
+            );
+        }
+
+        function deleteSelectedButtons() {
+            const p = panel();
+            if (!p || !selectedButtonIds.size) return;
+
+            const count = selectedButtonIds.size;
+
+            p.buttons = p.buttons.filter(
+                (b) => !selectedButtonIds.has(b.id)
+            );
+
+            clearSelection();
+
+            markChanged();
+            render();
+
+            refreshUsedRouterNames();
+            pollRouterRoutes();
+
+            status(
+                count === 1
+                    ? "Button deleted."
+                    : `${count} buttons deleted.`
+            );
+        }
+
         document.addEventListener("keydown", function (e) {
             if (e.key !== "Delete" && e.key !== "Backspace") return;
 
-            // Don't delete when typing into a field
             if (
                 e.target.matches("input, textarea, select") ||
                 e.target.isContentEditable
             ) return;
 
-            if (runMode || !selectedButtonId) return;
+            if (runMode || !selectedButtonIds.size) return;
 
             e.preventDefault();
-
-            const p = panel();
-            if (!p) return;
-
-            p.buttons = p.buttons.filter(b => b.id !== selectedButtonId);
-
-            selectedButtonId = null;
-            drag = null;
-
-            markChanged();
-            render();
-
-            status("Button deleted.");
+            deleteSelectedButtons();
         });
-        function pasteButton() {
-            const p = panel();
-
-            if (!copiedButton || !p) return;
-
-            const b = JSON.parse(JSON.stringify(copiedButton));
-
-            b.id = uid();
-
-            const position = findAvailablePosition(
-                p,
-                b.width,
-                b.height
-            );
-
-            b.x = position.x;
-            b.y = position.y;
-
-            p.buttons.push(b);
-
-            selectedButtonId = b.id;
-
-            markChanged();
-            render();
-
-            status("Button pasted.");
-        }
 
         function startResize(e) {
             e.preventDefault();
@@ -826,7 +962,7 @@
             if (!resize) return;
 
             const p = panel();
-            const b = p.buttons.find(x => x.id === resize.id);
+            const b = p?.buttons.find((x) => x.id === resize.id);
 
             if (!b) return;
 
@@ -857,63 +993,76 @@
 
         function render() {
             ensurePanel();
+
             const p = panel();
+
             $("panelSelect").innerHTML = "";
+
             data.panels.forEach((x) => {
-                let o = document.createElement("option");
+                const o = document.createElement("option");
                 o.value = x.id;
                 o.textContent = x.name;
                 $("panelSelect").append(o);
             });
+
             $("panelSelect").value = activePanelId;
             $("canvasWidth").value = p.width;
             $("canvasHeight").value = p.height;
             $("canvasScale").value = String(p.scale || 1);
+
             $("canvasWidth").disabled = runMode;
             $("canvasHeight").disabled = runMode;
+
             $("canvas").style.width = p.width + "px";
             $("canvas").style.height = p.height + "px";
             $("canvas").innerHTML = "";
+
             p.buttons.forEach((b) => {
                 const el = document.createElement("div");
-                el.className = "panel-button" + (b.id === selectedButtonId && !runMode ? " selected" : "");
+
+                el.className =
+                    "panel-button" +
+                    (selectedButtonIds.has(b.id) && !runMode ? " selected" : "");
+
                 el.dataset.id = b.id;
+
                 Object.assign(el.style, {
                     left: b.x + "px",
                     top: b.y + "px",
                     width: b.width + "px",
                     height: b.height + "px",
                     background: b.color || "#2c2c2c",
-                    color: b.textColor || "#fff",
+                    color: b.textColor || "#fff"
                 });
+
                 el.textContent = b.label || "Button";
-                el.title = runMode ? buttonDescription(b) : "Select to edit";
+                el.title = runMode
+                    ? buttonDescription(b)
+                    : "Select to edit";
+
                 el.dataset.type = b.type || "route";
-                el.textContent = b.label || "Button";
+
                 const handle = document.createElement("div");
                 handle.className = "resize-handle";
-                handle.addEventListener("pointerdown", startResize);
+                handle.addEventListener("pointerdown", (e) => {
+                    if (selectedButtonIds.size > 1) {
+                        selectButton(b.id);
+                        render();
+                    }
+                    startResize(e);
+                });
+
                 el.appendChild(handle);
+
                 if (runMode) {
                     const disabled =
                         (b.type || "route") === "source" &&
                         activeDestinationRouter &&
                         b.deviceId !== activeDestinationRouter;
+
                     el.classList.toggle("disabled", !!disabled);
                     el.style.cursor = disabled ? "not-allowed" : "pointer";
-                    if (b.type === "destination") {
-                        const routerState = liveRoutes[b.deviceId];
-                        const current = routerState?.[Number(b.output)];
-                        const sourceLabel =
-                            routerState === undefined
-                                ? "Waiting for router…"
-                                : routerState === null
-                                    ? "Router offline"
-                                    : current !== undefined && current !== null
-                                        ? (labelCache[b.deviceId]?.input_labels || {})[current] || `Input ${current}`
-                                        : "Unrouted";
-                       // el.innerHTML = `${escapeHtml(b.label || "Destination")}<span class="live-route">Current: ${escapeHtml(sourceLabel)}</span>`;
-                    }
+
                     if (
                         b.type === "source" &&
                         activeDestinationRouter === b.deviceId &&
@@ -921,22 +1070,21 @@
                     ) {
                         el.classList.toggle(
                             "current-source",
-                            Number(liveRoutes[b.deviceId]?.[activeDestinationOutput]) === Number(b.input)
+                            Number(liveRoutes[b.deviceId]?.[activeDestinationOutput]) ===
+                            Number(b.input)
                         );
                     }
+
                     el.addEventListener("click", () => {
                         if (!disabled) executePanelButton(b, el);
                     });
                 } else {
                     el.addEventListener("pointerdown", startDrag);
-                    el.addEventListener("click", (e) => {
-                        e.stopPropagation();
-                        selectedButtonId = b.id;
-                        render();
-                    });
                 }
-                cAppend(el);
+
+                $("canvas").append(el);
             });
+
             $("canvasScale").onchange = (e) => {
                 const p = panel();
                 if (!p) return;
@@ -944,29 +1092,35 @@
                 p.scale = Number(e.target.value) || 1;
 
                 markChanged();
-
                 status(`Panel scale set to ${p.scale * 100}%.`);
             };
-            $("canvas").onclick = () => {
-                if (!runMode) {
-                    selectedButtonId = null;
+
+            $("canvas").onclick = (e) => {
+                if (!runMode && e.target === $("canvas")) {
+                    clearSelection();
                     render();
                 }
             };
+
             const b = button();
+
             $("noSelection").hidden = !!b;
             $("properties").hidden = !b;
             $("properties").classList.toggle("hidden", runMode);
             $("designToolbar").classList.toggle("hidden", runMode);
             $("runNote").classList.toggle("hidden", !runMode);
             $("routerBanner").classList.toggle("hidden", !runMode);
+
             updateRouterBanner();
+
             $("mode").textContent = runMode ? "Edit Layout" : "Run Panel";
             $("mode").classList.toggle("run", !runMode);
             $("mode").classList.toggle("primary", runMode);
+
             $("navigationPanel").onchange = (e) => {
                 updateButton("targetPanelId", e.target.value);
             };
+
             if (b) {
                 $("buttonLabel").value = b.label || "";
                 $("buttonType").value = b.type || "route";
@@ -977,14 +1131,17 @@
                 $("buttonColor").value = b.color || "#2c2c2c";
                 $("buttonTextColor").value = b.textColor || "#ffffff";
                 $("routeDevice").value = b.deviceId || "";
+
                 populateRouteSelectors(b);
                 renderMultiRouteEditor(b);
                 updateTypeFields(b);
                 populateNavigationPanels(b);
+
                 $("routeStatus").textContent = "";
                 $("routeStatus").className = "route-status";
             }
         }
+
         function updateTypeFields(b) {
             const type = b.type || "route";
 
@@ -1013,121 +1170,193 @@
                 type === "source"
             );
         }
+
         function populateNavigationPanels(b) {
             const select = $("navigationPanel");
-
             select.innerHTML = "";
 
-            data.panels.forEach(p => {
+            data.panels.forEach((p) => {
                 const option = new Option(p.name, p.id);
                 select.add(option);
             });
 
             select.value = b.targetPanelId || "";
         }
+
         function renderMultiRouteEditor(b) {
             const host = $("multiRouteEditor");
             host.innerHTML = "";
+
             if (!Array.isArray(b.routes)) b.routes = [];
+
             b.routes.forEach((route, index) => {
                 const row = document.createElement("div");
                 row.className = "route-row";
-                const routerWrap = document.createElement("div"),
-                    inputWrap = document.createElement("div"),
-                    outputWrap = document.createElement("div");
+
+                const routerWrap = document.createElement("div");
+                const inputWrap = document.createElement("div");
+                const outputWrap = document.createElement("div");
+
                 const routerLabel = document.createElement("label");
                 routerLabel.textContent = "Videohub";
+
                 const inputLabel = document.createElement("label");
                 inputLabel.textContent = "Source";
+
                 const outputLabel = document.createElement("label");
                 outputLabel.textContent = "Destination";
-                const router = document.createElement("select"),
-                    input = document.createElement("select"),
-                    output = document.createElement("select");
+
+                const router = document.createElement("select");
+                const input = document.createElement("select");
+                const output = document.createElement("select");
+
                 devices.forEach((d) => {
                     const id = deviceId(d);
                     if (id) router.add(new Option(deviceNameValue(d), id));
                 });
+
                 router.value = route.deviceId || deviceId(devices[0]) || "";
+
                 const names = labelCache[router.value] || {};
+
                 fillSelectElement(input, names.input_labels, route.input ?? 0, "Input");
                 fillSelectElement(output, names.output_labels, route.output ?? 0, "Output");
+
                 router.onchange = async () => {
                     route.deviceId = router.value;
                     markChanged();
+
                     await loadDeviceNames(route.deviceId);
+
                     const n = labelCache[route.deviceId] || {};
+
                     fillSelectElement(input, n.input_labels, route.input ?? 0, "Input");
                     fillSelectElement(output, n.output_labels, route.output ?? 0, "Output");
                 };
+
                 input.onchange = () => {
                     route.input = Number(input.value);
                     markChanged();
                 };
+
                 output.onchange = () => {
                     route.output = Number(output.value);
                     markChanged();
                 };
+
                 routerWrap.append(routerLabel, router);
                 inputWrap.append(inputLabel, input);
                 outputWrap.append(outputLabel, output);
+
                 const remove = document.createElement("button");
                 remove.type = "button";
                 remove.className = "danger";
                 remove.textContent = "Remove Route";
                 remove.title = "Remove route";
+
                 remove.onclick = () => {
                     b.routes.splice(index, 1);
                     markChanged();
                     renderMultiRouteEditor(b);
                 };
+
                 row.append(routerWrap, inputWrap, outputWrap, remove);
                 host.append(row);
             });
         }
+
         function fillSelectElement(select, labels, current, prefix) {
             const entries =
                 labels && Object.keys(labels).length
                     ? Object.entries(labels)
-                    : Array.from({ length: 40 }, (_, i) => [String(i), `${prefix} ${i}`]);
+                    : Array.from(
+                        { length: 40 },
+                        (_, i) => [String(i), `${prefix} ${i}`]
+                    );
+
             select.innerHTML = "";
+
             entries
                 .sort((a, b) => Number(a[0]) - Number(b[0]))
-                .forEach(([n, label]) => select.add(new Option(`${label}`, n)));
+                .forEach(([n, label]) => {
+                    select.add(new Option(`${label}`, n));
+                });
+
             select.value = String(current);
-            if (!select.value && select.options.length) select.selectedIndex = 0;
+
+            if (!select.value && select.options.length) {
+                select.selectedIndex = 0;
+            }
         }
+
         function updateRouterBanner() {
-            const d = devices.find((x) => deviceId(x) === String(activeDestinationRouter));
-            const state = activeDestinationRouter ? liveRoutes[activeDestinationRouter] : undefined;
+            const d = devices.find(
+                (x) => deviceId(x) === String(activeDestinationRouter)
+            );
+
+            const state = activeDestinationRouter
+                ? liveRoutes[activeDestinationRouter]
+                : undefined;
+
             const connection =
-                state === undefined ? "Checking connection…" : state === null ? "OFFLINE" : "Connected";
+                state === undefined
+                    ? "Checking connection…"
+                    : state === null
+                        ? "OFFLINE"
+                        : "Connected";
+
             $("routerBanner").innerHTML = activeDestinationRouter
                 ? `Active destination router: ${escapeHtml(d?.Name || d?.name || activeDestinationRouter)}<small>${connection} · Output ${escapeHtml(activeDestinationOutput ?? "—")}. Source buttons on other routers are disabled.</small>`
                 : "No destination selected<small>Select a destination button to show the active Videohub.</small>";
         }
+
         function escapeHtml(v) {
             return String(v ?? "").replace(
                 /[&<>"']/g,
-                (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]
+                (c) => ({
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    '"': "&quot;",
+                    "'": "&#39;"
+                })[c]
             );
         }
+
         function buttonDescription(b) {
-            if ((b.type || "route") === "source") return `Select source ${b.input} on ${deviceName(b.deviceId)}`;
-            if (b.type === "destination") return `Select destination ${b.output} on ${deviceName(b.deviceId)}`;
+            if ((b.type || "route") === "source") {
+                return `Select source ${b.input} on ${deviceName(b.deviceId)}`;
+            }
+
+            if (b.type === "destination") {
+                return `Select destination ${b.output} on ${deviceName(b.deviceId)}`;
+            }
+
             return `${(b.routes || []).length} routes across configured Videohubs`;
         }
+
         function deviceId(d) {
             return String(d?.Id ?? d?.id ?? d?.ID ?? "");
         }
+
         function deviceNameValue(d) {
-            return d?.Name || d?.name || d?.DeviceName || d?.deviceName || deviceId(d) || "Unnamed Videohub";
+            return (
+                d?.Name ||
+                d?.name ||
+                d?.DeviceName ||
+                d?.deviceName ||
+                deviceId(d) ||
+                "Unnamed Videohub"
+            );
         }
+
         function isVideohubDevice(d) {
-            const type = String(d?.Type ?? d?.type ?? d?.DeviceType ?? d?.deviceType ?? "")
-                .trim()
-                .toLowerCase();
+            const type = String(
+                d?.Type ?? d?.type ?? d?.DeviceType ?? d?.deviceType ?? ""
+            ).trim().toLowerCase();
+
             const name = String(deviceNameValue(d)).toLowerCase();
+
             return (
                 type === "1" ||
                 type === "bmd router" ||
@@ -1136,29 +1365,38 @@
                 /blackmagic|bmd|videohub|router/.test(name)
             );
         }
+
         function deviceName(id) {
             const d = devices.find((x) => deviceId(x) === String(id));
             return d ? deviceNameValue(d) : id || "Unknown router";
         }
-        function cAppend(el) {
-            $("canvas").append(el);
-        }
+
         function routeDescription(b) {
             const d = devices.find((x) => deviceId(x) === String(b.deviceId));
+
             return `${d?.Name || d?.name || "Videohub"}: Input ${b.input ?? "?"} → Output ${b.output ?? "?"}`;
         }
+
         function populateRouteSelectors(b) {
             const names = labelCache[b.deviceId] || {};
+
             fillSelect("routeInput", names.input_labels, b.input);
             fillSelect("routeOutput", names.output_labels, b.output);
         }
+
         function fillSelect(id, labels, current) {
-            const s = $(id),
-                entries =
-                    labels && Object.keys(labels).length
-                        ? Object.entries(labels)
-                        : Array.from({ length: 40 }, (_, i) => [String(i), `Input/Output ${i}`]);
+            const s = $(id);
+
+            const entries =
+                labels && Object.keys(labels).length
+                    ? Object.entries(labels)
+                    : Array.from(
+                        { length: 40 },
+                        (_, i) => [String(i), `Input/Output ${i}`]
+                    );
+
             s.innerHTML = "";
+
             entries
                 .sort((a, b) => Number(a[0]) - Number(b[0]))
                 .forEach(([n, label]) => {
@@ -1167,139 +1405,251 @@
                     o.textContent = `${label}`;
                     s.append(o);
                 });
+
             if (
                 current !== undefined &&
                 current !== null &&
                 [...s.options].some((o) => o.value === String(current))
-            )
+            ) {
                 s.value = String(current);
-            else if (s.options.length) s.selectedIndex = 0;
+            } else if (s.options.length) {
+                s.selectedIndex = 0;
+            }
         }
+
         async function readJsonResponse(r) {
             const t = await r.text();
+
             try {
                 return JSON.parse(t);
             } catch {
                 return { error: t || `HTTP ${r.status}` };
             }
         }
+
         function usedRouterIds() {
-            const ids = new Set(),
-                p = panel();
+            const ids = new Set();
+            const p = panel();
+
             if (!p) return [];
+
             (p.buttons || []).forEach((b) => {
                 if (b.deviceId) ids.add(String(b.deviceId));
+
                 (Array.isArray(b.routes) ? b.routes : []).forEach((r) => {
                     if (r.deviceId) ids.add(String(r.deviceId));
                 });
             });
+
             return [...ids];
         }
+
         async function loadDeviceNames(id) {
             if (!id || labelCache[id]) return;
+
             try {
-                const r = await fetch(`/api/router/bmd/${encodeURIComponent(id)}/getnames`, { cache: "no-store" });
+                const r = await fetch(
+                    `/api/router/bmd/${encodeURIComponent(id)}/getnames`,
+                    { cache: "no-store" }
+                );
+
                 const j = await readJsonResponse(r);
                 labelCache[id] = j.error ? {} : j;
+
                 const b = button();
-                if (b && b.deviceId === id) populateRouteSelectors(b);
-                if (b && Array.isArray(b.routes) && b.routes.some((route) => route.deviceId === id))
+
+                if (b && b.deviceId === id) {
+                    populateRouteSelectors(b);
+                }
+
+                if (
+                    b &&
+                    Array.isArray(b.routes) &&
+                    b.routes.some((route) => route.deviceId === id)
+                ) {
                     renderMultiRouteEditor(b);
+                }
             } catch {
                 labelCache[id] = {};
             }
         }
+
         async function refreshUsedRouterNames() {
             await Promise.all(usedRouterIds().map((id) => loadDeviceNames(id)));
         }
+
         async function loadDevices() {
             try {
-                const r = await fetch("/api/device/getdevices/", { cache: "no-store" });
+                const r = await fetch("/api/device/getdevices/", {
+                    cache: "no-store"
+                });
+
                 if (!r.ok) throw Error(`HTTP ${r.status}`);
+
                 const payload = await r.json();
+
                 const list = Array.isArray(payload)
                     ? payload
                     : Array.isArray(payload?.devices)
                         ? payload.devices
                         : [];
-                devices = list.filter((d) => d && deviceId(d) && isVideohubDevice(d));
+
+                devices = list.filter(
+                    (d) => d && deviceId(d) && isVideohubDevice(d)
+                );
+
                 $("routeDevice").innerHTML = "";
+
                 if (!devices.length) {
-                    $("routeDevice").add(new Option("No BMD Router devices found (Iceburg type 1)", ""));
+                    $("routeDevice").add(
+                        new Option("No BMD Router devices found (Iceburg type 1)", "")
+                    );
+
                     status(
                         `No Videohub devices found. Iceburg returned ${list.length} device(s); BMD Router devices use Type 1.`
                     );
+
                     return;
                 }
+
                 devices.forEach((d) => {
                     const id = deviceId(d);
-                    $("routeDevice").add(new Option(`${deviceNameValue(d)} (BMD Router)`, id));
+
+                    $("routeDevice").add(
+                        new Option(`${deviceNameValue(d)} (BMD Router)`, id)
+                    );
                 });
+
                 void refreshUsedRouterNames().then(() => {
                     render();
                 });
+
                 status(`Loaded ${devices.length} Videohub device(s).`);
             } catch (e) {
-                $("routeDevice").innerHTML = '<option value="">Could not load devices</option>';
+                $("routeDevice").innerHTML =
+                    '<option value="">Could not load devices</option>';
+
                 status("Device list unavailable: " + e.message);
             }
         }
+
         function updateButton(key, value) {
             const b = button();
             if (!b) return;
+
             b[key] = value;
+
             markChanged();
             render();
         }
+
         function startDrag(e) {
             e.preventDefault();
             e.stopPropagation();
-            const b = panel().buttons.find((x) => x.id === e.currentTarget.dataset.id);
-            selectedButtonId = b.id;
-            drag = { id: b.id, startX: e.clientX, startY: e.clientY, x: b.x, y: b.y };
+
+            const p = panel();
+            if (!p) return;
+
+            const id = e.currentTarget.dataset.id;
+            const b = p.buttons.find((x) => x.id === id);
+
+            if (!b) return;
+
+            selectButton(id, e);
+
+            const selected = getSelectedButtons();
+
+            drag = {
+                startX: e.clientX,
+                startY: e.clientY,
+                scale: $("canvas").getBoundingClientRect().width / p.width,
+                buttons: selected.map((item) => ({
+                    id: item.id,
+                    x: item.x,
+                    y: item.y
+                }))
+            };
+
             render();
         }
+
         $("canvas").addEventListener("pointermove", (e) => {
             if (!drag || runMode) return;
 
             const p = panel();
-            const b = p.buttons.find((x) => x.id === drag.id);
-            if (!b) return;
+            if (!p) return;
 
-            const scale = $("canvas").getBoundingClientRect().width / p.width;
+            const dx = (e.clientX - drag.startX) / drag.scale;
+            const dy = (e.clientY - drag.startY) / drag.scale;
 
-            let x = drag.x + (e.clientX - drag.startX) / scale;
-            let y = drag.y + (e.clientY - drag.startY) / scale;
+            let moveX = snap(dx);
+            let moveY = snap(dy);
 
-            // Snap to the selected grid size
-            x = snap(x);
-            y = snap(y);
+            const draggedButtons = drag.buttons.map((original) => ({
+                original,
+                current: p.buttons.find((b) => b.id === original.id)
+            })).filter((item) => item.current);
 
-            b.x = clamp(x, 0, p.width - b.width);
-            b.y = clamp(y, 0, p.height - b.height);
+            if (!draggedButtons.length) return;
+
+            let minX = Math.min(
+                ...draggedButtons.map(({ original }) => original.x)
+            );
+
+            let minY = Math.min(
+                ...draggedButtons.map(({ original }) => original.y)
+            );
+
+            let maxRight = Math.max(
+                ...draggedButtons.map(({ original, current }) =>
+                    original.x + current.width
+                )
+            );
+
+            let maxBottom = Math.max(
+                ...draggedButtons.map(({ original, current }) =>
+                    original.y + current.height
+                )
+            );
+
+            moveX = clamp(moveX, -minX, p.width - maxRight);
+            moveY = clamp(moveY, -minY, p.height - maxBottom);
+
+            draggedButtons.forEach(({ original, current }) => {
+                current.x = original.x + moveX;
+                current.y = original.y + moveY;
+            });
 
             markChanged();
             render();
         });
+
         $("canvas").addEventListener("pointerup", () => {
             if (drag) markChanged();
             drag = null;
         });
+
         $("canvas").addEventListener("pointercancel", () => {
             if (drag) markChanged();
             drag = null;
         });
+
         $("panelSelect").onchange = async (e) => {
             activePanelId = e.target.value;
-            selectedButtonId = null;
+
+            clearSelection();
+
             activeDestinationRouter = null;
             activeDestinationOutput = null;
             selectedSource = null;
             liveRoutes = {};
+
             render();
+
             await refreshUsedRouterNames();
             pollRouterRoutes();
         };
+
         $("newPanel").onclick = () => {
             const p = {
                 id: uid(),
@@ -1307,166 +1657,252 @@
                 width: 1000,
                 height: 600,
                 scale: 1,
-                buttons: [],
+                buttons: []
             };
+
             data.panels.push(p);
             activePanelId = p.id;
-            selectedButtonId = null;
+
+            clearSelection();
+
             markChanged();
             render();
         };
+
         $("renamePanel").onclick = () => {
-            const p = panel(),
-                n = prompt("Panel name:", p.name);
+            const p = panel();
+            const n = prompt("Panel name:", p.name);
+
             if (n?.trim()) {
                 p.name = n.trim();
                 markChanged();
                 render();
             }
         };
+
         $("deletePanel").onclick = () => {
-            if (data.panels.length === 1) return alert("You must keep at least one panel.");
+            if (data.panels.length === 1) {
+                return alert("You must keep at least one panel.");
+            }
+
             if (!confirm("Delete this panel and all its buttons?")) return;
-            data.panels = data.panels.filter((p) => p.id !== activePanelId);
+
+            data.panels = data.panels.filter(
+                (p) => p.id !== activePanelId
+            );
+
             activePanelId = data.panels[0].id;
-            selectedButtonId = null;
+
+            clearSelection();
+
             activeDestinationRouter = null;
             activeDestinationOutput = null;
             liveRoutes = {};
+
             markChanged();
             render();
+
             refreshUsedRouterNames();
             pollRouterRoutes();
         };
+
         $("addButton").onclick = () => {
-            const p = panel(),
-                id = deviceId(devices[0]) || "",
-                b = {
-                    id: uid(),
-                    type: "route",
-                    label: "New Route",
-                    x: 20,
-                    y: 20,
-                    width: 140,
-                    height: 60,
-                    color: "#2c2c2c",
-                    textColor: "#ffffff",
-                    deviceId: id,
-                    input: 0,
-                    output: 0,
-                    routes: [{ deviceId: id, input: 0, output: 0 }],
-                };
-            p.buttons.push(b);
-            selectedButtonId = b.id;
-            markChanged();
-            if (id) loadDeviceNames(id);
-            render();
-        };
-        $("deleteButton").onclick = () => {
             const p = panel();
-            p.buttons = p.buttons.filter((b) => b.id !== selectedButtonId);
-            selectedButtonId = null;
+            const id = deviceId(devices[0]) || "";
+
+            const b = {
+                id: uid(),
+                type: "route",
+                label: "New Route",
+                x: 20,
+                y: 20,
+                width: 140,
+                height: 60,
+                color: "#2c2c2c",
+                textColor: "#ffffff",
+                deviceId: id,
+                input: 0,
+                output: 0,
+                routes: [{ deviceId: id, input: 0, output: 0 }]
+            };
+
+            p.buttons.push(b);
+
+            setSelection(new Set([b.id]), b.id);
+
             markChanged();
+
+            if (id) loadDeviceNames(id);
+
             render();
-            refreshUsedRouterNames();
-            pollRouterRoutes();
         };
+
+        $("deleteButton").onclick = () => {
+            deleteSelectedButtons();
+        };
+
         $("canvasWidth").onchange = (e) => {
             const p = panel();
+
             p.width = clamp(e.target.value, 300, 3000);
-            p.buttons.forEach((b) => (b.x = clamp(b.x, 0, p.width - b.width)));
+
+            p.buttons.forEach((b) => {
+                b.x = clamp(b.x, 0, p.width - b.width);
+            });
+
             markChanged();
             render();
         };
+
         $("canvasHeight").onchange = (e) => {
             const p = panel();
+
             p.height = clamp(e.target.value, 200, 2000);
-            p.buttons.forEach((b) => (b.y = clamp(b.y, 0, p.height - b.height)));
+
+            p.buttons.forEach((b) => {
+                b.y = clamp(b.y, 0, p.height - b.height);
+            });
+
             markChanged();
             render();
         };
+
         $("buttonLabel").oninput = (e) => {
             const b = button();
+
             if (b) {
                 b.label = e.target.value;
-                const el = $("canvas").querySelector(`[data-id="${b.id}"]`);
+
+                const el = $("canvas").querySelector(
+                    `[data-id="${b.id}"]`
+                );
+
                 if (el) el.textContent = b.label;
+
                 markChanged();
             }
         };
+
         $("buttonType").onchange = (e) => {
             const b = button();
+
             if (b) {
                 b.type = e.target.value;
-                if (b.type === "route" && !Array.isArray(b.routes))
-                    b.routes = [
-                        {
-                            deviceId: b.deviceId || devices[0]?.Id || devices[0]?.id || "",
-                            input: b.input ?? 0,
-                            output: b.output ?? 0,
-                        },
-                    ];
+
+                if (b.type === "route" && !Array.isArray(b.routes)) {
+                    b.routes = [{
+                        deviceId: b.deviceId || devices[0]?.Id || devices[0]?.id || "",
+                        input: b.input ?? 0,
+                        output: b.output ?? 0
+                    }];
+                }
+
                 updateTypeFields(b);
                 markChanged();
                 render();
             }
         };
+
         $("addMultiRoute").onclick = async () => {
             const b = button();
             if (!b) return;
+
             if (!Array.isArray(b.routes)) b.routes = [];
+
             const id = deviceId(devices[0]) || "";
-            b.routes.push({ deviceId: id, input: 0, output: 0 });
+
+            b.routes.push({
+                deviceId: id,
+                input: 0,
+                output: 0
+            });
+
             if (id) await loadDeviceNames(id);
+
             markChanged();
             renderMultiRouteEditor(b);
-            $("routeStatus").textContent = `${b.routes.length} routes configured.`;
+
+            $("routeStatus").textContent =
+                `${b.routes.length} routes configured.`;
+
             $("routeStatus").className = "route-status ok";
         };
-        $("buttonX").onchange = (e) => updateButton("x", clamp(e.target.value, 0, panel().width - button().width));
+
+        $("buttonX").onchange = (e) =>
+            updateButton(
+                "x",
+                clamp(e.target.value, 0, panel().width - button().width)
+            );
+
         $("buttonY").onchange = (e) =>
-            updateButton("y", clamp(e.target.value, 0, panel().height - button().height));
-        $("buttonW").onchange = (e) => updateButton("width", clamp(e.target.value, 20, panel().width - button().x));
+            updateButton(
+                "y",
+                clamp(e.target.value, 0, panel().height - button().height)
+            );
+
+        $("buttonW").onchange = (e) =>
+            updateButton(
+                "width",
+                clamp(e.target.value, 20, panel().width - button().x)
+            );
+
         $("buttonH").onchange = (e) =>
-            updateButton("height", clamp(e.target.value, 20, panel().height - button().y));
-        $("buttonColor").oninput = (e) => updateButton("color", e.target.value);
-        $("buttonTextColor").oninput = (e) => updateButton("textColor", e.target.value);
+            updateButton(
+                "height",
+                clamp(e.target.value, 20, panel().height - button().y)
+            );
+
+        $("buttonColor").oninput = (e) =>
+            updateButton("color", e.target.value);
+
+        $("buttonTextColor").oninput = (e) =>
+            updateButton("textColor", e.target.value);
+
         $("routeDevice").onchange = async (e) => {
             const b = button();
             if (!b) return;
+
             b.deviceId = e.target.value;
+
             markChanged();
+
             await loadDeviceNames(b.deviceId);
+
             populateRouteSelectors(b);
             pollRouterRoutes();
         };
+
         $("routeInput").onchange = (e) => {
             const b = button();
+
             if (b) {
                 b.input = Number(e.target.value);
                 markChanged();
             }
         };
+
         $("routeOutput").onchange = (e) => {
             const b = button();
+
             if (b) {
                 b.output = Number(e.target.value);
                 markChanged();
             }
         };
-        function snapToGrid(value) {
-            if (!snap) return value;
-            return Math.round(value / gridSize) * gridSize;
-        }
+
         async function executePanelButton(b, el) {
             const type = b.type || "route";
+
             if (type === "source") {
                 if (!activeDestinationRouter || activeDestinationOutput === null) {
                     status("Select a destination first.");
                     return;
                 }
+
                 if (b.deviceId !== activeDestinationRouter) {
-                    status(`Disabled: ${deviceName(b.deviceId)} is not the active destination router.`);
+                    status(
+                        `Disabled: ${deviceName(b.deviceId)} is not the active destination router.`
+                    );
                     return;
                 }
 
@@ -1477,44 +1913,67 @@
                         activeDestinationOutput,
                         `${b.label} → Output ${activeDestinationOutput} on ${deviceName(b.deviceId)}`
                     );
-                   // el.style.borderColor = "#65d6a2";
                 } catch (err) {
                     status(`Route failed: ${err.message}`);
-                   // el.style.borderColor = "#ff9298";
                 }
+
                 return;
             }
+
             if (type === "destination") {
                 if (!b.deviceId || !Number.isInteger(Number(b.output))) {
-                    status("Configure a Videohub and destination output for this button.");
+                    status(
+                        "Configure a Videohub and destination output for this button."
+                    );
                     return;
                 }
+
                 activeDestinationRouter = b.deviceId;
                 activeDestinationOutput = Number(b.output);
+
                 updateRouterBanner();
                 render();
+
                 status(
                     `Active destination: Output ${b.output} on ${deviceName(b.deviceId)}. Select a source button to route.`
                 );
+
                 return;
             }
+
             const routes = Array.isArray(b.routes) ? b.routes : [];
+
             if (!routes.length) {
                 status("Configure at least one route in this all-in-one button.");
                 return;
             }
-            if (!confirm(`Execute ${routes.length} routes across the configured Videohubs?`)) return;
+
+            if (
+                !confirm(
+                    `Execute ${routes.length} routes across the configured Videohubs?`
+                )
+            ) return;
+
             el.style.opacity = ".55";
             status(`Executing ${routes.length} routes…`);
+
             try {
                 const r = await fetch("/api/routerpanels/routes", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ routes }),
+                    body: JSON.stringify({ routes })
                 });
+
                 const result = await readJsonResponse(r);
-                if (!r.ok || result.success === false) throw Error(result.error || `HTTP ${r.status}`);
-                status(`Completed ${result.completed ?? routes.length} of ${routes.length} routes.`);
+
+                if (!r.ok || result.success === false) {
+                    throw Error(result.error || `HTTP ${r.status}`);
+                }
+
+                status(
+                    `Completed ${result.completed ?? routes.length} of ${routes.length} routes.`
+                );
+
                 el.style.borderColor = "#65d6a2";
             } catch (e) {
                 status(`Multi-route failed: ${e.message}`);
@@ -1523,106 +1982,162 @@
                 el.style.opacity = "1";
             }
         }
-        async function executeSingleRoute(deviceId, input, output, description) {
+
+        async function executeSingleRoute(
+            deviceId,
+            input,
+            output,
+            description
+        ) {
             const r = await fetch("/api/routerpanels/route", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ deviceId, input, output }),
+                body: JSON.stringify({ deviceId, input, output })
             });
+
             const result = await readJsonResponse(r);
-            if (!r.ok || result.success === false || result.error) throw Error(result.error || `HTTP ${r.status}`);
+
+            if (!r.ok || result.success === false || result.error) {
+                throw Error(result.error || `HTTP ${r.status}`);
+            }
+
             status(`Route command sent: ${description}`);
         }
+
         $("mode").onclick = () => {
             runMode = !runMode;
-            selectedButtonId = null;
+
+            clearSelection();
+
             activeDestinationRouter = null;
             activeDestinationOutput = null;
             selectedSource = null;
+
             render();
+
             status(runMode ? "Run mode active" : "Layout editing active");
         };
+
         async function pollRouterRoutes() {
             const ids = usedRouterIds();
+
             if (polling || !ids.length) return;
+
             polling = true;
+
             try {
                 const results = await Promise.all(
                     ids.map(async (id) => {
                         try {
-                            const r = await fetch(`/api/router/bmd/${encodeURIComponent(id)}/getroutes`, {
-                                cache: "no-store",
-                            });
+                            const r = await fetch(
+                                `/api/router/bmd/${encodeURIComponent(id)}/getroutes`,
+                                { cache: "no-store" }
+                            );
+
                             const j = await readJsonResponse(r);
-                            if (!r.ok || j.error) throw Error(j.error || `HTTP ${r.status}`);
+
+                            if (!r.ok || j.error) {
+                                throw Error(j.error || `HTTP ${r.status}`);
+                            }
+
                             return [id, j.routes || {}];
-                        } catch (e) {
+                        } catch {
                             return [id, null];
                         }
                     })
                 );
+
                 const currentIds = new Set(ids);
+
                 Object.keys(liveRoutes).forEach((id) => {
                     if (!currentIds.has(id)) delete liveRoutes[id];
                 });
+
                 results.forEach(([id, routes]) => {
                     liveRoutes[id] = routes;
                 });
-                if (runMode) refreshLiveButtonStatus();
-                else updateRouterBanner();
+
+                if (runMode) {
+                    refreshLiveButtonStatus();
+                } else {
+                    updateRouterBanner();
+                }
             } finally {
                 polling = false;
             }
         }
+
         function refreshLiveButtonStatus() {
             const p = panel();
             if (!p) return;
+
             p.buttons.forEach((b) => {
-                const el = $("canvas").querySelector(`[data-id="${b.id}"]`);
+                const el = $("canvas").querySelector(
+                    `[data-id="${b.id}"]`
+                );
+
                 if (!el) return;
+
                 if (b.type === "destination") {
                     const routerState = liveRoutes[b.deviceId];
                     const input = routerState?.[Number(b.output)];
+
                     const label =
                         routerState === undefined
                             ? "Waiting for router…"
                             : routerState === null
                                 ? "Router offline"
                                 : input !== undefined && input !== null
-                                    ? (labelCache[b.deviceId]?.input_labels || {})[input] || `Input ${input}`
+                                    ? (labelCache[b.deviceId]?.input_labels || {})[input] ||
+                                    `Input ${input}`
                                     : "Unrouted";
-                   // el.innerHTML = `${escapeHtml(b.label || "Destination")}<span class="live-route">Current: ${escapeHtml(label)}</span>`;
                 } else if (
                     b.type === "source" &&
                     activeDestinationRouter === b.deviceId &&
                     activeDestinationOutput !== null
                 ) {
-                    el.classList.toggle( "current-source",Number(liveRoutes[b.deviceId]?.[activeDestinationOutput]) === Number(b.input) );
+                    el.classList.toggle(
+                        "current-source",
+                        Number(liveRoutes[b.deviceId]?.[activeDestinationOutput]) ===
+                        Number(b.input)
+                    );
                 }
             });
+
             updateRouterBanner();
         }
+
         async function pollLoop() {
             await pollRouterRoutes();
             setTimeout(pollLoop, 2000);
         }
+
         async function savePanels() {
             if (!autoSaveEnabled) return;
+
             if (saveInFlight) {
                 saveAgain = true;
                 return;
             }
+
             saveInFlight = true;
             clearTimeout(autoSaveTimer);
+
             try {
                 const snapshot = JSON.stringify(data);
+
                 const r = await fetch("/api/routerpanels/", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: snapshot,
+                    body: snapshot
                 });
+
                 const j = await readJsonResponse(r);
-                if (!r.ok || j.success === false) throw Error(j.error || `HTTP ${r.status}`);
+
+                if (!r.ok || j.success === false) {
+                    throw Error(j.error || `HTTP ${r.status}`);
+                }
+
                 status(
                     snapshot === JSON.stringify(data)
                         ? "Auto-saved to routerpanles.json"
@@ -1632,16 +2147,15 @@
                 status("Auto-save failed: " + e.message);
             } finally {
                 saveInFlight = false;
+
                 if (saveAgain) {
                     saveAgain = false;
                     savePanels();
                 }
             }
-
         }
-       
 
-        document.addEventListener("keydown", e => {
+        document.addEventListener("keydown", (e) => {
             if (
                 e.target.matches("input, select, textarea") ||
                 e.target.isContentEditable
@@ -1657,14 +2171,23 @@
                 pasteButton();
             }
         });
+
         async function load() {
             try {
                 const r = await fetch("/api/routerpanels/");
+
                 if (!r.ok) throw Error(`HTTP ${r.status}`);
+
                 data = await r.json();
-                if (!Array.isArray(data.panels)) data = { version: 1, panels: [] };
+
+                if (!Array.isArray(data.panels)) {
+                    data = { version: 1, panels: [] };
+                }
+
                 ensurePanel();
+
                 activePanelId = data.panels[0].id;
+
                 render();
 
                 autoSaveEnabled = true;
@@ -1675,18 +2198,27 @@
                 });
 
                 pollLoop();
+
                 status("Loaded panels · auto-save enabled");
             } catch (e) {
                 data = { version: 1, panels: [] };
+
                 ensurePanel();
+
                 await loadDevices();
+
                 render();
+
                 autoSaveEnabled = true;
+
                 pollLoop();
+
                 status("Could not load saved panels: " + e.message);
             }
         }
+
         $("save").onclick = () => savePanels();
+
         load();
     </script>
 </body>

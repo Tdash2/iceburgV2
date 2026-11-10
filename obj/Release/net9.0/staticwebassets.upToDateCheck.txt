@@ -27,6 +27,7 @@ C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\panle.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\bmd40panle.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\magewell-decoder.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\uploadross\index.html
+C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\zowietekpov.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\x32.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\admin\devices.html
 C:\Users\tj\Desktop\Github Repos\IceburgV2\wwwroot\depends\jquery.min.js
@@ -67,3 +68,4 @@ wwwroot\upload8x8\index.html
 wwwroot\uploadross\firmware.bin
 wwwroot\uploadross\index.html
 wwwroot\x32.html
+wwwroot\zowietekpov.html

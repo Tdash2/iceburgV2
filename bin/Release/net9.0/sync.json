@@ -1,0 +1,6 @@
+{
+  "PrimaryServer": true,
+  "SecondaryServerIP": "10.244.0.222",
+  "SecondaryServerUser": "admin",
+  "SecondaryServerPass": "admin"
+}

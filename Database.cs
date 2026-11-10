@@ -69,6 +69,182 @@ namespace Iceburg.Database
         /// The file is checked/reloaded every time this property is
         /// accessed so callers always receive the latest information.
         /// </summary>
+        /// 
+
+
+        // ============================================================
+        // DATABASE - EXPORT
+        // ============================================================
+
+        /// <summary>
+        /// Exports the complete database, including password material
+        /// and device credentials.
+        /// </summary>
+        public static string ExportJson()
+        {
+            lock (_lock)
+            {
+                ReloadInternal();
+
+                return JsonSerializer.Serialize(
+                    _data,
+                    JsonOptions
+                );
+            }
+        }
+
+        // ============================================================
+        // DATABASE - IMPORT
+        // ============================================================
+
+        /// <summary>
+        /// Imports a complete database from JSON.
+        /// The existing database is only replaced after validation.
+        /// </summary>
+        public static bool ImportJson(
+            string json,
+            out string error)
+        {
+            error = "";
+
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                error = "Database JSON cannot be empty.";
+                return false;
+            }
+
+            AppConfig? imported;
+
+            try
+            {
+                using JsonDocument document = JsonDocument.Parse(json);
+
+                JsonElement root = document.RootElement;
+
+                if (root.ValueKind != JsonValueKind.Object ||
+                    !root.TryGetProperty("Settings", out JsonElement settings) ||
+                    settings.ValueKind != JsonValueKind.Object ||
+                    !root.TryGetProperty("Users", out JsonElement users) ||
+                    users.ValueKind != JsonValueKind.Array ||
+                    !root.TryGetProperty("Devices", out JsonElement devices) ||
+                    devices.ValueKind != JsonValueKind.Array)
+                {
+                    error = "Invalid database format. Settings, Users and Devices are required.";
+                    return false;
+                }
+
+                imported = JsonSerializer.Deserialize<AppConfig>(
+                    json,
+                    JsonOptions
+                );
+            }
+            catch (JsonException ex)
+            {
+                error = $"Invalid JSON: {ex.Message}";
+                return false;
+            }
+
+            if (imported == null)
+            {
+                error = "Could not deserialize database.";
+                return false;
+            }
+
+            imported.Settings ??= new AppSettings();
+            imported.Users ??= new List<User>();
+            imported.Devices ??= new List<Device>();
+
+            // Validate users.
+            if (imported.Users.Any(u =>
+                u == null ||
+                string.IsNullOrWhiteSpace(u.Id) ||
+                string.IsNullOrWhiteSpace(u.Username)))
+            {
+                error = "One or more users have missing IDs or usernames.";
+                return false;
+            }
+
+            // Prevent duplicate user IDs.
+            if (imported.Users.Select(u => u.Id)
+                .Distinct(StringComparer.OrdinalIgnoreCase).Count()
+                != imported.Users.Count)
+            {
+                error = "Duplicate user IDs found.";
+                return false;
+            }
+
+            // Prevent duplicate usernames.
+            if (imported.Users.Select(u => u.Username)
+                .Distinct(StringComparer.OrdinalIgnoreCase).Count()
+                != imported.Users.Count)
+            {
+                error = "Duplicate usernames found.";
+                return false;
+            }
+
+            // Validate password material.
+            foreach (User user in imported.Users)
+            {
+                bool hasSalt = !string.IsNullOrWhiteSpace(user.PasswordSalt);
+                bool hasHash = !string.IsNullOrWhiteSpace(user.PasswordHash);
+
+                if (hasSalt != hasHash ||
+                    (hasSalt && !IsValidPasswordMaterial(
+                        user.PasswordSalt,
+                        user.PasswordHash)))
+                {
+                    error = $"Invalid password material for user '{user.Username}'.";
+                    return false;
+                }
+
+                user.Role = NormalizeRole(user.Role);
+
+                user.AutoLoginIps ??= new List<string>();
+                user.NavOptions ??= new List<NavigationOption>();
+                user.AllowedDevices ??= new List<string>();
+            }
+
+            // Validate devices.
+            if (imported.Devices.Any(d =>
+                d == null ||
+                string.IsNullOrWhiteSpace(d.Id)))
+            {
+                error = "One or more devices have missing IDs.";
+                return false;
+            }
+
+            if (imported.Devices.Select(d => d.Id)
+                .Distinct(StringComparer.OrdinalIgnoreCase).Count()
+                != imported.Devices.Count)
+            {
+                error = "Duplicate device IDs found.";
+                return false;
+            }
+
+            // Replace database.
+            lock (_lock)
+            {
+                AppConfig previousData = _data;
+
+                _data = imported;
+
+                if (!SaveInternal())
+                {
+                    _data = previousData;
+
+                    error = "Failed to save imported database.";
+                    return false;
+                }
+            }
+
+            // Update other systems that depend on devices.
+            TallyDatabase.SyncDevices();
+
+            return true;
+        }
+
+
+
         public static AppConfig Data
         {
             get
@@ -159,10 +335,7 @@ namespace Iceburg.Database
                 // Otherwise only persist LastSeen periodically.
                 DateTime now = DateTime.Now;
 
-                if (!_lastSeenSaved.TryGetValue(
-                        id,
-                        out DateTime lastSaved) ||
-                    (now - lastSaved).TotalSeconds >= 5)
+                if (!_lastSeenSaved.TryGetValue(id,out DateTime lastSaved) ||(now - lastSaved).TotalSeconds >= 4)
                 {
                     SaveInternal();
                     _lastSeenSaved[id] = now;
@@ -500,7 +673,7 @@ namespace Iceburg.Database
         ///
         /// This method assumes _lock is already held.
         /// </summary>
-        private static void SaveInternal()
+        private static bool SaveInternal()
         {
             try
             {
@@ -530,21 +703,23 @@ namespace Iceburg.Database
                 //
                 // Delete + Move is used instead of File.Replace because
                 // File.Replace is not supported on every filesystem.
+                // Replace the original file with the completed file.
                 if (File.Exists(ConfigFilePath))
                 {
                     File.Delete(ConfigFilePath);
                 }
 
-                File.Move(
-                    tempFilePath,
-                    ConfigFilePath
-                );
+                File.Move(tempFilePath, ConfigFilePath);
+
+                return true;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(
                     $"Error saving config: {ex.Message}"
                 );
+
+                return false;
             }
             finally
             {
@@ -1361,6 +1536,8 @@ namespace Iceburg.Database
      string username = "",
      string password = "")
         {
+            Device result;
+
             lock (_lock)
             {
                 ReloadInternal();
@@ -1382,10 +1559,12 @@ namespace Iceburg.Database
 
                 SaveInternal();
 
-                TallyDatabase.SyncDevices();
 
-                return CloneDevice(device);
+                result = CloneDevice(device);
+
             }
+            TallyDatabase.SyncDevices();
+            return CloneDevice(result);
         }
 
         public static Device AddDevice(
@@ -1394,7 +1573,7 @@ namespace Iceburg.Database
             if (device == null)
                 throw new ArgumentNullException(
                     nameof(device));
-
+            Device result;
             lock (_lock)
             {
                 // Always reload before modifying.
@@ -1412,10 +1591,11 @@ namespace Iceburg.Database
 
                 SaveInternal();
 
-                TallyDatabase.SyncDevices();
-
-                return CloneDevice(newDevice);
+                result = CloneDevice(device);
             }
+            TallyDatabase.SyncDevices();
+
+            return CloneDevice(result);
         }
 
         // ============================================================
@@ -1443,10 +1623,11 @@ namespace Iceburg.Database
 
                 SaveInternal();
 
-                TallyDatabase.SyncDevices();
-
-                return true;
+                
             }
+            TallyDatabase.SyncDevices();
+
+            return true;
         }
 
         // ============================================================
@@ -1498,10 +1679,11 @@ namespace Iceburg.Database
 
                 SaveInternal();
 
-                TallyDatabase.SyncDevices();
-
-                return true;
+               
             }
+            TallyDatabase.SyncDevices();
+
+            return true;
         }
 
         // ============================================================

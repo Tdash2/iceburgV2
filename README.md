@@ -24,7 +24,7 @@ Below is a list of currently supported devices:
 + VMIX (Tally Only)
 + Symetrix DSP (logic Inputs Only)
 + Tally Iceberg IO Devices (GIP, GPO and TSL 3.0)
-+ (Supported in V1 not in V2) ZowieTek 4k POV Camera
++ ZowieTek 4k POV Camera
 + AJA FS-2 Frame Synchronizer and Converter
 + AJA FS-4 Frame Synchronizer and Converter
 + Magewell Pro Convert for NDI® to SDI

@@ -235,20 +235,29 @@
         const urlParams = new URLSearchParams(window.location.search);
         const deviceId = urlParams.get("id");
 
-        let mode = "audio";
+        let mode = new URLSearchParams(window.location.search)
+            .get("mode") === "video" ? "video" : "audio";
         let config = {};
         let dropdownMap = {};
         let userEditing = {};
         let pollInterval = null;
         let madiNames = {};
-
         const app = document.getElementById("app");
 
         const deviceNameBox = document.getElementById("deviceName");
         const deviceInfoBox = document.getElementById("deviceInfo");
 
-        document.getElementById("audioTab").onclick = () => switchMode("audio");
-        document.getElementById("videoTab").onclick = () => switchMode("video");
+        const audioTab = document.getElementById("audioTab");
+        const videoTab = document.getElementById("videoTab");
+
+        function updateTabSelection() {
+            audioTab.classList.toggle("active", mode === "audio");
+            videoTab.classList.toggle("active", mode === "video");
+        }
+
+        audioTab.onclick = () => switchMode("audio");
+        videoTab.onclick = () => switchMode("video");
+        updateTabSelection();
 
         if (!deviceId) {
             showError("Missing device ID. Open this page with ?id=<device id>.");
@@ -278,11 +287,13 @@
         function switchMode(newMode) {
             mode = newMode;
 
-            document.getElementById("audioTab")
-                .classList.toggle("active", mode === "audio");
+            // Update selected button
+            updateTabSelection();
 
-            document.getElementById("videoTab")
-                .classList.toggle("active", mode === "video");
+            // Update browser URL without reloading
+            const url = new URL(window.location.href);
+            url.searchParams.set("mode", mode);
+            window.history.replaceState({}, "", url);
 
             init();
         }

@@ -36,6 +36,11 @@ namespace Iceburg.Database
                 AppContext.BaseDirectory,
                 "gpio.json"
             );
+        private static readonly string BackupFilePath =
+    FilePath + ".bak";
+
+        private static readonly string TempFilePath =
+            FilePath + ".tmp";
 
         private static GpioConfig _config =
             new();
@@ -89,11 +94,97 @@ namespace Iceburg.Database
         private static CancellationTokenSource? _device9TallyPollingCts;
         private static Task? _device9TallyPollingTask;
 
-    
+        public static string ExportJson()
+        {
+            lock (_lock)
+            {
+                return JsonSerializer.Serialize(_config, JsonOptions);
+            }
+        }
+
+        public static bool ImportJson(string json, out string error)
+        {
+            error = "";
+
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                error = "Tally database JSON is empty.";
+                return false;
+            }
+
+            GpioConfig? imported;
+
+            try
+            {
+                imported = JsonSerializer.Deserialize<GpioConfig>(
+                    json,
+                    JsonOptions);
+            }
+            catch (JsonException ex)
+            {
+                error = "Invalid Tally database JSON: " + ex.Message;
+                return false;
+            }
+
+            if (imported?.Devices == null)
+            {
+                error = "Tally database does not contain a Devices collection.";
+                return false;
+            }
+
+            // Validate device IDs before changing the live configuration.
+            if (imported.Devices.Any(d =>
+                    d == null ||
+                    string.IsNullOrWhiteSpace(d.DeviceId)))
+            {
+                error = "Every Tally device must have a DeviceId.";
+                return false;
+            }
+
+            if (imported.Devices
+                .GroupBy(d => d.DeviceId, StringComparer.OrdinalIgnoreCase)
+                .Any(g => g.Count() > 1))
+            {
+                error = "Duplicate Tally device IDs were found.";
+                return false;
+            }
+
+            lock (_lock)
+            {
+                GpioConfig previousConfig = _config;
+
+                try
+                {
+                    _config = imported;
+
+                    NormalizeConfig();
+
+                    CleanupRoutesInternal();
+
+                    RecalculateAllOutputsInternal();
+
+                    SaveInternal();
+
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    // Restore the previous in-memory configuration.
+                    _config = previousConfig;
+
+                    error = "Could not save imported Tally database: " +
+                            ex.Message;
+
+                    return false;
+                }
+            }
+        }
 
         // ============================================================
         // INITIALIZATION
         // ============================================================
+
+
 
         public static void Initialize()
         {
@@ -105,8 +196,6 @@ namespace Iceburg.Database
 
                 CleanupRoutesInternal();
 
-                SaveInternal();
-
                 RecalculateAllOutputsInternal();
 
                 StartRouterPollingInternal();
@@ -114,6 +203,9 @@ namespace Iceburg.Database
                 StartRemoteTallyPollingInternal();
                 StartDevice9TallyPollingInternal();
             }
+
+            // Save only if cleanup or another operation actually changed
+            // the configuration. Don't automatically overwrite it at startup.
         }
         private static bool IsRouterDeviceInternal(string deviceId)
         {
@@ -677,6 +769,7 @@ namespace Iceburg.Database
                  */
                 lock (_lock)
                 {
+                    //TerminalOutputHub.Broadcast(device.DeviceId + " Triggred Last seen change from PullremoteTallySeviceInternial");
                     Database.UpdateDevicePresence(device.DeviceId, device.IpAddress);
                     var actualDevice =
                         FindDeviceInternal(device.DeviceId);
@@ -887,80 +980,151 @@ namespace Iceburg.Database
 
         private static void LoadInternal()
         {
+            // First try the main configuration file.
+            if (File.Exists(FilePath))
+            {
+                if (TryReadConfig(FilePath, out var loaded))
+                {
+                    _config = loaded!;
+                    NormalizeConfig();
+                    return;
+                }
+            }
+
+            // Main file is missing, empty or invalid. Try the backup.
+            if (File.Exists(BackupFilePath))
+            {
+                if (TryReadConfig(BackupFilePath, out var backup))
+                {
+                    _config = backup!;
+                    NormalizeConfig();
+
+                    // Restore the main file from the known-good backup.
+                    File.Copy(BackupFilePath, FilePath, true);
+                    return;
+                }
+
+                throw new InvalidDataException(
+                    "Both gpio.json and gpio.json.bak are invalid. " +
+                    "The configuration has not been reset.");
+            }
+
+            // Only create a new configuration on a genuine first run.
             if (!File.Exists(FilePath))
             {
-                _config =
-                    new GpioConfig();
-
+                _config = new GpioConfig();
                 return;
             }
 
-            var json =
-                File.ReadAllText(FilePath);
+            // A main file exists but is invalid, and there is no backup.
+            // Do not silently replace it with an empty configuration.
+            throw new InvalidDataException(
+                "gpio.json is invalid and no valid backup exists. " +
+                "The original file has been preserved.");
+        }
+
+        private static bool TryReadConfig(string path, out GpioConfig? config)
+        {
+            config = null;
+
+            string json = File.ReadAllText(path);
 
             if (string.IsNullOrWhiteSpace(json))
+                return false;
+
+            try
             {
-                _config =
-                    new GpioConfig();
-
-                return;
-            }
-
-            _config =
-                JsonSerializer.Deserialize<GpioConfig>(
+                config = JsonSerializer.Deserialize<GpioConfig>(
                     json,
-                    JsonOptions
-                )
-                ?? new GpioConfig();
+                    JsonOptions);
 
-            _config.Devices ??=
-                new List<GpioDevice>();
+                return config != null;
+            }
+            catch (JsonException)
+            {
+                return false;
+            }
+        }
+        private static void NormalizeConfig()
+        {
+            _config ??= new GpioConfig();
+            _config.Devices ??= new List<GpioDevice>();
 
             foreach (var device in _config.Devices)
             {
-                device.Inputs ??=
-                    new List<GpioInput>();
-
-                device.Outputs ??=
-                    new List<GpioOutput>();
-
-                device.Routes ??=
-                    new List<GpioRoute>();
+                device.Inputs ??= new List<GpioInput>();
+                device.Outputs ??= new List<GpioOutput>();
+                device.Routes ??= new List<GpioRoute>();
             }
         }
 
 
         private static void SaveInternal()
         {
-            var directory = Path.GetDirectoryName(FilePath);
+            string? directory = Path.GetDirectoryName(FilePath);
 
-            if (!string.IsNullOrWhiteSpace(directory))
-                Directory.CreateDirectory(directory);
+            if (string.IsNullOrWhiteSpace(directory))
+                throw new InvalidOperationException(
+                    "Invalid GPIO configuration directory.");
 
-            var json = JsonSerializer.Serialize(_config, JsonOptions);
+            Directory.CreateDirectory(directory);
 
-            const int maxAttempts = 5;
-            const int delayMs = 100;
+            string json = JsonSerializer.Serialize(
+                _config,
+                JsonOptions);
 
-            for (int attempt = 1; attempt <= maxAttempts; attempt++)
+            byte[] data = System.Text.Encoding.UTF8.GetBytes(json);
+
+            try
             {
-                try
+                // Write the complete new configuration to a temporary file.
+                // It is in the same directory as gpio.json.
+                using (var stream = new FileStream(
+                    TempFilePath,
+                    FileMode.Create,
+                    FileAccess.Write,
+                    FileShare.None,
+                    4096,
+                    FileOptions.WriteThrough))
                 {
-                    File.WriteAllText(FilePath, json);
-                    return;
+                    stream.Write(data, 0, data.Length);
+
+                    // Request that the operating system flush the file to disk.
+                    stream.Flush(true);
                 }
-                catch (IOException) when (attempt < maxAttempts)
+
+                // Preserve the previous configuration only if it is valid.
+                if (File.Exists(FilePath) &&
+                    TryReadConfig(FilePath, out _))
                 {
-                    Thread.Sleep(delayMs);
+                    File.Copy(
+                        FilePath,
+                        BackupFilePath,
+                        true);
                 }
-                catch (UnauthorizedAccessException) when (attempt < maxAttempts)
+
+                // Replace the main file with the completed temporary file.
+                // Both files are in the same directory/filesystem.
+                File.Move(
+                    TempFilePath,
+                    FilePath,
+                    true);
+            }
+            finally
+            {
+                // Remove an unused temporary file if saving failed.
+                if (File.Exists(TempFilePath))
                 {
-                    Thread.Sleep(delayMs);
+                    try
+                    {
+                        File.Delete(TempFilePath);
+                    }
+                    catch
+                    {
+                        // Leave it for cleanup on the next successful save.
+                    }
                 }
             }
-
-            // At this point the file is still locked/unavailable.
-            // Don't let this bring down the application.
         }
 
 
@@ -1190,8 +1354,7 @@ namespace Iceburg.Database
         }
 
 
-        public static GpioDevice? SetRemoteTallySource(
-            string deviceId,
+        public static GpioDevice? SetRemoteTallySource(string deviceId,
 
             string remoteTallyId)
         {
@@ -3085,6 +3248,7 @@ public static class TallyLegacy
     {
         if (!string.IsNullOrWhiteSpace(id))
         {
+            //TerminalOutputHub.Broadcast(id+" Triggred Last seen change from GetTallyStatus");
             Database.UpdateDevicePresence(id, ip);
         }
 
@@ -3158,6 +3322,7 @@ public static class TallyLegacy
         }
         if (!string.IsNullOrWhiteSpace(id))
         {
+            //TerminalOutputHub.Broadcast(id+"Triggred Last seen change from SetTallyStatus");
             Database.UpdateDevicePresence(id, ip);
         }
 

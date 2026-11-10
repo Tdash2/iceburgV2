@@ -70,7 +70,6 @@
         .card {
             background: #1b1b1b;
             border: 1px solid #303030;
-          
             overflow: hidden;
         }
 
@@ -101,6 +100,7 @@
             display: flex;
             gap: 8px;
         }
+
         .empty {
             text-align: center;
             padding: 40px;
@@ -118,20 +118,25 @@
             justify-content: center;
             padding: 20px;
             z-index: 1000;
+            overflow-y: auto;
         }
 
             .modal-backdrop.visible {
                 display: flex;
             }
 
+           
+
         .modal {
             width: 100%;
             max-width: 550px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
             background: #1b1b1b;
             border: 1px solid #333;
-           
             padding: 25px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
+            border-radius: 8px;
         }
 
             .modal h2 {
@@ -155,7 +160,6 @@
                 padding: 11px;
                 background: #111;
                 border: 1px solid #444;
-               
                 color: white;
                 font-size: 15px;
             }
@@ -212,6 +216,73 @@
             padding: 30px;
             text-align: center;
             color: #888;
+        }
+
+
+        .editor-section {
+            border-top: 1px solid #333;
+            padding-top: 18px;
+            margin-top: 18px;
+        }
+
+            .editor-section h3 {
+                margin: 0 0 6px;
+                font-size: 16px;
+            }
+
+            .editor-section .help {
+                margin-bottom: 12px;
+            }
+
+        .nav-list, .device-list {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .nav-row {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr auto;
+            gap: 8px;
+        }
+
+            .nav-row input {
+                min-width: 0;
+                width: 100%;
+                padding: 10px;
+                background: #111;
+                border: 1px solid #444;
+                color: white;
+            }
+
+        .device-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 10px;
+            background: #222;
+            border: 1px solid #333;
+            border-radius: 5px;
+        }
+
+            .device-row input {
+                width: 17px;
+                height: 17px;
+            }
+
+        .device-name {
+            flex: 1;
+        }
+
+        .device-meta {
+            color: #888;
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .nav-row {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 700px) {
@@ -383,6 +454,31 @@
             </div>
 
 
+
+            <div class="editor-section">
+                <h3>Custom Navigation</h3>
+                <div class="help">
+                    Choose the links that appear in this user's navigation bar.
+                </div>
+                <div id="navList" class="nav-list"></div>
+                <button type="button"
+                        onclick="addNavField()"
+                        style="margin-top:10px">
+                    + Add Navigation Link
+                </button>
+            </div>
+
+            <div class="editor-section">
+                <h3>Allowed Devices</h3>
+                <div class="help">
+                    Select the devices this user is permitted to access.
+                    No selected devices means no device access.
+                </div>
+                <div id="deviceList" class="device-list">
+                    <div class="help">Loading devices...</div>
+                </div>
+            </div>
+
             <div class="modal-actions">
 
                 <button onclick="closeModal()">
@@ -407,662 +503,800 @@
 
     <script>
 
-const PASSWORD_ITERATIONS = 600000;
-const PASSWORD_SALT_SIZE = 32;
-const PASSWORD_HASH_SIZE = 32;
+        const PASSWORD_ITERATIONS = 600000;
+        const PASSWORD_SALT_SIZE = 32;
+        const PASSWORD_HASH_SIZE = 32;
 
-let users = [];
-let editingUserId = null;
+        let users = [];
+        let editingUserId = null;
 
 
-// ============================================================
-// API
-// ============================================================
+        // ============================================================
+        // API
+        // ============================================================
 
-async function api(url, options = {}) {
+        async function api(url, options = {}) {
 
-    const response =
-        await fetch(url, {
-            ...options,
+            const response =
+                await fetch(url, {
+                    ...options,
 
-            headers: {
-                "Content-Type": "application/json",
-                ...(options.headers || {})
-            },
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...(options.headers || {})
+                    },
 
-            credentials: "same-origin"
-        });
+                    credentials: "same-origin"
+                });
 
-    if (!response.ok) {
+            if (!response.ok) {
 
-        let message =
-            `Request failed (${response.status})`;
+                let message =
+                    `Request failed (${response.status})`;
 
-        try {
+                try {
 
-            const data =
-                await response.json();
+                    const data =
+                        await response.json();
 
-            if (data.error) {
-                message = data.error;
+                    if (data.error) {
+                        message = data.error;
+                    }
+
+                } catch {
+                    // Ignore invalid JSON response.
+                }
+
+                throw new Error(message);
             }
 
-        } catch {
-            // Ignore invalid JSON response.
+            return response.json();
         }
 
-        throw new Error(message);
-    }
 
-    return response.json();
-}
+        // ============================================================
+        // LOAD USERS
+        // ============================================================
 
+        async function loadUsers() {
 
-// ============================================================
-// LOAD USERS
-// ============================================================
+            const loading =
+                document.getElementById("loading");
 
-async function loadUsers() {
+            const table =
+                document.getElementById("userTable");
 
-    const loading =
-        document.getElementById("loading");
+            const empty =
+                document.getElementById("empty");
 
-    const table =
-        document.getElementById("userTable");
+            loading.style.display = "block";
+            table.style.display = "none";
+            empty.style.display = "none";
 
-    const empty =
-        document.getElementById("empty");
+            try {
 
-    loading.style.display = "block";
-    table.style.display = "none";
-    empty.style.display = "none";
+                users =
+                    await api("/api/users");
 
-    try {
+                renderUsers();
 
-        users =
-            await api("/api/users");
+            } catch (error) {
 
-        renderUsers();
+                loading.textContent =
+                    error.message;
 
-    } catch (error) {
+            } finally {
 
-        loading.textContent =
-            error.message;
+                loading.style.display = "none";
 
-    } finally {
-
-        loading.style.display = "none";
-
-    }
-}
+            }
+        }
 
 
-// ============================================================
-// RENDER USERS
-// ============================================================
+        // ============================================================
+        // LOAD DEVICES
+        // ============================================================
 
-function renderUsers() {
+        async function loadDevices() {
+            const container = document.getElementById("deviceList");
 
-    const tbody =
-        document.getElementById("userTableBody");
+            try {
+                devices = await api("/api/device/getdevice");
+                if (!Array.isArray(devices))
+                    throw new Error("The device endpoint did not return an array.");
 
-    const table =
-        document.getElementById("userTable");
+                renderDeviceChoices();
+            } catch (error) {
+                container.textContent = `Unable to load devices: ${error.message}`;
+            }
+        }
 
-    const empty =
-        document.getElementById("empty");
+        function renderDeviceChoices(selectedIds = []) {
+            const container = document.getElementById("deviceList");
+            container.innerHTML = "";
 
-    tbody.innerHTML = "";
+            if (!devices.length) {
+                container.textContent = "No devices are available.";
+                return;
+            }
 
-    if (!users.length) {
+            const selected = new Set((selectedIds || []).map(id => String(id)));
 
-        table.style.display = "none";
-        empty.style.display = "block";
+            for (const device of devices) {
+                const row = document.createElement("label");
+                row.className = "device-row";
 
-        return;
-    }
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.className = "allowed-device";
+                checkbox.value = String(device.id);
+                checkbox.checked = selected.has(String(device.id));
 
-    table.style.display = "table";
-    empty.style.display = "none";
+                const name = document.createElement("span");
+                name.className = "device-name";
+                name.textContent = device.name || `Device ${device.id}`;
 
-    for (const user of users) {
+                const meta = document.createElement("span");
+                meta.className = "device-meta";
+                meta.textContent = `Type ${device.type ?? ""}`;
 
-        const row =
-            document.createElement("tr");
+                row.append(checkbox, name, meta);
+                container.appendChild(row);
+            }
+        }
 
-        const ips =
-            user.autoLoginIps || [];
-
-        const roleClass =
-            user.role === "Admin"
-                ? "admin"
-                : "user";
-
-        row.innerHTML = `
+        function getAllowedDevices() {
+            return Array.from(
+                document.querySelectorAll("#deviceList .allowed-device:checked")
+            ).map(input => input.value);
+        }
 
 
+        // ============================================================
+        // RENDER USERS
+        // ============================================================
 
-            <td>
-                <strong>
-                    ${escapeHtml(user.username)}
-                </strong>
-            </td>
+        function renderUsers() {
 
-            <td>
-                <span class="role ${roleClass}">
-                    ${escapeHtml(user.role)}
-                </span>
-            </td>
+            const tbody =
+                document.getElementById("userTableBody");
 
-            <td>
-                ${
-                    ips.length
+            const table =
+                document.getElementById("userTable");
+
+            const empty =
+                document.getElementById("empty");
+
+            tbody.innerHTML = "";
+
+            if (!users.length) {
+
+                table.style.display = "none";
+                empty.style.display = "block";
+
+                return;
+            }
+
+            table.style.display = "table";
+            empty.style.display = "none";
+
+            for (const user of users) {
+
+                const row =
+                    document.createElement("tr");
+
+                const ips =
+                    user.autoLoginIps || [];
+
+                const roleClass =
+                    user.role === "Admin"
+                        ? "admin"
+                        : "user";
+
+                row.innerHTML = `
+
+
+
+                <td>
+                    <strong>
+                        ${escapeHtml(user.username)}
+                    </strong>
+                </td>
+
+                <td>
+                    <span class="role ${roleClass}">
+                        ${escapeHtml(user.role)}
+                    </span>
+                </td>
+
+                <td>
+                    ${ips.length
                         ? ips.map(escapeHtml).join("<br>")
                         : "<span style='color:#666'>None</span>"
-                }
-            </td>
+                    }
+                </td>
 
-            <td>
+                <td>
 
-                <div class="actions">
+                    <div class="actions">
 
-                    <button
-                        onclick="openEditUser('${escapeJs(user.id)}')">
+                        <button
+                            onclick="openEditUser('${escapeJs(user.id)}')">
 
-                        Edit
+                            Edit
 
-                    </button>
+                        </button>
 
-                    <button
-                        class="danger"
-                        onclick="deleteUser('${escapeJs(user.id)}')">
+                        <button
+                            class="danger"
+                            onclick="deleteUser('${escapeJs(user.id)}')">
 
-                        Delete
+                            Delete
 
-                    </button>
+                        </button>
 
-                </div>
+                    </div>
 
-            </td>
-        `;
+                </td>
+            `;
 
-        tbody.appendChild(row);
-    }
-}
+                tbody.appendChild(row);
+            }
+        }
 
 
-// ============================================================
-// ADD USER
-// ============================================================
+        // ============================================================
+        // ADD USER
+        // ============================================================
 
-function openAddUser() {
+        function openAddUser() {
 
-    editingUserId = null;
+            editingUserId = null;
 
-    document.getElementById("modalTitle")
-        .textContent = "Add User";
+            document.getElementById("modalTitle")
+                .textContent = "Add User";
 
-    document.getElementById("username")
-        .value = "";
+            document.getElementById("username")
+                .value = "";
 
-    document.getElementById("role")
-        .value = "User";
+            document.getElementById("role")
+                .value = "User";
 
-    document.getElementById("password")
-        .value = "";
+            document.getElementById("password")
+                .value = "";
 
-    document.getElementById("passwordHelp")
-        .textContent =
-        "Enter a password for this user.";
+            document.getElementById("passwordHelp")
+                .textContent =
+                "Enter a password for this user.";
 
-    clearError();
+            clearError();
 
-    createIpFields([]);
+            createIpFields([]);
+            createNavFields([]);
+            renderDeviceChoices([]);
 
-    showModal();
-}
+            showModal();
+        }
 
 
-// ============================================================
-// EDIT USER
-// ============================================================
+        // ============================================================
+        // EDIT USER
+        // ============================================================
 
-function openEditUser(id) {
+        function openEditUser(id) {
 
-    const user =
-        users.find(u => u.id === id);
+            const user =
+                users.find(u => u.id === id);
 
-    if (!user)
-        return;
+            if (!user)
+                return;
 
-    editingUserId = id;
+            editingUserId = id;
 
-    document.getElementById("modalTitle")
-        .textContent = "Edit User";
+            document.getElementById("modalTitle")
+                .textContent = "Edit User";
 
-    document.getElementById("username")
-        .value = user.username;
+            document.getElementById("username")
+                .value = user.username;
 
-    document.getElementById("role")
-        .value = user.role;
+            document.getElementById("role")
+                .value = user.role;
 
-    document.getElementById("password")
-        .value = "";
+            document.getElementById("password")
+                .value = "";
 
-    document.getElementById("passwordHelp")
-        .textContent =
-        "Leave blank to keep the existing password.";
+            document.getElementById("passwordHelp")
+                .textContent =
+                "Leave blank to keep the existing password.";
 
-    clearError();
+            clearError();
 
-    createIpFields(
-        user.autoLoginIps || []
-    );
+            createIpFields(
+                user.autoLoginIps || []
+            );
 
-    showModal();
-}
+            createNavFields(user.navOptions || []);
+            renderDeviceChoices(user.allowedDevices || []);
 
+            showModal();
+        }
 
-// ============================================================
-// PASSWORD HASHING
-// ============================================================
 
-async function generatePasswordMaterial(password) {
+        // ============================================================
+        // PASSWORD HASHING
+        // ============================================================
 
-    const encoder =
-        new TextEncoder();
+        async function generatePasswordMaterial(password) {
 
-    const passwordBytes =
-        encoder.encode(password);
+            const encoder =
+                new TextEncoder();
 
-    const salt =
-        crypto.getRandomValues(
-            new Uint8Array(PASSWORD_SALT_SIZE)
-        );
+            const passwordBytes =
+                encoder.encode(password);
 
-    const key =
-        await crypto.subtle.importKey(
-            "raw",
-            passwordBytes,
-            {
-                name: "PBKDF2"
-            },
-            false,
-            [
-                "deriveBits"
-            ]
-        );
-
-    const derivedBits =
-        await crypto.subtle.deriveBits(
-            {
-                name: "PBKDF2",
-                salt: salt,
-                iterations: PASSWORD_ITERATIONS,
-                hash: "SHA-256"
-            },
-            key,
-            PASSWORD_HASH_SIZE * 8
-        );
-
-    const hash =
-        new Uint8Array(derivedBits);
-
-    return {
-        passwordSalt:
-            arrayBufferToBase64(salt),
-
-        passwordHash:
-            arrayBufferToBase64(hash)
-    };
-}
-
-
-function arrayBufferToBase64(buffer) {
-
-    const bytes =
-        new Uint8Array(buffer);
-
-    let binary = "";
-
-    for (const byte of bytes) {
-        binary += String.fromCharCode(byte);
-    }
-
-    return btoa(binary);
-}
-
-
-// ============================================================
-// SAVE USER
-// ============================================================
-
-async function saveUser() {
-
-    clearError();
-
-    const username =
-        document.getElementById("username")
-            .value.trim();
-
-    const role =
-        document.getElementById("role")
-            .value;
-
-    const password =
-        document.getElementById("password")
-            .value;
-
-    if (!username) {
-
-        showError(
-            "Username is required."
-        );
-
-        return;
-    }
-
-
-    if (!editingUserId && !password) {
-
-        showError(
-            "A password is required."
-        );
-
-        return;
-    }
-
-
-    try {
-
-        const autoLoginIps =
-            getIps();
-
-
-        let passwordMaterial = {};
-
-
-        if (password) {
-
-            passwordMaterial =
-                await generatePasswordMaterial(
-                    password
+            const salt =
+                crypto.getRandomValues(
+                    new Uint8Array(PASSWORD_SALT_SIZE)
                 );
 
+            const key =
+                await crypto.subtle.importKey(
+                    "raw",
+                    passwordBytes,
+                    {
+                        name: "PBKDF2"
+                    },
+                    false,
+                    [
+                        "deriveBits"
+                    ]
+                );
+
+            const derivedBits =
+                await crypto.subtle.deriveBits(
+                    {
+                        name: "PBKDF2",
+                        salt: salt,
+                        iterations: PASSWORD_ITERATIONS,
+                        hash: "SHA-256"
+                    },
+                    key,
+                    PASSWORD_HASH_SIZE * 8
+                );
+
+            const hash =
+                new Uint8Array(derivedBits);
+
+            return {
+                passwordSalt:
+                    arrayBufferToBase64(salt),
+
+                passwordHash:
+                    arrayBufferToBase64(hash)
+            };
         }
 
 
-        if (editingUserId) {
+        function arrayBufferToBase64(buffer) {
 
-            await api(
-                `/api/users/${encodeURIComponent(editingUserId)}`,
-                {
-                    method: "PUT",
+            const bytes =
+                new Uint8Array(buffer);
 
-                    body: JSON.stringify({
+            let binary = "";
 
-                        username,
-
-                        role,
-
-                        autoLoginIps,
-
-                        passwordSalt:
-                            passwordMaterial.passwordSalt
-                            || null,
-
-                        passwordHash:
-                            passwordMaterial.passwordHash
-                            || null
-
-                    })
-                }
-            );
-
-        } else {
-
-            await api(
-                "/api/users",
-                {
-                    method: "POST",
-
-                    body: JSON.stringify({
-
-                        username,
-
-                        role,
-
-                        autoLoginIps,
-
-                        passwordSalt:
-                            passwordMaterial.passwordSalt,
-
-                        passwordHash:
-                            passwordMaterial.passwordHash
-
-                    })
-                }
-            );
-
-        }
-
-
-        closeModal();
-
-        await loadUsers();
-
-    } catch (error) {
-
-        showError(
-            error.message
-        );
-
-    }
-}
-
-
-// ============================================================
-// DELETE USER
-// ============================================================
-
-async function deleteUser(id) {
-
-    const user =
-        users.find(u => u.id === id);
-
-    if (!user)
-        return;
-
-    const confirmed =
-        confirm(
-            `Delete user "${user.username}"?\n\n` +
-            `This cannot be undone.`
-        );
-
-    if (!confirmed)
-        return;
-
-    try {
-
-        await api(
-            `/api/users/${encodeURIComponent(id)}`,
-            {
-                method: "DELETE"
+            for (const byte of bytes) {
+                binary += String.fromCharCode(byte);
             }
-        );
 
-        await loadUsers();
-
-    } catch (error) {
-
-        alert(error.message);
-
-    }
-}
+            return btoa(binary);
+        }
 
 
-// ============================================================
-// AUTO LOGIN IPs
-// ============================================================
+        // ============================================================
+        // SAVE USER
+        // ============================================================
 
-function createIpFields(ips) {
+        async function saveUser() {
 
-    const container =
-        document.getElementById("ipList");
+            clearError();
 
-    container.innerHTML = "";
+            const username =
+                document.getElementById("username")
+                    .value.trim();
 
-    if (!ips.length) {
+            const role =
+                document.getElementById("role")
+                    .value;
 
-        addIpField("");
+            const password =
+                document.getElementById("password")
+                    .value;
 
-        return;
-    }
+            if (!username) {
 
-    for (const ip of ips) {
+                showError(
+                    "Username is required."
+                );
 
-        addIpField(ip);
-
-    }
-}
-
-
-function addIpField(value = "") {
-
-    const container =
-        document.getElementById("ipList");
-
-    const row =
-        document.createElement("div");
-
-    row.className = "ip-row";
-
-    row.innerHTML = `
-
-        <input
-            type="text"
-            placeholder="192.168.1.100"
-            value="${escapeHtml(value)}">
-
-        <button
-            type="button"
-            onclick="this.parentElement.remove()">
-
-            Remove
-
-        </button>
-    `;
-
-    container.appendChild(row);
-}
+                return;
+            }
 
 
-function getIps() {
+            if (!editingUserId && !password) {
 
-    const inputs =
-        document.querySelectorAll(
-            "#ipList input"
-        );
+                showError(
+                    "A password is required."
+                );
 
-    return Array.from(inputs)
-        .map(input => input.value.trim())
-        .filter(ip => ip.length > 0);
-}
+                return;
+            }
 
 
-// ============================================================
-// MODAL
-// ============================================================
+            try {
 
-function showModal() {
+                const autoLoginIps =
+                    getIps();
 
-    document
-        .getElementById("modalBackdrop")
-        .classList.add("visible");
-}
+                const navOptions =
+                    getNavOptions();
 
+                const allowedDevices =
+                    getAllowedDevices();
 
-function closeModal() {
-
-    document
-        .getElementById("modalBackdrop")
-        .classList.remove("visible");
-
-    editingUserId = null;
-}
+                let passwordMaterial = {};
 
 
-document
-    .getElementById("modalBackdrop")
-    .addEventListener(
-        "click",
-        event => {
+                if (password) {
 
-            if (
-                event.target.id ===
-                "modalBackdrop"
-            ) {
+                    passwordMaterial =
+                        await generatePasswordMaterial(
+                            password
+                        );
+
+                }
+
+
+                if (editingUserId) {
+
+                    await api(
+                        `/api/users/${encodeURIComponent(editingUserId)}`,
+                        {
+                            method: "PUT",
+
+                            body: JSON.stringify({
+
+                                username,
+
+                                role,
+
+                                autoLoginIps,
+
+                                navOptions,
+                                allowedDevices,
+
+                                passwordSalt:
+                                    passwordMaterial.passwordSalt
+                                    || null,
+
+                                passwordHash:
+                                    passwordMaterial.passwordHash
+                                    || null
+
+                            })
+                        }
+                    );
+
+                } else {
+
+                    await api(
+                        "/api/users",
+                        {
+                            method: "POST",
+
+                            body: JSON.stringify({
+
+                                username,
+
+                                role,
+
+                                autoLoginIps,
+
+                                navOptions,
+                                allowedDevices,
+
+                                passwordSalt:
+                                    passwordMaterial.passwordSalt,
+
+                                passwordHash:
+                                    passwordMaterial.passwordHash
+
+                            })
+                        }
+                    );
+
+                }
+
+
                 closeModal();
+
+                await loadUsers();
+
+            } catch (error) {
+
+                showError(
+                    error.message
+                );
+
+            }
+        }
+
+
+        // ============================================================
+        // DELETE USER
+        // ============================================================
+
+        async function deleteUser(id) {
+
+            const user =
+                users.find(u => u.id === id);
+
+            if (!user)
+                return;
+
+            const confirmed =
+                confirm(
+                    `Delete user "${user.username}"?\n\n` +
+                    `This cannot be undone.`
+                );
+
+            if (!confirmed)
+                return;
+
+            try {
+
+                await api(
+                    `/api/users/${encodeURIComponent(id)}`,
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+                await loadUsers();
+
+            } catch (error) {
+
+                alert(error.message);
+
+            }
+        }
+
+
+        // ============================================================
+        // CUSTOM NAVIGATION
+        // ============================================================
+
+        function createNavFields(options = []) {
+            const container = document.getElementById("navList");
+            container.innerHTML = "";
+
+            for (const option of options) {
+                addNavField(option.text || "", option.location || "");
+            }
+        }
+
+        function addNavField(text = "", location = "") {
+            const container = document.getElementById("navList");
+
+            const row = document.createElement("div");
+            row.className = "nav-row";
+
+            const textInput = document.createElement("input");
+            textInput.type = "text";
+            textInput.className = "nav-text";
+            textInput.placeholder = "Display text (e.g. Dashboard)";
+            textInput.value = text;
+
+            const locationInput = document.createElement("input");
+            locationInput.type = "text";
+            locationInput.className = "nav-location";
+            locationInput.placeholder = "Destination (e.g. /dashboard)";
+            locationInput.value = location;
+
+            const removeButton = document.createElement("button");
+            removeButton.type = "button";
+            removeButton.className = "danger";
+            removeButton.textContent = "Remove";
+            removeButton.addEventListener("click", () => row.remove());
+
+            row.append(textInput, locationInput, removeButton);
+            container.appendChild(row);
+        }
+
+        function getNavOptions() {
+            const rows = document.querySelectorAll("#navList .nav-row");
+            const options = [];
+
+            for (const row of rows) {
+                const text = row.querySelector(".nav-text").value.trim();
+                const location = row.querySelector(".nav-location").value.trim();
+
+                // Ignore completely blank rows, but don't save incomplete links.
+                if (!text && !location)
+                    continue;
+
+                if (!text || !location)
+                    throw new Error("Each navigation link needs both display text and a destination.");
+
+                options.push({ text, location });
             }
 
+            return options;
         }
-    );
 
 
-// ============================================================
-// ERRORS
-// ============================================================
+        // ============================================================
+        // AUTO LOGIN IPs
+        // ============================================================
 
-function showError(message) {
+        function createIpFields(ips) {
 
-    const element =
-        document.getElementById("error");
+            const container =
+                document.getElementById("ipList");
 
-    element.textContent = message;
+            container.innerHTML = "";
 
-    element.classList.add("visible");
-}
+            if (!ips.length) {
 
+                addIpField("");
 
-function clearError() {
+                return;
+            }
 
-    const element =
-        document.getElementById("error");
+            for (const ip of ips) {
 
-    element.textContent = "";
+                addIpField(ip);
 
-    element.classList.remove("visible");
-}
-
-
-// ============================================================
-// HTML / JS ESCAPING
-// ============================================================
-
-function escapeHtml(value) {
-
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
+            }
+        }
 
 
-function escapeJs(value) {
+        function addIpField(value = "") {
 
-    return String(value)
-        .replaceAll("\\", "\\\\")
-        .replaceAll("'", "\\'");
-}
+            const container =
+                document.getElementById("ipList");
+
+            const row =
+                document.createElement("div");
+
+            row.className = "ip-row";
+
+            row.innerHTML = `
+
+            <input
+                type="text"
+                placeholder="192.168.1.100"
+                value="${escapeHtml(value)}">
+
+            <button
+                type="button"
+                onclick="this.parentElement.remove()">
+
+                Remove
+
+            </button>
+        `;
+
+            container.appendChild(row);
+        }
 
 
-// ============================================================
-// START
-// ============================================================
+        function getIps() {
 
-loadUsers();
+            const inputs =
+                document.querySelectorAll(
+                    "#ipList input"
+                );
+
+            return Array.from(inputs)
+                .map(input => input.value.trim())
+                .filter(ip => ip.length > 0);
+        }
+
+
+        // ============================================================
+        // MODAL
+        // ============================================================
+
+        function showModal() {
+
+            document
+                .getElementById("modalBackdrop")
+                .classList.add("visible");
+        }
+
+
+        function closeModal() {
+
+            document
+                .getElementById("modalBackdrop")
+                .classList.remove("visible");
+
+            editingUserId = null;
+        }
+
+
+        document
+            .getElementById("modalBackdrop")
+            .addEventListener(
+                "click",
+                event => {
+
+                    if (
+                        event.target.id ===
+                        "modalBackdrop"
+                    ) {
+                        closeModal();
+                    }
+
+                }
+            );
+
+
+        // ============================================================
+        // ERRORS
+        // ============================================================
+
+        function showError(message) {
+
+            const element =
+                document.getElementById("error");
+
+            element.textContent = message;
+
+            element.classList.add("visible");
+        }
+
+
+        function clearError() {
+
+            const element =
+                document.getElementById("error");
+
+            element.textContent = "";
+
+            element.classList.remove("visible");
+        }
+
+
+        // ============================================================
+        // HTML / JS ESCAPING
+        // ============================================================
+
+        function escapeHtml(value) {
+
+            return String(value)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+
+        function escapeJs(value) {
+
+            return String(value)
+                .replaceAll("\\", "\\\\")
+                .replaceAll("'", "\\'");
+        }
+
+
+        // ============================================================
+        // START
+        // ============================================================
+
+        loadUsers();
+        loadDevices();
 
     </script>
 

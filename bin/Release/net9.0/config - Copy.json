@@ -1,0 +1,193 @@
+{
+  "ApplicationName": "Iceburg",
+  "Settings": {
+    "AutoStart": true,
+    "RefreshIntervalSeconds": 30,
+    "DebugMode": false
+  },
+  "Users": [
+    {
+      "Id": "638cad00-21cc-4dc0-b8fa-d3a28ed0676e",
+      "Username": "admin",
+      "PasswordSalt": "gLQ05wqfs32CDMtxKGDyrAXk5witOPMjEAnRlyXISlg=",
+      "PasswordHash": "mMenU/729bHchMpmNmCyfTpcN\u002BPWEEnvYa/hLwfJ44k=",
+      "Role": "Admin",
+      "AutoLoginIps": [],
+      "NavOptions": [],
+      "AllowedDevices": []
+    },
+    {
+      "Id": "998ccd6a-e1f3-4ee9-95de-46f7172d1061",
+      "Username": "localadmin",
+      "PasswordSalt": "NTmujXZ5nHrN2ZnOIJTjsGfCOwz5zDcNL4pD/dgzGxA=",
+      "PasswordHash": "Wwyz13G0CzXiGEpIXw6oZ6nv35Ave0tVsN8U5NDtgGs=",
+      "Role": "Admin",
+      "AutoLoginIps": [],
+      "NavOptions": [],
+      "AllowedDevices": []
+    },
+    {
+      "Id": "24994a35-7254-454a-8799-55e0657e52cb",
+      "Username": "user",
+      "PasswordSalt": "04hQWewfne1ahaF3\u002BoYXTo2Sd\u002B31UTlgb6qu9SlDevg=",
+      "PasswordHash": "seUixpco02EzjFDhYN4qvGAOTM\u002BgQ1cfMPJVLb3PgUY=",
+      "Role": "User",
+      "AutoLoginIps": [],
+      "NavOptions": [
+        {
+          "Text": "Tally Grid",
+          "Location": "/tallygrid.html"
+        },
+        {
+          "Text": "TX Routing",
+          "Location": "/panle.html?id=pmw0270pu3uw33"
+        }
+      ],
+      "AllowedDevices": [
+        "0"
+      ]
+    }
+  ],
+  "Devices": [
+    {
+      "Id": "0",
+      "Name": "Tally 1",
+      "Type": "2",
+      "IpAddress": "10.176.71.4",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "d4912362-fee2-44ef-a150-b1565b7412a1",
+      "Name": "HEX-3 FS21-24",
+      "Type": "4",
+      "IpAddress": "10.176.73.21",
+      "AudioSorce": "1448adf3-9cb2-4cfb-be2e-d3dbd5971fd6",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "1448adf3-9cb2-4cfb-be2e-d3dbd5971fd6",
+      "Name": "HEX-3 X32",
+      "Type": "3",
+      "IpAddress": "10.176.73.32",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "abc57429-0ed4-4e5b-9cd7-805bce1e04aa",
+      "Name": "HEX-3 FS 2",
+      "Type": "5",
+      "IpAddress": "10.176.73.11",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "63b83fda-e2da-4cf8-ae7d-9a40d919ce3f",
+      "Name": "Tally 2 route",
+      "Type": "2",
+      "IpAddress": "1.1.1.1",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "367b5179-38c9-46d0-a242-89fb4d408a6c",
+      "Name": "Cobalt 9905-MPX",
+      "Type": "6",
+      "IpAddress": "10.176.71.63",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "72392bc0-dd84-4270-8267-1a8a67424e65",
+      "Name": "Tally From Rush Studios",
+      "Type": "7",
+      "IpAddress": "47.225.212.98",
+      "AudioSorce": "",
+      "LastSeen": "11/5/2026 6:16:50 PM",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "5ba6d3f0-4f29-411f-83af-4353bf2f9485",
+      "Name": "Smart Scope",
+      "Type": "9",
+      "IpAddress": "10.176.71.44",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "67ce9484-47bf-4468-ab75-76fe0d01cece",
+      "Name": "aquastreams playback",
+      "Type": "11",
+      "IpAddress": "10.176.71.33",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "13c5205f-5aaf-4cf0-bd3b-c8374be14c94",
+      "Name": "Testget",
+      "Type": "12",
+      "IpAddress": "10.176.71.55:8100",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "64f125dc-c001-4e28-911c-a0493c5dfb53",
+      "Name": "hypedeck",
+      "Type": "13",
+      "IpAddress": "192.168.127.35",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "9d5c2af8-f4ec-4b40-b3df-114897ee9d53",
+      "Name": "hex-1 router",
+      "Type": "1",
+      "IpAddress": "10.176.71.40",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "8c59a117-867e-4da3-b735-1b215f7e1bc1",
+      "Name": "desk",
+      "Type": "1",
+      "IpAddress": "192.168.127.18",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    },
+    {
+      "Id": "aa8f5738-3d68-464a-bbc9-0fd0273155fc",
+      "Name": "pov",
+      "Type": "14",
+      "IpAddress": "10.176.71.83",
+      "AudioSorce": "",
+      "LastSeen": "",
+      "Username": "",
+      "Password": ""
+    }
+  ]
+}

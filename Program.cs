@@ -29,7 +29,10 @@ using Iceburg.Conversion.Magewell.Decoder;
 using Iceburg.Mixer.Aquastreams.Playback;
 using Iceburg.Conversion.Iceburg.Testgen;
 using Microsoft.AspNetCore.Http.Features;
-
+using Iceburg.Mixer.Zowietek;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Xml.Linq;
+using System.Text;
 bool debug = false;
 bool debuglogin = false;
 
@@ -46,7 +49,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     );
 });
 
-string ProgramVerson = "2.0.2";
+string ProgramVerson = "2.1.0";
 
 // ============================================================
 // DATABASE
@@ -56,7 +59,7 @@ Database.Initialize();
 TallyDatabase.Initialize();  // tally database loaded
 
 TallyDatabase.SyncDevices(); // copies Type 1 + Type 2 devices
-
+SyncManager sync = new SyncManager();
 
 builder.WebHost.ConfigureKestrel(options =>
 {
@@ -246,11 +249,11 @@ app.Use(async (context, next) =>
             url.Contains(debugid, StringComparison.OrdinalIgnoreCase))
         {
             Console.WriteLine(
-                $"{context.Request.Method} " +
+                $"{context.Request.Host} {context.Request.Method} " +
                 $"{url} - " +
                 $"{stopwatch.Elapsed.TotalMilliseconds:F2}ms");
 
-            TerminalOutputHub.Broadcast($"{context.Request.Method} " +
+            TerminalOutputHub.Broadcast($"{context.Request.Host} {context.Request.Method} " +
                 $"{url} - " +
                 $"{stopwatch.Elapsed.TotalMilliseconds:F2}ms");
         }
@@ -1053,6 +1056,415 @@ app.MapDelete("/api/users/{id}", (string id, HttpContext httpContext) =>
 })
 .RequireAuthorization();
 
+
+//database
+
+
+app.MapGet(
+    "/api/push/{serverip}/{username}/{password}",
+    async (
+        string serverip,
+        string username,
+        string password,
+        HttpContext httpContext) =>
+    {
+        // --------------------------------------------------------
+        // CHECK LOCAL ADMIN
+        // --------------------------------------------------------
+
+  
+
+        if (string.IsNullOrWhiteSpace(serverip) ||
+            string.IsNullOrWhiteSpace(username) ||
+            string.IsNullOrWhiteSpace(password))
+        {
+            return Results.BadRequest(new
+            {
+                Success = false,
+                Message = "Server IP, username and password are required."
+            });
+        }
+
+        // --------------------------------------------------------
+        // DESTINATION
+        // --------------------------------------------------------
+
+        if (!Uri.TryCreate(
+            "https://" + serverip,
+            UriKind.Absolute,
+            out Uri? serverUri) ||
+            (serverUri.Scheme != Uri.UriSchemeHttps &&
+             serverUri.Scheme != Uri.UriSchemeHttp) ||
+            serverUri.UserInfo.Length > 0 ||
+            serverUri.Query.Length > 0 ||
+            serverUri.Fragment.Length > 0 ||
+            serverUri.AbsolutePath != "/")
+        {
+            return Results.BadRequest(new
+            {
+                Success = false,
+                Message = "Invalid destination server address."
+            });
+        }
+
+        try
+        {
+            // ----------------------------------------------------
+            // HTTP CLIENT WITH COOKIE SUPPORT
+            // ----------------------------------------------------
+            string baseUrl = $"https://{serverip}";
+            CookieContainer cookies = new();
+
+            using HttpClientHandler handler = new()
+            {
+                CookieContainer = cookies,
+                UseCookies = true,
+
+                // Accept certificates even if they are invalid, expired,
+                // self-signed, or untrusted.
+                ServerCertificateCustomValidationCallback =
+                    HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+            };
+
+            using HttpClient client = new(handler)
+            {
+                Timeout = TimeSpan.FromSeconds(60)
+            };
+            
+            var jsonOptions = new JsonSerializerOptions(
+                JsonSerializerDefaults.Web);
+
+            // ----------------------------------------------------
+            // STEP 1: REQUEST LOGIN CHALLENGE
+            // ----------------------------------------------------
+
+            var challengeResponse = await client.PostAsJsonAsync(
+               baseUrl + "/api/login/challenge",
+                new
+                {
+                    Username = username
+                },
+                jsonOptions
+            );
+
+            if (!challengeResponse.IsSuccessStatusCode)
+            {
+                return Results.BadRequest(new
+                {
+                    Success = false,
+                    Message = "Destination server rejected the login challenge.",
+                    StatusCode = (int)challengeResponse.StatusCode
+                });
+            }
+
+            using JsonDocument challengeDocument =
+                JsonDocument.Parse(
+                    await challengeResponse.Content.ReadAsStringAsync());
+
+            JsonElement challengeRoot = challengeDocument.RootElement;
+
+            string challengeId =
+                challengeRoot.GetProperty("challengeId").GetString()!;
+
+            string saltString =
+                challengeRoot.GetProperty("salt").GetString()!;
+
+            string challengeString =
+                challengeRoot.GetProperty("challenge").GetString()!;
+
+            // ----------------------------------------------------
+            // STEP 2: DERIVE PASSWORD VERIFIER
+            //
+            // Must match your existing login.html:
+            // PBKDF2-SHA256, 600000 iterations, 32 bytes.
+            // ----------------------------------------------------
+
+            byte[] salt = Convert.FromBase64String(saltString);
+
+            byte[] verifier = Rfc2898DeriveBytes.Pbkdf2(
+                password,
+                salt,
+                600000,
+                HashAlgorithmName.SHA256,
+                32
+            );
+
+            // ----------------------------------------------------
+            // STEP 3: GENERATE CHALLENGE PROOF
+            //
+            // HMAC-SHA256(verifier, challenge)
+            // ----------------------------------------------------
+
+            byte[] challenge = Convert.FromBase64String(
+                challengeString);
+
+            byte[] proof;
+
+            using (HMACSHA256 hmac = new(verifier))
+            {
+                proof = hmac.ComputeHash(challenge);
+            }
+
+            string proofString = Convert.ToBase64String(proof);
+
+            // ----------------------------------------------------
+            // STEP 4: AUTHENTICATE WITH DESTINATION
+            // ----------------------------------------------------
+
+            var loginResponse = await client.PostAsJsonAsync(
+                 baseUrl + "/api/login",
+                new
+                {
+                    Username = username,
+                    ChallengeId = challengeId,
+                    Proof = proofString
+                },
+                jsonOptions
+            );
+
+            if (!loginResponse.IsSuccessStatusCode)
+            {
+                return Results.BadRequest(new
+                {
+                    Success = false,
+                    Message = "Destination server authentication failed.",
+                    StatusCode = (int)loginResponse.StatusCode
+                });
+            }
+
+            // The CookieContainer automatically retains the
+            // authentication cookie issued by the destination.
+
+            // ----------------------------------------------------
+            // STEP 5: EXPORT LOCAL DATABASE
+            // ----------------------------------------------------
+
+            string databaseJson = Database.ExportJson();
+
+            // ----------------------------------------------------
+            // STEP 6: IMPORT DATABASE ON DESTINATION
+            // ----------------------------------------------------
+
+            using StringContent content = new(
+                databaseJson,
+                System.Text.Encoding.UTF8,
+                "application/json"
+            );
+
+            var importResponse = await client.PostAsync(
+                 baseUrl + "/api/database/import",
+                content
+            );
+
+            string importResult =
+                await importResponse.Content.ReadAsStringAsync();
+
+            if (!importResponse.IsSuccessStatusCode)
+            {
+                return Results.BadRequest(new
+                {
+                    Success = false,
+                    Message = "Destination authenticated, but database import failed.",
+                    StatusCode = (int)importResponse.StatusCode,
+                    Response = importResult
+                });
+            }
+
+            // ========================================================
+            // PUSH TALLY DATABASE
+            // ========================================================
+
+            string tallyJson = TallyDatabase.ExportJson();
+
+            var tallyImportResponse = await client.PostAsync(
+                baseUrl + "/api/tally-database/import",
+                new StringContent(
+                    tallyJson,
+                    Encoding.UTF8,
+                    "application/json"
+                )
+            );
+
+            if (!tallyImportResponse.IsSuccessStatusCode)
+            {
+                string tallyError =
+                    await tallyImportResponse.Content.ReadAsStringAsync();
+
+                return Results.Problem(
+                    $"Main database synced, but Tally database sync failed: {tallyError}",
+                    statusCode: 502
+                );
+            }
+            // Sync Router Panels using the existing receive endpoint
+            string routerPanelsJson = await File.ReadAllTextAsync(routerPanelsFile);
+
+            var routerPanelsResponse = await client.PostAsync(
+               baseUrl + "/api/routerpanels/",
+                new StringContent(
+                    routerPanelsJson,
+                    Encoding.UTF8,
+                    "application/json"
+                )
+            );
+
+
+
+            if (!routerPanelsResponse.IsSuccessStatusCode)
+            {
+                string routerPanelsError =
+                    await routerPanelsResponse.Content.ReadAsStringAsync();
+
+                return Results.Problem(
+                    $"Main database and Tally database synced, but Router Panels sync failed: {routerPanelsError}",
+                    statusCode: 502
+                );
+            }
+
+            // ----------------------------------------------------
+            // SUCCESS
+            // ----------------------------------------------------
+
+            return Results.Ok(new
+            {
+                Success = true,
+                Message = "Database successfully pushed to destination server.",
+                Destination = serverUri.Host
+            });
+        }
+        catch (TaskCanceledException)
+        {
+            return Results.Problem(
+                "Destination server timed out.",
+                statusCode: 504
+            );
+        }
+        catch (HttpRequestException ex)
+        {
+            return Results.Problem(
+                $"Could not connect to destination server: {ex.Message}",
+                statusCode: 502
+            );
+        }
+        catch (Exception ex)
+        {
+            return Results.Problem(
+                $"Push failed: {ex.Message} {ex.StackTrace}",
+                statusCode: 500
+            );
+        }
+    });
+
+
+// ========================================================
+// TALLY DATABASE EXPORT / IMPORT
+// ========================================================
+
+app.MapGet("/api/tally-database/export",
+    (HttpContext context) =>
+    {
+        if (!IsAdmin(context))
+            return Results.Forbid();
+
+        string json = TallyDatabase.ExportJson();
+
+        return Results.File(
+            System.Text.Encoding.UTF8.GetBytes(json),
+            "application/json",
+            "iceburg-tally-database.json");
+    })
+    .RequireAuthorization();
+
+app.MapPost("/api/tally-database/import",async (HttpContext context) =>
+    {
+        if (sync.IsPrimaryServer)
+            return Results.NotFound();
+        if (!IsAdmin(context))
+            return Results.Forbid();
+
+        using var reader = new StreamReader(context.Request.Body);
+
+        string json = await reader.ReadToEndAsync();
+
+        if (!TallyDatabase.ImportJson(json, out string error))
+        {
+            return Results.BadRequest(new
+            {
+                Success = false,
+                Message = error
+            });
+        }
+
+        return Results.Ok(new
+        {
+            Success = true,
+            Message = "Tally database imported successfully."
+        });
+    })
+    .RequireAuthorization();
+
+// ============================================================
+// DATABASE - EXPORT
+// ============================================================
+
+app.MapGet("/api/database/export", (HttpContext httpContext) =>
+{
+    if (!IsAdmin(httpContext))
+        return Results.Forbid();
+
+    string json = Database.ExportJson();
+
+    return Results.File(
+        Encoding.UTF8.GetBytes(json),
+        "application/json",
+        "iceburg-database.json"
+    );
+});
+
+// ============================================================
+// DATABASE - IMPORT
+// ============================================================
+
+app.MapPost("/api/database/import", async (HttpContext httpContext) =>
+{
+    if (sync.IsPrimaryServer)
+        return Results.NotFound();
+    if (!IsAdmin(httpContext))
+        return Results.Forbid();
+
+
+
+    try
+    {
+        using StreamReader reader = new(
+            httpContext.Request.Body
+        );
+
+        string json = await reader.ReadToEndAsync();
+
+        if (!Database.ImportJson(json, out string error))
+        {
+            return Results.BadRequest(new
+            {
+                Success = false,
+                Message = error
+            });
+        }
+
+        return Results.Ok(new
+        {
+            Success = true,
+            Message = "Database imported successfully."
+        });
+    }
+    catch (Exception ex)
+    {
+        return Results.Problem(
+            $"Database import failed: {ex.Message}"
+        );
+    }
+});
+
+
 //Current User
 app.MapGet("/api/me", (HttpContext httpContext) =>
 {
@@ -1077,6 +1489,8 @@ app.MapGet("/api/me", (HttpContext httpContext) =>
     });
 })
 .RequireAuthorization();
+
+//navbar elemetns
 app.MapGet("/api/nav", async (HttpContext httpContext) =>
 {
     var userId = GetCurrentUserId(httpContext);
@@ -1182,10 +1596,13 @@ app.MapGet("/api/nav", async (HttpContext httpContext) =>
         });
     }
 
+    
+
     return Results.Ok(new
     {
         navigation = navigation,
-        iconlink = iconlink
+        iconlink = iconlink,
+        primaryserver= sync.IsPrimaryServer
     });
 })
 .RequireAuthorization();
@@ -1234,9 +1651,7 @@ deviceApi.MapGet("/getdevice", (HttpContext context) =>
     }).ToList());
 });
 
-app.MapGet("/api/device/getdevicestatus/{id}", async (
-    string id,
-    HttpContext context) =>
+app.MapGet("/api/device/getdevicestatus/{id}", async (string id,HttpContext context) =>
 {
     if (!CanAccessDevice(context, id))
         return Results.Forbid();
@@ -1494,8 +1909,15 @@ app.MapGet("/api/devices/type/", (HttpContext httpContext) =>
             name = "Black Magic Hyperdeck",
             group = "Video",
             page = "hyperdeck.html"
+        } ,       
+        ["14"] = new
+        {
+            name = "Zowietek POV",
+            group = "Video",
+            page = "zowietekpov.html"
         }
-    };
+    
+};
 
     return Results.Ok(devices);
 })
@@ -1713,6 +2135,9 @@ routerPanelsApi.MapPost("/routes", async (HttpRequest request, HttpContext conte
         return Results.BadRequest(new { success = false, error = "Invalid multi-route request JSON." });
     }
 });
+
+
+
 
 var routerApi = app.MapGroup("/api/router").RequireAuthorization().AddEndpointFilter(RequireAllowedDevice);
 
@@ -2433,8 +2858,6 @@ bndrouterpnale40.MapGet("/bmd/40panle/{id}/setvideohub/{ip}",
         var bmdRouter = new BMD_Panle40();
         return bmdRouter.SetVideohub(id, ip);
     });
-
-
 //BMD Smartscope
 var smarscopeapi = app.MapGroup("/api/monitors").RequireAuthorization().AddEndpointFilter(RequireAllowedDevice);
 
@@ -2618,6 +3041,50 @@ var playback = app.MapGroup("/api/playback")
     .AddEndpointFilter(RequireAllowedDevice);
 
 playback.MapHyperdeckEndpoints();
+
+//zowiepov
+
+
+var zowietek = app.MapGroup("/api/zowietek")
+    .RequireAuthorization()
+    .AddEndpointFilter(RequireAllowedDevice);
+
+// GET /api/zowietek/camera/{id}
+// Returns settings plus the camera's shutter and white-balance option lists.
+zowietek.MapGet("/camera/{id}", async (string id, CancellationToken ct) =>
+{
+    var camera = new ZowietekPov(id);
+    return Results.Ok(await camera.GetSettings(ct));
+});
+
+// POST /api/zowietek/camera/{id}
+// JSON body: { shutter, wb, gain, saturation, hue, brightness, contrast, sharpness }
+zowietek.MapPost("/camera/{id}", async (
+    string id,
+    ZowietekCameraUpdate update,
+    CancellationToken ct) =>
+{
+    var camera = new ZowietekPov(id);
+    await camera.UpdateSettings(update, ct);
+    return Results.Ok(new { success = true });
+});
+
+// GET /api/zowietek/status/{id}
+zowietek.MapGet("/status/{id}", async (string id, CancellationToken ct) =>
+{
+    var camera = new ZowietekPov(id);
+    return Results.Ok(new { online = await camera.GetDeviceStatus(ct) });
+});
+
+zowietek.MapGet("/getinfo/{id}", (string id) =>
+{
+    var pov = new ZowietekPov(id);
+    return pov.getinfo(id);
+});
+
+
+
+//server shell
 
 app.MapGet("/api/terminal/stream", async (
     HttpContext context) =>
@@ -3153,12 +3620,18 @@ void RunIceburgCommand(string input, Action<string> write, bool fromWeb)
                     debuglogin = true;
                 }
 
+                if (parts[1] == "sync")
+                {
+                    sync.debug = true;
+                }
+
 
                 if (parts[1] == "off")
                 {
                     debug = false;
                     debugid = "";
                     debuglogin = false;
+                    sync.debug = false;
                 }
             }
             if (parts.Count > 2)
@@ -3351,8 +3824,6 @@ public class UserCreateRequest
     public List<Iceburg.Database.NavigationOption>? NavOptions { get; set; }
     public List<string>? AllowedDevices { get; set; }
 }
-
-
 public class UserUpdateRequest
 {
     public string Username { get; set; } = "";
@@ -3364,7 +3835,6 @@ public class UserUpdateRequest
     public List<Iceburg.Database.NavigationOption>? NavOptions { get; set; }
     public List<string>? AllowedDevices { get; set; }
 }
-
 public class DeviceTypeGroup
 {
     public string Label { get; set; } = string.Empty;

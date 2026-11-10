@@ -1,112 +1,51 @@
 {
   "Devices": [
     {
-      "DeviceId": "0",
-      "Name": "Tally 1",
-      "Nickname": "Tally1",
-      "IpAddress": "10.176.71.40",
+      "DeviceId": "55",
+      "Name": "RACR 1 Tally",
+      "Nickname": "RACR 1 Tally",
+      "IpAddress": "10.10.10.10",
       "Inputs": [
         {
-          "InputId": "1fee65dd81644044ace5b41a3faf6a49",
+          "InputId": "55514d6b7dbc4e79ba02f3169b73e8a5",
           "Port": 1,
-          "Name": "Input 1",
-          "Nickname": "Input 1",
-          "Status": false
-        }
-      ],
-      "Outputs": [
-        {
-          "OutputId": "a1c2f97d9d56403d9bcb4bb43137dce5",
-          "Port": 1,
-          "Name": "Output 1",
-          "Nickname": "Output 1",
-          "Status": false
-        },
-        {
-          "OutputId": "ca87e34e30f54649ba8a66376487b9c1",
-          "Port": 2,
-          "Name": "Output 2",
-          "Nickname": "Output 2",
-          "Status": false
-        },
-        {
-          "OutputId": "e7cf439c32c143afa2ebde60c793f3b9",
-          "Port": 3,
-          "Name": "Output 3",
-          "Nickname": "Output 3",
-          "Status": false
-        },
-        {
-          "OutputId": "8286b0fe19ea4e07b2b22d28b0f5875c",
-          "Port": 4,
-          "Name": "Output 4",
-          "Nickname": "Output 4",
-          "Status": false
-        },
-        {
-          "OutputId": "d886b85df6e24ce8802503ba7d3e5beb",
-          "Port": 5,
-          "Name": "Output 5",
-          "Nickname": "Output 5",
-          "Status": false
-        },
-        {
-          "OutputId": "7bc51c58401c453e97a50e4b78578d91",
-          "Port": 6,
-          "Name": "Output 6",
-          "Nickname": "Output 6",
-          "Status": false
-        },
-        {
-          "OutputId": "97701426db7f43efa0d85b73eafd6782",
-          "Port": 7,
-          "Name": "Output 7",
-          "Nickname": "Output 7",
-          "Status": false
-        },
-        {
-          "OutputId": "23da1d7120cf4a3596ecc7a9c81d62d1",
-          "Port": 8,
-          "Name": "Output 8",
-          "Nickname": "Output 8",
-          "Status": false
-        },
-        {
-          "OutputId": "0870dc55ee9e4a39b922fc0cf787f061",
-          "Port": 9,
-          "Name": "Output 9",
-          "Nickname": "Output 9",
-          "Status": false
-        },
-        {
-          "OutputId": "e41a6370ce8f4558a44378d5958b3c9f",
-          "Port": 10,
-          "Name": "Output 10",
-          "Nickname": "Output 10",
-          "Status": false
-        }
-      ],
-      "Routes": [],
-      "RemoteTallySource": null
-    },
-    {
-      "DeviceId": "63b83fda-e2da-4cf8-ae7d-9a40d919ce3f",
-      "Name": "Tally 2 route",
-      "Nickname": "test Tally",
-      "IpAddress": "1.1.1.1",
-      "Inputs": [
-        {
-          "InputId": "efd756ade2cf462a8956ee17eb3df170",
-          "Port": 1,
-          "Name": "Input 1",
+          "Name": "Tally Out 1",
           "Nickname": "Input 1",
           "Status": false
         },
         {
-          "InputId": "263019e85dfc4ae0a353c360509cc022",
+          "InputId": "b55286f0437740138f8534eddb94b85a",
           "Port": 2,
-          "Name": "Input 2",
+          "Name": "Tally Out 2",
           "Nickname": "Input 2",
+          "Status": false
+        },
+        {
+          "InputId": "3b7579bfce554645bf4d60d02963c138",
+          "Port": 3,
+          "Name": "Tally Out 3",
+          "Nickname": "Input 3",
+          "Status": false
+        },
+        {
+          "InputId": "b9f459c3642449de9fd1c5de50ec3f5c",
+          "Port": 4,
+          "Name": "Tally Out 4",
+          "Nickname": "Input 4",
+          "Status": false
+        },
+        {
+          "InputId": "7e6968ef6427485d860a2f6faae650da",
+          "Port": 5,
+          "Name": "Tally Out 5",
+          "Nickname": "Input 5",
+          "Status": false
+        },
+        {
+          "InputId": "273f7e51e32a4a949c1f5c8dc3d6a508",
+          "Port": 6,
+          "Name": "Tally Out 6",
+          "Nickname": "Input 6",
           "Status": false
         }
       ],
@@ -115,118 +54,1603 @@
       "RemoteTallySource": null
     },
     {
-      "DeviceId": "72392bc0-dd84-4270-8267-1a8a67424e65",
-      "Name": "Tally From Rush Studios",
-      "Nickname": "rush tally",
-      "IpAddress": "47.225.212.98",
+      "DeviceId": "57",
+      "Name": "RACR 2 Tally",
+      "Nickname": "RACR 2 Tally",
+      "IpAddress": "10.10.10.10",
       "Inputs": [
         {
-          "InputId": "37699c71d84b4ed598952a258a878c7a",
+          "InputId": "5653b370ac9f4078acedd6887e7e1a71",
+          "Port": 1,
+          "Name": "Tally Out 1",
+          "Nickname": "Input 1",
+          "Status": false
+        },
+        {
+          "InputId": "02f3dde30a39451f86ef49ff45276b12",
+          "Port": 2,
+          "Name": "Tally Out 2",
+          "Nickname": "Input 2",
+          "Status": false
+        },
+        {
+          "InputId": "6041dd700fe448daaf8142c978885e52",
+          "Port": 3,
+          "Name": "Tally Out 3",
+          "Nickname": "Input 3",
+          "Status": false
+        },
+        {
+          "InputId": "fa21254159804089bf905bcb05452ff3",
+          "Port": 4,
+          "Name": "Tally Out 4",
+          "Nickname": "Input 4",
+          "Status": false
+        },
+        {
+          "InputId": "90af3f3b1e964d368a012d78246982b2",
+          "Port": 5,
+          "Name": "Tally Out 5",
+          "Nickname": "Input 5",
+          "Status": false
+        },
+        {
+          "InputId": "6a1646af35de4b46952b8ac3a6cc8dd1",
+          "Port": 6,
+          "Name": "Tally Out 6",
+          "Nickname": "Input 6",
+          "Status": false
+        }
+      ],
+      "Outputs": [],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "58",
+      "Name": "RACR 3 Tally",
+      "Nickname": "RACR 3 Tally",
+      "IpAddress": "10.10.10.10",
+      "Inputs": [
+        {
+          "InputId": "3a98fce3bb9c442b94300944b9ba53ca",
+          "Port": 1,
+          "Name": "Tally Out 1",
+          "Nickname": "Input 1",
+          "Status": false
+        },
+        {
+          "InputId": "324f73ca3b69410698421f6f4f036dd1",
+          "Port": 2,
+          "Name": "Tally Out 2",
+          "Nickname": "Input 2",
+          "Status": false
+        },
+        {
+          "InputId": "e2dda9f744f3434f947b82a3e9f85203",
+          "Port": 3,
+          "Name": "Tally Out 3",
+          "Nickname": "Input 3",
+          "Status": false
+        },
+        {
+          "InputId": "064014afe2114b1eb3301414dd509834",
+          "Port": 4,
+          "Name": "Tally Out 4",
+          "Nickname": "Input 4",
+          "Status": false
+        },
+        {
+          "InputId": "d7d7ba57c9c141a5a193f0030bb36502",
+          "Port": 5,
+          "Name": "Tally Out 5",
+          "Nickname": "Input 5",
+          "Status": false
+        },
+        {
+          "InputId": "91675f1e2ee84622ab3015fb821eb66e",
+          "Port": 6,
+          "Name": "Tally Out 6",
+          "Nickname": "Input 6",
+          "Status": false
+        }
+      ],
+      "Outputs": [],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "59",
+      "Name": "RACR 4 Tally",
+      "Nickname": "RACR 4 Tally",
+      "IpAddress": "10.10.10.10",
+      "Inputs": [
+        {
+          "InputId": "f6cb95949bdf4aa2a7f6181e8f14a7fa",
+          "Port": 1,
+          "Name": "Tally Out 1",
+          "Nickname": "Input 1",
+          "Status": false
+        },
+        {
+          "InputId": "255fee43f74043d4b715e31e029899a8",
+          "Port": 2,
+          "Name": "Tally Out 2",
+          "Nickname": "Input 2",
+          "Status": false
+        },
+        {
+          "InputId": "4abfa5cde7f44638b889857b3e2ac6f9",
+          "Port": 3,
+          "Name": "Tally Out 3",
+          "Nickname": "Input 3",
+          "Status": false
+        },
+        {
+          "InputId": "6b90ed03d6094358981cf7920fc7181f",
+          "Port": 4,
+          "Name": "Tally Out 4",
+          "Nickname": "Input 4",
+          "Status": false
+        },
+        {
+          "InputId": "89ed42465a0d457f87d7c61ec9a38658",
+          "Port": 5,
+          "Name": "Tally Out 5",
+          "Nickname": "Input 5",
+          "Status": false
+        },
+        {
+          "InputId": "ca8097f939304b1aaa987795e9dc9ce8",
+          "Port": 6,
+          "Name": "Tally Out 6",
+          "Nickname": "Input 6",
+          "Status": false
+        }
+      ],
+      "Outputs": [],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "60",
+      "Name": "RM-H1 Tally",
+      "Nickname": "RM-H1 Tally",
+      "IpAddress": "10.7.0.76",
+      "Inputs": [
+        {
+          "InputId": "acd1757ae6cb43cc86bdb68ddd306345",
           "Port": 1,
           "Name": "Input 1",
           "Nickname": "Input 1",
           "Status": false
         },
         {
-          "InputId": "789658b5d243455e99157ebd0fbbe74d",
+          "InputId": "01a59648575144128f8bfb4883c78f8e",
           "Port": 2,
           "Name": "Input 2",
           "Nickname": "Input 2",
           "Status": false
+        }
+      ],
+      "Outputs": [
+        {
+          "OutputId": "aefb487de8744c6ca906ec062e849c03",
+          "Port": 1,
+          "Name": "CCU 1 Red Tally In",
+          "Nickname": "Output 1",
+          "Status": false
         },
         {
-          "InputId": "4026904208234c9bb5e398f4261da6c5",
+          "OutputId": "a79259180cde4d748c35b50aae5fb5cd",
+          "Port": 2,
+          "Name": "CCU 2 Red Tally In",
+          "Nickname": "Output 2",
+          "Status": false
+        },
+        {
+          "OutputId": "fcd1362ef84547e184f7ca6bc27ac45b",
           "Port": 3,
-          "Name": "Input 3",
+          "Name": "CCU 3 Red Tally In",
+          "Nickname": "Output 3",
+          "Status": false
+        },
+        {
+          "OutputId": "3383fcbb4ac648cb822b879b0bd21612",
+          "Port": 4,
+          "Name": "CCU 4 Red Tally In",
+          "Nickname": "Output 4",
+          "Status": false
+        },
+        {
+          "OutputId": "f886b663abe84bbeb9152ddeee150a3b",
+          "Port": 5,
+          "Name": "CCU 5 Red Tally In",
+          "Nickname": "Output 5",
+          "Status": false
+        },
+        {
+          "OutputId": "7aaa79453f2a408ea444d9d2e8f71e16",
+          "Port": 6,
+          "Name": "CCU 6 Red Tally In",
+          "Nickname": "Output 6",
+          "Status": false
+        }
+      ],
+      "Routes": [
+        {
+          "SourceDeviceId": "55",
+          "OutputId": "aefb487de8744c6ca906ec062e849c03",
+          "InputIds": [
+            "3b7579bfce554645bf4d60d02963c138"
+          ]
+        },
+        {
+          "SourceDeviceId": "60",
+          "OutputId": "aefb487de8744c6ca906ec062e849c03",
+          "InputIds": [
+            "acd1757ae6cb43cc86bdb68ddd306345"
+          ]
+        }
+      ],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "61",
+      "Name": "RM-H2 Tally",
+      "Nickname": "RM-H2 Tally",
+      "IpAddress": "10.10.10.10",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "OutputId": "2cc59933c76b49e993b2627bd24cc25e",
+          "Port": 1,
+          "Name": "CCU 1 Red Tally In",
+          "Nickname": "Output 1",
+          "Status": false
+        },
+        {
+          "OutputId": "7ebce9152a8d4977bbfb6fe5c3ff6c6b",
+          "Port": 2,
+          "Name": "CCU 2 Red Tally In",
+          "Nickname": "Output 2",
+          "Status": false
+        },
+        {
+          "OutputId": "98d94773f77e45c485b6947122bacc12",
+          "Port": 3,
+          "Name": "CCU 3 Red Tally In",
+          "Nickname": "Output 3",
+          "Status": false
+        },
+        {
+          "OutputId": "fc78f65c782441c7983aea27defbe652",
+          "Port": 4,
+          "Name": "CCU 4 Red Tally In",
+          "Nickname": "Output 4",
+          "Status": false
+        },
+        {
+          "OutputId": "8c2dd17b6cda48eca1103189eee7bd33",
+          "Port": 5,
+          "Name": "CCU 5 Red Tally In",
+          "Nickname": "Output 5",
+          "Status": false
+        },
+        {
+          "OutputId": "c0cf89e45f0d4441accb78a4cd0da5c8",
+          "Port": 6,
+          "Name": "CCU 6 Red Tally In",
+          "Nickname": "Output 6",
+          "Status": false
+        }
+      ],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "62",
+      "Name": "RM-H3 Tally",
+      "Nickname": "RM-H3 Tally",
+      "IpAddress": "10.10.10.10",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "OutputId": "8b3aa90bd44349558ce6c2f4aaf690bc",
+          "Port": 1,
+          "Name": "CCU 1 Red Tally In",
+          "Nickname": "Output 1",
+          "Status": false
+        },
+        {
+          "OutputId": "e9484b37c40c449d8edf63088e3547d5",
+          "Port": 2,
+          "Name": "CCU 2 Red Tally In",
+          "Nickname": "Output 2",
+          "Status": false
+        },
+        {
+          "OutputId": "bd27686022d8415fbf62c251a50db029",
+          "Port": 3,
+          "Name": "CCU 3 Red Tally In",
+          "Nickname": "Output 3",
+          "Status": false
+        },
+        {
+          "OutputId": "afe16c82f1e546aab60043ecc60f5d3c",
+          "Port": 4,
+          "Name": "CCU 4 Red Tally In",
+          "Nickname": "Output 4",
+          "Status": false
+        },
+        {
+          "OutputId": "b8c138fc8dca49808423065928d03b50",
+          "Port": 5,
+          "Name": "CCU 5 Red Tally In",
+          "Nickname": "Output 5",
+          "Status": false
+        },
+        {
+          "OutputId": "fa5ead9a3365401d82169ea3ead9de7c",
+          "Port": 6,
+          "Name": "CCU 6 Red Tally In",
+          "Nickname": "Output 6",
+          "Status": false
+        }
+      ],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "66",
+      "Name": "RM-HEX-1 Tally",
+      "Nickname": "HEX-1 Tally",
+      "IpAddress": "10.10.10.10",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "OutputId": "d7b66209727f4c00aa6551a6bc088ef0",
+          "Port": 1,
+          "Name": "CCU 1 Red Tally In",
+          "Nickname": "Output 1",
+          "Status": false
+        },
+        {
+          "OutputId": "1093d6baf3774ec19b1ddefdc78dbe91",
+          "Port": 2,
+          "Name": "CCU 2 Red Tally In",
+          "Nickname": "Output 2",
+          "Status": false
+        },
+        {
+          "OutputId": "ea33709da66944d8a9651e1b9c6a28b4",
+          "Port": 3,
+          "Name": "CCU 3 Red Tally In",
+          "Nickname": "Output 3",
+          "Status": false
+        },
+        {
+          "OutputId": "e226ca0355c441618e583b879cbfac63",
+          "Port": 4,
+          "Name": "CCU 4 Red Tally In",
+          "Nickname": "Output 4",
+          "Status": false
+        },
+        {
+          "OutputId": "626e848484804cf298384d958ec1ea33",
+          "Port": 5,
+          "Name": "CCU 5 Red Tally In",
+          "Nickname": "Output 5",
+          "Status": false
+        },
+        {
+          "OutputId": "f7ab59d90ba84f4bb15feef6442bcd60",
+          "Port": 6,
+          "Name": "CCU 6 Red Tally In",
+          "Nickname": "Output 6",
+          "Status": false
+        }
+      ],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "71",
+      "Name": "RM-HEX-2 Tally",
+      "Nickname": "RM-HEX-2 Tally",
+      "IpAddress": "10.10.10.10",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "OutputId": "cfbeb097932e4087a058275559f6602a",
+          "Port": 1,
+          "Name": "CCU 1 Red Tally In",
+          "Nickname": "Output 1",
+          "Status": false
+        },
+        {
+          "OutputId": "a8448946c4b449c4b1387e4a4a994e37",
+          "Port": 2,
+          "Name": "CCU 2 Red Tally In",
+          "Nickname": "Output 2",
+          "Status": false
+        },
+        {
+          "OutputId": "bef60abb7a704920b67eaa7045f59960",
+          "Port": 3,
+          "Name": "CCU 3 Red Tally In",
+          "Nickname": "Output 3",
+          "Status": false
+        },
+        {
+          "OutputId": "4f946c194a674bfdbddd51e3d342397f",
+          "Port": 4,
+          "Name": "CCU 4 Red Tally In",
+          "Nickname": "Output 4",
+          "Status": false
+        },
+        {
+          "OutputId": "619204361a3646b6a75162d0df5cdb58",
+          "Port": 5,
+          "Name": "CCU 5 Red Tally In",
+          "Nickname": "Output 5",
+          "Status": false
+        },
+        {
+          "OutputId": "0609829dbd6a497f87701b59d5e4f609",
+          "Port": 6,
+          "Name": "CCU 6 Red Tally In",
+          "Nickname": "Output 6",
+          "Status": false
+        }
+      ],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "72",
+      "Name": "RM-HEX-3 Tally",
+      "Nickname": "RM-HEX-3 Tally",
+      "IpAddress": "10.10.10.10",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "OutputId": "98bafaaa235e40edb0e8846500484de3",
+          "Port": 1,
+          "Name": "CCU 1 Red Tally In",
+          "Nickname": "Output 1",
+          "Status": false
+        },
+        {
+          "OutputId": "4f7f9d21c6ca4584a569468f48218e42",
+          "Port": 2,
+          "Name": "CCU 2 Red Tally In",
+          "Nickname": "Output 2",
+          "Status": false
+        },
+        {
+          "OutputId": "a487035494d14dbcaf43fc5a8419d200",
+          "Port": 3,
+          "Name": "CCU 3 Red Tally In",
+          "Nickname": "Output 3",
+          "Status": false
+        },
+        {
+          "OutputId": "8d8769f2036c404fb40ebe0ef8b62880",
+          "Port": 4,
+          "Name": "CCU 4 Red Tally In",
+          "Nickname": "Output 4",
+          "Status": false
+        },
+        {
+          "OutputId": "e36c095ffcbe4be1bbc5c705047e7fd9",
+          "Port": 5,
+          "Name": "CCU 5 Red Tally In",
+          "Nickname": "Output 5",
+          "Status": false
+        },
+        {
+          "OutputId": "cc830791c36b4cb685aa40ce65d8d5fb",
+          "Port": 6,
+          "Name": "CCU 6 Red Tally In",
+          "Nickname": "Output 6",
+          "Status": false
+        }
+      ],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "73",
+      "Name": "RM-HEX-4 Tally",
+      "Nickname": "RM-HEX-4 Tally",
+      "IpAddress": "10.10.10.10",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "OutputId": "b32452330c1148788ea51d64de8ef3c5",
+          "Port": 1,
+          "Name": "CCU 1 Red Tally In",
+          "Nickname": "Output 1",
+          "Status": false
+        },
+        {
+          "OutputId": "ff6f3367eb204794a0e2418372309568",
+          "Port": 2,
+          "Name": "CCU 2 Red Tally In",
+          "Nickname": "Output 2",
+          "Status": false
+        },
+        {
+          "OutputId": "7aeec910d68d4435a6ff0a40b2f388a2",
+          "Port": 3,
+          "Name": "CCU 3 Red Tally In",
+          "Nickname": "Output 3",
+          "Status": false
+        },
+        {
+          "OutputId": "3d7fbb46bca442cb898a62126850fe3d",
+          "Port": 4,
+          "Name": "CCU 4 Red Tally In",
+          "Nickname": "Output 4",
+          "Status": false
+        },
+        {
+          "OutputId": "15d645e8b4d04cad828c1b9ba96fd4e4",
+          "Port": 5,
+          "Name": "CCU 5 Red Tally In",
+          "Nickname": "Output 5",
+          "Status": false
+        },
+        {
+          "OutputId": "9b675ba342084466b984edff4a91b929",
+          "Port": 6,
+          "Name": "CCU 6 Red Tally In",
+          "Nickname": "Output 6",
+          "Status": false
+        }
+      ],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "74",
+      "Name": "RM-TC-1 Tally",
+      "Nickname": "RM-TC1 Tally",
+      "IpAddress": "10.10.10.10",
+      "Inputs": [
+        {
+          "InputId": "70aae883c85346e2ab7d6c01ab871cfa",
+          "Port": 1,
+          "Name": "Switcher Tally Out 1",
+          "Nickname": "Input 1",
+          "Status": false
+        },
+        {
+          "InputId": "248bdea130084fbf90a31bcbf90c695d",
+          "Port": 2,
+          "Name": "Switcher Tally Out 2",
+          "Nickname": "Input 2",
+          "Status": false
+        },
+        {
+          "InputId": "8545f160c3c14b05ba20c42462c9244f",
+          "Port": 3,
+          "Name": "Switcher Tally Out 3",
           "Nickname": "Input 3",
           "Status": false
         },
         {
-          "InputId": "314e9907a7ca481baff036c0ce1bc7a1",
+          "InputId": "33084e18437f4a34a1b9597d7ec00eae",
           "Port": 4,
-          "Name": "Input 4",
+          "Name": "Switcher Tally Out 4",
           "Nickname": "Input 4",
           "Status": false
         },
         {
-          "InputId": "943f6813dfe14031af04e7385b6e869b",
+          "InputId": "558fbde260614f6aa1584a5db5358544",
           "Port": 5,
-          "Name": "Input 5",
+          "Name": "Switcher Tally Out 5",
           "Nickname": "Input 5",
           "Status": false
         },
         {
-          "InputId": "df3450c8d1f541faab4a346bf3a5fc2a",
+          "InputId": "0d30a55c201e42568f7af998fe947157",
           "Port": 6,
-          "Name": "Input 6",
+          "Name": "Switcher Tally Out 6",
           "Nickname": "Input 6",
           "Status": false
         },
         {
-          "InputId": "9c4d563f1f2d4535bab21d2c34b3e65d",
+          "InputId": "c9577febe3f04dac87c641bbacdadb71",
           "Port": 7,
-          "Name": "Input 7",
+          "Name": "Switcher Tally Out 7",
           "Nickname": "Input 7",
           "Status": false
         },
         {
-          "InputId": "08b37adb69f343eabaa197da830ddf4d",
+          "InputId": "114f37d257b44d1bbeeb5d3fb47b408c",
           "Port": 8,
-          "Name": "Input 8",
+          "Name": "Switcher Tally Out 8",
+          "Nickname": "Input 8",
+          "Status": false
+        }
+      ],
+      "Outputs": [
+        {
+          "OutputId": "1d3e2689661040e8ba1b5295aa6f1475",
+          "Port": 1,
+          "Name": "CCU 1 Yellow Tally In",
+          "Nickname": "Output 1",
+          "Status": false
+        },
+        {
+          "OutputId": "3ef494d866bf496cac419a04073205a6",
+          "Port": 2,
+          "Name": "CCU 2 Yellow Tally In",
+          "Nickname": "Output 2",
+          "Status": false
+        },
+        {
+          "OutputId": "cf67caf7e0a34daaa7a9964a3d780b3a",
+          "Port": 3,
+          "Name": "CCU 3 Yellow Tally In",
+          "Nickname": "Output 3",
+          "Status": false
+        },
+        {
+          "OutputId": "b8f07181278f47ee9275130b801ac8fa",
+          "Port": 4,
+          "Name": "CCU 4 Yellow Tally In",
+          "Nickname": "Output 4",
+          "Status": false
+        },
+        {
+          "OutputId": "dabda99d37b24af3ab9ab436a11ec601",
+          "Port": 5,
+          "Name": "CCU 5 Yellow Tally In",
+          "Nickname": "Output 5",
+          "Status": false
+        },
+        {
+          "OutputId": "07903af22fac4f21b65afb2217f8782b",
+          "Port": 6,
+          "Name": "CCU 6 Yellow Tally In",
+          "Nickname": "Output 6",
+          "Status": false
+        },
+        {
+          "OutputId": "1babab27062a422eb2a07e01371bc989",
+          "Port": 7,
+          "Name": "CCU 7 Yellow Tally In",
+          "Nickname": "Output 7",
+          "Status": false
+        },
+        {
+          "OutputId": "2c7df76dcbc74efc8f8def3af17cfb9a",
+          "Port": 8,
+          "Name": "CCU 8 Yellow Tally In",
+          "Nickname": "Output 8",
+          "Status": false
+        }
+      ],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "75",
+      "Name": "RM-TC-3 Tally",
+      "Nickname": "RM-TC3 Tally",
+      "IpAddress": "10.10.10.10",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "OutputId": "6a61ecdc49c74929b10d895f2f270496",
+          "Port": 1,
+          "Name": "CCU 1 Yellow Tally In",
+          "Nickname": "Output 1",
+          "Status": false
+        },
+        {
+          "OutputId": "9088cc4c1e9f451d82f0c023c96130d9",
+          "Port": 2,
+          "Name": "CCU 2 Yellow Tally In",
+          "Nickname": "Output 2",
+          "Status": false
+        },
+        {
+          "OutputId": "52719123914c47b69fdcc2cec2ad5e80",
+          "Port": 3,
+          "Name": "CCU 3 Yellow Tally In",
+          "Nickname": "Output 3",
+          "Status": false
+        },
+        {
+          "OutputId": "68be6f84291348e2953e9595854a9c8e",
+          "Port": 4,
+          "Name": "CCU 4 Yellow Tally In",
+          "Nickname": "Output 4",
+          "Status": false
+        },
+        {
+          "OutputId": "05efd0e281e74a6898a9f57e7244a149",
+          "Port": 5,
+          "Name": "CCU 5 Yellow Tally In",
+          "Nickname": "Output 5",
+          "Status": false
+        },
+        {
+          "OutputId": "a8ffb025d4644cbca5a165afbff2410c",
+          "Port": 6,
+          "Name": "CCU 6 Yellow Tally In",
+          "Nickname": "Output 6",
+          "Status": false
+        },
+        {
+          "OutputId": "c8a22738964046b08d809ed70632b926",
+          "Port": 7,
+          "Name": "CCU 7 Yellow Tally In",
+          "Nickname": "Output 7",
+          "Status": false
+        },
+        {
+          "OutputId": "451d6fff2c174d45b16e43d9dea74dba",
+          "Port": 8,
+          "Name": "CCU 8 Yellow Tally In",
+          "Nickname": "Output 8",
+          "Status": false
+        }
+      ],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "76",
+      "Name": "RM-Z1 Tally",
+      "Nickname": "RM-Z1 Tally",
+      "IpAddress": "10.10.10.10",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "OutputId": "1f562a71e44a47e0ad50d2cde9583bba",
+          "Port": 1,
+          "Name": "CCU 1 Yellow Tally In",
+          "Nickname": "Output 1",
+          "Status": false
+        },
+        {
+          "OutputId": "893f8048485f4b33acf5b749ce15910d",
+          "Port": 2,
+          "Name": "CCU 2 Yellow Tally In",
+          "Nickname": "Output 2",
+          "Status": false
+        },
+        {
+          "OutputId": "7e3259705bdc421da75410869017248c",
+          "Port": 3,
+          "Name": "CCU 3 Yellow Tally In",
+          "Nickname": "Output 3",
+          "Status": false
+        },
+        {
+          "OutputId": "3d25785376ca406db442a8b6257b5c58",
+          "Port": 4,
+          "Name": "CCU 4 Yellow Tally In",
+          "Nickname": "Output 4",
+          "Status": false
+        },
+        {
+          "OutputId": "8282f2d118744a1ca1f634bd2e4b9089",
+          "Port": 5,
+          "Name": "CCU 5 Yellow Tally In",
+          "Nickname": "Output 5",
+          "Status": false
+        },
+        {
+          "OutputId": "ae3940c1146945a2aeab5dc494082bad",
+          "Port": 6,
+          "Name": "CCU 6 Yellow Tally In",
+          "Nickname": "Output 6",
+          "Status": false
+        },
+        {
+          "OutputId": "9a2148db0cfc4118a4c1847ef6a32634",
+          "Port": 7,
+          "Name": "CCU 7 Red Tally In",
+          "Nickname": "Output 7",
+          "Status": false
+        },
+        {
+          "OutputId": "f7c0330a2dbf48b2ac36de916b34ed91",
+          "Port": 8,
+          "Name": "CCU 8 Yellow Tally In",
+          "Nickname": "Output 8",
+          "Status": false
+        }
+      ],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "77",
+      "Name": "RM-Z2 Tally",
+      "Nickname": "RM-Z2 Tally",
+      "IpAddress": "10.10.10.10",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "OutputId": "0fb8bdfeb2054c2a8e5619ad621780d9",
+          "Port": 1,
+          "Name": "CCU 1 Yellow Tally In",
+          "Nickname": "Output 1",
+          "Status": false
+        },
+        {
+          "OutputId": "d815e488521240ca87c2293b4c8a577c",
+          "Port": 2,
+          "Name": "CCU 2 Yellow Tally In",
+          "Nickname": "Output 2",
+          "Status": false
+        },
+        {
+          "OutputId": "84f5ceb0c5ae4bf1b6ad9aef208e61a0",
+          "Port": 3,
+          "Name": "CCU 3 Yellow Tally In",
+          "Nickname": "Output 3",
+          "Status": false
+        },
+        {
+          "OutputId": "8d3216f75fc74a0eb7aa55abb2f945bb",
+          "Port": 4,
+          "Name": "CCU 4 Yellow Tally In",
+          "Nickname": "Output 4",
+          "Status": false
+        },
+        {
+          "OutputId": "41a7436d3816471e8c244f648ec0f72b",
+          "Port": 5,
+          "Name": "CCU 5 Yellow Tally In",
+          "Nickname": "Output 5",
+          "Status": false
+        },
+        {
+          "OutputId": "4326d0a308464d7c923e19924dd2ebee",
+          "Port": 6,
+          "Name": "CCU 6 Yellow Tally In",
+          "Nickname": "Output 6",
+          "Status": false
+        },
+        {
+          "OutputId": "40c2a16a83964c2aa052aca8411f5494",
+          "Port": 7,
+          "Name": "CCU 7 Yellow Tally In",
+          "Nickname": "Output 7",
+          "Status": false
+        },
+        {
+          "OutputId": "cd41153c64994b00a68d6a851abdba2d",
+          "Port": 8,
+          "Name": "CCU 8 Yellow Tally In",
+          "Nickname": "Output 8",
+          "Status": false
+        }
+      ],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "78",
+      "Name": "RM-Z3 Tally",
+      "Nickname": "RM-Z3 Tally",
+      "IpAddress": "10.10.10.10",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "OutputId": "784a33ccefda4223b0216acd9ddb1633",
+          "Port": 1,
+          "Name": "CCU 1 Yellow Tally In",
+          "Nickname": "Output 1",
+          "Status": false
+        },
+        {
+          "OutputId": "0231a290e46d4d0a8c1ab65c5a75fb00",
+          "Port": 2,
+          "Name": "CCU 2 Yellow Tally In",
+          "Nickname": "Output 2",
+          "Status": false
+        },
+        {
+          "OutputId": "5b597558dd024c4d88d3dfc6ea3c1854",
+          "Port": 3,
+          "Name": "CCU 3 Yellow Tally In",
+          "Nickname": "Output 3",
+          "Status": false
+        },
+        {
+          "OutputId": "1be0e15dacf04942a09b9e9830e14e7c",
+          "Port": 4,
+          "Name": "CCU 4 Yellow Tally In",
+          "Nickname": "Output 4",
+          "Status": false
+        },
+        {
+          "OutputId": "8b78bd52a5454a9485b8f857cd03e7a1",
+          "Port": 5,
+          "Name": "CCU 5 Yellow Tally In",
+          "Nickname": "Output 5",
+          "Status": false
+        },
+        {
+          "OutputId": "b496dc97ca98444bb911e1f45a6f229e",
+          "Port": 6,
+          "Name": "CCU 6 Yellow Tally In",
+          "Nickname": "Output 6",
+          "Status": false
+        },
+        {
+          "OutputId": "40fb1ac5e86c40108621b74475d15b61",
+          "Port": 7,
+          "Name": "CCU 7 Red Tally In",
+          "Nickname": "Output 7",
+          "Status": false
+        },
+        {
+          "OutputId": "6b0e08c2dab5473a85c2f16cb7be9be1",
+          "Port": 8,
+          "Name": "CCU 8 Red Tally In",
+          "Nickname": "Output 8",
+          "Status": false
+        }
+      ],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "79",
+      "Name": "RM-Z4 Tally",
+      "Nickname": "RM-Z4 Tally",
+      "IpAddress": "10.10.10.10",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "OutputId": "fedf8a9bfbac4227a00a17f919429b25",
+          "Port": 1,
+          "Name": "CCU 1 Yellow Tally In",
+          "Nickname": "Output 1",
+          "Status": false
+        },
+        {
+          "OutputId": "2dab2be5811c4b2f8340d8a0339912f5",
+          "Port": 2,
+          "Name": "CCU 2 Yellow Tally In",
+          "Nickname": "Output 2",
+          "Status": false
+        },
+        {
+          "OutputId": "078a08e9653f4ebf9402c5895c27a689",
+          "Port": 3,
+          "Name": "CCU 3 Yellow Tally In",
+          "Nickname": "Output 3",
+          "Status": false
+        },
+        {
+          "OutputId": "0388d943dbc6420aa2f8fe6673732eac",
+          "Port": 4,
+          "Name": "CCU 4 Yellow Tally In",
+          "Nickname": "Output 4",
+          "Status": false
+        },
+        {
+          "OutputId": "aeec6d77e1234ad1877e8fffa36cf221",
+          "Port": 5,
+          "Name": "CCU 5 Yellow Tally In",
+          "Nickname": "Output 5",
+          "Status": false
+        },
+        {
+          "OutputId": "954e50d907d548e5b69659cce555cb77",
+          "Port": 6,
+          "Name": "CCU 6 Yellow Tally In",
+          "Nickname": "Output 6",
+          "Status": false
+        },
+        {
+          "OutputId": "f3c31a2a6dae41bc85dca812f9e3da6c",
+          "Port": 7,
+          "Name": "CCU 7 Yellow Tally In",
+          "Nickname": "Output 7",
+          "Status": false
+        },
+        {
+          "OutputId": "be4cdf90ce8442cba7b869d9470e8e1a",
+          "Port": 8,
+          "Name": "CCU 8 Yellow Tally In",
+          "Nickname": "Output 8",
+          "Status": false
+        }
+      ],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "80",
+      "Name": "RM-Z5 Tally",
+      "Nickname": "RM-Z5 Tally",
+      "IpAddress": "10.10.10.10",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "OutputId": "8cfb92f08c34458389c357aec5bf9aad",
+          "Port": 1,
+          "Name": "CCU 1 Yellow Tally In",
+          "Nickname": "Output 1",
+          "Status": false
+        },
+        {
+          "OutputId": "72ed2bc6b69f4274b1f3f3bc48db7fb8",
+          "Port": 2,
+          "Name": "CCU 2 Yellow Tally In",
+          "Nickname": "Output 2",
+          "Status": false
+        },
+        {
+          "OutputId": "cbc23e13169f49f390ee5bdc1c171f9f",
+          "Port": 3,
+          "Name": "CCU 3 Yellow Tally In",
+          "Nickname": "Output 3",
+          "Status": false
+        },
+        {
+          "OutputId": "ab63ffc37d4b4c50911f5dc4c3d1f4a0",
+          "Port": 4,
+          "Name": "CCU 4 Yellow Tally In",
+          "Nickname": "Output 4",
+          "Status": false
+        },
+        {
+          "OutputId": "190c6a2dfcab45eb8f8522a1ae450965",
+          "Port": 5,
+          "Name": "CCU 5 Yellow Tally In",
+          "Nickname": "Output 5",
+          "Status": false
+        },
+        {
+          "OutputId": "8327d9f77efe453381a5fe0b80607ee8",
+          "Port": 6,
+          "Name": "CCU 6 Yellow Tally In",
+          "Nickname": "Output 6",
+          "Status": false
+        },
+        {
+          "OutputId": "e1f3524a96db4263860a04d911931d8c",
+          "Port": 7,
+          "Name": "CCU 7 Yellow Tally In",
+          "Nickname": "Output 7",
+          "Status": false
+        },
+        {
+          "OutputId": "e075a1fe59954cbabb10eb95e60369a7",
+          "Port": 8,
+          "Name": "CCU 8 Yellow Tally In",
+          "Nickname": "Output 8",
+          "Status": false
+        }
+      ],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "81",
+      "Name": "RM-Z6 Tally",
+      "Nickname": "RM-Z6 Tally",
+      "IpAddress": "10.10.10.10",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "OutputId": "93a4f6e532fa4e309abfefd937cd3117",
+          "Port": 1,
+          "Name": "CCU 1 Yellow Tally In",
+          "Nickname": "Output 1",
+          "Status": false
+        },
+        {
+          "OutputId": "932b66a5f5574085ab70fd659d235a27",
+          "Port": 2,
+          "Name": "CCU 2 Yellow Tally In",
+          "Nickname": "Output 2",
+          "Status": false
+        },
+        {
+          "OutputId": "c2f36d22bd2b486fbc0edb01b23958af",
+          "Port": 3,
+          "Name": "CCU 3 Yellow Tally In",
+          "Nickname": "Output 3",
+          "Status": false
+        },
+        {
+          "OutputId": "fa6417ddb8e64c9cb43b4c1197fe94d7",
+          "Port": 4,
+          "Name": "CCU 4 Yellow Tally In",
+          "Nickname": "Output 4",
+          "Status": false
+        },
+        {
+          "OutputId": "88ab98acefb74ff2811c2ee2bf7aba29",
+          "Port": 5,
+          "Name": "CCU 5 Yellow Tally In",
+          "Nickname": "Output 5",
+          "Status": false
+        },
+        {
+          "OutputId": "758379ba741346ff916ff3c1fe05007b",
+          "Port": 6,
+          "Name": "CCU 6 Yellow Tally In",
+          "Nickname": "Output 6",
+          "Status": false
+        },
+        {
+          "OutputId": "7c9ff663623543638f8e1d64b25cef23",
+          "Port": 7,
+          "Name": "CCU 7 Yellow Tally In",
+          "Nickname": "Output 7",
+          "Status": false
+        },
+        {
+          "OutputId": "c166e8a3ea924a5a8d2726d73d48e230",
+          "Port": 8,
+          "Name": "CCU 8 Yellow Tally In",
+          "Nickname": "Output 8",
+          "Status": false
+        }
+      ],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "82",
+      "Name": "RM-ZX-1 Tally",
+      "Nickname": "RM-ZX-1 Tally",
+      "IpAddress": "10.10.10.10",
+      "Inputs": [
+        {
+          "InputId": "3362283d82364d2c87e65a436e8ba0c8",
+          "Port": 1,
+          "Name": "Switcher Tally Out 1",
+          "Nickname": "Input 1",
+          "Status": false
+        },
+        {
+          "InputId": "800ad094d1f24543b29da4c936cded54",
+          "Port": 2,
+          "Name": "Switcher Tally Out 2",
+          "Nickname": "Input 2",
+          "Status": false
+        },
+        {
+          "InputId": "9398e43536a44710b457c52b44aa6466",
+          "Port": 3,
+          "Name": "Switcher Tally Out 3",
+          "Nickname": "Input 3",
+          "Status": false
+        },
+        {
+          "InputId": "cd4330b6784f4bedbc343cb9eabe3b62",
+          "Port": 4,
+          "Name": "Switcher Tally Out 4",
+          "Nickname": "Input 4",
+          "Status": false
+        },
+        {
+          "InputId": "38baaa3b9dd6460b98b4d77338f9d499",
+          "Port": 5,
+          "Name": "Switcher Tally Out 5",
+          "Nickname": "Input 5",
+          "Status": false
+        },
+        {
+          "InputId": "a450c2d925b941af908a8e65325c1fe9",
+          "Port": 6,
+          "Name": "Switcher Tally Out 6",
+          "Nickname": "Input 6",
+          "Status": false
+        },
+        {
+          "InputId": "c034bf1efc7e43d2bb0c79b2d5b30242",
+          "Port": 7,
+          "Name": "Switcher Tally Out 7",
+          "Nickname": "Input 7",
+          "Status": false
+        },
+        {
+          "InputId": "0c65db7df04d48d3a9233e6df52afcd7",
+          "Port": 8,
+          "Name": "Switcher Tally Out 8",
+          "Nickname": "Input 8",
+          "Status": false
+        }
+      ],
+      "Outputs": [
+        {
+          "OutputId": "40db454229bc408f86e2689c4de3cd47",
+          "Port": 1,
+          "Name": "CCU 1 Yellow Tally In",
+          "Nickname": "Output 1",
+          "Status": false
+        },
+        {
+          "OutputId": "14c42a66425b4343899c4d596d300cd8",
+          "Port": 2,
+          "Name": "CCU 2 Yellow Tally In",
+          "Nickname": "Output 2",
+          "Status": false
+        },
+        {
+          "OutputId": "d83e3ec355504e06bd418886c4a390cf",
+          "Port": 3,
+          "Name": "CCU 3 Yellow Tally In",
+          "Nickname": "Output 3",
+          "Status": false
+        },
+        {
+          "OutputId": "ab13234e86c3436386b33d4a296a7635",
+          "Port": 4,
+          "Name": "CCU 4 Yellow Tally In",
+          "Nickname": "Output 4",
+          "Status": false
+        },
+        {
+          "OutputId": "b5fa718948334afe93c59d3f43152848",
+          "Port": 5,
+          "Name": "CCU 5 Yellow Tally In",
+          "Nickname": "Output 5",
+          "Status": false
+        },
+        {
+          "OutputId": "192fa69da7524c7e930fffa2b0579ae7",
+          "Port": 6,
+          "Name": "CCU 6 Yellow Tally In",
+          "Nickname": "Output 6",
+          "Status": false
+        },
+        {
+          "OutputId": "7467a2550a4a4b0ab2d7db1963531903",
+          "Port": 7,
+          "Name": "CCU 7 Yellow Tally In",
+          "Nickname": "Output 7",
+          "Status": false
+        },
+        {
+          "OutputId": "ef49472d1dfc4efdbda7d35bbfeb4406",
+          "Port": 8,
+          "Name": "CCU 8 Yellow Tally In",
+          "Nickname": "Output 8",
+          "Status": false
+        }
+      ],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "120",
+      "Name": "Dome Tally Box",
+      "Nickname": "Dome Tally Box",
+      "IpAddress": "10.10.10.10",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "OutputId": "d49fd2470e7049ae953a2e01928b90da",
+          "Port": 1,
+          "Name": "Tally To CCU 1",
+          "Nickname": "Output 1",
+          "Status": false
+        },
+        {
+          "OutputId": "839cba189ea24ae294fe821c95ff244c",
+          "Port": 2,
+          "Name": "Tally To CCU 2",
+          "Nickname": "Output 2",
+          "Status": false
+        },
+        {
+          "OutputId": "21f85074c52c40baad8714a96469fab1",
+          "Port": 3,
+          "Name": "Tally To CCU 3",
+          "Nickname": "Output 3",
+          "Status": false
+        },
+        {
+          "OutputId": "8ce89be6ddc84d93af36a07e60fd4f9c",
+          "Port": 4,
+          "Name": "Tally To CCU 4",
+          "Nickname": "Output 4",
+          "Status": false
+        },
+        {
+          "OutputId": "527f4e66c54b4ff8997d8f0e903f8a81",
+          "Port": 5,
+          "Name": "Tally To CCU 5",
+          "Nickname": "Output 5",
+          "Status": false
+        },
+        {
+          "OutputId": "552be38dd9214e28826db26e4c88df3a",
+          "Port": 6,
+          "Name": "Tally To CCU 6",
+          "Nickname": "Output 6",
+          "Status": false
+        },
+        {
+          "OutputId": "3dd0e7cb5687493396baad82b47ae935",
+          "Port": 7,
+          "Name": "Tally To CCU 7",
+          "Nickname": "Output 7",
+          "Status": false
+        },
+        {
+          "OutputId": "331e24a33c6847bf94a415beeb46d6b9",
+          "Port": 8,
+          "Name": "Tally To CCU 8",
+          "Nickname": "Output 8",
+          "Status": false
+        }
+      ],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "123",
+      "Name": "MSN Washington D.C.",
+      "Nickname": "MSN Washington D.C.",
+      "IpAddress": "10.10.10.10",
+      "Inputs": [
+        {
+          "InputId": "e742750a941c490b9858e3419831ec1c",
+          "Port": 1,
+          "Name": "NC",
+          "Nickname": "Input 1",
+          "Status": false
+        },
+        {
+          "InputId": "627c529a72eb4cd9a568346eb53e97de",
+          "Port": 2,
+          "Name": "NC",
+          "Nickname": "Input 2",
+          "Status": false
+        },
+        {
+          "InputId": "196bbbd908a84682af74a364d885c230",
+          "Port": 3,
+          "Name": "MSN SW 3 Tally to truck",
+          "Nickname": "Input 3",
+          "Status": false
+        },
+        {
+          "InputId": "9828ffe4ed3249598b386d441bc1b78a",
+          "Port": 4,
+          "Name": "MSN SW 4 Tally to truck",
+          "Nickname": "Input 4",
+          "Status": false
+        },
+        {
+          "InputId": "bf3901204d85474aaff4168bfbf4d29d",
+          "Port": 5,
+          "Name": "NC",
+          "Nickname": "Input 5",
+          "Status": false
+        },
+        {
+          "InputId": "27f6c3ee9b784f6886e8c256a1ab18bd",
+          "Port": 6,
+          "Name": "NC",
+          "Nickname": "Input 6",
+          "Status": false
+        },
+        {
+          "InputId": "f16e1e5ee2bf4171a03cd756af9330b8",
+          "Port": 7,
+          "Name": "NC",
+          "Nickname": "Input 7",
+          "Status": false
+        },
+        {
+          "InputId": "47cfc1919e6f4195846710933f554839",
+          "Port": 8,
+          "Name": "NC",
+          "Nickname": "Input 8",
+          "Status": false
+        }
+      ],
+      "Outputs": [
+        {
+          "OutputId": "53505203a67948f7beae70cfc5c6ec70",
+          "Port": 1,
+          "Name": "Tally from Waunakee to MSN 1",
+          "Nickname": "Output 1",
+          "Status": false
+        },
+        {
+          "OutputId": "c17aa742cc6f4f96bf657ea116a27ace",
+          "Port": 2,
+          "Name": "Tally from Waunakee to MSN 2",
+          "Nickname": "Output 2",
+          "Status": false
+        },
+        {
+          "OutputId": "4b4723f21efc4a148c49d57dd70aad30",
+          "Port": 3,
+          "Name": "NC",
+          "Nickname": "Output 3",
+          "Status": false
+        },
+        {
+          "OutputId": "3ecbb92ced264c70aebbb5126f98d1da",
+          "Port": 4,
+          "Name": "NC",
+          "Nickname": "Output 4",
+          "Status": false
+        },
+        {
+          "OutputId": "cb84e4a8e4c349eea36913b15f5ab961",
+          "Port": 5,
+          "Name": "NC",
+          "Nickname": "Output 5",
+          "Status": false
+        },
+        {
+          "OutputId": "611c42e250dc4eaea27c72576249441e",
+          "Port": 6,
+          "Name": "NC",
+          "Nickname": "Output 6",
+          "Status": false
+        },
+        {
+          "OutputId": "4d8ff692cb464e49bbad19ac329e6d53",
+          "Port": 7,
+          "Name": "NC",
+          "Nickname": "Output 7",
+          "Status": false
+        },
+        {
+          "OutputId": "aff193791c464879bdae35b892bcb55b",
+          "Port": 8,
+          "Name": "NC",
+          "Nickname": "Output 8",
+          "Status": false
+        }
+      ],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "128",
+      "Name": "Rich Eisen show switcher",
+      "Nickname": "Rich Eisen show switcher",
+      "IpAddress": "10.10.10.10",
+      "Inputs": [
+        {
+          "InputId": "f22cbc852ecb4070a13e8da4465b6792",
+          "Port": 1,
+          "Name": "Switcher Tally Out 1",
+          "Nickname": "Input 1",
+          "Status": false
+        },
+        {
+          "InputId": "2d83bea6e4a84e1d8fdb0a30d98bd31e",
+          "Port": 2,
+          "Name": "Switcher Tally Out 2",
+          "Nickname": "Input 2",
+          "Status": false
+        },
+        {
+          "InputId": "41f27acf48b8430fbb5e438f867a6694",
+          "Port": 3,
+          "Name": "Switcher Tally Out 3",
+          "Nickname": "Input 3",
+          "Status": false
+        },
+        {
+          "InputId": "bae65dc91b044f6da066364821bd45ed",
+          "Port": 4,
+          "Name": "Switcher Tally Out 4",
+          "Nickname": "Input 4",
+          "Status": false
+        },
+        {
+          "InputId": "19a838fc65b449cfa0ecedf9cb80e033",
+          "Port": 5,
+          "Name": "Switcher Tally Out 5",
+          "Nickname": "Input 5",
+          "Status": false
+        },
+        {
+          "InputId": "3de2ff12815f443695dbb008e69df982",
+          "Port": 6,
+          "Name": "Switcher Tally Out 6",
+          "Nickname": "Input 6",
+          "Status": false
+        },
+        {
+          "InputId": "76516c87132e4fd18a36e8f8b6df97da",
+          "Port": 7,
+          "Name": "Switcher Tally Out 7",
+          "Nickname": "Input 7",
+          "Status": false
+        },
+        {
+          "InputId": "eb8aac5da02a44b9bbc619fdd6e04e4e",
+          "Port": 8,
+          "Name": "Switcher Tally Out 8",
           "Nickname": "Input 8",
           "Status": false
         }
       ],
       "Outputs": [],
       "Routes": [],
-      "RemoteTallySource": {
-        "Port": 80,
-        "RemoteTallyId": "66"
-      }
+      "RemoteTallySource": null
     },
     {
-      "DeviceId": "5ba6d3f0-4f29-411f-83af-4353bf2f9485",
-      "Name": "Smart Scope",
-      "Nickname": "Smart Scope",
-      "IpAddress": "10.176.71.44",
+      "DeviceId": "64",
+      "Name": "RM-H4 Tally",
+      "Nickname": "RM-H4 Tally",
+      "IpAddress": "10.10.10.10",
       "Inputs": [],
-      "Outputs": [
+      "Outputs": [],
+      "Routes": [],
+      "RemoteTallySource": null
+    },
+    {
+      "DeviceId": "b7644af5-98e7-4d51-a386-02f3af102853",
+      "Name": "test",
+      "Nickname": "test",
+      "IpAddress": "ddd",
+      "Inputs": [
         {
-          "OutputId": "647c73b9ecc04d158809259efa0fdd8b",
+          "InputId": "bd9f42e16cdf483a9151ca3bacd1748b",
           "Port": 1,
-          "Name": "MON A",
-          "Nickname": "CH1",
+          "Name": "Input 1",
+          "Nickname": "Input 1",
           "Status": false
         },
         {
-          "OutputId": "8b746c05355144cdb6270397dd45b287",
+          "InputId": "d11872e89b3642809aa7d34cd155d1ba",
           "Port": 2,
-          "Name": "MON B",
-          "Nickname": "CH2",
+          "Name": "Input 2",
+          "Nickname": "Input 2",
           "Status": false
         }
       ],
-      "Routes": [],
-      "RemoteTallySource": null
-    },
-    {
-      "DeviceId": "9d5c2af8-f4ec-4b40-b3df-114897ee9d53",
-      "Name": "hex-1 router",
-      "Nickname": "hex-1 router",
-      "IpAddress": "10.176.71.40",
-      "Inputs": [],
-      "Outputs": [],
-      "Routes": [],
-      "RemoteTallySource": null
-    },
-    {
-      "DeviceId": "8c59a117-867e-4da3-b735-1b215f7e1bc1",
-      "Name": "desk",
-      "Nickname": "desk router",
-      "IpAddress": "192.168.127.18",
-      "Inputs": [],
-      "Outputs": [],
-      "Routes": [],
+      "Outputs": [
+        {
+          "OutputId": "393a2778ec944469876b573ae51adaa5",
+          "Port": 1,
+          "Name": "Output 1",
+          "Nickname": "Output 1",
+          "Status": false
+        },
+        {
+          "OutputId": "7c9f3422337e4497b95d1075257dda2c",
+          "Port": 2,
+          "Name": "Output 2",
+          "Nickname": "Output 2",
+          "Status": false
+        }
+      ],
+      "Routes": [
+        {
+          "SourceDeviceId": "b7644af5-98e7-4d51-a386-02f3af102853",
+          "OutputId": "393a2778ec944469876b573ae51adaa5",
+          "InputIds": [
+            "bd9f42e16cdf483a9151ca3bacd1748b"
+          ]
+        },
+        {
+          "SourceDeviceId": "b7644af5-98e7-4d51-a386-02f3af102853",
+          "OutputId": "7c9f3422337e4497b95d1075257dda2c",
+          "InputIds": [
+            "d11872e89b3642809aa7d34cd155d1ba"
+          ]
+        }
+      ],
       "RemoteTallySource": null
     }
   ]

@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="header.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>HyperDeck Clip Browser</title>
+    <style>
+        body {
+            background: #232323;
+            color: #eee;
+            font-family: Arial,Helvetica,sans-serif;
+            margin: 20px
+        }
+
+        h2 {
+            margin: 0px 0 15px 0;
+        }
+
+
+
+
+        #toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center
+        }
+
+        input {
+            flex: 1;
+            padding: 8px;
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            font-size: 15px
+        }
+
+        button {
+            background: #0078d7;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            cursor: pointer
+        }
+
+            button:hover {
+                background: #005fa3
+            }
+
+        #status {
+            margin-bottom: 10px;
+            font-weight: bold
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        thead {
+            background: #444;
+            position: sticky;
+            top: 0
+        }
+
+        th {
+            text-align: left;
+            padding: 10px
+        }
+
+        td {
+            padding: 8px;
+            border-bottom: 1px solid #333
+        }
+
+        tbody tr {
+            cursor: pointer
+        }
+
+            tbody tr:hover {
+                background: #333
+            }
+
+        .selected {
+            background: #0a5cff !important
+        }
+
+        #tableContainer {
+            height: 68vh;
+            overflow-y: auto;
+            border: 1px solid #444
+        }
+
+        #footer {
+            margin-top: 10px;
+            color: #bbb
+        }
+
+        #dropZone {
+            border: 2px dashed #666;
+            border-radius: 6px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 15px;
+            background: #222;
+            transition: .2s;
+            cursor: pointer
+        }
+
+            #dropZone.drag {
+                border-color: #0a84ff;
+                background: #1e2d44
+            }
+
+        #uploadStatus {
+            margin-bottom: 15px;
+            color: #0a84ff
+        }
+
+        #fileInput {
+            display: none
+        }
+
+        .deleteButton {
+            background: #c00000;
+            padding: 5px 10px;
+            font-size: 12px
+        }
+
+            .deleteButton:hover {
+                background: #800000
+            }
+
+        .delete-warning-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,.75);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center
+        }
+
+        .delete-warning-box {
+            background: #b00000;
+            color: white;
+            width: 500px;
+            max-width: 90%;
+            padding: 30px;
+            border: 5px solid red;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 22px;
+            box-shadow: 0 0 40px black
+        }
+
+            .delete-warning-box h1 {
+                font-size: 42px;
+                margin-top: 0
+            }
+
+        .delete-btn, .cancel-btn {
+            font-size: 20px;
+            padding: 12px 25px;
+            margin: 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer
+        }
+
+        .delete-btn {
+            background: #000;
+            color: white
+        }
+
+        .cancel-btn {
+            background: white;
+            color: #333
+        }
+
+        .deck-btn {
+            font-size: 32px;
+            width: 70px;
+            height: 70px;
+            margin: 10px;
+            background: #0078d7;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer
+        }
+
+            .deck-btn:hover {
+                background: #005fa3
+            }
+
+        @media(max-width:700px) {
+            body {
+                margin: 10px
+            }
+
+            #toolbar {
+                flex-wrap: wrap
+            }
+
+            #tableContainer {
+                height: 60vh
+            }
+
+            table {
+                font-size: 12px
+            }
+
+            th, td {
+                padding: 6px
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="padding: 20px;">
+
+
+        <h2 id="pageTitle">HyperDeck Clip Browser</h2>
+        <div id="status"></div>
+        <div id="dropZone">Drag video files here or click To Upload Files</div>
+        <div id="uploadStatus"></div>
+        <div id="toolbar">
+            <input type="text" id="search" placeholder="Search clips...">
+            <button onclick="openPrintTable()">Print Clip List</button>
+            <button onclick="exportTDC1000()">Export TDC-1000</button>
+            <button id="recordBtn" style="background:#c00000" onclick="recordDeck()">Record</button>
+            <button id="stopBtn">Stop</button>
+            <span id="timecodeDisplay" style="font-family:monospace;font-size:18px;min-width:130px">TC: --:--:--:--</span>
+            <input type="file" id="fileInput" multiple>
+        </div>
+        <div id="tableContainer">
+            <table id="clipTable">
+                <thead><tr><th width="60">ID</th><th>Name</th><th width="170">Codec</th><th width="120">Format</th><th width="120">Duration</th><th width="90">REG #</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+        <div id="footer">↑ / ↓: Move &nbsp;&nbsp; Enter: Cue Clip &nbsp;&nbsp; Double Click: Cue &nbsp;&nbsp; S: Stop &nbsp;&nbsp; P: Play &nbsp;&nbsp; CTRL+DEL: Delete</div>
+
+        <div id="deleteWarning" class="delete-warning-overlay">
+            <div class="delete-warning-box">
+                <h1>WARNING!</h1><p id="deleteWarningText"></p>
+                <button id="confirmDeleteBtn" class="delete-btn">Delete</button>
+                <button id="cancelDeleteBtn" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+
+        <div id="renameDialog" class="delete-warning-overlay">
+            <div class="delete-warning-box" style="background:#2c2c2c;border-color:#0a84ff">
+                <h1>Rename Clip</h1><p>Enter a name for this clip before uploading.</p>
+                <input type="text" id="renameInput" style="width:90%;padding:10px;font-size:18px;margin:15px 0">
+                <br><button id="renameOkBtn" class="delete-btn">Upload</button>
+                <button id="renameCancelBtn" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+
+        <div id="deckDialog" class="delete-warning-overlay">
+            <div class="delete-warning-box" style="background:#2c2c2c;border-color:#0a84ff">
+                <h1>Select Output</h1><p>Select HyperDeck output:</p>
+                <div style="margin:20px"><button class="deck-btn" data-deck="A">A</button><button class="deck-btn" data-deck="B">B</button><button class="deck-btn" data-deck="C">C</button><button class="deck-btn" data-deck="D">D</button></div>
+                <button id="deckCancelBtn" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        (() => {
+            // Host the HTML at the route/page used by your application. The `id` query
+            // parameter identifies the device; all API requests use the endpoint routes in Hyperdeck.cs.
+            const params = new URLSearchParams(location.search);
+            const deviceId = params.get("id");
+            const deckName = params.get("name") || "HyperDeck";
+            const apiBase = `/api/playback/bmd/hyperdeck/${encodeURIComponent(deviceId || "")}/`;
+            document.getElementById("pageTitle").textContent = `${deckName} Clip Browser`;
+
+            let clips = [];
+            let selected = 0;
+            let deleteTarget = null;
+            const statusEl = document.getElementById("status");
+            const uploadStatus = document.getElementById("uploadStatus");
+            const fileInput = document.getElementById("fileInput");
+
+            async function apiText(url, options) {
+                const response = await fetch(url, options);
+                const text = await response.text();
+                if (!response.ok) throw new Error(text || `${response.status} ${response.statusText}`);
+                return text;
+            }
+            document.getElementById("stopBtn").addEventListener("click", stop);
+            function promptForFilename(defaultName) {
+                return new Promise(resolve => {
+                    const modal = document.getElementById("renameDialog");
+                    const input = document.getElementById("renameInput");
+                    input.value = defaultName;
+                    modal.style.display = "flex";
+                    input.focus(); input.select();
+                    document.getElementById("renameOkBtn").onclick = () => {
+                        modal.style.display = "none";
+                        resolve(input.value.trim() || defaultName);
+                    };
+                    document.getElementById("renameCancelBtn").onclick = () => {
+                        modal.style.display = "none"; resolve(null);
+                    };
+                    input.onkeydown = e => {
+                        if (e.key === "Enter") document.getElementById("renameOkBtn").click();
+                        if (e.key === "Escape") document.getElementById("renameCancelBtn").click();
+                    };
+                });
+            }
+
+            async function loadClips() {
+                if (!deviceId) { statusEl.textContent = "Missing device id in page URL (?id=...)"; return; }
+                try {
+                    const response = await fetch(apiBase);
+                    if (!response.ok) throw new Error(await response.text());
+                    const data = await response.json();
+                    if (!data.connected) { statusEl.textContent = "Not connected to HyperDeck"; return; }
+                    clips = data.clips || [];
+                    if (selected >= clips.length) selected = Math.max(0, clips.length - 1);
+                    drawTable();
+                } catch (e) {
+                    statusEl.textContent = `Unable to load clips: ${e.message}`;
+                }
+            }
+
+            function selectDeck() {
+                return new Promise(resolve => {
+                    const modal = document.getElementById("deckDialog");
+                    modal.style.display = "flex";
+                    document.querySelectorAll(".deck-btn").forEach(btn => {
+                        btn.onclick = () => { modal.style.display = "none"; resolve(btn.dataset.deck); };
+                    });
+                    document.getElementById("deckCancelBtn").onclick = () => { modal.style.display = "none"; resolve(null); };
+                    const esc = e => {
+                        if (e.key === "Escape") {
+                            modal.style.display = "none"; resolve(null); document.removeEventListener("keydown", esc);
+                        }
+                    };
+                    document.addEventListener("keydown", esc);
+                });
+            }
+
+            function getFPS(format) {
+                format = (format || "").toUpperCase();
+                if (format.includes("23.98") || format.includes("2398")) return { real: 23.976, display: 24 };
+                if (format.includes("29.97") || format.includes("2997")) return { real: 29.97, display: 30 };
+                if (format.includes("59.94") || format.includes("5994")) return { real: 59.94, display: 60 };
+                for (const fps of [24, 25, 30, 50, 60]) if (format.includes(String(fps))) return { real: fps, display: fps };
+                return { real: 30, display: 30 };
+            }
+
+            function tcToFrames(tc, fps) {
+                const p = (tc || "00:00:00:00").replace(";", ":").split(":").map(Number);
+                const h = p[0] || 0, m = p[1] || 0, s = p[2] || 0, f = p[3] || 0;
+                return Math.round((h * 3600 + m * 60 + s) * fps.real + f);
+            }
+
+            function framesToTC(frames, fps) {
+                let totalSeconds = Math.floor(frames / fps.real);
+                let ff = Math.round(frames - totalSeconds * fps.real);
+                let hh = Math.floor(totalSeconds / 3600);
+                totalSeconds %= 3600;
+                let mm = Math.floor(totalSeconds / 60);
+                let ss = totalSeconds % 60;
+                if (ff >= fps.display) { ff = 0; ss++; if (ss >= 60) { ss = 0; mm++; if (mm >= 60) { mm = 0; hh++; } } }
+                return [hh, mm, ss, ff].map(n => String(n).padStart(2, "0")).join(":");
+            }
+
+            async function exportTDC1000() {
+                const deck = await selectDeck();
+                if (!deck) return;
+                const rows = [];
+                let startFrames = 0;
+                let masterFPS = null;
+                clips.forEach((clip, index) => {
+                    const fps = getFPS(clip.format);
+                    if (!masterFPS) masterFPS = fps;
+                    const clipFrames = tcToFrames(clip.duration, fps);
+                    const inTC = framesToTC(startFrames, masterFPS || fps);
+                    const runningFrames = startFrames + clipFrames;
+                    const outTC = framesToTC(runningFrames, masterFPS || fps);
+                    startFrames = runningFrames;
+                    const row = [String(index + 1).padStart(3, "0"), "**:**:**:**", "**:**:**:**", "**:**:**:**", "**:**:**:**", "**:**:**:**", "**:**:**:**", "**:**:**:**", "**:**:**:**", "072", "128", "**:**:**:**", "**:**:**:**", "**:**:**:**", "**:**:**:**"];
+                    const offsets = { A: 1, B: 3, C: 5, D: 7 };
+                    row[offsets[deck]] = inTC;
+                    row[offsets[deck] + 1] = outTC;
+                    rows.push(row);
+                });
+                const blob = new Blob([rows.map(r => r.join(",")).join("\r\n")], { type: "text/plain" });
+                const a = document.createElement("a");
+                a.href = URL.createObjectURL(blob); a.download = "playlist.td2"; a.click();
+                URL.revokeObjectURL(a.href);
+            }
+
+            function drawTable() {
+                const tbody = document.querySelector("#clipTable tbody");
+                tbody.replaceChildren();
+                const filter = document.getElementById("search").value.toLowerCase();
+                clips.forEach((clip, index) => {
+                    if (!(clip.name || "").toLowerCase().includes(filter)) return;
+                    const row = document.createElement("tr");
+                    row.dataset.id = clip.id; row.dataset.index = index;
+                    [clip.id, clip.name, clip.codec, clip.format, clip.duration, ""].forEach(value => {
+                        const td = document.createElement("td");
+                        td.textContent = value || "";
+                        row.appendChild(td);
+                    });
+                    row.onclick = () => select(index);
+                    row.ondblclick = () => cue(index);
+                    tbody.appendChild(row);
+                });
+                highlight();
+            }
+
+            function select(index) { selected = index; highlight(false); }
+
+            function highlight(scroll = false) {
+                document.querySelectorAll("#clipTable tbody tr").forEach(r => r.classList.remove("selected"));
+                const row = document.querySelector(`tr[data-index='${selected}']`);
+                if (row) { row.classList.add("selected"); if (scroll) row.scrollIntoView({ block: "nearest" }); }
+            }
+
+            async function cue(index) {
+                if (!clips[index]) return;
+                try {
+                    await apiText(`${apiBase}?cue=${encodeURIComponent(clips[index].id)}`);
+                    statusEl.textContent = `Cued Clip ${clips[index].id} - ${clips[index].name}`;
+                } catch (e) { statusEl.textContent = `Cue failed: ${e.message}`; }
+            }
+
+            function deleteClip(filename, event) {
+                if (event) event.stopPropagation();
+                deleteTarget = filename;
+                document.getElementById("deleteWarningText").textContent =
+                    `Deleting this clip will affect the deck's timecode.\n\nClip: ${filename}\n\nAre you sure you want to delete this file?`;
+                document.getElementById("deleteWarningText").style.whiteSpace = "pre-line";
+                document.getElementById("deleteWarning").style.display = "flex";
+            }
+            document.getElementById("cancelDeleteBtn").onclick = () => {
+                document.getElementById("deleteWarning").style.display = "none"; deleteTarget = null;
+            };
+            document.getElementById("confirmDeleteBtn").onclick = async () => {
+                if (!deleteTarget) return;
+                const filename = deleteTarget;
+                document.getElementById("deleteWarning").style.display = "none";
+                deleteTarget = null;
+                try {
+                    const body = new URLSearchParams({ filename });
+                    statusEl.textContent = await apiText(`${apiBase}delete`, {
+                        method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body
+                    });
+                    await loadClips();
+                } catch (e) { statusEl.textContent = `Delete failed: ${e.message}`; }
+            };
+
+            async function uploadFiles(files) {
+                for (const file of files) {
+                    const newName = await promptForFilename(file.name);
+                    if (newName === null) continue;
+                    uploadStatus.textContent = `Uploading ${newName}...`;
+                    const formData = new FormData();
+                    formData.append("file", file); formData.append("filename", newName);
+                    try {
+                        uploadStatus.textContent = await apiText(`${apiBase}upload`, { method: "POST", body: formData });
+                    } catch (e) {
+                        uploadStatus.textContent = `Upload failed: ${newName} — ${e.message}`;
+                    }
+                }
+                await loadClips();
+                setTimeout(() => uploadStatus.textContent = "", 4000);
+                fileInput.value = "";
+            }
+
+            const dropZone = document.getElementById("dropZone");
+            dropZone.addEventListener("dragover", e => { e.preventDefault(); dropZone.classList.add("drag"); });
+            dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag"));
+            dropZone.addEventListener("drop", e => { e.preventDefault(); dropZone.classList.remove("drag"); uploadFiles(e.dataTransfer.files); });
+            dropZone.addEventListener("click", () => fileInput.click());
+            fileInput.addEventListener("change", () => { if (fileInput.files.length) uploadFiles(fileInput.files); });
+
+            async function stop() {
+                try { statusEl.textContent = await apiText(`${apiBase}?stop`); }
+                catch (e) { statusEl.textContent = `Stop failed: ${e.message}`; }
+            }
+            async function play() {
+                try { statusEl.textContent = await apiText(`${apiBase}?play`); }
+                catch (e) { statusEl.textContent = `Play failed: ${e.message}`; }
+            }
+
+            async function recordDeck() {
+                
+                try {
+                    statusEl.textContent = await apiText(`${apiBase}?record`);
+                    await getTimecode();
+                } catch (e) { statusEl.textContent = `Record failed: ${e.message}`; }
+            }
+
+
+            async function getTimecode() {
+                const display = document.getElementById("timecodeDisplay");
+                try {
+                    const response = await fetch(`${apiBase}?timecode`);
+                    const data = await response.json();
+                    if (!response.ok || !data.connected) throw new Error("Could not connect to HyperDeck");
+                    display.textContent = `TC: ${data.timecode || "Unavailable"}`;
+                   
+                } catch (e) {
+                    display.textContent = "TC: unavailable";
+                    
+                }
+            }
+
+            document.addEventListener("keydown", e => {
+                if (["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
+                if (e.key === "ArrowDown") { if (selected < clips.length - 1) { selected++; highlight(true); } }
+                if (e.key === "ArrowUp") { if (selected > 0) { selected--; highlight(true); } }
+                if (e.key === "Enter") cue(selected);
+                if (e.key === "Home") { selected = 0; highlight(true); }
+                if (e.key === "End") { selected = clips.length - 1; highlight(true); }
+                if (e.key === "s" || e.key === "S") stop();
+                if (e.key === "p" || e.key === "P") play();
+                if (e.key === "Delete" && e.ctrlKey && clips[selected]) deleteClip(clips[selected].name, e);
+            });
+
+
+            function openPrintTable() {
+                const printWindow = window.open("", "_blank", "width=1000,height=700");
+
+                if (!printWindow) {
+                    alert("Please allow pop-ups to print the clip list.");
+                    return;
+                }
+
+                const deckName = new URLSearchParams(window.location.search).get("name") || "HyperDeck";
+                const table = document.getElementById("clipTable");
+
+                if (!table) {
+                    printWindow.close();
+                    alert("Clip table not found.");
+                    return;
+                }
+
+                printWindow.document.open();
+                printWindow.document.write(`<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>${deckName} Clip List</title>
+    <style>
+        @page {
+            margin: 12mm;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            color: #000;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            margin: 0 0 15px 0;
+            padding: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+
+        th {
+            background: #ddd;
+            padding: 8px;
+            border: 1px solid #999;
+            text-align: left;
+        }
+
+        td {
+            padding: 8px;
+            border: 1px solid #999;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        tr {
+            break-inside: avoid;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+            }
+        }
+    <\/style>
+<\/head>
+<body>
+    <h2>${deckName} Clip List<\/h2>
+    ${table.outerHTML}
+<\/body>
+<\/html>`);
+                printWindow.document.close();
+
+                printWindow.onload = function () {
+                    printWindow.focus();
+                    printWindow.print();
+                };
+            }
+
+            function escapeHtml(value) {
+                return String(value).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+            }
+
+            document.getElementById("search").addEventListener("input", drawTable);
+            loadClips();
+            setInterval(loadClips, 1000);
+            setInterval(getTimecode, 200);
+
+            // Keep these helpers available to inline buttons if this page is embedded in a host.
+            window.exportTDC1000 = exportTDC1000;
+            window.openPrintTable = openPrintTable;
+            window.recordDeck = recordDeck;
+            window.getTimecode = getTimecode;
+        })();
+    </script>
+</body>
+</html>

@@ -14,6 +14,7 @@ using Iceburg.Mixer.Aquastreams.Playback;
 using Iceburg.Conversion.Iceburg.Testgen;
 using Iceburg.Router.BMD;
 using System.Text.RegularExpressions;
+using Iceburg.Mixer.Zowietek;
 
 namespace Iceburg.Devices.Status;
 public class DeviceStatus
@@ -154,10 +155,12 @@ public class DeviceStatus
                 if (Math.Abs((DateTime.Now - savedTime).TotalSeconds) <= 5)
                 {
                     return "connected";
+
                 }
                 else
-                {
+            {
                     return "error";
+
                 }
             }
             else
@@ -415,6 +418,25 @@ public class DeviceStatus
 
                
            
+
+        }
+        if (device.Type == "14")
+        {
+
+            var pov = new ZowietekPov(id);
+            bool status = await pov.GetDeviceStatus();
+            if (status)
+            {
+                return "connected";
+
+            }
+            else
+            {
+                return "error";
+            }
+
+
+
 
         }
         else

@@ -250,31 +250,47 @@
     header.className = "iceburg-header";
 
 
-    /*
-     * ------------------------------------------------------------
-     * LOGO
-     * ------------------------------------------------------------
-     */
+        /*
+       * ------------------------------------------------------------
+       * LOGO
+       * ------------------------------------------------------------
+       */
 
-    const logoContainer = document.createElement("div");
-    logoContainer.className = "iceburg-logo-container";
+        const logoContainer = document.createElement("div");
+        logoContainer.className = "iceburg-logo-container";
 
-    const logo = document.createElement("img");
+        const logo = document.createElement("img");
         logo.src = "/Iceburg Log.png";
-    logo.alt = "Iceburg";
+        logo.alt = "Iceburg";
 
-    const logoText = document.createElement("div");
-    logoText.className = "iceburg-logo-text";
-    logoText.textContent = "Iceburg";
+        const logoText = document.createElement("div");
+        logoText.className = "iceburg-logo-text";
+        logoText.textContent = "Iceburg";
 
-    logoContainer.appendChild(logo);
-    logoContainer.appendChild(logoText);
+        logoContainer.appendChild(logo);
+        logoContainer.appendChild(logoText);
 
-    logoContainer.addEventListener("click", function () {
-        window.location.href = "/dashboard.html";
-    });
+        // Look for an element with the ID "iconlink"
+        const iconLinkElement = document.getElementById("iconlink");
 
-    header.appendChild(logoContainer);
+        // Use its value as the logo destination
+        const iconLink = iconLinkElement
+            ? (
+                iconLinkElement.value ||
+                iconLinkElement.href ||
+                iconLinkElement.textContent
+            ).trim()
+            : "";
+
+        logoContainer.addEventListener("click", function () {
+
+            const destination =
+                logoContainer.dataset.iconlink ;
+
+            window.location.href = destination;
+        });
+
+        header.appendChild(logoContainer);
 
 
     /*
@@ -508,8 +524,19 @@
             }
 
 
-            const navigation =
-                await response.json();
+            const data = await response.json();
+
+            if (!data || !Array.isArray(data.navigation)) {
+                return;
+            }
+
+            const navigation = data.navigation;
+
+            // Update the logo destination
+            const iconLink = data.iconlink;
+
+            // Store it on the logo container
+            logoContainer.dataset.iconlink = iconLink;
 
 
             if (!Array.isArray(navigation)) {

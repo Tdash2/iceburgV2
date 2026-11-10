@@ -747,12 +747,12 @@
              * CSS grid container.
              */
             wrapper.innerHTML = `
-                        <div class="grid-container">
-                            <div class="grid-wrapper">
-                                <div id="grid"></div>
-                            </div>
-                        </div>
-                    `;
+                                <div class="grid-container">
+                                    <div class="grid-wrapper">
+                                        <div id="grid"></div>
+                                    </div>
+                                </div>
+                            `;
 
 
             injectOldGridStyles();
@@ -793,241 +793,241 @@
 
             style.textContent = `
 
-                    .collapse-icon {
-        display: inline-block;
-        width: 14px;
-        margin-right: 5px;
-        font-size: 11px;
-        transition: transform 0.2s ease;
+                            .collapse-icon {
+                display: inline-block;
+                width: 14px;
+                margin-right: 5px;
+                font-size: 11px;
+                transition: transform 0.2s ease;
 }
 
 .collapse-icon.collapsed {
-        transform: rotate(-90deg);
+                transform: rotate(-90deg);
 }
 
-                        .grid-wrapper {
-                            position: relative;
-                            display: inline-block;
-                        }
+                                .grid-wrapper {
+                                    position: relative;
+                                    display: inline-block;
+                                }
 
-                        #grid {
-                            display: grid;
-                            grid-auto-rows: minmax(26px, auto);
-                            min-width: max-content;
-                            position: relative;
-                        }
+                                #grid {
+                                    display: grid;
+                                    grid-auto-rows: minmax(26px, auto);
+                                    min-width: max-content;
+                                    position: relative;
+                                }
 
-                        .grid-corner {
-                            position: sticky;
-                            top: 0;
-                            left: 0;
-                            width: 150px;
-                            height: 26px;
-                            background: #1d1d1d;
-                            border: 1px solid #444;
-                            z-index: 20;
-                            box-sizing: border-box;
-                        }
+                                .grid-corner {
+                                    position: sticky;
+                                    top: 0;
+                                    left: 0;
+                                    width: 150px;
+                                    height: 26px;
+                                    background: #1d1d1d;
+                                    border: 1px solid #444;
+                                    z-index: 20;
+                                    box-sizing: border-box;
+                                }
 
-                        .header {
-                            position: sticky;
-                            top: 0;
-                            background: #1d1d1d;
-                            border: 1px solid #444;
-                            text-align: center;
-                            font-size: 12px;
-                            z-index: 5;
-                            box-sizing: border-box;
-                        }
+                                .header {
+                                    position: sticky;
+                                    top: 0;
+                                    background: #1d1d1d;
+                                    border: 1px solid #444;
+                                    text-align: center;
+                                    font-size: 12px;
+                                    z-index: 5;
+                                    box-sizing: border-box;
+                                }
 
-                        .header.group {
-                            font-weight: bold;
-                            cursor: pointer;
-                            background: #1d1d1d;
-                            border-bottom: 1px solid #555;
-                            height: 26px;
-                            line-height: 26px;
-                        }
+                                .header.group {
+                                    font-weight: bold;
+                                    cursor: pointer;
+                                    background: #1d1d1d;
+                                    border-bottom: 1px solid #555;
+                                    height: 26px;
+                                    line-height: 26px;
+                                }
 
-                        .header.rotate {
-                            writing-mode: sideways-lr;
-                            white-space: nowrap;
-                            font-size: 12px;
-                            padding: 4px 2px;
-                            min-height: 150px;
-                            line-height: normal;
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            box-sizing: border-box;
-                        }
+                                .header.rotate {
+                                    writing-mode: sideways-lr;
+                                    white-space: nowrap;
+                                    font-size: 12px;
+                                    padding: 4px 2px;
+                                    min-height: 150px;
+                                    line-height: normal;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    box-sizing: border-box;
+                                }
 
-                        .header.device-header {
-                            background: #171616;
-                            color: #fff;
-                        }
+                                .header.device-header {
+                                    background: #171616;
+                                    color: #fff;
+                                }
 
-                        .header.high {
-                            background: #770000 !important;
-                            color: #fff !important;
-                        }
+                                .header.high {
+                                    background: #770000 !important;
+                                    color: #fff !important;
+                                }
 
-                        .header.low {
-                            color: #eee !important;
-                        }
+                                .header.low {
+                                    color: #eee !important;
+                                }
 
-                        .rowheader {
-                            position: sticky;
-                            left: 0;
-                            background: #171616;
-                            border: 1px solid #444;
-                            padding: 6px;
-                            font-size: 12px;
-                            display: flex;
-                            align-items: center;
-                            line-height: normal;
-                            min-height: 26px;
-                            box-sizing: border-box;
-                            z-index: 4;
-                        }
+                                .rowheader {
+                                    position: sticky;
+                                    left: 0;
+                                    background: #171616;
+                                    border: 1px solid #444;
+                                    padding: 6px;
+                                    font-size: 12px;
+                                    display: flex;
+                                    align-items: center;
+                                    line-height: normal;
+                                    min-height: 26px;
+                                    box-sizing: border-box;
+                                    z-index: 4;
+                                }
 
-                        .rowheader.group {
-                            font-weight: bold;
-                            cursor: pointer;
-                            height: auto;
-                        }
+                                .rowheader.group {
+                                    font-weight: bold;
+                                    cursor: pointer;
+                                    height: auto;
+                                }
 
-                        .cell {
-                            border: 1px solid #333;
-                            cursor: pointer;
-                            box-sizing: border-box;
-                            display: flex;
-                            justify-content: center;
-                            align-items: center;
-                            min-width: 26px;
-                            min-height: 26px;
-                        }
+                                .cell {
+                                    border: 1px solid #333;
+                                    cursor: pointer;
+                                    box-sizing: border-box;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    min-width: 26px;
+                                    min-height: 26px;
+                                }
 
-                        .cell:hover {
-                            border-color: #777;
-                            box-shadow: inset 0 0 0 1px #777;
-                        }
+                                .cell:hover {
+                                    border-color: #777;
+                                    box-shadow: inset 0 0 0 1px #777;
+                                }
 
-                        .mapped {
-                            background: #ff9900;
-                        }
+                                .mapped {
+                                    background: #ff9900;
+                                }
 
-                        .high {
-                            background: #770000;
-                        }
+                                .high {
+                                    background: #770000;
+                                }
 
-                        .low {
-                            background: #232323;
-                        }
+                                .low {
+                                    background: #232323;
+                                }
 
-                        .header.group,
-                        .rowheader.group {
-                            background: #1d1d1d;
-                        }
+                                .header.group,
+                                .rowheader.group {
+                                    background: #1d1d1d;
+                                }
 
-                        .group-fill {
-                            background: #171616;
-                            border-bottom: 1px solid #555;
-                        }
+                                .group-fill {
+                                    background: #171616;
+                                    border-bottom: 1px solid #555;
+                                }
 
-                        .group-fill-vert {
-                            background: #171616;
-                            border-right: 1px solid #555;
-                        }
+                                .group-fill-vert {
+                                    background: #171616;
+                                    border-right: 1px solid #555;
+                                }
 
-                        .device-online {
-                            background: #0a7d12 !important;
-                            color: #fff !important;
-                        }
+                                .device-online {
+                                    background: #0a7d12 !important;
+                                    color: #fff !important;
+                                }
 
-                        .fa-toggle-icon {
-                            display: inline-block;
-                            transition: transform 0.2s ease;
-                            margin-top: 4px;
-                            margin-right: 5px;
-                        }
+                                .fa-toggle-icon {
+                                    display: inline-block;
+                                    transition: transform 0.2s ease;
+                                    margin-top: 4px;
+                                    margin-right: 5px;
+                                }
 
-                        .fa-toggle-icon.collapsed {
-                            transform: rotate(-90deg);
-                        }
+                                .fa-toggle-icon.collapsed {
+                                    transform: rotate(-90deg);
+                                }
 
-                        .fa-toggle-icon3 {
-                            display: inline-block;
-                            transition: transform 0.2s ease;
-                            margin-right: 5px;
-                        }
+                                .fa-toggle-icon3 {
+                                    display: inline-block;
+                                    transition: transform 0.2s ease;
+                                    margin-right: 5px;
+                                }
 
-                        .fa-toggle-icon3.collapsed {
-                            transform: rotate(-90deg);
-                        }
+                                .fa-toggle-icon3.collapsed {
+                                    transform: rotate(-90deg);
+                                }
 
-                        .input-device-name {
-                            font-weight: bold;
-                            margin-bottom: 2px;
-                        }
+                                .input-device-name {
+                                    font-weight: bold;
+                                    margin-bottom: 2px;
+                                }
 
-                        .input-device-nickname {
-                            font-size: 10px;
-                            opacity: 0.75;
-                            margin-bottom: 4px;
-                        }
+                                .input-device-nickname {
+                                    font-size: 10px;
+                                    opacity: 0.75;
+                                    margin-bottom: 4px;
+                                }
 
-                        .input-port,
-                        .output-port {
-                            font-size: 10px;
-                            opacity: 0.75;
-                        }
+                                .input-port,
+                                .output-port {
+                                    font-size: 10px;
+                                    opacity: 0.75;
+                                }
 
-                        .input-name,
-                        .output-name {
-                            font-weight: bold;
-                        }
+                                .input-name,
+                                .output-name {
+                                    font-weight: bold;
+                                }
 
-                        .input-nickname,
-                        .output-nickname {
-                            font-size: 10px;
-                            opacity: 0.75;
-                        }
+                                .input-nickname,
+                                .output-nickname {
+                                    font-size: 10px;
+                                    opacity: 0.75;
+                                }
 
-                        .output-device-name {
-                            font-weight: bold;
-                        }
+                                .output-device-name {
+                                    font-weight: bold;
+                                }
 
-                        .output-device-nickname {
-                            font-size: 10px;
-                            opacity: 0.75;
-                        }
+                                .output-device-nickname {
+                                    font-size: 10px;
+                                    opacity: 0.75;
+                                }
 
-                        .route-dot {
-                            width: 7px;
-                            height: 7px;
-                            border-radius: 50%;
-                            background: transparent;
-                            pointer-events: none;
-                        }
+                                .route-dot {
+                                    width: 7px;
+                                    height: 7px;
+                                    border-radius: 50%;
+                                    background: transparent;
+                                    pointer-events: none;
+                                }
 
-                        .mapped .route-dot {
-                            background: rgba(0,0,0,0.20);
-                        }
+                                .mapped .route-dot {
+                                    background: rgba(0,0,0,0.20);
+                                }
 
-                        .same-device {
-                            background-color: rgba(255,255,255,0.025);
-                        }
+                                .same-device {
+                                    background-color: rgba(255,255,255,0.025);
+                                }
 
-                        .same-device.mapped {
-                            background: #ff9900;
-                        }
+                                .same-device.mapped {
+                                    background: #ff9900;
+                                }
 
-                        .same-device.high {
-                            background: #770000;
-                        }
+                                .same-device.high {
+                                    background: #770000;
+                                }
 
-                    `;
+                            `;
 
 
             document.head.appendChild(style);
@@ -1111,6 +1111,14 @@
             }
 
 
+            // Only devices with at least one renderable input get an input column.
+            const inputDevices = devices.filter(device =>
+                inputColumns.some(column =>
+                    String(column.device.deviceId) === String(device.deviceId)
+                )
+            );
+
+
             /*
              * --------------------------------------------------------
              * TOTAL GRID COLUMNS
@@ -1120,7 +1128,7 @@
             let totalCols = 0;
 
 
-            for (const device of devices) {
+            for (const device of inputDevices) {
 
                 const inputs =
                     inputColumns.filter(
@@ -1149,6 +1157,13 @@
             }
 
 
+            // Only devices with at least one renderable output get an output row.
+            const outputDevices = devices.filter(device =>
+                Array.isArray(device.outputs) &&
+                device.outputs.some(output => getOutputId(output))
+            );
+
+
             /*
              * --------------------------------------------------------
              * TOTAL GRID ROWS
@@ -1158,7 +1173,7 @@
             let totalRows = 1;
 
 
-            for (const device of devices) {
+            for (const device of outputDevices) {
 
                 const outputs =
                     Array.isArray(device.outputs)
@@ -1213,7 +1228,7 @@
             let colIndex = 2;
 
 
-            for (const device of devices) {
+            for (const device of inputDevices) {
 
                 const deviceId =
                     String(
@@ -1254,16 +1269,16 @@
 
 
                 deviceHeader.innerHTML = `
-                            <i class="
-                                fa-solid
-                                fa-chevron-down
-                                fa-toggle-icon
-                                ${collapsed ? "collapsed" : ""}
-                            "></i>
-                            ${escapeHtml(
+                                    <i class="
+                                        fa-solid
+                                        fa-chevron-down
+                                        fa-toggle-icon
+                                        ${collapsed ? "collapsed" : ""}
+                                    "></i>
+                                    ${escapeHtml(
                     getDeviceName(device)
                 )}
-                        `;
+                                `;
 
 
                 deviceHeader.style.gridColumnStart =
@@ -1378,15 +1393,15 @@
                          * Input name.
                          */
                         header.innerHTML = `
-                                  <div class="input-name">
-        ${escapeHtml(input.name ?? "")}
+                                          <div class="input-name">
+                ${escapeHtml(input.name ?? "")}
 </div>
 
 
 
 
-                                    </div>
-                                `;
+                                            </div>
+                                        `;
 
 
                         header.style.gridColumnStart =
@@ -1545,7 +1560,7 @@
             let rowIndex = 2;
 
 
-            for (const device of devices) {
+            for (const device of outputDevices) {
 
                 const deviceId =
                     String(
@@ -1597,23 +1612,23 @@
                  * updateDeviceOnlineState().
                  */
                 deviceRow.innerHTML = `
-                            <i class="
-                                fa-solid
-                                fa-chevron-down
-                                fa-toggle-icon3
-                                ${collapsed ? "collapsed" : ""}
-                            "></i>
+                                    <i class="
+                                        fa-solid
+                                        fa-chevron-down
+                                        fa-toggle-icon3
+                                        ${collapsed ? "collapsed" : ""}
+                                    "></i>
 
-                            <div>
-                                <div class="output-device-name">
-                                    ${escapeHtml(
+                                    <div>
+                                        <div class="output-device-name">
+                                            ${escapeHtml(
                     getDeviceName(device)
                 )}
-                                </div>
+                                        </div>
 
 
-                            </div>
-                        `;
+                                    </div>
+                                `;
 
 
                 deviceRow.style.gridColumnStart =
@@ -1728,22 +1743,22 @@
 
 
                         rowHeader.innerHTML = `
-                                    <div>
-                                        <div class="output-name">
+                                            <div>
+                                                <div class="output-name">
 
 
-                                        </div>
+                                                </div>
 
 
 
-                                        <div class="output-name">
-        ${escapeHtml(output.name ?? "")}
+                                                <div class="output-name">
+                ${escapeHtml(output.name ?? "")}
 </div>
 
 
-                                        </div>
-                                    </div>
-                                `;
+                                                </div>
+                                            </div>
+                                        `;
 
 
                         rowHeader.style.gridColumnStart =
@@ -1765,7 +1780,7 @@
                          * ------------------------------------------------
                          */
 
-                        for (const sourceDevice of devices) {
+                        for (const sourceDevice of inputDevices) {
 
                             const sourceDeviceId =
                                 String(
@@ -2150,7 +2165,7 @@
                 "px";
 
 
-            updateDeviceOnlineState();
+
         }
 
 
@@ -2535,52 +2550,126 @@
          * ============================================================
          */
 
+
         let deviceStatusRefreshInProgress = false;
+
         const deviceConnectionState = Object.create(null);
 
         function applyDeviceConnectionState(deviceId) {
-            const online = deviceConnectionState[String(deviceId)] === true;
-            const inputHeader = document.getElementById("in_device_" + deviceId);
-            const outputHeader = document.getElementById("out_device_" + deviceId);
 
-            if (inputHeader) inputHeader.classList.toggle("device-online", online);
-            if (outputHeader) outputHeader.classList.toggle("device-online", online);
+            const id = String(deviceId);
+
+            const online = deviceConnectionState[id] === true;
+
+            const inputHeader =
+                document.getElementById("in_device_" + id);
+
+            const outputHeader =
+                document.getElementById("out_device_" + id);
+
+            if (inputHeader) {
+                inputHeader.classList.toggle("device-online", online);
+            }
+
+            if (outputHeader) {
+                outputHeader.classList.toggle("device-online", online);
+            }
         }
 
+
+        // Reapply cached states after the matrix is rebuilt.
+        function applyAllDeviceConnectionStates() {
+
+            for (const deviceId of Object.keys(deviceConnectionState)) {
+                applyDeviceConnectionState(deviceId);
+            }
+        }
+
+
         async function updateDeviceOnlineState() {
+
             if (deviceStatusRefreshInProgress) return;
+
             deviceStatusRefreshInProgress = true;
 
             try {
+
                 await Promise.all(devices.map(async device => {
+
                     const deviceId = String(device.deviceId ?? "");
+
                     if (!deviceId) return;
 
                     try {
+
                         const response = await fetch(
                             `/api/device/getdevicestatus/${encodeURIComponent(deviceId)}`,
                             { credentials: "same-origin" }
                         );
-                        const status = (await response.text()).trim().toLowerCase();
 
-                        // Only update cached state for a successful HTTP response.
-                        // "connected" means green; "error" means original color.
-                        if (response.ok && (status === "connected" || status === "error")) {
-                            deviceConnectionState[deviceId] = status === "connected";
-                            applyDeviceConnectionState(deviceId);
+                        if (!response.ok) return;
+
+                        const rawStatus = await response.text();
+
+                        let status;
+
+                        try {
+                            status = JSON.parse(rawStatus);
                         }
-                    } catch (error) {
-                        // Keep the last known state during temporary network failures.
+                        catch {
+                            status = rawStatus.trim();
+                        }
+
+                        status = String(status).trim().toLowerCase();
+
+                        let newState;
+
+                        if (status === "connected") {
+                            newState = true;
+                        }
+                        else if (status === "error") {
+                            newState = false;
+                        }
+                        else {
+                            // Unknown response: retain previous state.
+                            return;
+                        }
+
+                        const oldState = deviceConnectionState[deviceId];
+
+                        // Only update when the API confirms a state change.
+                        if (oldState !== newState) {
+
+                            deviceConnectionState[deviceId] = newState;
+
+                            applyDeviceConnectionState(deviceId);
+
+                            console.log(
+                                `Device ${deviceId} connection changed:`,
+                                newState ? "CONNECTED" : "DISCONNECTED"
+                            );
+                        }
+
+                    }
+                    catch (error) {
+
+                        // Network error: retain last known state.
                         console.warn(
-                            `Could not get connection status for device ${deviceId}:`,
+                            `Device ${deviceId} status request failed:`,
                             error
                         );
                     }
+
                 }));
-            } finally {
+
+            }
+            finally {
+
                 deviceStatusRefreshInProgress = false;
             }
         }
+
+
 
         /*
          * ============================================================
@@ -2632,11 +2721,11 @@
 
             body.innerHTML = `
 
-                        <div class="io-table">
+                                <div class="io-table">
 
-                            <h3>Inputs</h3>
+                                    <h3>Inputs</h3>
 
-                            ${Array.isArray(device.inputs) &&
+                                    ${Array.isArray(device.inputs) &&
                     device.inputs.length
 
                     ?
@@ -2644,31 +2733,31 @@
                     device.inputs
                         .map(input => `
 
-                                            <div class="form-grid">
+                                                    <div class="form-grid">
 
-                                                <div>
-                                                    CH ${escapeHtml(
+                                                        <div>
+                                                            CH ${escapeHtml(
                             input.port
                         )}
-                                                </div>
+                                                        </div>
 
-                                                <div>
-                                                    ${escapeHtml(
+                                                        <div>
+                                                            ${escapeHtml(
                             input.name ??
                             ""
                         )}
-                                                </div>
+                                                        </div>
 
-                                                <div>
-                                                    ${escapeHtml(
+                                                        <div>
+                                                            ${escapeHtml(
                             input.nickname ??
                             ""
                         )}
-                                                </div>
+                                                        </div>
 
-                                            </div>
+                                                    </div>
 
-                                        `)
+                                                `)
                         .join("")
 
                     :
@@ -2676,14 +2765,14 @@
                     "<div>No inputs</div>"
                 }
 
-                        </div>
+                                </div>
 
 
-                        <div class="io-table">
+                                <div class="io-table">
 
-                            <h3>Outputs</h3>
+                                    <h3>Outputs</h3>
 
-                            ${Array.isArray(device.outputs) &&
+                                    ${Array.isArray(device.outputs) &&
                     device.outputs.length
 
                     ?
@@ -2691,31 +2780,31 @@
                     device.outputs
                         .map(output => `
 
-                                            <div class="form-grid">
+                                                    <div class="form-grid">
 
-                                                <div>
-                                                    CH ${escapeHtml(
+                                                        <div>
+                                                            CH ${escapeHtml(
                             output.port
                         )}
-                                                </div>
+                                                        </div>
 
-                                                <div>
-                                                    ${escapeHtml(
+                                                        <div>
+                                                            ${escapeHtml(
                             output.name ??
                             ""
                         )}
-                                                </div>
+                                                        </div>
 
-                                                <div>
-                                                    ${escapeHtml(
+                                                        <div>
+                                                            ${escapeHtml(
                             output.nickname ??
                             ""
                         )}
-                                                </div>
+                                                        </div>
 
-                                            </div>
+                                                    </div>
 
-                                        `)
+                                                `)
                         .join("")
 
                     :
@@ -2723,8 +2812,8 @@
                     "<div>No outputs</div>"
                 }
 
-                        </div>
-                    `;
+                                </div>
+                            `;
 
 
             overlay.classList.add(
@@ -2791,6 +2880,7 @@
              */
             statusRefreshTimer = setInterval(refreshStatuses, 100);
 
+            updateDeviceOnlineStatetimer = setInterval(updateDeviceOnlineState, 500);
 
             /*
              * Route updates:

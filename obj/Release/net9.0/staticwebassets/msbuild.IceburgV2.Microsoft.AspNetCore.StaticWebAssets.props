@@ -30,8 +30,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>ruoq9o4yzy</Fingerprint>
-      <Integrity>U8nEC06b7ktbIjoQWUHTYyQqkqub/rW7Ymxm8k44Tyg=</Integrity>
+      <Fingerprint>hljev2fos5</Fingerprint>
+      <Integrity>S+4tUCJQ1w37ywtAzTUzpfIZgHm9+X+xPEiBFrazQHc=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\admin\devices.html'))</OriginalItemSpec>
@@ -192,8 +192,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>rujf4dg7bl</Fingerprint>
-      <Integrity>vVVgwBNv/aXuWz9NKiVRtns2qBPTUAhxOcVnEnO9Q6Y=</Integrity>
+      <Fingerprint>bwz3vm46ug</Fingerprint>
+      <Integrity>hdD46iIA/L2x6KK6NG6bM82RmE2DRBcIaxnNuarKaq4=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\dashboard.html'))</OriginalItemSpec>
@@ -318,8 +318,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>bnann183m4</Fingerprint>
-      <Integrity>WQ/eKs+Bp9im0ofD7pqt5orILVSnqGGhkyhAPP/XI7Q=</Integrity>
+      <Fingerprint>epcjyt2khd</Fingerprint>
+      <Integrity>7iLWEnp3grKGOATo+p6J8HlEmsVwsfdmg8A5ggWZilw=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\header.js'))</OriginalItemSpec>
@@ -462,8 +462,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>9hpw4jfxk9</Fingerprint>
-      <Integrity>/Sg4zSdv4shVlv1venwIfCsgYpfDwcCrlPfF5orW/PQ=</Integrity>
+      <Fingerprint>ki88azg11a</Fingerprint>
+      <Integrity>5Cy9/iyD9Av2L62YNDC3tcnEmWPJ4nKjd5TeeEK3tdY=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\panle.html'))</OriginalItemSpec>
@@ -534,8 +534,8 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>d07dv56x5s</Fingerprint>
-      <Integrity>vbf+Xlubwbc5Az3Z7y2awMXo/oGgdVHhWhYY4yTP34o=</Integrity>
+      <Fingerprint>sq6zdlqtni</Fingerprint>
+      <Integrity>5I0556iGXZ4qbjeVHRLPXjnv+zsRDZgQLENdRgKHM1s=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\tallygrid.html'))</OriginalItemSpec>
@@ -647,6 +647,24 @@
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\x32.html'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\zowietekpov.html'))">
+      <SourceType>Package</SourceType>
+      <SourceId>IceburgV2</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/IceburgV2</BasePath>
+      <RelativePath>zowietekpov.html</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>kw717yqzqf</Fingerprint>
+      <Integrity>RG3+NIPMpjU2NC8HNRpGmLnKXtFC2+FIK40w0/r9cLk=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\zowietekpov.html'))</OriginalItemSpec>
     </StaticWebAsset>
   </ItemGroup>
 </Project>

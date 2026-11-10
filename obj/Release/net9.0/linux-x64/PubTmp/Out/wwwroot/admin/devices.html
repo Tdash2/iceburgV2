@@ -339,6 +339,7 @@
 
                     <tr>
                         <th>Name</th>
+                        <th>ID</th>
                         <th>Type</th>
                         <th>IP Address</th>
                         <th>Audio Source</th>
@@ -1020,6 +1021,8 @@
                         device.type
                     );
 
+            
+
 
                 const typeGroup =
                     getDeviceTypeGroup(
@@ -1047,7 +1050,15 @@
                         </div>
 
                     </td>
+                    <td>
 
+    <div class="device-ID">
+        ${escapeHtml(device.id)}
+    </div>
+
+    
+
+</td>
 
                     <td>
 
